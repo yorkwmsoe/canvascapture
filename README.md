@@ -2,9 +2,9 @@
 
 ## Team Members
 
-- Scrum Master: Samuel Brand
-- Notetaker/CI: Wesley Jochman
-- Project Proxy: Patrick McDonald
+- Samuel Brand
+- Wesley Jochman
+- Patrick McDonald
 
 ## Product Owner
 
@@ -17,7 +17,8 @@ This project is a tool for capturing Canvas work and generating a pdf of the wor
 ## Technologies Used
 
 - Node.js
+- Typescript
 
 ## Build File
 
-`doc/README.md`
+`doc/Build.md`
