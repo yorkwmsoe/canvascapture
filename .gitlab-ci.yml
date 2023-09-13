@@ -1,0 +1,6 @@
+stages:
+  - build
+  - release
+
+include:
+  - local: "/apps/cli/.cli-ci.yml"

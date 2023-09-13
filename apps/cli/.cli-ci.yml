@@ -1,0 +1,29 @@
+image: node:18
+
+stages:
+  - build
+  - release
+
+cache:
+  paths:
+    - node_modules/
+
+build-cli:
+  stage: build
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - build/
+
+release-cli:
+  stage: release
+  needs:
+    - job: build-cli
+      artifacts: true
+  script:
+    - npm run package:win-x64
+  artifacts:
+    paths:
+      - release/
