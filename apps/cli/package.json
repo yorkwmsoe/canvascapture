@@ -10,7 +10,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsx src/cli.ts",
     "build": "tsc",
-    "package:win-x64": "pkg . --targets node18-win-x64 --output release/canvascapture-win-x64"
+    "package:win-x64": "pkg . --targets node18-win-x64 --output release/canvascapture-win-x64",
+    "package:win-arm64": "pkg . --targets node18-win-arm64 --output release/canvascapture-win-arm64",
+    "package:linux-x64": "pkg . --targets node18-linux-x64 --output release/canvascapture-linux-x64",
+    "package:linux-arm64": "pkg . --targets node18-linux-arm64 --output release/canvascapture-linux-arm64",
+    "package:macos-x64": "pkg . --targets node18-macos-x64 --output release/canvascapture-macos-x64",
+    "package:macos-arm64": "pkg . --targets node18-macos-arm64 --output release/canvascapture-macos-arm64"
   },
   "pkg": {
     "scripts": "build/**/*.js",
