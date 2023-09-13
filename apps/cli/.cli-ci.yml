@@ -31,7 +31,5 @@ release-cli:
   script:
     - npm run package:win-x64
   artifacts:
-    name: cli-releases
-    expose_as: "Canvas Capture CLI Releases"
     paths:
       - $BASE_PATH/release/
