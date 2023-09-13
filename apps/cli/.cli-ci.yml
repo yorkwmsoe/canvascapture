@@ -21,7 +21,7 @@ build-cli:
     - npm run build
   artifacts:
     paths:
-      - ./build/
+      - $BASE_PATH/build/
 
 release-cli:
   stage: release
@@ -31,5 +31,7 @@ release-cli:
   script:
     - npm run package:win-x64
   artifacts:
+    name: cli-releases
+    expose_as: "Canvas Capture CLI Releases"
     paths:
-      - ./release/
+      - $BASE_PATH/release/
