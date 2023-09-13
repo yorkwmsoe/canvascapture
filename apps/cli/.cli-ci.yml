@@ -4,12 +4,15 @@ stages:
   - build
   - release
 
+environment:
+  BASE_PATH: apps/cli
+
 cache:
   paths:
-    - node_modules/
+    - $BASE_PATH/node_modules/
 
 before_script:
-  - cd apps/cli/
+  - cd $BASE_PATH/
 
 build-cli:
   stage: build
@@ -18,7 +21,7 @@ build-cli:
     - npm run build
   artifacts:
     paths:
-      - build/
+      - $BASE_PATH/build/
 
 release-cli:
   stage: release
@@ -29,4 +32,4 @@ release-cli:
     - npm run package:win-x64
   artifacts:
     paths:
-      - release/
+      - $BASE_PATH/release/
