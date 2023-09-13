@@ -21,7 +21,7 @@ build-cli:
     - npm run build
   artifacts:
     paths:
-      - $BASE_PATH/build/
+      - ./build/
 
 release-cli:
   stage: release
@@ -32,4 +32,4 @@ release-cli:
     - npm run package:win-x64
   artifacts:
     paths:
-      - $BASE_PATH/release/
+      - ./release/
