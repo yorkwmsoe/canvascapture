@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsx src/cli.ts",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "package:win-x64": "pkg . --targets node18-win-x64 --output release/canvascapture-win-x64",
     "package:win-arm64": "pkg . --targets node18-win-arm64 --output release/canvascapture-win-arm64",
     "package:linux-x64": "pkg . --targets node18-linux-x64 --output release/canvascapture-linux-x64",
@@ -30,12 +30,14 @@
     "@types/node": "^20.6.0",
     "@types/prompt-sync": "^4.2.0",
     "pkg": "^5.8.1",
+    "tsc-alias": "^1.8.7",
     "tsx": "^3.12.10",
     "typescript": "^5.2.2"
   },
   "dependencies": {
     "figlet": "^1.6.0",
     "gradient-string": "^2.0.2",
-    "prompt-sync": "^4.2.0"
+    "prompt-sync": "^4.2.0",
+    "zod": "^3.22.2"
   }
 }
