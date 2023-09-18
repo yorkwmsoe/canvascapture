@@ -13,7 +13,7 @@ function main() {
   while (true) {
     const result = prompt("Enter a command: ");
     const splitResult = result.split(" ");
-    const commandName = splitResult[0];
+    const commandName = splitResult[0].toLowerCase();
     const command = getCommand(commandName);
     const args = command?.inputs
       ? convertTwoArraysToObject(command.inputs, splitResult.slice(1))

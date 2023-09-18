@@ -7,10 +7,10 @@ import {
 } from "./commands";
 
 export const commands = {
-  [helpCommand.name]: helpCommand,
-  [versionCommand.name]: versionCommand,
-  [greetCommand.name]: greetCommand,
-  [exitCommand.name]: exitCommand,
+  [helpCommand.name.toLowerCase()]: helpCommand,
+  [versionCommand.name.toLowerCase()]: versionCommand,
+  [greetCommand.name.toLowerCase()]: greetCommand,
+  [exitCommand.name.toLowerCase()]: exitCommand,
 } satisfies Record<string, Command>;
 
 export const commandMap = new Map<string, Command>(Object.entries(commands));
