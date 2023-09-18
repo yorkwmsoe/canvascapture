@@ -6,6 +6,7 @@ export const greetCommand = {
   description: "Greet the user",
   inputs: ["name"],
   run: greet,
+  category: "test",
 } satisfies Command;
 
 const argSchema = z.object({

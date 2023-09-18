@@ -21,3 +21,9 @@ export const convertTwoArraysToObject = <T, U>(
   });
   return Object.fromEntries(map);
 };
+
+export const generatePaddedColumn = (column: string, width: number) => {
+  const padding = width - column.length;
+  const paddingString = padding > 0 ? " ".repeat(padding) : "";
+  return `${column}${paddingString}`;
+};

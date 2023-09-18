@@ -5,6 +5,7 @@ export const versionCommand = {
   name: "version",
   description: "Prints the version of the application",
   run: version,
+  category: "cli",
 } satisfies Command;
 
 export function version() {
