@@ -1,8 +1,9 @@
 image: node:18
 
 stages:
-  - build
+  - install
   - test
+  - build
   - release
 
 variables:
@@ -16,18 +17,9 @@ before_script:
   - cd $BASE_PATH/
 
 install:
-  stage: build
+  stage: install
   script:
     - npm ci
-
-build-cli:
-  stage: build
-  needs: ["install"]
-  script:
-    - npm run build
-  artifacts:
-    paths:
-      - $BASE_PATH/build/
 
 test-cli:
   stage: test
@@ -39,6 +31,15 @@ test-cli:
     reports:
       junit:
         - $BASE_PATH/junit.xml
+
+build-cli:
+  stage: build
+  needs: ["install"]
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - $BASE_PATH/build/
 
 release-cli:
   stage: release
