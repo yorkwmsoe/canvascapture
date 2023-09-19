@@ -34,9 +34,11 @@ test-cli:
   needs: ["install"]
   script:
     - npm run test:ci
-  reports:
-    junit:
-      - $BASE_PATH/junit.xml
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - $BASE_PATH/junit.xml
 
 release-cli:
   stage: release
