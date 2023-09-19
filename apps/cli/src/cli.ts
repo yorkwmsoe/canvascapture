@@ -1,4 +1,4 @@
-import { convertTwoArraysToObject, printTitle } from "@lib/utils";
+import { convertTwoArraysToObject, generateTitle } from "@lib/utils";
 import { getCommand } from "@modules/command";
 import promptSync from "prompt-sync";
 import { ZodError } from "zod";
@@ -8,7 +8,7 @@ const prompt = promptSync({
 });
 
 function main() {
-  printTitle();
+  console.log(generateTitle());
 
   while (true) {
     const result = prompt("Enter a command: ");
