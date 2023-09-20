@@ -26,6 +26,8 @@ function main() {
           error.issues.forEach((issue) => {
             console.log(`Error <${issue.path[0]}>: ${issue.message}`);
           });
+        } else {
+          console.log("Something went wrong.");
         }
       }
     } else {
