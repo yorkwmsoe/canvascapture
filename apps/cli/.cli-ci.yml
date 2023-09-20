@@ -16,7 +16,7 @@ cache:
 before_script:
   - cd $BASE_PATH/
 
-install:
+install-cli:
   stage: install
   script:
     - npm ci
