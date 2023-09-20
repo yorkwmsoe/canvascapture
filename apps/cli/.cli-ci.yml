@@ -23,7 +23,7 @@ install-cli:
 
 test-cli:
   stage: test
-  needs: ["install"]
+  needs: ["install-cli"]
   script:
     - npm run test:ci
   artifacts:
@@ -34,7 +34,7 @@ test-cli:
 
 build-cli:
   stage: build
-  needs: ["install"]
+  needs: ["install-cli"]
   script:
     - npm run build
   artifacts:
