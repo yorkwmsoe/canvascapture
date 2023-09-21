@@ -1,13 +1,10 @@
-import { convertTwoArraysToObject, generateTitle } from "@lib/utils";
+import { convertTwoArraysToObject, generateTitle, prompt } from "@lib/utils";
 import { getCommand } from "@modules/command";
-import promptSync from "prompt-sync";
 import { ZodError } from "zod";
+import * as dotenv from "dotenv";
+dotenv.config({ path: __dirname+'/../.env' });
 
-const prompt = promptSync({
-  sigint: true,
-});
-
-function main() {
+const main = async () => {
   console.log(generateTitle());
 
   while (true) {
@@ -20,7 +17,7 @@ function main() {
       : undefined;
     if (command) {
       try {
-        command.run(args);
+        await command.run(args);
       } catch (error) {
         if (error instanceof ZodError) {
           error.issues.forEach((issue) => {
