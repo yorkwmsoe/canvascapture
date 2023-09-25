@@ -2,6 +2,7 @@ import { convertTwoArraysToObject, generateTitle, prompt } from "@lib/utils";
 import { getCommand } from "@modules/command";
 import { ZodError } from "zod";
 import * as dotenv from "dotenv";
+
 dotenv.config({ path: __dirname+'/../.env' });
 
 const main = async () => {

@@ -1,23 +1,21 @@
+import axios from "axios";
 import { Assignment } from "./types/assignment";
 import { Course } from "./types/course";
 import { Submission } from "./types/submission";
 
-const apiRequest = async (route: string): Promise<any> => {
-  const resp = await fetch(process.env.CANVAS_DOMAIN + "/api/v1" + route, {
-	method: 'GET',
-	headers: { Authorization: `Bearer ${process.env.CANVAS_ACCESS_TOKEN}` }
-  });
-  return await resp.json();
-}
+const api = axios.create({
+  baseURL: process.env.CANVAS_DOMAIN + "/api/v1",
+  headers: {'Authorization': `Bearer ${process.env.CANVAS_ACCESS_TOKEN}`}
+});
 
 export const getCourses = async (): Promise<Course[]> => {
-  return await apiRequest("/courses?exclude_blueprint_courses");
+  return (await api.get(`/courses?exclude_blueprint_courses`)).data;
 }
 
 export const getAssignments = async (course_id: number): Promise<Assignment[]> => {
-  return await apiRequest(`/courses/${course_id}/assignments`);
+  return (await api.get(`/courses/${course_id}/assignments`)).data;
 }
 
 export const getSubmissions = async (course_id: number, assignment_id: number): Promise<Submission[]> => {
-  return await apiRequest(`/courses/${course_id}/assignments/${assignment_id}/submissions`);
+  return (await api.get(`/courses/${course_id}/assignments/${assignment_id}/submissions`)).data;
 }
