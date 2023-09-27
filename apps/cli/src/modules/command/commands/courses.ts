@@ -1,31 +1,22 @@
 import { getCourses } from "@modules/canvas_api/api";
 import { Command } from "../types/command";
+import { state } from "../state";
 import inquirer from "inquirer";
 
 export const coursesCommand = {
   name: "courses",
   description: "Prints all courses",
-  run: courses,
+  run: select_courses,
   category: "general",
 } satisfies Command;
 
-async function courses() {
-  const courses = (await getCourses());
-  await inquirer
-    .prompt([{
+async function select_courses() {
+  state.courses = (await getCourses());
+  const answers: {courses: number[]} = await inquirer.prompt([{
       type: 'checkbox',
-      name: 'Course Selection',
+      name: coursesCommand.name,
       message: 'What courses should be used?',
-      choices: courses.map((c) => c.name),
-    }])
-    .then((answers) => {
-      console.log(answers);
-    })
-    .catch((error) => {
-      if (error.isTtyError) {
-        // Prompt couldn't be rendered in the current environment
-      } else {
-        // Something else went wrong
-      }
-    });
+      choices: state.courses.map((c) => {return {name: c.name, value: c.id}}),
+  }]);
+  state.selected_course_ids = answers.courses;
 }

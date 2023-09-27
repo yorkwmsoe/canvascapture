@@ -5,7 +5,9 @@ import {
   greetCommand,
   exitCommand,
   coursesCommand,
+  generateCommand,
 } from "./commands";
+import { assignmentsCommand } from "./commands/assignments";
 
 export const commands = {
   [helpCommand.name.toLowerCase()]: helpCommand,
@@ -13,6 +15,8 @@ export const commands = {
   [greetCommand.name.toLowerCase()]: greetCommand,
   [exitCommand.name.toLowerCase()]: exitCommand,
   [coursesCommand.name.toLowerCase()]: coursesCommand,
+  [assignmentsCommand.name.toLowerCase()]: assignmentsCommand,
+  [generateCommand.name.toLowerCase()]: generateCommand,
 } satisfies Record<string, Command>;
 
 export const commandMap = new Map<string, Command>(Object.entries(commands));
