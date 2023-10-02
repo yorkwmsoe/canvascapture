@@ -102,10 +102,7 @@ export type Assignment = {
   // NOTE: it's possible to be enrolled in multiple sections, and if a student is
   // setup that way they will show an assignment that needs grading in multiple
   // sections (effectively the count will be duplicated between sections)
-  needs_grading_count_by_section?: {
-    section_id: string;
-    needs_grading_count: number;
-  }[];
+  needs_grading_count_by_section?: NeedsGradingCountBySection[];
   // the sorting order of the assignment in the group
   position: number;
   // (optional, present if Sync Grades to SIS feature is enabled)
@@ -179,7 +176,7 @@ export type Assignment = {
   use_rubric_for_grading?: boolean;
   // (Optional) An object describing the basic attributes of the rubric, including
   // the point total. Included if there is an associated rubric.
-  rubric_settings?: { points_possible: string };
+  rubric_settings?: RubricSettings;
   // (Optional) A list of scoring criteria and ratings for each rubric criterion.
   // Included if there is an associated rubric.
   rubric?: RubricCriteria[];
@@ -366,16 +363,27 @@ export type ExternalToolTagAttributes = {
 // 0 and 100 representing match size to exclude as a percentage of the document
 // size. - if type is 'words', this will be number > 0 representing how many
 export type TurnitinSettings = {
-  originality_report_visibility:
-    | "immediate"
-    | "after_grading"
-    | "after_due_date"
-    | "never";
+  originality_report_visibility: OriginallyReportVisibility;
   s_paper_check: boolean;
   internet_check: boolean;
   journal_check: boolean;
   exclude_biblio: boolean;
   exclude_quoted: boolean;
-  exclude_small_matches_type: "percent" | "words" | null;
+  exclude_small_matches_type: ExcludeSmallMatchesType;
   exclude_small_matches_value: number | null;
 };
+
+export type OriginallyReportVisibility =
+  | "immediate"
+  | "after_grading"
+  | "after_due_date"
+  | "never";
+
+export type ExcludeSmallMatchesType = "percent" | "words" | null;
+
+export type NeedsGradingCountBySection = {
+  section_id: string;
+  needs_grading_count: number;
+};
+
+export type RubricSettings = { points_possible: string };

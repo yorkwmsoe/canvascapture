@@ -1,4 +1,5 @@
 import { File } from "./file";
+import { ReadState } from "./read-state";
 
 export type DiscussionTopic = {
   // The ID of this topic.
@@ -22,7 +23,7 @@ export type DiscussionTopic = {
   // The count of entries in the topic.
   discussion_subentry_count: number;
   // The read_state of the topic for the current user, 'read' or 'unread'.
-  read_state: "read" | "unread";
+  read_state: ReadState;
   // The count of unread entries of this topic for the current user.
   unread_count: number;
   // Whether or not the current user is subscribed to this topic.
@@ -32,11 +33,7 @@ export type DiscussionTopic = {
   // The user must post a reply first; 'not_in_group_set': The user is not in the
   // group set for this graded group discussion; 'not_in_group': The user is not
   // in this topic's group; 'topic_is_announcement': This topic is an announcement
-  subscription_hold?:
-    | "not_in_group_set"
-    | "not_in_group"
-    | "topic_is_announcement"
-    | "initial_post_required";
+  subscription_hold?: SubscriptionHold;
   // The unique identifier of the assignment if the topic is for grading,
   // otherwise null.
   assignment_id: number | null;
@@ -65,7 +62,7 @@ export type DiscussionTopic = {
   topic_children: number[];
   // An array of group discussions the user is a part of. Fields include: id,
   // group_id
-  group_topic_children: { id: number; group_id: number }[];
+  group_topic_children: GroupTopic[];
   // If the topic is for grading and a group assignment this will point to the
   // original topic in the course.
   root_topic_id: number | null;
@@ -74,7 +71,7 @@ export type DiscussionTopic = {
   // The type of discussion. Values are 'side_comment', for discussions that only
   // allow one level of nested comments, and 'threaded' for fully threaded
   // discussions.
-  discussion_type: "side_comment" | "threaded";
+  discussion_type: DiscussionType;
   // The unique identifier of the group category if the topic is a group
   // discussion, otherwise null.
   group_category_id: number | null;
@@ -89,3 +86,13 @@ export type DiscussionTopic = {
   // Whether or not entries should be sorted by rating.
   sort_by_rating: boolean;
 };
+
+export type SubscriptionHold =
+  | "not_in_group_set"
+  | "not_in_group"
+  | "topic_is_announcement"
+  | "initial_post_required";
+
+export type DiscussionType = "side_comment" | "threaded";
+
+export type GroupTopic = { id: number; group_id: number };

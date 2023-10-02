@@ -19,7 +19,7 @@ export type File = {
   hidden_for_user: boolean;
   // Changes who can access the file. Valid options are 'inherit' (the default),
   // 'course', 'institution', and 'public'. Only valid in course endpoints.
-  visibility_level: "course" | "institution" | "public" | "inherit";
+  visibility_level: VisibilityLevel;
   thumbnail_url: string;
   modified_at: Date;
   // simplified content-type mapping
@@ -33,3 +33,5 @@ export type File = {
   // making the api call. Only included in submission endpoints.
   preview_url?: string;
 };
+
+export type VisibilityLevel = "course" | "institution" | "public" | "inherit";

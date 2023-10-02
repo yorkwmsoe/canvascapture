@@ -25,7 +25,7 @@ export type Course = {
   original_name: string;
   // the current state of the course one of 'unpublished', 'available',
   // 'completed', or 'deleted'
-  workflow_state: "unpublished" | "available" | "completed" | "deleted";
+  workflow_state: WorkflowState;
   // the account associated with the course
   account_id: number;
   // the root account associated with the course
@@ -142,3 +142,9 @@ export type CourseCalendar = {
   // The URL of the calendar in ICS format
   ics: string;
 };
+
+export type WorkflowState =
+  | "unpublished"
+  | "available"
+  | "completed"
+  | "deleted";
