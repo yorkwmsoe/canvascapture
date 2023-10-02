@@ -1,6 +1,9 @@
 import { getSubmissions } from "@modules/canvas_api/api";
 import { Command } from "../types/command";
 import { state } from "../state";
+import { Submission } from "@modules/canvas_api/types/submission";
+import { Assignment } from "@modules/canvas_api/types/assignment";
+import { Course } from "@modules/canvas_api/types/course";
 
 export const generateCommand = {
   name: "generate",
@@ -17,6 +20,31 @@ const median = (arr: number[]): number | undefined => {
   return s.length % 2 === 0 ? ((s[mid - 1] + s[mid]) / 2) : s[mid];
 };
 
+const genAssignment = async (course: Course, assignment: Assignment) => {
+  console.log(assignment.name);
+  const submissions = await getSubmissions(course.id, assignment.id);
+  const filteredScores = submissions.filter(a => a.score !== undefined && a.score !== null).map(b => b.score ?? -1)
+  if (filteredScores.length > 0) {
+    if (submissions.length >= 3 || submissions.length === 2) {
+      genSubmission(assignment, submissions, Math.max(...filteredScores));
+    }
+    if (submissions.length >= 3 || submissions.length === 1) {
+      genSubmission(assignment, submissions, median(filteredScores) ?? -1);
+    }
+    if (submissions.length >= 3 || submissions.length === 2) {
+      genSubmission(assignment, submissions, Math.min(...filteredScores));
+    }
+  } else {
+    console.log("No submissions for assignment");
+  }
+}
+
+const genSubmission = (assignment: Assignment, submissions: Submission[], score: number) => {
+  const submission = (submissions.filter(s => s.score === score))[0];
+  console.log(submission.score + "/" + assignment.points_possible);
+  console.log(submission.body);
+}
+
 async function generate() {
   if (state.courses && state.courses.length > 0) {
     for (const course of state.courses) {
@@ -25,32 +53,7 @@ async function generate() {
       const filteredAssignments = state.assignments?.filter(a => a.course_id === course.id);
       if (filteredAssignments && filteredAssignments.length > 0) {
         for (const assignment of filteredAssignments) {
-          console.log(assignment.name);
-          const submissions = await getSubmissions(course.id, assignment.id);
-          const filteredScores = submissions.filter(a => a.score !== undefined && a.score !== null).map(b => b.score ?? -1)
-          if (filteredScores.length > 0) {
-            const maxGrade = Math.max(...filteredScores);
-            const medianGrade = median(filteredScores);
-            const minGrade = Math.max(...filteredScores);
-            if (submissions.length >= 3 || submissions.length === 2) {
-              //const total = assignment.points_possible;
-              const max = submissions.filter(s => s.score === maxGrade);
-              console.log(max[0].score + "/" + assignment.points_possible);
-              console.log(max[0].body);
-            }
-            if (submissions.length >= 3 || submissions.length === 1) {
-              const med = submissions.filter(s => s.score === medianGrade);
-              console.log(med[0].score + "/" + assignment.points_possible);
-              console.log(med[0].body);
-            }
-            if (submissions.length >= 3 || submissions.length === 2) {
-              const min = submissions.filter(s => s.score === minGrade);
-              console.log(min[0].score + "/" + assignment.points_possible);
-              console.log(min[0].body);
-            }
-          } else {
-            console.log("No submissions for assignment");
-          }
+          await genAssignment(course, assignment);
         }
       } else {
         console.log("No assignments selected");
