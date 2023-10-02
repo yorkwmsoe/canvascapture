@@ -15,17 +15,17 @@ export type Assignment = {
   // the due date for the assignment. returns null if not present. NOTE: If this
   // assignment has assignment overrides, this field will be the due date as it
   // applies to the user requesting information from the API.
-  due_at: Date;
+  due_at: Date | null;
   // the lock date (assignment is locked after this date). returns null if not
   // present. NOTE: If this assignment has assignment overrides, this field will
   // be the lock date as it applies to the user requesting information from the
   // API.
-  lock_at: Date;
+  lock_at: Date | null;
   // the unlock date (assignment is unlocked after this date) returns null if not
   // present NOTE: If this assignment has assignment overrides, this field will be
   // the unlock date as it applies to the user requesting information from the
   // API.
-  unlock_at: Date;
+  unlock_at: Date | null;
   // whether this assignment has overrides
   has_overrides: boolean;
   // (Optional) all dates associated with the assignment, if applicable
@@ -359,13 +359,23 @@ export type ExternalToolTagAttributes = {
   resource_link_id: string;
 };
 
+// originality_report_visibility can be 'immediate',
+// 'after_grading', 'after_due_date', or 'never' exclude_small_matches_type can
+// be null, 'percent', 'words' exclude_small_matches_value: - if type is null,
+// this will be null also - if type is 'percent', this will be a number between
+// 0 and 100 representing match size to exclude as a percentage of the document
+// size. - if type is 'words', this will be number > 0 representing how many
 export type TurnitinSettings = {
-  originality_report_visibility: string;
+  originality_report_visibility:
+    | "immediate"
+    | "after_grading"
+    | "after_due_date"
+    | "never";
   s_paper_check: boolean;
   internet_check: boolean;
   journal_check: boolean;
   exclude_biblio: boolean;
   exclude_quoted: boolean;
-  exclude_small_matches_type: string;
-  exclude_small_matches_value: number;
+  exclude_small_matches_type: "percent" | "words" | null;
+  exclude_small_matches_value: number | null;
 };
