@@ -17,5 +17,5 @@ export const getAssignments = async (course_id: number): Promise<Assignment[]> =
 }
 
 export const getSubmissions = async (course_id: number, assignment_id: number): Promise<Submission[]> => {
-  return (await api.get(`/courses/${course_id}/assignments/${assignment_id}/submissions`)).data;
+  return (await api.get(`/courses/${course_id}/assignments/${assignment_id}/submissions?include[]=rubric_assessment&submission_comments`)).data;
 }

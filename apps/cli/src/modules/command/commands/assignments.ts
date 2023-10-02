@@ -11,19 +11,16 @@ export const assignmentsCommand = {
 } satisfies Command;
 
 async function select_assignments() {
-  const filteredCourses = state.courses?.filter((c) => state.selected_course_ids?.includes(c.id));
-  if (filteredCourses && filteredCourses.length > 0) {
-    state.selected_assignment_ids = new Map();
-    for (const course of filteredCourses) {
-      const assignment = (await getAssignments(course.id));
-      state.assignments.set(course.id, assignment);
+  if (state.courses && state.courses.length > 0) {
+    for (const course of state.courses) {
+      const assignments = (await getAssignments(course.id));
       const answers: {assignments: number[]} = await inquirer.prompt([{
           type: 'checkbox',
           name: assignmentsCommand.name,
           message: `What assignments from ${course.name} should be used?`,
-          choices: assignment.map((c) => {return {name: c.name, value: c.id}}),
+          choices: assignments.map((a) => {return {name: a.name, value: a.id}}),
       }]);
-      state.selected_assignment_ids.set(course.id, answers.assignments);
+      state.assignments = assignments.filter((a) => answers.assignments.includes(a.id));
     }
   } else {
     console.log("No courses selected");
