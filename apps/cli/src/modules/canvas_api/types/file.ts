@@ -1,33 +1,35 @@
+import { LockInfo } from "./assignment";
+
 export type File = {
-  id: 569;
-  uuid: "SUj23659sdfASF35h265kf352YTdnC4";
-  folder_id: 4207;
-  display_name: "file.txt";
-  filename: "file.txt";
-  "content-type": "text/plain";
-  url: "http://www.example.com/files/569/download?download_frd=1&verifier=c6HdZmxOZa0Fiin2cbvZeI8I5ry7yqD7RChQzb6P";
+  id: number;
+  uuid: string;
+  folder_id: number;
+  display_name: string;
+  filename: string;
+  "content-type": string;
+  url: string;
   // file size in bytes
-  size: 43451;
-  created_at: "2012-07-06T14:58:50Z";
-  updated_at: "2012-07-06T14:58:50Z";
-  unlock_at: "2012-07-07T14:58:50Z";
-  locked: false;
-  hidden: false;
-  lock_at: "2012-07-20T14:58:50Z";
-  hidden_for_user: false;
+  size: number;
+  created_at: Date;
+  updated_at: Date;
+  unlock_at: Date;
+  locked: boolean;
+  hidden: boolean;
+  lock_at: Date;
+  hidden_for_user: boolean;
   // Changes who can access the file. Valid options are 'inherit' (the default),
   // 'course', 'institution', and 'public'. Only valid in course endpoints.
-  visibility_level: "course";
-  thumbnail_url: null;
-  modified_at: "2012-07-06T14:58:50Z";
+  visibility_level: "course" | "institution" | "public" | "inherit";
+  thumbnail_url: string;
+  modified_at: Date;
   // simplified content-type mapping
-  mime_class: "html";
+  mime_class: string;
   // identifier for file in third-party transcoding service
-  media_entry_id: "m-3z31gfpPf129dD3sSDF85SwSDFnwe";
-  locked_for_user: false;
-  lock_info: null;
-  lock_explanation: "This assignment is locked until September 1 at 12:00am";
+  media_entry_id: string;
+  locked_for_user: boolean;
+  lock_info: LockInfo;
+  lock_explanation: string;
   // optional: url to the document preview. This url is specific to the user
   // making the api call. Only included in submission endpoints.
-  preview_url: null;
+  preview_url?: string;
 };
