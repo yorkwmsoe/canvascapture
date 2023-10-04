@@ -21,8 +21,7 @@ export const convertToHeader = (markdownContent: string, size: number) => {
     for (let i: number = 0; i < size; i++) {
         headerSize = headerSize + "#"
     }
-    let headerContent: string = headerSize + markdownContent;
-    return headerContent;
+    return headerSize + markdownContent;
 }
 
 /**
@@ -38,18 +37,17 @@ export const convertToHeader = (markdownContent: string, size: number) => {
  * @param specified
  */
 export const performSpecialWordOperation = (content: string, word: string, type: string, specified: number[]) => {
-    let indexes: number[] = [];
-    let tempContent: string = content;
-    let fauxWord: string = "";
-    let addition: string = ""
-    let numEncounted: number = 0;
+    const indexes: number[] = [];
+    let tempContent = content;
+    let fauxWord = "";
+    let addition = ""
 
     //different types: Bold, Italic, Strikethrough
-    if (type.toLowerCase() === "bold") {
+    if (type === "bold") {
         addition = "**"
-    } else if (type.toLowerCase() === "italic") {
+    } else if (type === "italic") {
         addition = "*"
-    } else if (type.toLowerCase() === "strike") {
+    } else if (type === "strikethrough") {
         addition = "~~"
     }
 
@@ -66,24 +64,21 @@ export const performSpecialWordOperation = (content: string, word: string, type:
 
     let retContent = tempContent;
     let numPrevLength = 0;
-    let numSpecialWords: number = 0;
+    let numSpecialWords = 0;
 
     for (let i = 0; i < indexes.length; i++) {
-
-
         if((specified.filter(value => (value == i + 1))).length > 0) {
-            let pre: string = retContent.substring(0, indexes[i] + numPrevLength);
-            let post: string = retContent.substring(indexes[i] + word.length + numPrevLength);
+            let pre = retContent.substring(0, indexes[i] + numPrevLength);
+            let post = retContent.substring(indexes[i] + word.length + numPrevLength);
             retContent = pre + addition + word + addition + post;
             numSpecialWords = numSpecialWords + 1;
             numPrevLength = addLength * (numSpecialWords);
         } else {
-            let pre: string = retContent.substring(0, indexes[i] + numPrevLength);
-            let post: string = retContent.substring(indexes[i] + word.length + numPrevLength);
+            let pre = retContent.substring(0, indexes[i] + numPrevLength);
+            let post = retContent.substring(indexes[i] + word.length + numPrevLength);
             retContent = pre + word + post;
             numPrevLength = addLength * (numSpecialWords);
         }
-
     }
     return retContent
 }
@@ -91,15 +86,15 @@ export const performSpecialWordOperation = (content: string, word: string, type:
 /**
  * createList
  * This allows the user to create a list with an array of strings, the type is either "-"
- * or "*" or "+"
+ * or "*" or "+" or "- [ ]"
  * @param content
  * @param type
  */
 export const createList = (content: string[], type: string) => {
-    let list: string = "";
+    let list = "";
     if (type === "o") {
         for (let i = 1; i < content.length + 1; i++) {
-            let start: string = "" + i + ". "
+            const start = "" + i + ". "
             list = list + start + content[i - 1] + "\n"
         }
     } else {
@@ -119,9 +114,8 @@ export const createList = (content: string[], type: string) => {
  * @param link
  */
 export const createLink = (content: string, wordClick: string, link: string) => {
-    content = content.replace(wordClick, "[" + wordClick + "]" +
+    return content.replace(wordClick, "[" + wordClick + "]" +
         "(" + link + ")")
-    return content;
 }
 
 /**
@@ -131,8 +125,7 @@ export const createLink = (content: string, wordClick: string, link: string) => 
  * @param path
  */
 export const generateIMG = (path: string) => {
-    let content: string = "![Image not found](" + path + ")";
-    return content;
+    return "![Image not found](" + path + ")";
 }
 
 /**
@@ -150,6 +143,42 @@ export const addNewLine = (filePath: string) => {
  */
 export const cleanFile = (filePath: string) => {
     fs.writeFileSync(filePath, '');
+}
+
+export const createInlineCode = (filePath: string, content: string) => {
+    return "`" + content + "`";
+}
+
+export const createCodeBlock = (filePath: string, content: string) => {
+    return "\n```\n" + content + "\n```\n";
+}
+
+export const createTableHeader = (columns: string[]) => {
+    let header = ""
+    for(let i:number = 0; i < columns.length; i++){
+        header = header + " " + columns[i] + " |"
+    }
+    header = "|" + header + "\n";
+
+    let headerBar = "";
+    for(let i:number = 0; i < columns.length; i++){
+        headerBar = headerBar + " --- |"
+    }
+    headerBar = "|" + headerBar + "\n";
+    return header + headerBar;
+}
+
+export const createTableRows = (rows:string[][]) => {
+    let rowsToPrint = "";
+    for(let row:number = 0; row < rows.length; row++){
+        let rowPrint = "";
+        for(let col = 0; col < rows[0].length; col++) {
+            rowPrint = rowPrint + " " + rows[row][col] + " |";
+        }
+        rowPrint = "|" + rowPrint + "\n";
+        rowsToPrint = rowsToPrint + rowPrint;
+    }
+    return rowsToPrint;
 }
 
 
@@ -171,6 +200,17 @@ export const cleanFile = (filePath: string) => {
 // writeToFile(filePath, link)
 // let img: string = generateIMG("C:\\Users\\mcdonaldp\\WebstormProjects\\rema\\src\\ambatukam.png")
 // writeToFile(filePath, img)
+// let inline: string = createInlineCode(filePath, "HELP MEEEEE")
+// let block: string = createCodeBlock(filePath, "HELP MEEEEE")
+// let list: string = createList(["one", "two", "three"], "- [ ]")
+// let head: string = createTableHeader(["col1", "aerodynamics"])
+// let rows: string = createTableRows([["one", "two"], ["three", "four"]])
+// writeToFile(filePath, head)
+// writeToFile(filePath, rows)
+// writeToFile(filePath, list)
+// writeToFile(filePath, inline)
+// writeToFile(filePath,block)
+
 
 
 
