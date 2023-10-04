@@ -280,10 +280,10 @@ export type Assignment = {
 export type AssignmentDate = {
   // (Optional, missing if 'base' is present) id of the assignment override this
   // date represents
-  id: number;
+  id?: number;
   // (Optional, present if 'id' is missing) whether this date represents the
   // assignment's or quiz's default due date
-  base: boolean;
+  base?: boolean;
   title: string;
   // The due date for the assignment. Must be between the unlock date and the lock
   // date if there are lock dates
