@@ -37,7 +37,7 @@ export const convertToHeader = (markdownContent: string, size: number) => {
  * @param type
  * @param specified
  */
-export const performSpecialWordOperation = (content: string, word: string, type: string, specified: number[]) => {
+export const performSpecialWordOperation = (content: string, word: string, type: "bold" | "italic" | "strike", specified: number[]) => {
     const indexes: number[] = [];
     let tempContent = content;
     let fauxWord = "";
@@ -48,7 +48,7 @@ export const performSpecialWordOperation = (content: string, word: string, type:
         addition = "**"
     } else if (type === "italic") {
         addition = "*"
-    } else if (type === "strikethrough") {
+    } else if (type === "strike") {
         addition = "~~"
     }
 
