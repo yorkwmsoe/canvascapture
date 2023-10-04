@@ -1,4 +1,5 @@
-import * as fs from 'fs-extra';
+import {appendFileSync} from 'fs';
+import {writeFileSync} from 'fs';
 
 /**
  * writeToFile
@@ -7,7 +8,7 @@ import * as fs from 'fs-extra';
  * @param markdownContent
  */
 export const writeToFile = (filePath: string, markdownContent: string) => {
-    fs.appendFileSync(filePath, markdownContent);
+    appendFileSync(filePath, markdownContent);
 }
 
 /**
@@ -134,7 +135,7 @@ export const generateIMG = (path: string) => {
  * @param filePath
  */
 export const addNewLine = (filePath: string) => {
-    fs.appendFileSync(filePath, "\n");
+    appendFileSync(filePath, "\n");
 }
 
 /**
@@ -142,7 +143,7 @@ export const addNewLine = (filePath: string) => {
  * @param filePath
  */
 export const cleanFile = (filePath: string) => {
-    fs.writeFileSync(filePath, '');
+    writeFileSync(filePath, '');
 }
 
 export const createInlineCode = (filePath: string, content: string) => {
