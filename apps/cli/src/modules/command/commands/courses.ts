@@ -1,7 +1,7 @@
 import { getCourses } from "@modules/canvas_api/api";
 import { Command } from "../types/command";
 import { state } from "../state";
-import inquirer from "inquirer";
+import { checkbox } from "@inquirer/prompts";
 
 export const coursesCommand = {
   name: "courses",
@@ -10,13 +10,11 @@ export const coursesCommand = {
   category: "general",
 } satisfies Command;
 
-async function select_courses() {
+export async function select_courses() {
   const courses = (await getCourses());
-  const answers: {courses: number[]} = await inquirer.prompt([{
-      type: 'checkbox',
-      name: coursesCommand.name,
-      message: 'What courses should be used?',
-      choices: courses.map((c) => {return {name: c.name, value: c.id}}),
-  }]);
-  state.courses = courses.filter((c) => answers.courses.includes(c.id));
+  const answer = await checkbox({
+    message: 'What courses should be used?',
+    choices: courses.map((c) => {return {name: c.name, value: c.id}}),
+  });
+  state.courses = courses.filter((c) => answer.includes(c.id));
 }

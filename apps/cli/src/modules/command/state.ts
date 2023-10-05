@@ -6,7 +6,7 @@ export type State = {
     assignments?: Assignment[];
 }
 
-export let state: State = {
+export const state: State = {
     courses: undefined,
     assignments: undefined,
 };
