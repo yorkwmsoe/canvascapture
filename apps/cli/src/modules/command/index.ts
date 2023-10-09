@@ -5,9 +5,9 @@ import {
   greetCommand,
   exitCommand,
   coursesCommand,
+  assignmentsCommand,
   generateCommand,
 } from "./commands";
-import { assignmentsCommand } from "./commands/assignments";
 
 export const commands = {
   [helpCommand.name.toLowerCase()]: helpCommand,
