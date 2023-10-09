@@ -1,5 +1,6 @@
 import { Assignment } from '@modules/canvas_api/types/assignment.js';
 import { Course } from '@modules/canvas_api/types/course.js';
+import { Submission } from '@modules/canvas_api/types/submission';
 
 export const testAssignments: Assignment[] = [
   {
@@ -97,4 +98,82 @@ export const testCourses: Course[] = [
     "workflow_state": "available",
     "restrict_enrollments_to_course_dates": false
   },
+];
+
+export const testSubmissions: Submission[] = [
+  {
+    "id": 1,
+    "body": "<p>I am a user</p>",
+    "grade": "0",
+    "score": 0,
+    "submitted_at": "2023-09-20T14:39:50Z",
+    "assignment_id": 1,
+    "user_id": 2,
+    "submission_type": "online_text_entry",
+    "workflow_state": "graded",
+    "grade_matches_current_submission": true,
+    "graded_at": "2023-09-20T14:56:53Z",
+    "grader_id": 1,
+    "attempt": 1,
+    "excused": false,
+    "posted_at": "2023-09-20T14:40:04Z",
+    "redo_request": false,
+    "late": false,
+    "missing": false,
+    "seconds_late": 0,
+    "entered_grade": "0",
+    "entered_score": 0,
+    "preview_url": "http://10.200.4.10/courses/1/assignments/1/submissions/2?preview=1&version=2",
+    "anonymous_id": "aaaaa"
+  },
+  {
+    "id": 2,
+    "body": "<p>I am a user 2</p>",
+    "grade": "0",
+    "score": 1,
+    "submitted_at": "2023-09-20T14:39:50Z",
+    "assignment_id": 1,
+    "user_id": 2,
+    "submission_type": "online_text_entry",
+    "workflow_state": "graded",
+    "grade_matches_current_submission": true,
+    "graded_at": "2023-09-20T14:56:53Z",
+    "grader_id": 1,
+    "attempt": 1,
+    "excused": false,
+    "posted_at": "2023-09-20T14:40:04Z",
+    "redo_request": false,
+    "late": false,
+    "missing": false,
+    "seconds_late": 0,
+    "entered_grade": "0",
+    "entered_score": 0,
+    "preview_url": "http://10.200.4.10/courses/1/assignments/1/submissions/2?preview=1&version=2",
+    "anonymous_id": "aaaab"
+  },
+  {
+    "id": 3,
+    "body": "<p>I am a user 2</p>",
+    "grade": "0",
+    "score": 2,
+    "submitted_at": "2023-09-20T14:39:50Z",
+    "assignment_id": 1,
+    "user_id": 2,
+    "submission_type": "online_text_entry",
+    "workflow_state": "graded",
+    "grade_matches_current_submission": true,
+    "graded_at": "2023-09-20T14:56:53Z",
+    "grader_id": 1,
+    "attempt": 1,
+    "excused": false,
+    "posted_at": "2023-09-20T14:40:04Z",
+    "redo_request": false,
+    "late": false,
+    "missing": false,
+    "seconds_late": 0,
+    "entered_grade": "0",
+    "entered_score": 0,
+    "preview_url": "http://10.200.4.10/courses/1/assignments/1/submissions/2?preview=1&version=2",
+    "anonymous_id": "aaaac"
+  }
 ];

@@ -13,14 +13,14 @@ export const generateCommand = {
 } satisfies Command;
 
 // https://stackoverflow.com/a/70806192
-const median = (arr: number[]): number | undefined => {
+export const median = (arr: number[]): number | undefined => {
   if (!arr.length) return undefined;
   const s = [...arr].sort((a, b) => a - b);
   const mid = Math.floor(s.length / 2);
   return s.length % 2 === 0 ? ((s[mid - 1] + s[mid]) / 2) : s[mid];
 };
 
-const genAssignment = async (course: Course, assignment: Assignment) => {
+export const genAssignment = async (course: Course, assignment: Assignment) => {
   console.log(assignment.name);
   const submissions = await getSubmissions(course.id, assignment.id);
   const filteredScores = submissions.filter(a => a.score !== undefined && a.score !== null).map(b => b.score ?? -1)
@@ -39,13 +39,13 @@ const genAssignment = async (course: Course, assignment: Assignment) => {
   }
 }
 
-const genSubmission = (assignment: Assignment, submissions: Submission[], score: number) => {
+export const genSubmission = (assignment: Assignment, submissions: Submission[], score: number) => {
   const submission = (submissions.filter(s => s.score === score))[0];
   console.log(submission.score + "/" + assignment.points_possible);
   console.log(submission.body);
 }
 
-async function generate() {
+export async function generate() {
   if (state.courses && state.courses.length > 0) {
     for (const course of state.courses) {
       console.log(course.name);

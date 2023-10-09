@@ -1,6 +1,6 @@
 import { checkbox, getCourses } from './mocks'
 import { select_courses } from '../courses';
-import { testCourses, testAssignments } from './data';
+import { testCourses } from './data';
 import { state } from '@modules/command/state'
 
 describe("courses", () => {
