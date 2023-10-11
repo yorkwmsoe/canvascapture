@@ -15,17 +15,17 @@ export type Assignment = {
   // the due date for the assignment. returns null if not present. NOTE: If this
   // assignment has assignment overrides, this field will be the due date as it
   // applies to the user requesting information from the API.
-  due_at: Date | null;
+  due_at?: Date | null;
   // the lock date (assignment is locked after this date). returns null if not
   // present. NOTE: If this assignment has assignment overrides, this field will
   // be the lock date as it applies to the user requesting information from the
   // API.
-  lock_at: Date | null;
+  lock_at?: Date | null;
   // the unlock date (assignment is unlocked after this date) returns null if not
   // present NOTE: If this assignment has assignment overrides, this field will be
   // the unlock date as it applies to the user requesting information from the
   // API.
-  unlock_at: Date | null;
+  unlock_at?: Date | null;
   // whether this assignment has overrides
   has_overrides: boolean;
   // (Optional) all dates associated with the assignment, if applicable
@@ -43,7 +43,7 @@ export type Assignment = {
   due_date_required: boolean;
   // Allowed file extensions, which take effect if submission_types includes
   // 'online_upload'.
-  allowed_extensions: string[];
+  allowed_extensions?: string[];
   // An integer indicating the maximum length an assignment's name may be
   max_name_length: number;
   // Boolean flag indicating whether or not Turnitin has been enabled for the
@@ -91,7 +91,7 @@ export type Assignment = {
   // The ID of the assignment’s group set, if this is a group assignment. For
   // group discussions, set group_category_id on the discussion topic, not the
   // linked assignment.
-  group_category_id: number;
+  group_category_id?: number;
   // if the requesting user has grading rights, the number of submissions that
   // need grading.
   needs_grading_count?: number;
@@ -125,7 +125,7 @@ export type Assignment = {
   grading_type: string;
   // The id of the grading standard being applied to this assignment. Valid if
   // grading_type is 'letter_grade' or 'gpa_scale'.
-  grading_standard_id: string;
+  grading_standard_id?: string;
   // Whether the assignment is published
   published: boolean;
   // Whether the assignment's 'published' state can be changed to false. Will be
@@ -202,7 +202,7 @@ export type Assignment = {
   grader_count: number;
   // The user ID of the grader responsible for choosing final grades for this
   // assignment. Only relevant for moderated assignments.
-  final_grader_id: number;
+  final_grader_id?: number;
   // Boolean indicating if provisional graders' comments are visible to other
   // provisional graders. Only relevant for moderated assignments.
   grader_comments_visible_to_graders: boolean;
@@ -239,7 +239,7 @@ export type Assignment = {
   ab_guid?: string[];
   // The id of the attachment to be annotated by students. Relevant only if
   // submission_types includes 'student_annotation'.
-  annotatable_attachment_id: number;
+  annotatable_attachment_id?: number;
   // (Optional) Boolean indicating whether student names are anonymized
   anonymize_students?: boolean;
   // (Optional) Boolean indicating whether the Respondus LockDown Browser® is
@@ -263,16 +263,16 @@ export type Assignment = {
   // Boolean indicating whether this assignment can be duplicated.
   can_duplicate: boolean;
   // If this assignment is a duplicate, it is the original assignment's course_id
-  original_course_id: number;
+  original_course_id?: number;
   // If this assignment is a duplicate, it is the original assignment's id
-  original_assignment_id: number;
+  original_assignment_id?: number;
   // If this assignment is a duplicate, it is the original assignment's
   // lti_resource_link_id
-  original_lti_resource_link_id: number;
+  original_lti_resource_link_id?: number;
   // If this assignment is a duplicate, it is the original assignment's name
-  original_assignment_name: string;
+  original_assignment_name?: string;
   // If this assignment is a duplicate, it is the original assignment's quiz_id
-  original_quiz_id: number;
+  original_quiz_id?: number;
   // String indicating what state this assignment is in.
   workflow_state: string;
 };

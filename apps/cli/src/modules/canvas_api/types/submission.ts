@@ -4,6 +4,7 @@ import { ReadState } from "./read-state";
 import { User, UserDisplay } from "./user";
 
 export type Submission = {
+  id: number
   // The submission's assignment id
   assignment_id: number;
   // The submission's assignment (see the assignments API) (optional)
@@ -21,7 +22,7 @@ export type Submission = {
   // submission was last graded.
   grade_matches_current_submission: boolean;
   // URL to the submission. This will require the user to log in.
-  html_url: string;
+  html_url?: string;
   // URL to the submission preview. This will require the user to log in.
   preview_url: string;
   // The raw score
@@ -35,7 +36,7 @@ export type Submission = {
   // The timestamp when the assignment was submitted
   submitted_at: Date;
   // The URL of the submission (for 'online_url' submissions).
-  url: string;
+  url?: string;
   // The id of the user who created the submission
   user_id: number;
   // The id of the user who graded the submission. This will be null for
@@ -56,7 +57,7 @@ export type Submission = {
   // student's grade and the assignment can no longer be accessed by the student.
   // `assignment_visible` becomes false for submissions that do not have a grade
   // and whose assignment is no longer assigned to the student's section.
-  assignment_visible: boolean;
+  assignment_visible?: boolean;
   // Whether the assignment is excused.  Excused assignments have no impact on a
   // user's grade.
   excused: boolean;
@@ -64,16 +65,16 @@ export type Submission = {
   missing: boolean;
   // The status of the submission in relation to the late policy. Can be late,
   // missing, extended, none, or null.
-  late_policy_status: LatePolicyStatus;
+  late_policy_status?: LatePolicyStatus;
   // The amount of points automatically deducted from the score by the
   // missing/late policy for a late or missing assignment.
-  points_deducted: number;
+  points_deducted?: number;
   // The amount of time, in seconds, that an submission is late by.
   seconds_late: number;
   // The current state of the submission
   workflow_state: WorkflowState;
   // Extra submission attempts allowed for the given user and assignment.
-  extra_attempts: number;
+  extra_attempts?: number;
   // A unique short ID identifying this submission without reference to the owning
   // user. Only included if the caller has administrator access for the current
   // account.
@@ -86,6 +87,8 @@ export type Submission = {
   read_status?: ReadState;
   // This indicates whether the submission has been reassigned by the instructor.
   redo_request: boolean;
+  entered_grade: string;
+  entered_score: number;
 };
 
 export type SubmissionComment = {
