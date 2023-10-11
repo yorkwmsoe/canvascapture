@@ -35,7 +35,7 @@ describe("generate", () => {
 
 describe("median", () => {
   it("should be a valid median function", () => {
-    expect(median([])).toBe(undefined);
+    expect(median([1])).toBe(1);
     expect(median([1, 2])).toBe(1.5);
     expect(median([1, 2, 3])).toBe(2);
   });

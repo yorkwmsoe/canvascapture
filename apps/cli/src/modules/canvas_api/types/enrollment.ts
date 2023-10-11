@@ -40,7 +40,7 @@ export type Enrollment = {
   root_account_id: number;
   // The enrollment type. One of 'StudentEnrollment', 'TeacherEnrollment',
   // 'TaEnrollment', 'DesignerEnrollment', 'ObserverEnrollment'.
-  type: EnrollmentType;
+  type: string;
   // The unique id of the user.
   user_id: number;
   // The unique id of the associated user. Will be null unless type is

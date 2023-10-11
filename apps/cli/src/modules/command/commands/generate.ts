@@ -13,8 +13,7 @@ export const generateCommand = {
 } satisfies Command;
 
 // https://stackoverflow.com/a/70806192
-export const median = (arr: number[]): number | undefined => {
-  if (!arr.length) return undefined;
+export const median = (arr: number[]): number => {
   const s = [...arr].sort((a, b) => a - b);
   const mid = Math.floor(s.length / 2);
   return s.length % 2 === 0 ? ((s[mid - 1] + s[mid]) / 2) : s[mid];
@@ -23,13 +22,13 @@ export const median = (arr: number[]): number | undefined => {
 export const genAssignment = async (course: Course, assignment: Assignment) => {
   console.log(assignment.name);
   const submissions = await getSubmissions(course.id, assignment.id);
-  const filteredScores = submissions.filter(a => a.score !== undefined && a.score !== null).map(b => b.score ?? -1)
+  const filteredScores = submissions.filter(a => a.score !== undefined && a.score !== null).map(b => b.score)
   if (filteredScores.length > 0) {
     if (submissions.length >= 3 || submissions.length === 2) {
       genSubmission(assignment, submissions, Math.max(...filteredScores));
     }
     if (submissions.length >= 3 || submissions.length === 1) {
-      genSubmission(assignment, submissions, median(filteredScores) ?? -1);
+      genSubmission(assignment, submissions, median(filteredScores));
     }
     if (submissions.length >= 3 || submissions.length === 2) {
       genSubmission(assignment, submissions, Math.min(...filteredScores));

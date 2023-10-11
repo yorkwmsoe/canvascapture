@@ -1,6 +1,8 @@
 import { Assignment } from '@modules/canvas_api/types/assignment.js';
 import { Course } from '@modules/canvas_api/types/course.js';
+import { Enrollment } from '@modules/canvas_api/types/enrollment';
 import { Submission } from '@modules/canvas_api/types/submission';
+import { parse } from 'date-fns';
 
 export const testAssignments: Assignment[] = [
   {
@@ -9,9 +11,8 @@ export const testAssignments: Assignment[] = [
     "points_possible": 5,
     "grading_type": "points",
     "assignment_group_id": 1,
-    "grading_standard_id": null,
-    "created_at": "2023-09-20T14:38:53Z",
-    "updated_at": "2023-09-20T14:40:04Z",
+    "created_at": parse("2023-09-20T14:38:53Z", "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()),
+    "updated_at": parse("2023-09-20T14:40:04Z", "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()),
     "peer_reviews": false,
     "automatic_peer_reviews": false,
     "position": 1,
@@ -29,8 +30,6 @@ export const testAssignments: Assignment[] = [
     "grader_names_visible_to_final_grader": true,
     "allowed_attempts": -1,
     "hide_in_gradebook": false,
-    "secure_params": "verysecure",
-    "lti_context_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
     "course_id": 1,
     "name": "Test Assignment 1",
     "submission_types": [
@@ -58,7 +57,6 @@ export const testAssignments: Assignment[] = [
     "post_manually": false,
     "anonymize_students": false,
     "require_lockdown_browser": false,
-    "restrict_quantitative_data": false
   },
 ];
 
@@ -68,7 +66,7 @@ export const testCourses: Course[] = [
     "name": "Test Course 1",
     "account_id": 3,
     "uuid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-    "created_at": "2023-09-20T14:29:51Z",
+    "created_at": parse("2023-09-20T14:29:51Z", "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()),
     "course_code": "TST1",
     "default_view": "syllabus",
     "root_account_id": 2,
@@ -77,7 +75,6 @@ export const testCourses: Course[] = [
     "public_syllabus_to_auth": false,
     "storage_quota_mb": 500,
     "is_public_to_auth_users": false,
-    "homeroom_course": false,
     "apply_assignment_group_weights": false,
     "calendar": {
       "ics": "http://10.200.4.10/feeds/calendars/course_dZdmGkWRxU8pYyJaNnW60M2mYIQ1HmWAK4Wg06mc.ics"
@@ -92,7 +89,7 @@ export const testCourses: Course[] = [
         "user_id": 1,
         "enrollment_state": "active",
         "limit_privileges_to_course_section": false
-      }
+      } as Enrollment
     ],
     "hide_final_grades": false,
     "workflow_state": "available",
@@ -106,17 +103,17 @@ export const testSubmissions: Submission[] = [
     "body": "<p>I am a user</p>",
     "grade": "0",
     "score": 0,
-    "submitted_at": "2023-09-20T14:39:50Z",
+    "submitted_at": parse("2023-09-20T14:39:50Z", "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()),
     "assignment_id": 1,
     "user_id": 2,
     "submission_type": "online_text_entry",
     "workflow_state": "graded",
     "grade_matches_current_submission": true,
-    "graded_at": "2023-09-20T14:56:53Z",
+    "graded_at": parse("2023-09-20T14:56:53Z", "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()),
     "grader_id": 1,
     "attempt": 1,
     "excused": false,
-    "posted_at": "2023-09-20T14:40:04Z",
+    "posted_at": parse("2023-09-20T14:40:04Z", "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()),
     "redo_request": false,
     "late": false,
     "missing": false,
@@ -131,17 +128,17 @@ export const testSubmissions: Submission[] = [
     "body": "<p>I am a user 2</p>",
     "grade": "0",
     "score": 1,
-    "submitted_at": "2023-09-20T14:39:50Z",
+    "submitted_at": parse("2023-09-20T14:39:50Z", "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()),
     "assignment_id": 1,
     "user_id": 2,
     "submission_type": "online_text_entry",
     "workflow_state": "graded",
     "grade_matches_current_submission": true,
-    "graded_at": "2023-09-20T14:56:53Z",
+    "graded_at": parse("2023-09-20T14:56:53Z", "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()),
     "grader_id": 1,
     "attempt": 1,
     "excused": false,
-    "posted_at": "2023-09-20T14:40:04Z",
+    "posted_at": parse("2023-09-20T14:40:04Z", "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()),
     "redo_request": false,
     "late": false,
     "missing": false,
@@ -156,17 +153,17 @@ export const testSubmissions: Submission[] = [
     "body": "<p>I am a user 2</p>",
     "grade": "0",
     "score": 2,
-    "submitted_at": "2023-09-20T14:39:50Z",
+    "submitted_at": parse("2023-09-20T14:39:50Z", "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()),
     "assignment_id": 1,
     "user_id": 2,
     "submission_type": "online_text_entry",
     "workflow_state": "graded",
     "grade_matches_current_submission": true,
-    "graded_at": "2023-09-20T14:56:53Z",
+    "graded_at": parse("2023-09-20T14:56:53Z", "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()),
     "grader_id": 1,
     "attempt": 1,
     "excused": false,
-    "posted_at": "2023-09-20T14:40:04Z",
+    "posted_at": parse("2023-09-20T14:40:04Z", "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()),
     "redo_request": false,
     "late": false,
     "missing": false,
