@@ -1,5 +1,5 @@
-import {appendFileSync} from 'fs';
-import {writeFileSync} from 'fs';
+import { appendFileSync } from "fs";
+import { writeFileSync } from "fs";
 
 /**
  * writeToFile
@@ -8,8 +8,8 @@ import {writeFileSync} from 'fs';
  * @param markdownContent
  */
 export const writeToFile = (filePath: string, markdownContent: string) => {
-    appendFileSync(filePath, markdownContent);
-}
+  appendFileSync(filePath, markdownContent);
+};
 
 /**
  * convertToHeader
@@ -18,12 +18,12 @@ export const writeToFile = (filePath: string, markdownContent: string) => {
  * @param size
  */
 export const convertToHeader = (markdownContent: string, size: number) => {
-    let headerSize = " ";
-    for (let i: number = 0; i < size; i++) {
-        headerSize = headerSize + "#"
-    }
-    return headerSize + markdownContent;
-}
+  let headerSize = "";
+  for (let i: number = 0; i < size; i++) {
+    headerSize += "#";
+  }
+  return headerSize + " " + markdownContent;
+};
 
 /**
  * performSpecialWordOperation
@@ -37,52 +37,57 @@ export const convertToHeader = (markdownContent: string, size: number) => {
  * @param type
  * @param specified
  */
-export const performSpecialWordOperation = (content: string, word: string, type: "bold" | "italic" | "strike", specified: number[]) => {
-    const indexes: number[] = [];
-    let tempContent = content;
-    let fauxWord = "";
-    let addition = ""
+export const performSpecialWordOperation = (
+  content: string,
+  word: string,
+  type: "bold" | "italic" | "strike",
+  specified: number[]
+) => {
+  const indexes: number[] = [];
+  let tempContent = content;
+  let fauxWord = "";
+  let addition = "";
 
-    //different types: Bold, Italic, Strikethrough
-    if (type === "bold") {
-        addition = "**"
-    } else if (type === "italic") {
-        addition = "*"
-    } else if (type === "strike") {
-        addition = "~~"
+  //different types: Bold, Italic, Strikethrough
+  if (type === "bold") {
+    addition = "**";
+  } else if (type === "italic") {
+    addition = "*";
+  } else if (type === "strike") {
+    addition = "~~";
+  }
+
+  const addLength = addition.length * 2;
+
+  for (let i = 0; i < word.length; i++) {
+    fauxWord = fauxWord + ".";
+  }
+
+  while (tempContent.indexOf(word) != -1) {
+    indexes.push(tempContent.indexOf(word));
+    tempContent = tempContent.replace(word, fauxWord);
+  }
+
+  let retContent = tempContent;
+  let numPrevLength = 0;
+  let numSpecialWords = 0;
+
+  for (let i = 0; i < indexes.length; i++) {
+    if (specified.filter((value) => value == i + 1).length > 0) {
+      let pre = retContent.substring(0, indexes[i] + numPrevLength);
+      let post = retContent.substring(indexes[i] + word.length + numPrevLength);
+      retContent = pre + addition + word + addition + post;
+      numSpecialWords = numSpecialWords + 1;
+      numPrevLength = addLength * numSpecialWords;
+    } else {
+      let pre = retContent.substring(0, indexes[i] + numPrevLength);
+      let post = retContent.substring(indexes[i] + word.length + numPrevLength);
+      retContent = pre + word + post;
+      numPrevLength = addLength * numSpecialWords;
     }
-
-    const addLength = addition.length * 2;
-
-    for (let i = 0; i < word.length; i++) {
-        fauxWord = fauxWord + "."
-    }
-
-    while (tempContent.indexOf(word) != -1) {
-        indexes.push(tempContent.indexOf(word));
-        tempContent = tempContent.replace(word, fauxWord);
-    }
-
-    let retContent = tempContent;
-    let numPrevLength = 0;
-    let numSpecialWords = 0;
-
-    for (let i = 0; i < indexes.length; i++) {
-        if((specified.filter(value => (value == i + 1))).length > 0) {
-            let pre = retContent.substring(0, indexes[i] + numPrevLength);
-            let post = retContent.substring(indexes[i] + word.length + numPrevLength);
-            retContent = pre + addition + word + addition + post;
-            numSpecialWords = numSpecialWords + 1;
-            numPrevLength = addLength * (numSpecialWords);
-        } else {
-            let pre = retContent.substring(0, indexes[i] + numPrevLength);
-            let post = retContent.substring(indexes[i] + word.length + numPrevLength);
-            retContent = pre + word + post;
-            numPrevLength = addLength * (numSpecialWords);
-        }
-    }
-    return retContent
-}
+  }
+  return retContent;
+};
 
 /**
  * createList
@@ -92,19 +97,19 @@ export const performSpecialWordOperation = (content: string, word: string, type:
  * @param type
  */
 export const createList = (content: string[], type: string) => {
-    let list = "";
-    if (type === "o") {
-        for (let i = 1; i < content.length + 1; i++) {
-            const start = "" + i + ". "
-            list = list + start + content[i - 1] + "\n"
-        }
-    } else {
-        for (let i = 0; i < content.length; i++) {
-            list = list + type + " " + content[i] + "\n";
-        }
+  let list = "";
+  if (type === "o") {
+    for (let i = 1; i < content.length + 1; i++) {
+      const start = "" + i + ". ";
+      list = list + start + content[i - 1] + "\n";
     }
-    return list;
-}
+  } else {
+    for (let i = 0; i < content.length; i++) {
+      list = list + type + " " + content[i] + "\n";
+    }
+  }
+  return list;
+};
 
 /**
  * createLink
@@ -114,10 +119,13 @@ export const createList = (content: string[], type: string) => {
  * @param wordClick
  * @param link
  */
-export const createLink = (content: string, wordClick: string, link: string) => {
-    return content.replace(wordClick, "[" + wordClick + "]" +
-        "(" + link + ")")
-}
+export const createLink = (
+  content: string,
+  wordClick: string,
+  link: string
+) => {
+  return content.replace(wordClick, "[" + wordClick + "]" + "(" + link + ")");
+};
 
 /**
  * generateIMG
@@ -126,8 +134,8 @@ export const createLink = (content: string, wordClick: string, link: string) => 
  * @param path
  */
 export const generateIMG = (path: string) => {
-    return "![Image not found](" + path + ")";
-}
+  return "![Image not found](" + path + ")";
+};
 
 /**
  * addNewLine
@@ -135,54 +143,52 @@ export const generateIMG = (path: string) => {
  * @param filePath
  */
 export const addNewLine = (filePath: string) => {
-    appendFileSync(filePath, "\n");
-}
+  appendFileSync(filePath, "\n");
+};
 
 /**
  * Cleans the specified file
  * @param filePath
  */
 export const cleanFile = (filePath: string) => {
-    writeFileSync(filePath, '');
-}
+  writeFileSync(filePath, "");
+};
 
 export const createInlineCode = (filePath: string, content: string) => {
-    return "`" + content + "`";
-}
+  return "`" + content + "`";
+};
 
 export const createCodeBlock = (filePath: string, content: string) => {
-    return "\n```\n" + content + "\n```\n";
-}
+  return "\n```\n" + content + "\n```\n";
+};
 
 export const createTableHeader = (columns: string[]) => {
-    let header = ""
-    for(let i:number = 0; i < columns.length; i++){
-        header = header + " " + columns[i] + " |"
+  let header = "";
+  for (let i: number = 0; i < columns.length; i++) {
+    header = header + " " + columns[i] + " |";
+  }
+  header = "|" + header + "\n";
+
+  let headerBar = "";
+  for (let i: number = 0; i < columns.length; i++) {
+    headerBar = headerBar + " --- |";
+  }
+  headerBar = "|" + headerBar + "\n";
+  return header + headerBar;
+};
+
+export const createTableRows = (rows: string[][]) => {
+  let rowsToPrint = "";
+  for (let row: number = 0; row < rows.length; row++) {
+    let rowPrint = "";
+    for (let col = 0; col < rows[0].length; col++) {
+      rowPrint = rowPrint + " " + rows[row][col] + " |";
     }
-    header = "|" + header + "\n";
-
-    let headerBar = "";
-    for(let i:number = 0; i < columns.length; i++){
-        headerBar = headerBar + " --- |"
-    }
-    headerBar = "|" + headerBar + "\n";
-    return header + headerBar;
-}
-
-export const createTableRows = (rows:string[][]) => {
-    let rowsToPrint = "";
-    for(let row:number = 0; row < rows.length; row++){
-        let rowPrint = "";
-        for(let col = 0; col < rows[0].length; col++) {
-            rowPrint = rowPrint + " " + rows[row][col] + " |";
-        }
-        rowPrint = "|" + rowPrint + "\n";
-        rowsToPrint = rowsToPrint + rowPrint;
-    }
-    return rowsToPrint;
-}
-
-
+    rowPrint = "|" + rowPrint + "\n";
+    rowsToPrint = rowsToPrint + rowPrint;
+  }
+  return rowsToPrint;
+};
 
 // const filePath = 'output.md';
 //
@@ -211,8 +217,3 @@ export const createTableRows = (rows:string[][]) => {
 // writeToFile(filePath, list)
 // writeToFile(filePath, inline)
 // writeToFile(filePath,block)
-
-
-
-
-
