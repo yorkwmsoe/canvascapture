@@ -11,5 +11,8 @@ const config: Config.InitialOptions = {
     "^@constants(.*)$": "<rootDir>/src/constants$1",
   },
   reporters: ["default", "jest-junit"],
+  coveragePathIgnorePatterns : [
+    "<rootDir>/src/modules/canvas_api/api.ts",
+  ]
 };
 export default config;
