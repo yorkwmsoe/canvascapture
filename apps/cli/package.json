@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "figlet": "^1.6.0",
+    "filecompare": "^1.0.4",
     "gradient-string": "^2.0.2",
     "prompt-sync": "^4.2.0",
     "zod": "^3.22.2"
