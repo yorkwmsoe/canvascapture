@@ -2,8 +2,9 @@ import { convertTwoArraysToObject, generateTitle, prompt } from "@lib/utils";
 import { getCommand } from "@modules/command";
 import { ZodError } from "zod";
 import * as dotenv from "dotenv";
+import { state } from "@modules/command/state";
 
-dotenv.config({ path: __dirname+'/../.env' });
+dotenv.config({ path: `${__dirname.replace("src", "")}.env` });
 
 const main = async () => {
   console.log(generateTitle());
@@ -13,14 +14,14 @@ const main = async () => {
     const splitResult = result.split(" ");
     const commandName = splitResult[0].toLowerCase();
     const command = getCommand(commandName);
-    const args = command?.inputs
-      ? convertTwoArraysToObject(command.inputs, splitResult.slice(1))
-      : undefined;
+    const args = command?.inputs ? convertTwoArraysToObject(command.inputs, splitResult.slice(1)) : undefined;
     if (command) {
       try {
         await command.run(args);
       } catch (error) {
-        if (error instanceof ZodError) {
+        if (state.settings.debug) {
+          console.log(error);
+        } else if (error instanceof ZodError) {
           error.issues.forEach((issue) => {
             console.log(`Error <${issue.path[0]}>: ${issue.message}`);
           });
@@ -32,6 +33,6 @@ const main = async () => {
       console.log("Command not found");
     }
   }
-}
+};
 
 main();
