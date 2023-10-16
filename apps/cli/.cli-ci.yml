@@ -31,6 +31,7 @@ test-cli:
     reports:
       junit:
         - $BASE_PATH/junit.xml
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 build-cli:
   stage: build

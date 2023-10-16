@@ -28,9 +28,13 @@
   "devDependencies": {
     "@types/figlet": "^1.5.6",
     "@types/gradient-string": "^1.1.2",
+    "@types/inquirer": "^9.0.3",
     "@types/jest": "^29.5.5",
     "@types/node": "^20.6.0",
     "@types/prompt-sync": "^4.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
+    "eslint": "^8.51.0",
     "jest": "^29.7.0",
     "jest-junit": "^16.0.0",
     "pkg": "^5.8.1",
@@ -41,6 +45,11 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@inquirer/prompts": "^3.2.0",
+    "@inquirer/testing": "^2.1.8",
+    "axios": "^1.5.0",
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.3.1",
     "figlet": "^1.6.0",
     "gradient-string": "^2.0.2",
     "prompt-sync": "^4.2.0",
