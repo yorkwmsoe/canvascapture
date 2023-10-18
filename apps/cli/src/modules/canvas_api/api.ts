@@ -40,5 +40,5 @@ export const getAssignments = async (course_id: number): Promise<Assignment[]> =
 };
 
 export const getSubmissions = async (course_id: number, assignment_id: number): Promise<Submission[]> => {
-  return (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/assignments/${assignment_id}/submissions?include[]=rubric_assessment&submission_comments`, { headers: getApiHeaders() })).data;
+  return (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/assignments/${assignment_id}/submissions?include[]=rubric_assessment&include[]=submission_comments`, { headers: getApiHeaders() })).data;
 };

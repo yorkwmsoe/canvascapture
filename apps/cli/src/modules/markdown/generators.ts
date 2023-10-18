@@ -1,34 +1,24 @@
 import { Assignment } from "@modules/canvas_api/types/assignment";
 import { Course } from "@modules/canvas_api/types/course";
 import { Submission } from "@modules/canvas_api/types/submission";
-import { mkdir, rm } from "fs/promises";
 import { addNewLine, convertToHeader, createList, createTableHeader, createTableRows, writeToFile } from "./markdown";
-import { existsSync } from "fs";
+import { mkdirSync } from "fs";
 
-const basePath = "./output";
-
-export async function cleanOutput(path: string) {
-  if (existsSync(path)) {
-    await rm(path);
-  }
-}
-
-export async function generateAssignmentFolder(course: Course, assignment: Assignment) {
-  const folderName = `${assignment.name}`;
-  const path = `${basePath}/${course.name}/${folderName}`;
-  await cleanOutput(path);
-  await mkdir(path, { recursive: true });
-  return folderName;
-}
+const basePath = "output";
 
 export async function generateAssignment(course: Course, assignment: Assignment, submission: Submission, score: "high" | "median" | "low") {
+  const folderPath = `${basePath}/${course.name}/${assignment.name}`;
+  mkdirSync(folderPath, { recursive: true });
   const fileName = `${score}.md`;
   const title = convertToHeader(assignment.name, 1);
   const grade = `${submission.score}/${assignment.points_possible}`;
   const descriptionHeader = convertToHeader("Description", 2);
   const description = assignment.description;
   const submissionHeader = convertToHeader("Submission", 2);
-  const submissionBody = submission.body;
+  let submissionBody = submission.body;
+  if (submission.submission_type === "online_quiz") {
+    submissionBody = "No submission";
+  }
   const feedbackHeader = convertToHeader("Feedback", 2);
   const feedbackBody = !!submission?.submission_comments?.length
     ? createList(
@@ -51,18 +41,15 @@ export async function generateAssignment(course: Course, assignment: Assignment,
   const rubricTable = !rubricTableHeader ? "No rubric" : rubricTableHeader + rubricTableBody;
 
   const items = [title, grade, descriptionHeader, description, submissionHeader, submissionBody, feedbackHeader, feedbackBody, rubricHeader, rubricTable];
+  const cleanedItems = items.filter((item) => !!item);
 
-  const generate = async () => {
-    const folderName = await generateAssignmentFolder(course, assignment);
-    items.forEach((item) => {
-      const filePath = `${basePath}/${course.name}/${folderName}/${fileName}`;
-      writeToFile(filePath, item);
-      addNewLine(filePath);
-    });
-  };
+  cleanedItems.forEach((item) => {
+    const filePath = `${folderPath}/${fileName}`;
+    writeToFile(filePath, item);
+    addNewLine(filePath);
+  });
 
   return {
     items,
-    generate,
   };
 }
