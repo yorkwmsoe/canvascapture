@@ -1,7 +1,11 @@
-import { generate, median } from '../generate';
-import * as generateFunctions from '../generate';
-import { testCourses, testAssignments } from './data';
-import { state } from '@modules/command/state'
+import { generate, median } from "../generate";
+import * as generateFunctions from "../generate";
+import { testCourses, testAssignments } from "./data";
+import { state } from "@modules/command/state";
+
+jest.mock("@modules/canvas_api/api", () => ({
+  getSubmissions: jest.fn(),
+}));
 
 describe("generate", () => {
   it("should log no courses selected", async () => {
@@ -39,4 +43,4 @@ describe("median", () => {
     expect(median([1, 2])).toBe(1.5);
     expect(median([1, 2, 3])).toBe(2);
   });
-})
+});
