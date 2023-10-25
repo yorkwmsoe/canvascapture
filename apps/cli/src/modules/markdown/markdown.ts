@@ -18,12 +18,12 @@ export const writeToFile = (filePath: string, markdownContent: string) => {
  * @param size
  */
 export const convertToHeader = (markdownContent: string, size: number) => {
-    let headerSize = "";
-    for (let i: number = 0; i < size; i++) {
-        headerSize = headerSize + "#"
-    }
-    return headerSize + " " + markdownContent;
-}
+  let headerSize = "";
+  for (let i: number = 0; i < size; i++) {
+    headerSize = headerSize + "#";
+  }
+  return headerSize + " " + markdownContent;
+};
 
 /**
  * performSpecialWordOperation
@@ -134,9 +134,9 @@ export const generateIMG = (path: string) => {
  * @param filePath
  */
 export const addNewLine = (filePath: string) => {
-    appendFileSync(filePath, "\n");
-    appendFileSync(filePath, "\n");
-}
+  appendFileSync(filePath, "\n");
+  appendFileSync(filePath, "\n");
+};
 
 /**
  * Cleans the specified file
@@ -152,8 +152,8 @@ export const cleanFile = (filePath: string) => {
  * @param content
  */
 export const createInlineCode = (content: string) => {
-    return "`" + content + "`";
-}
+  return "`" + content + "`";
+};
 
 /**
  * Creates an actual coding block given a filepath
@@ -161,8 +161,8 @@ export const createInlineCode = (content: string) => {
  * @param content
  */
 export const createCodeBlock = (content: string) => {
-    return "\n```\n" + content + "\n```\n";
-}
+  return "\n```\n" + content + "\n```\n";
+};
 
 /**
  * Creates the header rows for a table given a list of strings
@@ -183,6 +183,10 @@ export const createTableHeader = (columns: string[]) => {
   return header + headerBar;
 };
 
+/**
+ * Creates all the table rows given a 2D array
+ * @param rows
+ */
 export const createTableRows = (rows: string[][]) => {
   let rowsToPrint = "";
   for (let row: number = 0; row < rows.length; row++) {
@@ -190,29 +194,8 @@ export const createTableRows = (rows: string[][]) => {
     for (let col = 0; col < rows[0].length; col++) {
       rowPrint = rowPrint + " " + rows[row][col] + " |";
     }
-    header = "|" + header + "\n";
-
-    let headerBar = "";
-    for(let i:number = 0; i < columns.length; i++){
-        headerBar = headerBar + " --- |"
-    }
-    headerBar = "|" + headerBar + "\n";
-    return header + headerBar;
-}
-
-/**
- * Creates all the table rows given a 2D array
- * @param rows
- */
-export const createTableRows = (rows:string[][]) => {
-    let rowsToPrint = "";
-    for(let row:number = 0; row < rows.length; row++){
-        let rowPrint = "";
-        for(let col = 0; col < rows[0].length; col++) {
-            rowPrint = rowPrint + " " + rows[row][col] + " |";
-        }
-        rowPrint = "|" + rowPrint + "\n";
-        rowsToPrint = rowsToPrint + rowPrint;
-    }
-    return rowsToPrint;
-}
+    rowPrint = "|" + rowPrint + "\n";
+    rowsToPrint = rowsToPrint + rowPrint;
+  }
+  return rowsToPrint;
+};
