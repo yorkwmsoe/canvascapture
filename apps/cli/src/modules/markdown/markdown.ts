@@ -18,11 +18,11 @@ export const writeToFile = (filePath: string, markdownContent: string) => {
  * @param size
  */
 export const convertToHeader = (markdownContent: string, size: number) => {
-    let headerSize = " ";
+    let headerSize = "";
     for (let i: number = 0; i < size; i++) {
         headerSize = headerSize + "#"
     }
-    return headerSize + markdownContent;
+    return headerSize + " " + markdownContent;
 }
 
 /**
@@ -136,6 +136,7 @@ export const generateIMG = (path: string) => {
  */
 export const addNewLine = (filePath: string) => {
     appendFileSync(filePath, "\n");
+    appendFileSync(filePath, "\n");
 }
 
 /**
@@ -146,14 +147,28 @@ export const cleanFile = (filePath: string) => {
     writeFileSync(filePath, '');
 }
 
-export const createInlineCode = (filePath: string, content: string) => {
+/**
+ * Creates inline code given a filePath and the string content
+ * @param filePath
+ * @param content
+ */
+export const createInlineCode = (content: string) => {
     return "`" + content + "`";
 }
 
-export const createCodeBlock = (filePath: string, content: string) => {
+/**
+ * Creates an actual coding block given a filepath
+ * @param filePath
+ * @param content
+ */
+export const createCodeBlock = (content: string) => {
     return "\n```\n" + content + "\n```\n";
 }
 
+/**
+ * Creates the header rows for a table given a list of strings
+ * @param columns
+ */
 export const createTableHeader = (columns: string[]) => {
     let header = ""
     for(let i:number = 0; i < columns.length; i++){
@@ -169,6 +184,10 @@ export const createTableHeader = (columns: string[]) => {
     return header + headerBar;
 }
 
+/**
+ * Creates all the table rows given a 2D array
+ * @param rows
+ */
 export const createTableRows = (rows:string[][]) => {
     let rowsToPrint = "";
     for(let row:number = 0; row < rows.length; row++){
@@ -181,38 +200,3 @@ export const createTableRows = (rows:string[][]) => {
     }
     return rowsToPrint;
 }
-
-
-
-// const filePath = 'output.md';
-//
-// //testing markdown
-// let sampleText = "banana work banana work banana work banana work"
-// let sampleList: string[] = ["one", "two", "three"]
-// cleanFile(filePath)
-// writeToFile(filePath, createList(sampleList, "-"))
-// writeToFile(filePath, createList(sampleList, "+"))
-// writeToFile(filePath, createList(sampleList, "*"))
-// writeToFile(filePath, createList(sampleList, "o"))
-// addNewLine(filePath);
-// writeToFile(filePath, performSpecialWordOperation(sampleText, "work", "bold", [1, 3]));
-// addNewLine(filePath);
-// let link: string = createLink("dis is google", "google", "https://www.google.com/")
-// writeToFile(filePath, link)
-// let img: string = generateIMG("C:\\Users\\mcdonaldp\\WebstormProjects\\rema\\src\\ambatukam.png")
-// writeToFile(filePath, img)
-// let inline: string = createInlineCode(filePath, "HELP MEEEEE")
-// let block: string = createCodeBlock(filePath, "HELP MEEEEE")
-// let list: string = createList(["one", "two", "three"], "- [ ]")
-// let head: string = createTableHeader(["col1", "aerodynamics"])
-// let rows: string = createTableRows([["one", "two"], ["three", "four"]])
-// writeToFile(filePath, head)
-// writeToFile(filePath, rows)
-// writeToFile(filePath, list)
-// writeToFile(filePath, inline)
-// writeToFile(filePath,block)
-
-
-
-
-
