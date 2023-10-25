@@ -6,6 +6,7 @@ import { Course } from "@modules/canvas_api/types/course";
 import { generateAssignment } from "@modules/markdown/generators";
 import { rm } from "fs/promises";
 import { Submission } from "@modules/canvas_api/types/submission";
+import { log } from "console";
 
 export const generateCommand = {
   name: "generate",
@@ -18,15 +19,16 @@ export const generateCommand = {
 export const median = (arr: number[]): number => {
   const s = [...arr].sort((a, b) => a - b);
   const mid = Math.floor(s.length / 2);
-  return s.length % 2 === 0 ? (s[mid - 1] + s[mid]) / 2 : s[mid];
+  const res = s.length % 2 === 0 ? (s[mid - 1] + s[mid]) / 2 : s[mid];
+  return Math.ceil(res);
 };
 
 export const genAssignment = async (course: Course, assignment: Assignment) => {
   console.log(`\tGenerating ${assignment.name}`);
   const submissions = await getSubmissions(course.id, assignment.id);
-  const filteredScores = submissions.filter((a) => a.score !== undefined && a.score !== null).map((b) => b.score);
+  const filteredScores = submissions.filter((a) => a.score !== null && a.score !== undefined).map((b) => b.score);
   if (filteredScores.length > 0) {
-    const { high, med, low } = getHighMedLow(submissions, filteredScores);
+    const { high, med, low } = getHighMedLow(submissions);
     if (high) {
       console.log(`\t\tGenerating high`);
       await generateAssignment(course, assignment, high, "high");
@@ -63,23 +65,27 @@ export async function generate() {
   }
 }
 
-function getHighMedLow(submissions: Submission[], scores: number[]) {
+export function getHighMedLow(submissions: Submission[]) {
   let copySubmissions = [...submissions];
   let high = null;
   let med = null;
   let low = null;
 
-  high = chooseSubmission(copySubmissions, copySubmissions.filter((s) => s.score === Math.max(...scores))[0]);
+  high = chooseSubmission(copySubmissions, copySubmissions.filter((s) => s.score === Math.max(...getScores(copySubmissions)))[0]);
 
   if (copySubmissions.length >= 1) {
-    med = chooseSubmission(copySubmissions, copySubmissions.filter((s) => s.score === median(scores))[0]);
+    med = chooseSubmission(copySubmissions, copySubmissions.filter((s) => s.score === median(getScores(copySubmissions)))[0]);
   }
 
   if (copySubmissions.length >= 1) {
-    low = chooseSubmission(copySubmissions, copySubmissions.filter((s) => s.score === Math.min(...scores))[0]);
+    low = chooseSubmission(copySubmissions, copySubmissions.filter((s) => s.score === Math.min(...getScores(copySubmissions)))[0]);
   }
 
   return { high, med, low };
+}
+
+function getScores(submissions: Submission[]) {
+  return submissions.filter((a) => a.score !== null && a.score !== undefined).map((b) => b.score);
 }
 
 function chooseSubmission(submissions: Submission[], submission?: Submission) {
