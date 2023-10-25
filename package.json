@@ -1,0 +1,20 @@
+{
+    "name": "canvascapture",
+    "version": "1.0.0",
+    "description": "- Samuel Brand\r - Wesley Jochman\r - Patrick McDonald",
+    "directories": {
+        "doc": "doc"
+    },
+    "scripts": {
+        "format": "prettier --write ./apps/**/*.ts",
+        "format:check": "prettier --check ./apps/**/*.ts",
+        "prepare": "husky install"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "husky": "^8.0.3",
+        "lint-staged": "^15.0.2",
+        "prettier": "3.0.3"
+    }
+}
