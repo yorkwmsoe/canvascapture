@@ -1,9 +1,12 @@
 import { getSubmissions } from "@modules/canvas_api/api";
 import { Command } from "../types/command";
 import { state } from "../state";
-import { Submission } from "@modules/canvas_api/types/submission";
 import { Assignment } from "@modules/canvas_api/types/assignment";
 import { Course } from "@modules/canvas_api/types/course";
+import { generateAssignment } from "@modules/markdown/generators";
+import { rm } from "fs/promises";
+import { Submission } from "@modules/canvas_api/types/submission";
+import { log } from "console";
 
 export const generateCommand = {
   name: "generate",
@@ -16,40 +19,39 @@ export const generateCommand = {
 export const median = (arr: number[]): number => {
   const s = [...arr].sort((a, b) => a - b);
   const mid = Math.floor(s.length / 2);
-  return s.length % 2 === 0 ? ((s[mid - 1] + s[mid]) / 2) : s[mid];
+  const res = s.length % 2 === 0 ? (s[mid - 1] + s[mid]) / 2 : s[mid];
+  return Math.ceil(res);
 };
 
 export const genAssignment = async (course: Course, assignment: Assignment) => {
-  console.log(assignment.name);
+  console.log(`\tGenerating ${assignment.name}`);
   const submissions = await getSubmissions(course.id, assignment.id);
-  const filteredScores = submissions.filter(a => a.score !== undefined && a.score !== null).map(b => b.score)
+  const filteredScores = submissions.filter((a) => a.score !== null && a.score !== undefined).map((b) => b.score);
   if (filteredScores.length > 0) {
-    if (submissions.length >= 3 || submissions.length === 2) {
-      genSubmission(assignment, submissions, Math.max(...filteredScores));
+    const { high, med, low } = getHighMedLow(submissions);
+    if (high) {
+      console.log(`\t\tGenerating high`);
+      await generateAssignment(course, assignment, high, "high");
     }
-    if (submissions.length >= 3 || submissions.length === 1) {
-      genSubmission(assignment, submissions, median(filteredScores));
+    if (med) {
+      console.log(`\t\tGenerating median`);
+      await generateAssignment(course, assignment, med, "median");
     }
-    if (submissions.length >= 3 || submissions.length === 2) {
-      genSubmission(assignment, submissions, Math.min(...filteredScores));
+    if (low) {
+      console.log(`\t\tGenerating low`);
+      await generateAssignment(course, assignment, low, "low");
     }
   } else {
-    console.log("No submissions for assignment");
+    console.log("\t\tNo submissions for assignment");
   }
-}
-
-export const genSubmission = (assignment: Assignment, submissions: Submission[], score: number) => {
-  const submission = (submissions.filter(s => s.score === score))[0];
-  console.log(submission.score + "/" + assignment.points_possible);
-  console.log(submission.body);
-}
+};
 
 export async function generate() {
   if (state.courses && state.courses.length > 0) {
     for (const course of state.courses) {
-      console.log(course.name);
-      console.log(course.start_at + "-" + course.end_at);
-      const filteredAssignments = state.assignments?.filter(a => a.course_id === course.id);
+      await rm("output", { recursive: true, force: true });
+      console.log(`Generating ${course.name}`);
+      const filteredAssignments = state.assignments?.filter((a) => a.course_id === course.id);
       if (filteredAssignments && filteredAssignments.length > 0) {
         for (const assignment of filteredAssignments) {
           await genAssignment(course, assignment);
@@ -61,4 +63,37 @@ export async function generate() {
   } else {
     console.log("No courses selected");
   }
+}
+
+export function getHighMedLow(submissions: Submission[]) {
+  let copySubmissions = [...submissions];
+  let high = null;
+  let med = null;
+  let low = null;
+
+  high = chooseSubmission(copySubmissions, copySubmissions.filter((s) => s.score === Math.max(...getScores(copySubmissions)))[0]);
+
+  if (copySubmissions.length >= 1) {
+    med = chooseSubmission(copySubmissions, copySubmissions.filter((s) => s.score === median(getScores(copySubmissions)))[0]);
+  }
+
+  if (copySubmissions.length >= 1) {
+    low = chooseSubmission(copySubmissions, copySubmissions.filter((s) => s.score === Math.min(...getScores(copySubmissions)))[0]);
+  }
+
+  return { high, med, low };
+}
+
+function getScores(submissions: Submission[]) {
+  return submissions.filter((a) => a.score !== null && a.score !== undefined).map((b) => b.score);
+}
+
+function chooseSubmission(submissions: Submission[], submission?: Submission) {
+  const index = submissions.findIndex((item) => item.id === submission?.id);
+
+  if (index > -1) {
+    submissions.splice(index, 1);
+  }
+
+  return submission;
 }

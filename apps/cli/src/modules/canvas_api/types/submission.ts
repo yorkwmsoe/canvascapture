@@ -4,7 +4,7 @@ import { ReadState } from "./read-state";
 import { User, UserDisplay } from "./user";
 
 export type Submission = {
-  id: number
+  id: number;
   // The submission's assignment id
   assignment_id: number;
   // The submission's assignment (see the assignments API) (optional)
@@ -89,6 +89,7 @@ export type Submission = {
   redo_request: boolean;
   entered_grade: string;
   entered_score: number;
+  rubric_assessment?: RubricAssessment;
 };
 
 export type SubmissionComment = {
@@ -111,18 +112,16 @@ export type MediaComment = {
   url: string;
 };
 
-export type WorkflowState =
-  | "submitted"
-  | "unsubmitted"
-  | "graded"
-  | "pending_review";
+export type RubricAssessment = Record<string, RubricAssessmentCriterion>;
+
+export type RubricAssessmentCriterion = {
+  points: number;
+  comments: string;
+  rating_id: string;
+};
+
+export type WorkflowState = "submitted" | "unsubmitted" | "graded" | "pending_review";
 
 export type LatePolicyStatus = "missing" | "late" | "none" | "extended" | null;
 
-export type SubmissionType =
-  | "online_text_entry"
-  | "online_url"
-  | "online_upload"
-  | "online_quiz"
-  | "media_recording"
-  | "student_annotation";
+export type SubmissionType = "online_text_entry" | "online_url" | "online_upload" | "online_quiz" | "media_recording" | "student_annotation";

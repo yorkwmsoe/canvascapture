@@ -131,4 +131,6 @@ dist
 
 build
 release
+output
 junit.xml
+sample.md
