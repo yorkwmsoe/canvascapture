@@ -40,9 +40,7 @@ test-cli:
     coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 test-pandoc-linux:
-    image:
-        name: pandoc
-        entrypoint: ['/bin/sh', '-c']
+    image: pandoc/core
     stage: test
     needs: ['install-cli']
     script:
