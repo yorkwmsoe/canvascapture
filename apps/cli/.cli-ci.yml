@@ -40,10 +40,13 @@ test-cli:
     coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 test-pandoc-linux:
+    image:
+        name: pandoc
+        entrypoint: ['/bin/sh', '-c']
     stage: test
     needs: ['install-cli']
     script:
-        - apt-get install pandoc
+        - pandoc --version
         - npm run test:pandoc-linux
 
 build-cli:

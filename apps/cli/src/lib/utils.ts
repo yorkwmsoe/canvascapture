@@ -3,7 +3,6 @@ import { textSync } from 'figlet'
 import { theme } from '@constants/theme'
 import { TITLE_TEXT } from '@constants/base-info'
 import promptSync from 'prompt-sync'
-import envPaths from 'env-paths'
 
 export function generateTitle() {
     const titleGradient = gradient(Object.values(theme))
@@ -27,5 +26,3 @@ export const generatePaddedColumn = (column: string, width: number) => {
 export const prompt = promptSync({
     sigint: true,
 })
-
-export const getPaths = () => envPaths(TITLE_TEXT.replace(' ', '_'))

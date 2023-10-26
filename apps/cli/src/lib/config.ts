@@ -1,6 +1,8 @@
-import { CONFIG_FILE_NAME } from '@constants/base-info'
+import { CONFIG_FILE_NAME, TITLE_TEXT } from '@constants/base-info'
+import envPaths from 'env-paths'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
-import { getPaths } from './utils'
+
+export const getPaths = () => envPaths(TITLE_TEXT.replace(' ', '_'))
 
 export const getConfigPath = () => `${getPaths().config}`
 
