@@ -21,6 +21,12 @@ install-cli:
     script:
         - npm ci
 
+test-format-cli:
+    stage: test
+    needs: ['install-cli']
+    script:
+        - npm run format:check
+
 test-cli:
     stage: test
     needs: ['install-cli']
