@@ -1,25 +1,16 @@
 import { convertTwoArraysToObject, generateTitle, prompt } from '@lib/utils'
 import { getCommand } from '@modules/command'
 import { ZodError } from 'zod'
-import * as dotenv from 'dotenv'
 import { state } from '@modules/command/state'
-import { getMode } from 'env'
 import { getConfig } from '@lib/config'
 import { Command } from '@modules/command/types/command'
 
-dotenv.config({ path: `${__dirname.replace('src', '')}.env` })
-
 async function loadConfig() {
-    if (getMode() === 'prod') {
-        const config = getConfig()
-        if (!config) {
-            console.log('No config found. Please run the setup command.')
-        } else {
-            state.config = config
-        }
-    } else if (getMode() === 'dev') {
-        console.log('Running in development mode')
-        console.log('Using .env file for values')
+    const config = getConfig()
+    if (!config) {
+        console.log('No config found. Please run the setup command.')
+    } else {
+        state.config = config
     }
 }
 

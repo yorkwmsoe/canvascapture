@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders } from 'axios'
+import axios, { AxiosRequestHeaders } from 'axios'
 import { Assignment } from './types/assignment'
 import { Course } from './types/course'
 import { Submission } from './types/submission'
@@ -17,7 +17,7 @@ export function handleDates(body: any) {
     }
 }
 
-const getApiHeaders = (headers?: AxiosHeaders) => {
+const getApiHeaders = (headers?: AxiosRequestHeaders) => {
     return {
         ...headers,
         Authorization: `Bearer ${getCanvasApiToken()}`,

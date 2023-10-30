@@ -10,7 +10,7 @@ export const greetCommand = {
 } satisfies Command
 
 const argSchema = z.object({
-    name: z.string().nonempty(),
+    name: z.string().min(1, 'name is required'),
 })
 
 type Args = z.infer<typeof argSchema>

@@ -6,11 +6,10 @@ import { Course } from '@modules/canvas_api/types/course'
 import { generateAssignment } from '@modules/markdown/generators'
 import { rm } from 'fs/promises'
 import { Submission } from '@modules/canvas_api/types/submission'
-import { log } from 'console'
 
 export const generateCommand = {
     name: 'generate',
-    description: 'Generate PDF',
+    description: 'Generate markdown files.',
     run: generate,
     category: 'general',
 } satisfies Command

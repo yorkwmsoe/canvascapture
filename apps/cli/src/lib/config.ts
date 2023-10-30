@@ -1,8 +1,12 @@
 import { CONFIG_FILE_NAME, TITLE_TEXT } from '@constants/base-info'
-import envPaths from 'env-paths'
+import envPaths from '@modules/env-paths'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
 
-export const getPaths = () => envPaths(TITLE_TEXT.replace(' ', '_'))
+export const getPaths = () => {
+    return envPaths(TITLE_TEXT.replace(' ', '_').toLowerCase(), {
+        suffix: '',
+    })
+}
 
 export const getConfigPath = () => `${getPaths().config}`
 
