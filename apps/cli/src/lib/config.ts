@@ -2,8 +2,9 @@ import { CONFIG_FILE_NAME, TITLE_TEXT } from '@constants/base-info'
 import envPaths from '@modules/env-paths'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
 
+// DO NOT CHANGE AFTER RELEASE (BREAKS CONFIG)
 export const getPaths = () => {
-    return envPaths(TITLE_TEXT.replace(' ', '_').toLowerCase(), {
+    return envPaths(TITLE_TEXT.replace(' ', '-').toLowerCase(), {
         suffix: '',
     })
 }
