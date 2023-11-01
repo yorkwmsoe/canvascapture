@@ -25,7 +25,7 @@ test-cli:
   stage: test
   needs: ["install-cli"]
   script:
-    - apt update && apt install pandoc
+    - apt update -y && apt install pandoc -y
     - npm run test:ci
   artifacts:
     when: always
