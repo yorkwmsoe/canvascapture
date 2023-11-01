@@ -20,6 +20,11 @@ install-cli:
   stage: install
   script:
     - npm ci
+      
+install-pandoc:
+  stage: install
+  script:
+    - apt install update && apt install pandoc
 
 test-cli:
   stage: test
