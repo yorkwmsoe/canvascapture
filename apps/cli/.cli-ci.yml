@@ -25,7 +25,7 @@ test-cli:
   stage: test
   needs: ["install-cli"]
   script:
-    - apt-get update -y && apt-get install pandoc texlive-latex-recommended texlive-plain-generic -y
+    - apt-get update -y && apt-get install pandoc texlive-full -y
     - npm run test:ci
   artifacts:
     when: always
