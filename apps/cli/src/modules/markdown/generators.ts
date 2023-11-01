@@ -9,7 +9,6 @@ const basePath = "output";
 export async function generateAssignment(course: Course, assignment: Assignment, submission: Submission, score: "high" | "median" | "low", commit: boolean = true) {
   const folderPath = `${basePath}/${course.name}/${assignment.name}`;
   mkdirSync(folderPath, { recursive: true });
-  const fileName = `${score}.md`;
 
   const title = convertToHeader(assignment.name, 1);
   const grade = `${submission.score}/${assignment.points_possible}`;
@@ -46,7 +45,7 @@ export async function generateAssignment(course: Course, assignment: Assignment,
 
   if (commit) {
     cleanedItems.forEach((item) => {
-      const filePath = `${folderPath}/${fileName}`;
+      const filePath = `${folderPath}/${score}`;
       writeToFile(filePath, item);
       addNewLine(filePath);
     });

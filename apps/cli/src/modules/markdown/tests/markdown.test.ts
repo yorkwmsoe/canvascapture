@@ -8,7 +8,6 @@ import {
     createTableRows, generateIMG, performSpecialWordOperation, writeToFile
 } from "@modules/markdown/markdown";
 
-const Buffer = require('node:buffer');
 const fs = require("fs");
 describe("markdown test", () => {
     //Arrange
@@ -16,7 +15,7 @@ describe("markdown test", () => {
     //Directory of tests to append for file location
     const testDir = "./src/modules/markdown/tests/"
     //Path of testing file
-    const filePath = testDir + "sample.md"
+    const filePath = testDir + "sample"
 
     //Create all headers
     const header1: string = convertToHeader("Help Me", 1);
@@ -45,7 +44,7 @@ describe("markdown test", () => {
 
     //Create Link and Image
     const ikeaLink = createLink("Here is the Link to Ikea", "Link", "https://ikea.com")
-    const image = generateIMG("./testIMG/Luh-Calm-Fit.png")
+    const image = generateIMG(testDir + "testIMG/Luh-Calm-Fit.png")
 
     //Create coding syntax
     const inline: string = createInlineCode("HELP MEEEEE")
@@ -99,13 +98,16 @@ describe("markdown test", () => {
     writeToFile(filePath, inline)
     writeToFile(filePath,block)
 
-    //This test checks to see if two files are the same.
-    test("should return true ",  () => {
+    test("that the generated markdown file is equal to the sample file",  () => {
         const testbuf = fs.readFileSync(testDir + 'testMarkdown.md')
-        const tempbuf = fs.readFileSync( testDir + 'sample.md')
+        const samplebuf = fs.readFileSync(`${filePath}.md`)
 
         //Act and Assert
-        expect(testbuf.equals(tempbuf)).toBe(true);
+        expect(testbuf.equals(samplebuf)).toBe(true);
     });
-
+    
+    test("that the pdf exists", () => {
+        //Act and Assert
+        expect(fs.existsSync(`${filePath}.pdf`)).toBe(true);
+    });
 });
