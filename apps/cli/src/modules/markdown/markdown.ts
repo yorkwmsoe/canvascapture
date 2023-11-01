@@ -10,7 +10,10 @@ import { spawn } from 'node:child_process';
  */
 export const writeToFile = (filePath: string, markdownContent: string) => {
   appendFileSync(filePath + ".md", markdownContent);
-  spawn('pandoc', ['--from=gfm', `${filePath}.md`, '-o', `${filePath}.pdf`]);
+  const pandoc = spawn('pandoc', ['--from=gfm', `${filePath}.md`, '-o', `${filePath}.pdf`]);
+  pandoc.stderr.on('data', (data) => {
+    console.error(data.toString());
+  });
 };
 
 /**
