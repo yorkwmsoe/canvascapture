@@ -105,9 +105,10 @@ describe("markdown test", () => {
         //Act and Assert
         expect(testbuf.equals(samplebuf)).toBe(true);
     });
-    
+
     test("that the pdf exists", () => {
         //Act and Assert
+        console.log(filePath);
         expect(fs.existsSync(`${filePath}.pdf`)).toBe(true);
     });
 });
