@@ -1,4 +1,4 @@
-image: node:18
+image: canvascapture:latest
 
 stages:
   - install
@@ -25,7 +25,6 @@ test-cli:
   stage: test
   needs: ["install-cli"]
   script:
-    - apt-get update -y && apt-get install pandoc texlive-full -y
     - npm run test:ci
   artifacts:
     when: always
