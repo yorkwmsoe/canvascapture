@@ -1,4 +1,4 @@
-image: canvascapture:latest
+image: registry.gitlab.com/msoe.edu/sdl/sdl/canvascapture:latest
 
 stages:
   - install
