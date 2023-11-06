@@ -1,6 +1,6 @@
 import { appendFileSync } from "fs";
 import { writeFileSync } from "fs";
-import { spawn } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 
 /**
  * writeToFile
@@ -10,7 +10,7 @@ import { spawn } from 'node:child_process';
  */
 export const writeToFile = (filePath: string, markdownContent: string) => {
   appendFileSync(filePath + ".md", markdownContent);
-  const pandoc = spawn('pandoc', ['--from=gfm', `${filePath}.md`, '-o', `${filePath}.pdf`]);
+  const pandoc = spawnSync('pandoc', ['--from=gfm', `${filePath}.md`, '-o', `${filePath}.pdf`]);
   pandoc.stderr.on('data', (data) => {
     console.error(data.toString());
   });
