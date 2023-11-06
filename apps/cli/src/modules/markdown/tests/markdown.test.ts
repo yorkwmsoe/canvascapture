@@ -109,7 +109,7 @@ describe("markdown test", () => {
     test("that the pdf exists", () => {
         //Act and Assert
         console.log(`${filePath}.pdf`);
-        console.log("path exists?: " + fs.existsSync(`${filePath}.pdf`});
+        console.log("path exists?: " + fs.existsSync(`${filePath}.pdf`));
         expect(fs.existsSync(`${filePath}.pdf`)).toBe(true);
     });
 });
