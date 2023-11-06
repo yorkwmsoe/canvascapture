@@ -25,6 +25,7 @@ test-cli:
   stage: test
   needs: ["install-cli"]
   script:
+    - ls -lah
     - npm run test:ci
   artifacts:
     paths:
