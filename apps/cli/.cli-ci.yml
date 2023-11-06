@@ -27,6 +27,8 @@ test-cli:
   script:
     - npm run test:ci
   artifacts:
+    paths:
+        - $BASE_PATH/src/
     when: always
     reports:
       junit:
