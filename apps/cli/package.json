@@ -1,58 +1,60 @@
 {
-  "name": "cli",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "bin": {
-    "canvascapture": "./build/cli.js"
-  },
-  "scripts": {
-    "test": "jest --runInBand --coverage",
-    "test:ci": "jest --runInBand --coverage --ci",
-    "start": "tsx src/cli.ts",
-    "build": "tsc && tsc-alias",
-    "package:win-x64": "pkg . --targets node18-win-x64 --output release/canvascapture-win-x64",
-    "package:win-arm64": "pkg . --targets node18-win-arm64 --output release/canvascapture-win-arm64",
-    "package:linux-x64": "pkg . --targets node18-linux-x64 --output release/canvascapture-linux-x64",
-    "package:linux-arm64": "pkg . --targets node18-linux-arm64 --output release/canvascapture-linux-arm64",
-    "package:macos-x64": "pkg . --targets node18-macos-x64 --output release/canvascapture-macos-x64",
-    "package:macos-arm64": "pkg . --targets node18-macos-arm64 --output release/canvascapture-macos-arm64"
-  },
-  "pkg": {
-    "scripts": "build/**/*.js",
-    "assets": "node_modules/figlet/fonts/Standard.flf"
-  },
-  "keywords": [],
-  "author": "MSOE",
-  "license": "UNLICENSED",
-  "devDependencies": {
-    "@types/figlet": "^1.5.6",
-    "@types/gradient-string": "^1.1.2",
-    "@types/inquirer": "^9.0.3",
-    "@types/jest": "^29.5.5",
-    "@types/node": "^20.6.0",
-    "@types/prompt-sync": "^4.2.0",
-    "@typescript-eslint/eslint-plugin": "^6.7.4",
-    "@typescript-eslint/parser": "^6.7.4",
-    "eslint": "^8.51.0",
-    "jest": "^29.7.0",
-    "jest-junit": "^16.0.0",
-    "pkg": "^5.8.1",
-    "ts-jest": "^29.1.1",
-    "ts-node": "^10.9.1",
-    "tsc-alias": "^1.8.7",
-    "tsx": "^3.12.10",
-    "typescript": "^5.2.2"
-  },
-  "dependencies": {
-    "@inquirer/prompts": "^3.2.0",
-    "@inquirer/testing": "^2.1.8",
-    "axios": "^1.5.0",
-    "date-fns": "^2.30.0",
-    "dotenv": "^16.3.1",
-    "figlet": "^1.6.0",
-    "gradient-string": "^2.0.2",
-    "prompt-sync": "^4.2.0",
-    "zod": "^3.22.2"
-  }
+    "name": "cli",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "bin": {
+        "canvascapture": "./build/cli.js"
+    },
+    "scripts": {
+        "test": "jest --runInBand --coverage",
+        "test:ci": "jest --runInBand --coverage --ci",
+        "start": "tsx src/cli.ts",
+        "build": "tsc && tsc-alias",
+        "format": "prettier --write ./src/**/*.ts",
+        "format:check": "prettier --check ./src/**/*.ts",
+        "package:win-x64": "pkg . --targets node18-win-x64 --output release/canvascapture-win-x64",
+        "package:win-arm64": "pkg . --targets node18-win-arm64 --output release/canvascapture-win-arm64",
+        "package:linux-x64": "pkg . --targets node18-linux-x64 --output release/canvascapture-linux-x64",
+        "package:linux-arm64": "pkg . --targets node18-linux-arm64 --output release/canvascapture-linux-arm64",
+        "package:macos-x64": "pkg . --targets node18-macos-x64 --output release/canvascapture-macos-x64",
+        "package:macos-arm64": "pkg . --targets node18-macos-arm64 --output release/canvascapture-macos-arm64"
+    },
+    "pkg": {
+        "scripts": "build/**/*.js",
+        "assets": "node_modules/figlet/fonts/Standard.flf"
+    },
+    "keywords": [],
+    "author": "MSOE",
+    "license": "UNLICENSED",
+    "devDependencies": {
+        "@types/figlet": "^1.5.6",
+        "@types/gradient-string": "^1.1.2",
+        "@types/inquirer": "^9.0.3",
+        "@types/jest": "^29.5.5",
+        "@types/node": "^20.8.9",
+        "@types/prompt-sync": "^4.2.0",
+        "@typescript-eslint/eslint-plugin": "^6.7.4",
+        "@typescript-eslint/parser": "^6.7.4",
+        "eslint": "^8.51.0",
+        "jest": "^29.7.0",
+        "jest-junit": "^16.0.0",
+        "pkg": "^5.8.1",
+        "prettier": "3.0.3",
+        "ts-jest": "^29.1.1",
+        "ts-node": "^10.9.1",
+        "tsc-alias": "^1.8.7",
+        "tsx": "^3.12.10",
+        "typescript": "^5.2.2"
+    },
+    "dependencies": {
+        "@inquirer/prompts": "^3.2.0",
+        "@inquirer/testing": "^2.1.8",
+        "axios": "^0.27.2",
+        "date-fns": "^2.30.0",
+        "figlet": "^1.6.0",
+        "gradient-string": "^2.0.2",
+        "prompt-sync": "^4.2.0",
+        "zod": "^3.22.2"
+    }
 }

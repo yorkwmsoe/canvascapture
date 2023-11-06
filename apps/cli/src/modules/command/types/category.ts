@@ -1,3 +1,3 @@
-import { commandCategories } from "../categories";
+import { commandCategories } from '../categories'
 
-export type CommandCategory = (typeof commandCategories)[number];
+export type CommandCategory = (typeof commandCategories)[number]

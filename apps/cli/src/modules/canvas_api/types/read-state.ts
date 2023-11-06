@@ -1,1 +1,1 @@
-export type ReadState = "read" | "unread";
+export type ReadState = 'read' | 'unread'

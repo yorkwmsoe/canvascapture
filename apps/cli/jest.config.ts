@@ -1,18 +1,16 @@
-import type { Config } from "@jest/types";
+import type { Config } from '@jest/types'
 // Sync object
 const config: Config.InitialOptions = {
-  roots: ["<rootDir>/src"],
-  transform: {
-    "^.+\\.ts?$": "ts-jest",
-  },
-  moduleNameMapper: {
-    "^@modules(.*)$": "<rootDir>/src/modules$1",
-    "^@lib(.*)$": "<rootDir>/src/lib$1",
-    "^@constants(.*)$": "<rootDir>/src/constants$1",
-  },
-  reporters: ["default", "jest-junit"],
-  coveragePathIgnorePatterns : [
-    "<rootDir>/src/modules/canvas_api/api.ts",
-  ]
-};
-export default config;
+    roots: ['<rootDir>/src'],
+    transform: {
+        '^.+\\.ts?$': 'ts-jest',
+    },
+    moduleNameMapper: {
+        '^@modules(.*)$': '<rootDir>/src/modules$1',
+        '^@lib(.*)$': '<rootDir>/src/lib$1',
+        '^@constants(.*)$': '<rootDir>/src/constants$1',
+    },
+    reporters: ['default', 'jest-junit'],
+    coveragePathIgnorePatterns: ['<rootDir>/src/modules/canvas_api/api.ts'],
+}
+export default config
