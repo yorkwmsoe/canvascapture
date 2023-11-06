@@ -1,13 +1,13 @@
-import { VERSION_TEXT } from "@constants/base-info";
-import { Command } from "../types/command";
+import { VERSION_TEXT } from '@constants/base-info'
+import { Command } from '../types/command'
 
 export const versionCommand = {
-  name: "version",
-  description: "Prints the version of the application",
-  run: version,
-  category: "cli",
-} satisfies Command;
+    name: 'version',
+    description: 'Prints the version of the application',
+    run: version,
+    category: 'cli',
+} satisfies Command
 
 export function version() {
-  console.log(`v ${VERSION_TEXT}`);
+    console.log(`v ${VERSION_TEXT}`)
 }

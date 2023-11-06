@@ -1,1 +1,1 @@
-export const commandCategories = ["general", "test", "cli"] as const;
+export const commandCategories = ['general', 'test', 'cli'] as const
