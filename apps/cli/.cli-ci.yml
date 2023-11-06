@@ -1,4 +1,4 @@
-image: registry.gitlab.com/msoe.edu/sdl/sdl/canvascapture:latest
+image: node:18
 
 stages:
   - install
@@ -22,6 +22,7 @@ install-cli:
     - npm ci
 
 test-cli:
+  image: registry.gitlab.com/msoe.edu/sdl/sdl/canvascapture:latest
   stage: test
   needs: ["install-cli"]
   script:
