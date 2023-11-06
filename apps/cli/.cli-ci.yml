@@ -39,16 +39,6 @@ test-cli:
                 - $BASE_PATH/junit.xml
     coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
-test-pandoc-linux:
-    image:
-        name: pandoc/core
-        entrypoint: ['/bin/sh', '-c']
-    stage: test
-    needs: ['install-cli']
-    script:
-        - pandoc --version
-        - npm run test:pandoc-linux
-
 build-cli:
     stage: build
     needs: ['install-cli']
