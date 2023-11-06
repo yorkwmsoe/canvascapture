@@ -27,6 +27,7 @@ test-cli:
   needs: ["install-cli"]
   script:
     - ls -lah
+    - pwd
     - npm run test:ci
   artifacts:
     paths:
