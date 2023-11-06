@@ -1,37 +1,39 @@
 image: node:18
 
 stages:
-  - install
-  - test
-  - build
-  - release
+    - install
+    - test
+    - build
+    - release
 
 variables:
-  BASE_PATH: apps/cli
+    BASE_PATH: apps/cli
 
 cache:
-  paths:
-    - $BASE_PATH/node_modules/
+    paths:
+        - $BASE_PATH/node_modules/
 
 before_script:
-  - cd $BASE_PATH/
+    - cd $BASE_PATH/
 
 install-cli:
-  stage: install
-  script:
-    - npm ci
+    stage: install
+    script:
+        - npm ci
+
+test-format-cli:
+    stage: test
+    needs: ['install-cli']
+    script:
+        - npm run format:check
 
 test-cli:
   image: registry.gitlab.com/msoe.edu/sdl/sdl/canvascapture:latest
   stage: test
   needs: ["install-cli"]
   script:
-    - ls -lah
-    - pwd
     - npm run test:ci
   artifacts:
-    paths:
-        - $BASE_PATH/src/
     when: always
     reports:
       junit:
@@ -39,21 +41,21 @@ test-cli:
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 build-cli:
-  stage: build
-  needs: ["install-cli"]
-  script:
-    - npm run build
-  artifacts:
-    paths:
-      - $BASE_PATH/build/
+    stage: build
+    needs: ['install-cli']
+    script:
+        - npm run build
+    artifacts:
+        paths:
+            - $BASE_PATH/build/
 
 release-cli:
-  stage: release
-  needs:
-    - job: build-cli
-      artifacts: true
-  script:
-    - npm run package:win-x64
-  artifacts:
-    paths:
-      - $BASE_PATH/release/
+    stage: release
+    needs:
+        - job: build-cli
+          artifacts: true
+    script:
+        - npm run package:win-x64
+    artifacts:
+        paths:
+            - $BASE_PATH/release/

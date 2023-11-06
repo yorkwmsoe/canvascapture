@@ -1,5 +1,5 @@
 export const defaultSettings = {
-  debug: false,
-};
+    debug: false,
+}
 
-export type Settings = typeof defaultSettings;
+export type Settings = typeof defaultSettings
