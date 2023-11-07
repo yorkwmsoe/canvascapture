@@ -50,7 +50,7 @@ build-cli:
 
 release-cli:
     stage: release
-    needs: ['build-cli']
+    needs: ['install-cli', 'build-cli']
     script:
         - cd $BASE_PATH/
         - npm run package:win-x64
