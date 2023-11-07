@@ -1,4 +1,5 @@
 FROM node:18
-
 RUN apt-get update
+
+# Install pandoc and texlive
 RUN apt-get install -y pandoc texlive-full
