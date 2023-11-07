@@ -1,3 +1,4 @@
+# Creates a Docker image for the desktop environment
 FROM ubuntu:20.04
 RUN apt-get update
 
