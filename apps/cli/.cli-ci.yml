@@ -14,7 +14,7 @@ install-cli:
     script:
         - cd $BASE_PATH/
         - npm ci
-    cache:
+    artifacts:
         paths:
             - $BASE_PATH/node_modules/
 
@@ -50,9 +50,7 @@ build-cli:
 
 release-cli:
     stage: release
-    needs:
-        - job: build-cli
-          artifacts: true
+    needs: ['build-cli']
     script:
         - cd $BASE_PATH/
         - npm run package:win-x64

@@ -28,7 +28,7 @@ test-desktop:
     when: always
     reports:
       junit:
-        - $BASE_PATH/junit.xml
+        - $DESKTOP_BASE_PATH/junit.xml
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 build-desktop:
@@ -39,13 +39,11 @@ build-desktop:
     - npm run build
   artifacts:
     paths:
-      - $BASE_PATH/build/
+      - $DESKTOP_BASE_PATH/build/
 
 release-desktop:
   stage: release
-  needs:
-    - job: build-desktop
-      artifacts: true
+  needs: ['build-desktop']
   before_script:
     - apt-get update && apt-get install -y curl
     - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
@@ -55,4 +53,4 @@ release-desktop:
     - npm run tauri build
   artifacts:
     paths:
-      - $BASE_PATH/src-tauri/target/release/
+      - $DESKTOP_BASE_PATH/src-tauri/target/release/
