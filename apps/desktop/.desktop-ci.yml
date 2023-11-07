@@ -42,11 +42,12 @@ build-desktop:
       - $DESKTOP_BASE_PATH/build/
 
 release-desktop:
+  image: rust:latest
   stage: release
   needs: ['install-desktop', 'build-desktop']
   before_script:
-    - apt-get install -y curl
-    - curl https://sh.rustup.rs -sSf -y | sh
+    - apt install nodejs
+    - apt install npm
   script:
     - cd $DESKTOP_BASE_PATH
     - npm run tauri build
