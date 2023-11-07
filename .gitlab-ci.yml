@@ -6,3 +6,4 @@ stages:
 
 include:
   - local: "/apps/cli/.cli-ci.yml"
+  - local: "/apps/desktop/.desktop-ci.yml"
