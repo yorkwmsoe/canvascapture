@@ -4,6 +4,7 @@ variables:
 install-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🛞 install
+  needs: ['build-docker-desktop']
   script:
     - cd $DESKTOP_BASE_PATH
     - npm ci

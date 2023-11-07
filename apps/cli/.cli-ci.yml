@@ -4,6 +4,7 @@ variables:
 install-cli:
     image: $CI_REGISTRY_IMAGE/cli:latest
     stage: 🛞 install
+    needs: ['build-docker-cli']
     script:
         - cd $BASE_PATH/
         - npm ci
