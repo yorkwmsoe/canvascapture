@@ -1,9 +1,39 @@
 stages:
-  - install
-  - test
-  - build
-  - release
+  - 🐋 docker
+  - 🛞 install
+  - 🤞 test
+  - 📦 build
+  - 🚀 release
 
 include:
-  - local: "/apps/cli/.cli-ci.yml"
-  - local: "/apps/desktop/.desktop-ci.yml"
+  - local: /apps/cli/.cli-ci.yml
+  - local: /apps/desktop/.desktop-ci.yml
+
+build-docker-cli:
+  stage: 🐋 docker
+  image: docker:stable
+  services:
+    - docker:dind
+  script:
+    - echo $CI_REGISTRY_IMAGE
+      # - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+      # - docker build -t $CI_REGISTRY_IMAGE/cli .
+      # - docker push $CI_REGISTRY_IMAGE/cli
+  tags:
+    - docker
+    - cli
+
+build-docker-desktop:
+  stage: 🐋 docker
+  image: docker:stable
+  services:
+    - name: docker:dind
+      alias: docker
+  script:
+    - echo $CI_REGISTRY_IMAGE
+      # - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+      # - docker build -t $CI_REGISTRY_IMAGE/desktop .
+      # - docker push $CI_REGISTRY_IMAGE/desktop
+  tags:
+    - docker
+    - desktop

@@ -1,16 +1,9 @@
-image: node:18
-
-stages:
-  - install
-  - test
-  - build
-  - release
-
 variables:
   DESKTOP_BASE_PATH: apps/desktop
 
 install-desktop:
-  stage: install
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🛞 install
   script:
     - cd $DESKTOP_BASE_PATH
     - npm ci
@@ -19,7 +12,8 @@ install-desktop:
       - $DESKTOP_BASE_PATH/node_modules/
 
 test-desktop:
-  stage: test
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🤞 test
   needs: ['install-desktop']
   script:
     - cd $DESKTOP_BASE_PATH
@@ -32,7 +26,8 @@ test-desktop:
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 build-desktop:
-  stage: build
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 📦 build
   needs: ['install-desktop']
   script:
     - cd $DESKTOP_BASE_PATH
@@ -42,12 +37,9 @@ build-desktop:
       - $DESKTOP_BASE_PATH/build/
 
 release-desktop:
-  image: rust:latest
-  stage: release
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🚀 release
   needs: ['install-desktop', 'build-desktop']
-  before_script:
-    - apt install nodejs
-    - apt install npm
   script:
     - cd $DESKTOP_BASE_PATH
     - npm run tauri build

@@ -1,16 +1,9 @@
-image: node:18
-
-stages:
-    - install
-    - test
-    - build
-    - release
-
 variables:
     BASE_PATH: apps/cli
 
 install-cli:
-    stage: install
+    image: $CI_REGISTRY_IMAGE/cli:latest
+    stage: 🛞 install
     script:
         - cd $BASE_PATH/
         - npm ci
@@ -19,14 +12,16 @@ install-cli:
             - $BASE_PATH/node_modules/
 
 test-format-cli:
-    stage: test
+    image: $CI_REGISTRY_IMAGE/cli:latest
+    stage: 🤞 test
     needs: ['install-cli']
     script:
         - cd $BASE_PATH/
         - npm run format:check
 
 test-cli:
-    stage: test
+    image: $CI_REGISTRY_IMAGE/cli:latest
+    stage: 🤞 test
     needs: ['install-cli']
     script:
         - cd $BASE_PATH/
@@ -39,7 +34,8 @@ test-cli:
     coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 build-cli:
-    stage: build
+    image: $CI_REGISTRY_IMAGE/cli:latest
+    stage: 📦 build
     needs: ['install-cli']
     script:
         - cd $BASE_PATH/
@@ -49,7 +45,8 @@ build-cli:
             - $BASE_PATH/build/
 
 release-cli:
-    stage: release
+    image: $CI_REGISTRY_IMAGE/cli:latest
+    stage: 🚀 release
     needs: ['install-cli', 'build-cli']
     script:
         - cd $BASE_PATH/
