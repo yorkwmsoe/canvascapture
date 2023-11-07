@@ -16,7 +16,7 @@ build-docker-cli:
     - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -f Dockerfile.cli -t $CI_REGISTRY_IMAGE/cli /docker
+    - docker build -f Dockerfile.cli -t $CI_REGISTRY_IMAGE/cli ./docker
     - docker push $CI_REGISTRY_IMAGE/cli
 
 build-docker-desktop:
@@ -27,5 +27,5 @@ build-docker-desktop:
       alias: docker
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -f Dockerfile.desktop -t $CI_REGISTRY_IMAGE/desktop /docker
+    - docker build -f Dockerfile.desktop -t $CI_REGISTRY_IMAGE/desktop ./docker
     - docker push $CI_REGISTRY_IMAGE/desktop
