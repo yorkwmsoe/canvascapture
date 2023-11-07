@@ -18,6 +18,9 @@ build-docker-cli:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build ./docker -f ./docker/Dockerfile.cli -t $CI_REGISTRY_IMAGE/cli
     - docker push $CI_REGISTRY_IMAGE/cli
+  rules:
+    - changes:
+        - /docker/Dockerfile.cli
 
 build-docker-desktop:
   stage: 🐋 docker
@@ -29,3 +32,6 @@ build-docker-desktop:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build ./docker -f ./docker/Dockerfile.desktop -t $CI_REGISTRY_IMAGE/desktop
     - docker push $CI_REGISTRY_IMAGE/desktop
+  rules:
+    - changes:
+        - /docker/Dockerfile.desktop
