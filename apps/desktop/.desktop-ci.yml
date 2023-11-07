@@ -14,7 +14,7 @@ install-desktop:
   script:
     - cd $DESKTOP_BASE_PATH
     - npm ci
-  cache:
+  artifacts:
     paths:
       - $DESKTOP_BASE_PATH/node_modules/
 
