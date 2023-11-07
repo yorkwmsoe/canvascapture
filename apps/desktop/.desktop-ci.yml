@@ -17,7 +17,7 @@ test-desktop:
   needs: ['install-desktop']
   script:
     - cd $DESKTOP_BASE_PATH
-    - npm run test
+    - npm run test:ci
   artifacts:
     when: always
     reports:

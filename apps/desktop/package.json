@@ -9,6 +9,7 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest",
+		"test:ci": "vitest run --coverage",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
 		"tauri": "tauri"
@@ -23,6 +24,7 @@
 		"@types/node": "^20.8.10",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
+		"@vitest/coverage-v8": "^0.34.6",
 		"autoprefixer": "^10.4.14",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",

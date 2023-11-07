@@ -1,7 +1,9 @@
-FROM rust:1.73.0
-
+FROM ubuntu:20.04
 RUN apt-get update
 RUN apt-get install -y curl
+
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 # Install Node.js 18.x
 RUN curl -SLO https://deb.nodesource.com/nsolid_setup_deb.sh
