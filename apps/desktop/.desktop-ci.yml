@@ -7,24 +7,23 @@ stages:
   - release
 
 variables:
-  BASE_PATH: apps/desktop
+  DESKTOP_BASE_PATH: apps/desktop
 
 cache:
   paths:
-    - $BASE_PATH/node_modules/
-
-before_script:
-  - cd $BASE_PATH/
+    - $DESKTOP_BASE_PATH/node_modules/
 
 install-desktop:
   stage: install
   script:
+    - cd $DESKTOP_BASE_PATH
     - npm ci
 
 test-desktop:
   stage: test
   needs: ['install-desktop']
   script:
+    - cd $DESKTOP_BASE_PATH
     - npm run test
   artifacts:
     when: always
@@ -37,6 +36,7 @@ build-desktop:
   stage: build
   needs: ['install-desktop']
   script:
+    - cd $DESKTOP_BASE_PATH
     - npm run build
   artifacts:
     paths:
@@ -48,6 +48,7 @@ release-desktop:
     - job: build-desktop
       artifacts: true
   script:
+    - cd $DESKTOP_BASE_PATH
     - npm run tauri build
   artifacts:
     paths:

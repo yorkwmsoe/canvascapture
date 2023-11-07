@@ -13,24 +13,24 @@ cache:
     paths:
         - $BASE_PATH/node_modules/
 
-before_script:
-    - cd $BASE_PATH/
-
 install-cli:
     stage: install
     script:
+        - cd $BASE_PATH/
         - npm ci
 
 test-format-cli:
     stage: test
     needs: ['install-cli']
     script:
+        - cd $BASE_PATH/
         - npm run format:check
 
 test-cli:
     stage: test
     needs: ['install-cli']
     script:
+        - cd $BASE_PATH/
         - npm run test:ci
     artifacts:
         when: always
@@ -43,6 +43,7 @@ build-cli:
     stage: build
     needs: ['install-cli']
     script:
+        - cd $BASE_PATH/
         - npm run build
     artifacts:
         paths:
@@ -54,6 +55,7 @@ release-cli:
         - job: build-cli
           artifacts: true
     script:
+        - cd $BASE_PATH/
         - npm run package:win-x64
     artifacts:
         paths:
