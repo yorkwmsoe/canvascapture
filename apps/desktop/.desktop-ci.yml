@@ -46,7 +46,7 @@ release-desktop:
   needs: ['install-desktop', 'build-desktop']
   before_script:
     - apt-get install -y curl
-    - curl https://sh.rustup.rs -sSf | sh -y
+    - curl https://sh.rustup.rs -sSf -y | sh
   script:
     - cd $DESKTOP_BASE_PATH
     - npm run tauri build
