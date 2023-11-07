@@ -35,6 +35,7 @@ build-desktop:
   artifacts:
     paths:
       - $DESKTOP_BASE_PATH/build/
+      - $DESKTOP_BASE_PATH/.svelte-kit/
 
 release-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
