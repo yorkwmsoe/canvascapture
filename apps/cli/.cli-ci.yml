@@ -9,15 +9,14 @@ stages:
 variables:
     BASE_PATH: apps/cli
 
-cache:
-    paths:
-        - $BASE_PATH/node_modules/
-
 install-cli:
     stage: install
     script:
         - cd $BASE_PATH/
         - npm ci
+    cache:
+        paths:
+            - $BASE_PATH/node_modules/
 
 test-format-cli:
     stage: test

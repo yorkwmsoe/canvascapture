@@ -9,15 +9,14 @@ stages:
 variables:
   DESKTOP_BASE_PATH: apps/desktop
 
-cache:
-  paths:
-    - $DESKTOP_BASE_PATH/node_modules/
-
 install-desktop:
   stage: install
   script:
     - cd $DESKTOP_BASE_PATH
     - npm ci
+  cache:
+    paths:
+      - $DESKTOP_BASE_PATH/node_modules/
 
 test-desktop:
   stage: test
@@ -47,6 +46,10 @@ release-desktop:
   needs:
     - job: build-desktop
       artifacts: true
+  before_script:
+    - apt-get update && apt-get install -y curl
+    - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs
+    - sh ./sh.rustup.rs
   script:
     - cd $DESKTOP_BASE_PATH
     - npm run tauri build
