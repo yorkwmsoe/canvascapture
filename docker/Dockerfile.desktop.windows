@@ -1,17 +1,12 @@
 # This file is used to build the Windows Docker image for the desktop application.
-FROM mcr.microsoft.com/windows/servercore:ltsc2019
-
-# Install Scoop
-RUN irm get.scoop.sh | iex
+FROM mcr.microsoft.com/windows:1809
 
 # Install Rust
-RUN scoop install rustup-gnu
-RUN rustup toolchain install stable-x86_64-pc-windows-gnu
-RUN rustup default stable-x86_64-pc-windows-gnu
+RUN winget install -e --id Rustlang.Rust.GNU
 RUN rustup -V
 RUN rustc -V
 RUN cargo -V
 
 # Install Node.js
-RUN scoop install nodejs
+RUN winget install -e --id OpenJS.NodeJS.LTS
 RUN node -v
