@@ -4,6 +4,9 @@ variables:
 install-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🛞 install
+  needs:
+    - job: build-docker-desktop
+      optional: true
   script:
     - cd $DESKTOP_BASE_PATH
     - npm ci
@@ -47,3 +50,4 @@ release-desktop:
   artifacts:
     paths:
       - $DESKTOP_BASE_PATH/src-tauri/target/release/
+  when: manual

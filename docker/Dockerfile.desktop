@@ -1,17 +1,22 @@
 # Creates a Docker image for the desktop environment
-FROM ubuntu:20.04
+FROM ubuntu:23.10
+SHELL ["/bin/bash", "-c"]
 RUN apt-get update
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
 
 # Install dependencies
 RUN apt-get install -y curl
 
 # Install Rust
-RUN apt-get install -y rustc cargo
+RUN apt-get install -y rustc
 # Verify Rust installation
+RUN rustc -V
 RUN cargo -V
 
 # Install Tauri Dependencies
-RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev librsvg2-dev
+RUN apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev librsvg2-dev
 
 # Install Node.js 18.x
 RUN curl -SLO https://deb.nodesource.com/nsolid_setup_deb.sh
