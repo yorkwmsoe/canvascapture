@@ -1,3 +1,2 @@
-FROM mcr.microsoft.com/windows:1809
-
-RUN echo "Hello World!"
+FROM mcr.microsoft.com/windows/servercore:ltsc2019
+CMD echo "Hello World from Windows"

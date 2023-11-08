@@ -39,6 +39,7 @@ build-docker-desktop:
 build-docker-desktop-windows:
   tags:
     - shared-windows
+    - windows
     - windows-1809
   stage: 🐋 docker
   image: docker:stable
