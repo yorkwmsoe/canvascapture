@@ -49,5 +49,5 @@ release-desktop:
     - npm run tauri build -- --verbose
   artifacts:
     paths:
-      - $DESKTOP_BASE_PATH/src-tauri/target/release/
+      - $DESKTOP_BASE_PATH/src-tauri/target/release/bundle/
   when: manual
