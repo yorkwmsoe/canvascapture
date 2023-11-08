@@ -28,16 +28,17 @@ test-format-cli:
         - npm run format:check
 
 test-cli:
-    stage: test
-    needs: ['install-cli']
-    script:
-        - npm run test:ci
-    artifacts:
-        when: always
-        reports:
-            junit:
-                - $BASE_PATH/junit.xml
-    coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+  image: registry.gitlab.com/msoe.edu/sdl/sdl/canvascapture:latest
+  stage: test
+  needs: ["install-cli"]
+  script:
+    - npm run test:ci
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - $BASE_PATH/junit.xml
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 build-cli:
     stage: build
