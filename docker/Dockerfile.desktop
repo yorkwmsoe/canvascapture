@@ -1,9 +1,10 @@
 # Creates a Docker image for the desktop environment
 FROM ubuntu:22.04
-RUN apt-get update
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
+
+RUN apt-get update
 
 # Install dependencies
 RUN apt-get install -y curl wget file
