@@ -6,7 +6,7 @@ ENV TZ=Etc/UTC
 
 RUN apt-get update
 
-# Install dependencies
+# Install Dependencies
 RUN apt-get install -y curl wget file
 
 # Install Rust
