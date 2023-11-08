@@ -15,7 +15,7 @@ RUN rustc -V
 RUN cargo -V
 
 # Install Tauri Dependencies
-RUN apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev librsvg2-dev
+RUN apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libayatana-appindicator3-dev librsvg2-dev wget
 
 # Install Node.js 18.x
 RUN curl -SLO https://deb.nodesource.com/nsolid_setup_deb.sh
