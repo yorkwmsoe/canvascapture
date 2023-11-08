@@ -1,3 +1,15 @@
 # This file is used to build the Windows Docker image for the desktop application.
 FROM mcr.microsoft.com/windows/servercore:ltsc2019
-CMD echo "Hello World from Windows"
+
+RUN Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+RUN irm get.scoop.sh | iex
+
+RUN scoop install rustup-gnu
+RUN rustup toolchain install stable-x86_64-pc-windows-gnu
+RUN rustup default stable-x86_64-pc-windows-gnu
+RUN rustup -V
+RUN rustc -V
+RUN cargo -V
+
+RUN scoop install nodejs
+RUN node -v

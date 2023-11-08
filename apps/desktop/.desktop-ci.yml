@@ -7,6 +7,8 @@ install-desktop:
   needs:
     - job: build-docker-desktop
       optional: true
+    - job: build-docker-desktop-windows
+      optional: true
   script:
     - cd $DESKTOP_BASE_PATH
     - npm ci
@@ -40,8 +42,20 @@ build-desktop:
       - $DESKTOP_BASE_PATH/build/
       - $DESKTOP_BASE_PATH/.svelte-kit/
 
-release-desktop:
+release-desktop-linux:
   image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🚀 release
+  needs: ['install-desktop', 'build-desktop']
+  script:
+    - cd $DESKTOP_BASE_PATH
+    - npm run tauri build -- --verbose
+  artifacts:
+    paths:
+      - $DESKTOP_BASE_PATH/src-tauri/target/release/bundle/
+  when: manual
+
+release-desktop-windows:
+  image: $CI_REGISTRY_IMAGE/desktop/windows:latest
   stage: 🚀 release
   needs: ['install-desktop', 'build-desktop']
   script:
