@@ -2,6 +2,9 @@
 FROM ubuntu:23.10
 RUN apt-get update
 
+# Install dependencies
+RUN apt-get install -y curl
+
 # Install Node.js 18.x
 RUN curl -SLO https://deb.nodesource.com/nsolid_setup_deb.sh
 RUN chmod 500 nsolid_setup_deb.sh
