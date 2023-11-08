@@ -35,7 +35,7 @@ export async function generateAssignment(course: Course, assignment: Assignment,
     const rubricTableBody = !!rows ? createTableRows(rows) : ''
     const rubricTable = !rubricTableHeader ? 'No rubric' : rubricTableHeader + rubricTableBody
 
-    const items = [title, grade, descriptionHeader, description, submissionHeader, submissionBody, feedbackHeader, feedbackBody, rubricHeader, rubricTable]
+    const items = [title, grade, feedbackHeader, feedbackBody, descriptionHeader, description, rubricHeader, rubricTable, submissionHeader, submissionBody]
     const cleanedItems = items.filter((item) => !!item)
 
   if (commit) {
