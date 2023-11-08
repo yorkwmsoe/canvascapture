@@ -46,7 +46,7 @@ release-desktop:
   needs: ['install-desktop', 'build-desktop']
   script:
     - cd $DESKTOP_BASE_PATH
-    - npm run tauri build
+    - npm run tauri build -- --verbose
   artifacts:
     paths:
       - $DESKTOP_BASE_PATH/src-tauri/target/release/
