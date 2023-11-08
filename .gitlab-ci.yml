@@ -46,6 +46,8 @@ build-docker-desktop-windows:
   services:
     - name: docker:dind
       alias: docker
+  before_script:
+    - Start-Service -Name "docker"
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build ./docker -f ./docker/Dockerfile.desktop.windows -t $CI_REGISTRY_IMAGE/desktop/windows
