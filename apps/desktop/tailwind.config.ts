@@ -1,6 +1,8 @@
 import { join } from 'path';
+import forms from '@tailwindcss/forms';
 import type { Config } from 'tailwindcss';
 import { skeleton } from '@skeletonlabs/tw-plugin';
+import { canvasCaptureTheme } from './theme';
 
 const config = {
 	darkMode: 'class',
@@ -12,8 +14,9 @@ const config = {
 		extend: {}
 	},
 	plugins: [
+		forms,
 		skeleton({
-			themes: { preset: ['crimson'] }
+			themes: { custom: [canvasCaptureTheme] }
 		})
 	]
 } satisfies Config;

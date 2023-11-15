@@ -1,16 +1,19 @@
-<script>
-
-</script>
-<style>
-
-</style>
-
-<div class="set-up-items">
-    <h1 class="h1">Welcome to Canvas Capture</h1>
-    <input class="input" title="Domain" type="text" placeholder="https://msoe.instructure.com/" />
-    <h6>Enter your Canvas Domain</h6>
-    <input class="input" title="Access Key" type="text" placeholder="Access Key" />
-    <h6>Enter your Canvas Access Key</h6>
-    <button type="button" class="btn variant-filled">Generate</button>
-
+<div class="h-full grid place-items-center">
+   <div>
+    <h1 class="h1 mb-8 text-center">Welcome to <br/> Canvas Capture</h1>
+    <form class="flex gap-4 flex-col">
+        <label class="label">
+            <span>Domain</span>
+            <div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+                <div class="input-group-shim">https://</div>
+                <input type="url" placeholder="msoe.instructure.com" />
+              </div>
+        </label>
+        <label class="label">
+            <span>Access Key</span>
+            <input class="input" title="Access Key" type="text" placeholder="Access Key" />
+        </label>
+        <button type="button" class="btn variant-filled-secondary">Continue</button>
+    </form>
+   </div>
 </div>
