@@ -1,5 +1,5 @@
 <script>
-    window.location.replace('/setup');
+    window.location.replace('/home');
 </script>
 
 <div>Home Page</div>
