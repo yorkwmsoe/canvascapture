@@ -1,6 +1,6 @@
 <div class="h-full grid place-items-center">
    <div>
-    <h1 class="h1 mb-8 text-center">Welcome to <br/> Canvas Capture</h1>
+    <h1 class="h1 mb-8 text-center">Welcome to <br/> <span class="gradient-heading">Canvas Capture</span></h1>
     <form class="flex gap-4 flex-col">
         <label class="label">
             <span>Domain</span>
