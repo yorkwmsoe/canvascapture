@@ -8,7 +8,6 @@
         if (!isConfigSetup()) {
             window.location.replace('/setup');
         }
-        console.log(getConfigState());
     });
 </script>
 
