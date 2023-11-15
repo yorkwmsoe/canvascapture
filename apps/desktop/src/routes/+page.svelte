@@ -1,6 +1,6 @@
 <script>
     import { ProgressRadial } from "@skeletonlabs/skeleton"
-	import { getConfigState, isConfigSetup, loadConfigState } from "$lib/config";
+	import { isConfigSetup, loadConfigState } from "$lib/config";
 
     let isLoading = true;
     loadConfigState().then(async () => {
