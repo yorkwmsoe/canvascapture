@@ -39,13 +39,13 @@ describe('generateAssignment', () => {
             },
         ]
         const result = await generateAssignment(testCourses[0], testAssignments[0], testSubmissions[0], 'high', false)
-        expect(result.items[9]).toContain('|')
+        expect(result.items[7]).toContain('|')
     })
 
     it('should handle online_quiz', async () => {
         testSubmissions[0].submission_type = 'online_quiz'
         const result = await generateAssignment(testCourses[0], testAssignments[0], testSubmissions[0], 'high', false)
-        expect(result.items[5]).toBe('No submission')
+        expect(result.items[9]).toBe('No submission')
     })
 
     it('should generate a list', async () => {
@@ -88,12 +88,13 @@ describe('generateAssignment', () => {
     it('should have no description', async () => {
         testAssignments[0].description = ''
         const result = await generateAssignment(testCourses[0], testAssignments[0], testSubmissions[0], 'high', false)
-        expect(result.items[3]).toBe('No description')
+        console.log(result)
+        expect(result.items[5]).toBe('No description')
     })
 
     it('should have a decsription', async () => {
         testAssignments[0].description = 'Test description'
         const result = await generateAssignment(testCourses[0], testAssignments[0], testSubmissions[0], 'high', false)
-        expect(result.items[3]).toBe('Test description')
+        expect(result.items[5]).toBe('Test description')
     })
 })

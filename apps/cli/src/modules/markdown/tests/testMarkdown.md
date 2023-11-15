@@ -42,7 +42,7 @@ The **banana** crossed ~~the~~ road and decided to eat some ~~banana~~ because ~
 
 Here is the [Link](https://ikea.com) to Ikea
 
-![Image not found](./testIMG/Luh-Calm-Fit.png)
+![Image not found](./src/modules/markdown/tests/testIMG/Luh-Calm-Fit.png)
 
 `HELP MEEEEE`
 ```
