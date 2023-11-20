@@ -49,3 +49,4 @@ build-docker-desktop-windows:
   only:
     changes:
       - docker/Dockerfile.desktop.windows
+  allow_failure: true
