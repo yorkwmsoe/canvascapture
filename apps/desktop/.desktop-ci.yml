@@ -51,19 +51,3 @@ release-desktop-linux:
     paths:
       - $DESKTOP_BASE_PATH/src-tauri/target/release/bundle/
   when: manual
-
-release-desktop-windows:
-  image: $CI_REGISTRY_IMAGE/desktop/windows:latest
-  stage: 🚀 release
-  needs:
-    - job: install-desktop
-    - job: build-desktop
-    - job: build-docker-desktop-windows
-      optional: true
-  script:
-    - cd $DESKTOP_BASE_PATH
-    - npm run tauri build -- --verbose
-  artifacts:
-    paths:
-      - $DESKTOP_BASE_PATH/src-tauri/target/release/bundle/
-  when: manual

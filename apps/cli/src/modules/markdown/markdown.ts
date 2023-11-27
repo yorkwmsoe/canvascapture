@@ -1,5 +1,6 @@
-import { appendFileSync } from 'fs'
-import { writeFileSync } from 'fs'
+import { appendFileSync } from "fs";
+import { writeFileSync } from "fs";
+import { spawnSync } from 'node:child_process';
 
 /**
  * writeToFile
@@ -8,8 +9,9 @@ import { writeFileSync } from 'fs'
  * @param markdownContent
  */
 export const writeToFile = (filePath: string, markdownContent: string) => {
-    appendFileSync(filePath, markdownContent)
-}
+  appendFileSync(filePath + ".md", markdownContent);
+  spawnSync('pandoc', ['--from=gfm', `${filePath}.md`, '-o', `${filePath}.pdf`]);
+};
 
 /**
  * convertToHeader
@@ -134,21 +136,20 @@ export const generateIMG = (path: string) => {
  * @param filePath
  */
 export const addNewLine = (filePath: string) => {
-    appendFileSync(filePath, '\n')
-    appendFileSync(filePath, '\n')
-}
+  appendFileSync(filePath + ".md", "\n");
+  appendFileSync(filePath + ".md", "\n");
+};
 
 /**
  * Cleans the specified file
  * @param filePath
  */
 export const cleanFile = (filePath: string) => {
-    writeFileSync(filePath, '')
-}
+  writeFileSync(filePath + ".md", "");
+};
 
 /**
- * Creates inline code given a filePath and the string content
- * @param filePath
+ * Creates inline code given the string content
  * @param content
  */
 export const createInlineCode = (content: string) => {
@@ -156,8 +157,7 @@ export const createInlineCode = (content: string) => {
 }
 
 /**
- * Creates an actual coding block given a filepath
- * @param filePath
+ * Creates an actual coding block given the string content
  * @param content
  */
 export const createCodeBlock = (content: string) => {
