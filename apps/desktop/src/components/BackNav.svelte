@@ -1,0 +1,10 @@
+<script lang="ts">
+   export let page: string;
+</script>
+
+<div class="absolute top-0 w-full p-4">
+    <a href={page} class="btn variant-soft btn-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24"><path fill="currentColor" d="m7.85 13l2.85 2.85q.3.3.288.7t-.288.7q-.3.3-.712.313t-.713-.288L4.7 12.7q-.3-.3-.3-.7t.3-.7l4.575-4.575q.3-.3.713-.287t.712.312q.275.3.288.7t-.288.7L7.85 11H19q.425 0 .713.288T20 12q0 .425-.288.713T19 13H7.85Z"/></svg>
+        Back
+    </a>
+</div>
