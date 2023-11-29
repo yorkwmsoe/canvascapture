@@ -1,54 +1,60 @@
-image: node:18
-
-stages:
-  - install
-  - test
-  - build
-  - release
-
 variables:
-  BASE_PATH: apps/cli
-
-cache:
-  paths:
-    - $BASE_PATH/node_modules/
-
-before_script:
-  - cd $BASE_PATH/
+    BASE_PATH: apps/cli
 
 install-cli:
-  stage: install
-  script:
-    - npm ci
+    image: $CI_REGISTRY_IMAGE/cli:latest
+    stage: 🛞 install
+    needs:
+        - job: build-docker-cli
+          optional: true
+    script:
+        - cd $BASE_PATH/
+        - npm ci
+    artifacts:
+        paths:
+            - $BASE_PATH/node_modules/
+
+test-format-cli:
+    image: $CI_REGISTRY_IMAGE/cli:latest
+    stage: 🤞 test
+    needs: ['install-cli']
+    script:
+        - cd $BASE_PATH/
+        - npm run format:check
 
 test-cli:
-  stage: test
-  needs: ["install-cli"]
-  script:
-    - npm run test:ci
-  artifacts:
-    when: always
-    reports:
-      junit:
-        - $BASE_PATH/junit.xml
-  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+    image: $CI_REGISTRY_IMAGE/cli:latest
+    stage: 🤞 test
+    needs: ['install-cli']
+    script:
+        - cd $BASE_PATH/
+        - npm run test:ci
+    artifacts:
+        when: always
+        reports:
+            junit:
+                - $BASE_PATH/junit.xml
+    coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 build-cli:
-  stage: build
-  needs: ["install-cli"]
-  script:
-    - npm run build
-  artifacts:
-    paths:
-      - $BASE_PATH/build/
+    image: $CI_REGISTRY_IMAGE/cli:latest
+    stage: 📦 build
+    needs: ['install-cli']
+    script:
+        - cd $BASE_PATH/
+        - npm run build
+    artifacts:
+        paths:
+            - $BASE_PATH/build/
 
 release-cli:
-  stage: release
-  needs:
-    - job: build-cli
-      artifacts: true
-  script:
-    - npm run package:win-x64
-  artifacts:
-    paths:
-      - $BASE_PATH/release/
+    image: $CI_REGISTRY_IMAGE/cli:latest
+    stage: 🚀 release
+    needs: ['install-cli', 'build-cli']
+    script:
+        - cd $BASE_PATH/
+        - npm run package:win-x64
+    artifacts:
+        paths:
+            - $BASE_PATH/release/
+    when: manual
