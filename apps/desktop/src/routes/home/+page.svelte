@@ -1,9 +1,15 @@
 <script>
     import { version } from '$app/environment';
 </script>
-<style>
 
-</style>
+<div class="absolute top-0 w-full p-4 flex justify-between">
+    <h1 class="gradient-heading text-xl font-bold">
+        Canvas Capture
+    </h1>
+    <a href="/settings">
+        <i class="fa-solid fa-gear text-xl" />
+    </a>
+</div>
 
 <div class="h-full grid place-items-center">
     <form method="GET" class="flex gap-4 flex-col" action="/select">
@@ -17,6 +23,8 @@
     </form>
 </div>
 
-<div class="absolute bottom-0 left-2 h-6 w-16">
-    {version}
+<div class="absolute bottom-0 w-full p-4 flex justify-between">
+    <div class="font-sm font-light">
+        {version}
+    </div>
 </div>

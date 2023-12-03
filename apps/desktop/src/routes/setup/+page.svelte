@@ -12,7 +12,7 @@
                 canvasApiToken
             }
         ).then(() => {
-            window.location.replace('/')
+            window.location.replace('/settings')
         });
     }
 </script>

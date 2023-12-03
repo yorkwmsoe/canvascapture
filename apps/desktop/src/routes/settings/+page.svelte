@@ -1,16 +1,46 @@
-<script>
+<script lang="ts">
+	import { getConfigState, updateConfigState } from "$lib/config";
+	import BackNav from "../../components/BackNav.svelte";
+    import { getToastStore } from '@skeletonlabs/skeleton';
 
+    const toastStore = getToastStore();
+
+    const currentState = getConfigState();
+
+    let canvasDomain = currentState.canvasDomain;
+    let canvasApiToken = currentState.canvasApiToken;
+
+    async function handleSubmit() {
+        updateConfigState(
+            {
+                canvasDomain,
+                canvasApiToken
+            }
+        ).then(() => {
+            toastStore.trigger({
+                message: "Settings saved!"
+            })
+        });
+    }
 </script>
-<style>
 
-</style>
-<!--NEED TO REMOVE LAYOUT IF POSSIBLE-->
-<div class="settings-items">
-    <h1 class="h1">Settings</h1>
-    <input class="input" title="Domain" type="text" placeholder="https://msoe.instructure.com/" />
-    <h6>Enter your Canvas Domain</h6>
-    <input class="input" title="Access Key" type="text" placeholder="Access Key" />
-    <h6>Enter your Canvas Access Key</h6>
-    <button type="button" class="btn variant-filled">Save</button>
 
-</div>
+<BackNav page="/home" />
+
+<div class="h-full grid place-items-center">
+    <div>
+     <h1 class="h1 mb-8 text-center">Settings</h1>
+     <form class="flex gap-4 flex-col" on:submit|preventDefault={handleSubmit}>
+         <label class="label">
+             <span>Domain</span>
+             <input bind:value={canvasDomain} class="input" type="url" placeholder="msoe.instructure.com"/>
+         </label>
+         <label class="label">
+             <span>Access Key</span>
+             <input bind:value={canvasApiToken} class="input" type="text" placeholder="Access Key" required/>
+         </label>
+         <button type="submit" class="btn variant-filled-secondary">Save</button>
+     </form>
+    </div>
+ </div>
+ 
