@@ -33,7 +33,7 @@
     let submissions: SubmissionSlot[] = []
 
     //loading variables that will be used in the html section. If that data has not been loaded
-    //no data will appear in HTML. Once the data is loaded though, the data will appear and be rendered
+    //no data will appear in HTML. Once the data is loaded though, the data will apear and be rendered
     let isCourseLoading = true
     let isAssignmentsLoading = true;
 
