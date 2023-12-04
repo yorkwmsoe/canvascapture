@@ -63,3 +63,4 @@ release-desktop-windows:
     paths:
       - $DESKTOP_BASE_PATH/src-tauri/target/release/bundle/
   when: manual
+  allow_failure: true

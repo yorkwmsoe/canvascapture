@@ -42,9 +42,6 @@ build-docker-desktop-windows:
   services:
     - name: docker:dind
       alias: docker
-  tags:
-    - shared-windows
-    - windows
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build ./docker -f ./docker/Dockerfile.desktop.windows -t $CI_REGISTRY_IMAGE/desktop/windows
@@ -52,3 +49,4 @@ build-docker-desktop-windows:
   only:
     changes:
       - docker/Dockerfile.desktop.windows
+  allow_failure: true
