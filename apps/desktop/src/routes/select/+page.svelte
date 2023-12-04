@@ -235,26 +235,26 @@
         margin-bottom: 5%;
     }
 
-    .progress-fetch-bar {
-        margin-bottom: 5%;
-    }
+    /*.progress-fetch-bar {*/
+    /*    margin-bottom: 5%;*/
+    /*}*/
 
-    .select-button-bar {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
+    /*.select-button-bar {*/
+    /*    width: 100%;*/
+    /*    display: flex;*/
+    /*    justify-content: space-between;*/
 
-    }
+    /*}*/
 
-    .btn-gen {
-        /*align-self: flex-end;*/
-        margin-left: auto;
-    }
+    /*.btn-gen {*/
+    /*    !*align-self: flex-end;*!*/
+    /*    margin-left: auto;*/
+    /*}*/
 
-    .btn-back {
-        /*align-self: flex-start;*/
-        margin-right: auto;
-    }
+    /*.btn-back {*/
+    /*    !*align-self: flex-start;*!*/
+    /*    margin-right: auto;*/
+    /*}*/
 
     .main-content {
         width: 100%;
@@ -269,9 +269,9 @@
         margin: 0px;
     }
 
-    .progress-div {
-        margin-bottom: 5%;
-    }
+    /*.progress-div {*/
+    /*    margin-bottom: 5%;*/
+    /*}*/
 
 </style>
 
