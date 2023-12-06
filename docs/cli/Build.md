@@ -8,6 +8,8 @@ These instructions are for building & packaging the project.
 
 ## Build
 
+cd into the `apps\cli` directory.
+
 1. Install dependencies:
 
    ```sh
