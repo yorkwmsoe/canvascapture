@@ -2,6 +2,8 @@
     import {Stepper, Step} from "@skeletonlabs/skeleton";
     import {getConfigState} from "$lib/config";
     import {getCourses, getAssignments, getSubmissions} from "$lib/api";
+	import type { MouseEventHandler } from "svelte/elements";
+	import BackNav from "../../components/BackNav.svelte";
     //import type {Course} from "$lib/types/course"
 
     //Declaring types, these can probably just go in a different file and be imported
@@ -128,7 +130,8 @@
                 //loop over the retrieved data from the API call and cast each object to a SubmissionSlot
                 //type and then push it to the global submissions variable
                 d.forEach((subObj) => {
-                    let subType: SubmissionSlot = {id: subObj.id, grade: subObj.grade, score: subObj.score
+                    let subType: SubmissionSlot = {id: subObj.id, grade: parseFloat(subObj.grade), score: subObj.score,
+                        comments: subObj.submission_comments?.map((comment) => comment.comment).join("\n")
                     } as SubmissionSlot;
                     submissions.push(subType);
                 })
@@ -140,6 +143,7 @@
                     console.log(submissions)
                 }
 
+                return;
             });
         })
 
@@ -169,13 +173,14 @@
      * is most likely going to be development for spring term
      * @param event
      */
-    const onCourseClick = (event) => {
-        let element: HTMLOptionElement = event.target
-        courses.forEach((course) => {
-            if (course.name == element.text) {
-                course.checkedStatus = element.selected;
-            }
-        })
+    const onCourseClick: MouseEventHandler<HTMLOptionElement> = (event) => {
+        const element = event.target
+        if (!element) return;
+        // courses.forEach((course) => {
+        //     if (course.name == element.text) {
+        //         course.checkedStatus = element.selected;
+        //     }
+        // })
     }
 
     /**
@@ -190,13 +195,14 @@
      * is most likely going to be development for spring term
      * @param event
      */
-    const onAssignClick = (event) => {
-        let element: HTMLOptionElement = event.target
-        assignments.forEach((assign) => {
-            if (assign.name == element.text) {
-                assign.checkedStatus = element.selected
-            }
-        })
+    const onAssignClick: MouseEventHandler<HTMLOptionElement> = (event) => {
+        const element = event.target;
+        if (!element) return;
+        // assignments.forEach((assign) => {
+        //     if (assign.name == element.text) {
+        //         assign.checkedStatus = element.selected
+        //     }
+        // })
     }
 
     /**
@@ -274,6 +280,8 @@
     /*}*/
 
 </style>
+
+<BackNav page="/home" />
 
 <div class="select-page">
     <div class="select-content">
