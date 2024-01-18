@@ -7,7 +7,7 @@ import {
 
 // !MUST NOT BE BROWSER HISTORY FOR ELECTRON
 const history = createMemoryHistory({
-  initialEntries: ['/']
+  initialEntries: import.meta.env.RENDERER_VITE_MODE === 'demo' ? ['/demo'] : ['/']
 })
 
 const router = new Router({ routeTree, history })
