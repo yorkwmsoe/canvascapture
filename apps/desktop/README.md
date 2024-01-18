@@ -1,10 +1,4 @@
-# desktop
-
-An Electron application with React and TypeScript
-
-## Recommended IDE Setup
-
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+# Canvas Capture Desktop
 
 ## Project Setup
 
@@ -32,3 +26,16 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+## Coding Standards
+
+[React Handbook](https://reacthandbook.dev/)
+
+Note: the `features` folder is now the `pages` folder
+
+## Project Libraries
+
+- [TanStack Router](https://tanstack.com/router/v1/docs/overview)
+- [Ant Design](https://ant.design/)
+- [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
+- [React Query](https://tanstack.com/query/latest/)
