@@ -18,23 +18,16 @@ This project is a tool that allows users to capture their work on Canvas, an onl
 
 Programming Languages:
 
-- [Rust](https://www.rust-lang.org/)
 - [Typescript](https://www.typescriptlang.org/)
 
 Package Managers:
 
-- [Cargo](https://doc.rust-lang.org/cargo/)
 - [Nodejs](https://nodejs.org/en/)
 
 Web Development:
 
 - [Canvas API](https://canvas.instructure.com/doc/api/index.html)
-- [SvelteKit](https://kit.svelte.dev/)
-- [Skeleton UI](https://www.skeleton.dev/)
-
-Desktop Application Development:
-
-- [Tauri](https://tauri.app/)
+- [Ant Design](https://ant.design/)
 
 Document Conversion:
 
