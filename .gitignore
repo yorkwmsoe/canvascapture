@@ -3,3 +3,6 @@ node_modules/
 
 # Git directories
 .idea
+
+# OS generated files
+*.DS_Store
