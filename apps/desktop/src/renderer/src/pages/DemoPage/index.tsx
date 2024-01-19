@@ -1,14 +1,9 @@
-import { getRandomCreditCard } from '@renderer/apis/random.api'
+import { useGetRandomCreditCardQuery } from '@renderer/apis/random.api'
 import { CreditCardDemo } from '@renderer/components/CreditCardDemo'
-import { useQuery } from '@tanstack/react-query'
 import { Button } from 'antd'
 
 export function DemoPage() {
-  const { data, refetch } = useQuery({
-    queryKey: ['credit-card'],
-    queryFn: getRandomCreditCard
-  })
-
+  const { data, isFetching, refetch } = useGetRandomCreditCardQuery()
   return (
     <div>
       <h1>Demo Page</h1>
@@ -17,7 +12,7 @@ export function DemoPage() {
           Regenerate
         </Button>
       </div>
-      {data && <CreditCardDemo creditCard={data} />}
+      {<CreditCardDemo creditCard={data} loading={isFetching} />}
     </div>
   )
 }

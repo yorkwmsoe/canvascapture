@@ -2,7 +2,7 @@ export type CreditCardReponse = {
   id: number
   uid: string
   credit_card_number: string
-  credit_card_expiry_date: Date
+  credit_card_expiry_date: string
   credit_card_type: string
 }
 
@@ -11,6 +11,6 @@ export type CreditCard = {
   uid: string
   creditCardBalance: number
   creditCardNumber: string
-  creditCardExpiryDate: Date
+  creditCardExpiryDate: string
   creditCardType: string
 }

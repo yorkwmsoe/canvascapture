@@ -9,6 +9,7 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/explicit-function-return-type': 'off',
-    'no-unused-vars': ['error', { varsIgnorePattern: '_' }]
+    'no-unused-vars': 'off',
+    'no-console': 'warn'
   }
 }
