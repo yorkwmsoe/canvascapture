@@ -37,7 +37,7 @@ build-desktop:
     - npm run build
   artifacts:
     paths:
-      - $BASE_PATH/build/
+      - $BASE_PATH/out/
 
 release-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
@@ -50,5 +50,5 @@ release-desktop:
     - npm run build:linux
   artifacts:
     paths:
-      - $BASE_PATH/release/
+      - $BASE_PATH/dist/
   when: manual
