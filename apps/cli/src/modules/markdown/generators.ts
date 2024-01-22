@@ -10,11 +10,11 @@ export async function generateAssignment(course: Course, assignment: Assignment,
   const folderPath = `${basePath}/${course.name}/${assignment.name}`;
   mkdirSync(folderPath, { recursive: true });
 
-  let items: string[] = [...assembleTitleAndGrade(assignment, submission)];
-  items = [...items, ...assembleFeedbackInfo(submission)]
-  items = [...items, ...assembleDescriptionInfo(assignment)]
-  items = [...items, ...assembleRubricInfo(assignment, submission)]
-  items = [...items, ...assembleSubmissionInfo(submission)]
+  let items: string[] = [...assembleTitleAndGrade(assignment, submission),
+    ...assembleFeedbackInfo(submission),
+    ...assembleDescriptionInfo(assignment),
+    ...assembleRubricInfo(assignment, submission),
+    ...assembleSubmissionInfo(submission)]
 
   const cleanedItems = items.filter((item) => !!item)
 
