@@ -12,6 +12,7 @@ export const assignmentsCommand = {
 } satisfies Command
 
 export async function select_assignments() {
+    state.assignments = undefined;
     if (!state.courses || state.courses.length === 0) {
         console.log('No courses selected')
         return
@@ -26,6 +27,11 @@ export async function select_assignments() {
             if (submissions.filter(s => s.workflow_state !== 'unsubmitted').length > 0) {
                 assignments.push(a);
             }
+        }
+        
+        if (assignments.length === 0) {
+            console.log('No assignments found')
+            return
         }
         
         const answer = await checkbox({

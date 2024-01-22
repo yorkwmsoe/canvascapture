@@ -1,6 +1,6 @@
-import { checkbox, getAssignments } from './mocks'
+import { checkbox, getAssignments, getSubmissions } from './mocks'
 import { select_assignments } from '../assignments'
-import { testCourses, testAssignments } from './data'
+import { testCourses, testAssignments, testSubmissions } from './data'
 import { state } from '@modules/command/state'
 
 describe('assignments', () => {
@@ -15,9 +15,22 @@ describe('assignments', () => {
         state.courses = testCourses
         checkbox.mockReturnValue([testAssignments[0].id])
         getAssignments.mockReturnValue(Promise.resolve(testAssignments))
+        getSubmissions.mockReturnValue(Promise.resolve(testSubmissions))
 
         await select_assignments()
 
         expect(state.assignments).toMatchObject(testAssignments)
+    })
+    
+    it('should filter out assignments with no submissions', async () => {
+        state.courses = testCourses
+        checkbox.mockReturnValue([testAssignments[0].id])
+        getAssignments.mockReturnValue(Promise.resolve(testAssignments))
+        getSubmissions.mockReturnValue(Promise.resolve(testSubmissions.map(x => ({...x, workflow_state: 'unsubmitted'}))))
+
+        await select_assignments()
+
+        expect(state.assignments).toBeUndefined()
+        
     })
 })

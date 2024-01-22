@@ -12,11 +12,14 @@ export const coursesCommand = {
 } satisfies Command
 
 export async function select_courses() {
+    state.courses = undefined
+
     const unfilteredCourses = await getCourses();
 
     let courses: Course[] = [];
     for (const c of unfilteredCourses) {
         const assignments = await getAssignments(c.id)
+        console.log(assignments)
         if (assignments.length > 0) {
             courses.push(c);
         }
