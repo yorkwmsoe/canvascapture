@@ -1,0 +1,54 @@
+variables:
+  BASE_PATH: apps/desktop
+
+install-desktop:
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🛞 install
+  needs:
+    - job: build-docker-desktop
+      optional: true
+  script:
+    - cd $BASE_PATH/
+    - npm ci
+  artifacts:
+    paths:
+      - $BASE_PATH/node_modules/
+
+test-desktop:
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🤞 test
+  needs: ['install-desktop']
+  script:
+    - cd $BASE_PATH/
+    - npm run coverage
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - $BASE_PATH/junit.xml
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+
+build-desktop:
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 📦 build
+  needs: ['install-desktop']
+  script:
+    - cd $BASE_PATH/
+    - npm run build
+  artifacts:
+    paths:
+      - $BASE_PATH/build/
+
+release-desktop:
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🚀 release
+  needs: ['install-desktop', 'build-desktop']
+  script:
+    - cd $BASE_PATH/
+    - npm run build:win
+    - npm run build:mac
+    - npm run build:linux
+  artifacts:
+    paths:
+      - $BASE_PATH/release/
+  when: manual
