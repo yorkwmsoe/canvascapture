@@ -84,15 +84,19 @@ export const getSubmissions = async (
 
 // Hooks
 
-export const useGetCourses = () => {
+export const useGetAssignments = ({ courseIds }: { courseIds: number[] }) => {
   const { canvasDomain, accessToken } = useSettingsStore()
   return useQuery({
-    queryKey: ['courses'],
+    queryKey: ['assignments'],
     queryFn: async () => {
-      return await getCourses({
-        accessToken: accessToken,
-        canvasApiBaseUrl: canvasDomain
-      })
+      const assignmentPromises = courseIds.map((courseId) =>
+        getAssignments({
+          accessToken,
+          canvasApiBaseUrl: canvasDomain,
+          courseId
+        })
+      )
+      return (await Promise.all(assignmentPromises)).flat()
     }
   })
 }
