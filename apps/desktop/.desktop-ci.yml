@@ -1,5 +1,5 @@
 install-desktop:
-  image: node:18
+  image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🛞 install
   needs:
     - job: build-docker-desktop
@@ -12,7 +12,7 @@ install-desktop:
       - $DESKTOP_BASE_PATH/node_modules/
 
 test-desktop:
-  image: node:18
+  image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🤞 test
   needs: ['install-desktop']
   script:
@@ -26,7 +26,7 @@ test-desktop:
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 release-desktop-linux:
-  image: electronuserland/builder:latest
+  image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🚀 release
   needs: ['install-desktop']
   script:
@@ -38,7 +38,7 @@ release-desktop-linux:
   when: manual
 
 release-desktop-windows:
-  image: electronuserland/builder:latest
+  image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🚀 release
   needs: ['install-desktop']
   script:
@@ -50,7 +50,7 @@ release-desktop-windows:
   when: manual
 
 release-desktop-mac:
-  image: electronuserland/builder:latest
+  image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🚀 release
   needs: ['install-desktop']
   script:
