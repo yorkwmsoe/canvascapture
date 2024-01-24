@@ -5,6 +5,10 @@ stages:
   - 📦 build
   - 🚀 release
 
+variables:
+  CLI_BASE_PATH: apps/cli
+  DESKTOP_BASE_PATH: apps/desktop
+
 include:
   - local: /apps/cli/.cli-ci.yml
   - local: /apps/desktop/.desktop-ci.yml

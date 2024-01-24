@@ -5,24 +5,24 @@ install-desktop:
     - job: build-docker-desktop
       optional: true
   script:
-    - cd apps/desktop/
+    - cd $DESKTOP_BASE_PATH/
     - npm ci
   artifacts:
     paths:
-      - apps/desktop/node_modules/
+      - $DESKTOP_BASE_PATH/node_modules/
 
 test-desktop:
   image: node:18
   stage: 🤞 test
   needs: ['install-desktop']
   script:
-    - cd apps/desktop/
+    - cd $DESKTOP_BASE_PATH/
     - npm run coverage
   artifacts:
     when: always
     reports:
       junit:
-        - apps/desktop/junit.xml
+        - $DESKTOP_BASE_PATH/junit.xml
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 release-desktop-linux:
@@ -30,11 +30,11 @@ release-desktop-linux:
   stage: 🚀 release
   needs: ['install-desktop']
   script:
-    - cd apps/desktop/
+    - cd $DESKTOP_BASE_PATH/
     - npm run build:linux
   artifacts:
     paths:
-      - apps/desktop/dist/
+      - $DESKTOP_BASE_PATH/dist/
   when: manual
 
 release-desktop-windows:
@@ -42,11 +42,11 @@ release-desktop-windows:
   stage: 🚀 release
   needs: ['install-desktop']
   script:
-    - cd apps/desktop/
+    - cd $DESKTOP_BASE_PATH/
     - npm run build:win
   artifacts:
     paths:
-      - apps/desktop/dist/
+      - $DESKTOP_BASE_PATH/dist/
   when: manual
 
 release-desktop-mac:
@@ -54,9 +54,9 @@ release-desktop-mac:
   stage: 🚀 release
   needs: ['install-desktop']
   script:
-    - cd apps/desktop/
+    - cd $DESKTOP_BASE_PATH/
     - npm run build:mac
   artifacts:
     paths:
-      - apps/desktop/dist/
+      - $DESKTOP_BASE_PATH/dist/
   when: manual
