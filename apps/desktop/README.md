@@ -67,4 +67,4 @@ Note: the `features` folder is now the `pages` folder
 - [TanStack Router](https://tanstack.com/router/v1/docs/overview)
 - [Ant Design](https://ant.design/)
 - [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
-- [Redux Toolkit](https://redux-toolkit.js.org/)
+- [React Query](https://tanstack.com/query/latest/)
