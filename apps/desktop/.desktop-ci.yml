@@ -1,53 +1,62 @@
-variables:
-  BASE_PATH: apps/desktop
-
 install-desktop:
-  image: $CI_REGISTRY_IMAGE/desktop:latest
+  image: node:18
   stage: 🛞 install
   needs:
     - job: build-docker-desktop
       optional: true
   script:
-    - cd $BASE_PATH/
+    - cd apps/desktop/
     - npm ci
   artifacts:
     paths:
-      - $BASE_PATH/node_modules/
+      - apps/desktop/node_modules/
 
 test-desktop:
-  image: $CI_REGISTRY_IMAGE/desktop:latest
+  image: node:18
   stage: 🤞 test
   needs: ['install-desktop']
   script:
-    - cd $BASE_PATH/
+    - cd apps/desktop/
     - npm run coverage
   artifacts:
     when: always
     reports:
       junit:
-        - $BASE_PATH/junit.xml
+        - apps/desktop/junit.xml
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 release-desktop-linux:
-  image: $CI_REGISTRY_IMAGE/desktop:latest
+  image: electronuserland/builder:latest
   stage: 🚀 release
   needs: ['install-desktop']
   script:
-    - cd $BASE_PATH/
+    - cd apps/desktop/
     - npm run build:linux
   artifacts:
     paths:
-      - $BASE_PATH/dist/
+      - apps/desktop/dist/
   when: manual
 
 release-desktop-windows:
-  image: $CI_REGISTRY_IMAGE/desktop/windows:latest
+  image: electronuserland/builder:latest
   stage: 🚀 release
   needs: ['install-desktop']
   script:
-    - cd $BASE_PATH/
-    - npm run build:linux
+    - cd apps/desktop/
+    - npm run build:win
   artifacts:
     paths:
-      - $BASE_PATH/dist/
+      - apps/desktop/dist/
+  when: manual
+
+release-desktop-mac:
+  image: electronuserland/builder:latest
+  stage: 🚀 release
+  needs: ['install-desktop']
+  script:
+    - cd apps/desktop/
+    - npm run build:mac
+  artifacts:
+    paths:
+      - apps/desktop/dist/
   when: manual
