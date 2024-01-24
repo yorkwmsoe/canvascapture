@@ -4,6 +4,8 @@ import { ZodError } from 'zod'
 import { state } from '@modules/command/state'
 import { getConfig } from '@lib/config'
 import { Command } from '@modules/command/types/command'
+import { AxiosError } from 'axios'
+import { logger } from '@lib/logger'
 
 async function loadConfig() {
     const config = getConfig()
@@ -27,6 +29,13 @@ async function handleCommand({ command, args }: { command: Command | undefined; 
                 })
             } else {
                 console.log('Something went wrong.')
+                if (error instanceof AxiosError) {
+                    logger.error(error.code)
+                    logger.error(error.config.url)
+                    logger.error(error.message)
+                } else {
+                    logger.error((error as Error).message)
+                }
             }
         }
     } else {
