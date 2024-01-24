@@ -8,8 +8,8 @@ export type SettingsStore = {
 }
 
 export const useSettingsStore = create<SettingsStore>()((set) => ({
-  canvasDomain: undefined, // TODO: Load from local file
-  accessToken: undefined, // TODO: Load from local file
+  canvasDomain: undefined, // TODO: Load from local file //Hardcode for now
+  accessToken: undefined, // TODO: Load from local file //Hardcode for now
   setCanvasDomain: (domain) => set({ canvasDomain: domain }),
   setAccessToken: (token) => set({ accessToken: token })
 }))
