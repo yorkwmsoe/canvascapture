@@ -8,7 +8,7 @@ import { Submission } from '@renderer/types/canvas_api/submission'
 
 // date handling from: https://stackoverflow.com/a/66238542
 export function handleDates(body: unknown) {
-  if (body === null || body === undefined || typeof body !== 'object') return body
+  if (body === null || body === undefined || typeof body !== 'object') return
 
   for (const key of Object.keys(body)) {
     const value = body[key]
@@ -21,7 +21,7 @@ export function handleDates(body: unknown) {
     } else if (typeof value === 'object') handleDates(value)
   }
 
-  return body
+  return
 }
 
 const getApiHeaders = (
