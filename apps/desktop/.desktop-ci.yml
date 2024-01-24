@@ -28,25 +28,24 @@ test-desktop:
         - $BASE_PATH/junit.xml
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
-build-desktop:
+release-desktop-linux:
   image: $CI_REGISTRY_IMAGE/desktop:latest
-  stage: 📦 build
+  stage: 🚀 release
   needs: ['install-desktop']
   script:
     - cd $BASE_PATH/
-    - npm run build
+    - npm run build:linux
   artifacts:
     paths:
-      - $BASE_PATH/out/
+      - $BASE_PATH/dist/
+  when: manual
 
-release-desktop:
-  image: $CI_REGISTRY_IMAGE/desktop:latest
+release-desktop-windows:
+  image: $CI_REGISTRY_IMAGE/desktop/windows:latest
   stage: 🚀 release
-  needs: ['install-desktop', 'build-desktop']
+  needs: ['install-desktop']
   script:
     - cd $BASE_PATH/
-    - npm run build:win
-    - npm run build:mac
     - npm run build:linux
   artifacts:
     paths:
