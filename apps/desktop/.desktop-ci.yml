@@ -30,7 +30,7 @@ release-desktop-linux:
   services:
     - docker:dind
   stage: 🚀 release
-  needs: ['install-desktop']
+  needs: []
   script:
     - docker build ./docker -f ./docker/Dockerfile.desktop
 # release-desktop-windows:
