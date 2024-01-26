@@ -1,9 +1,9 @@
 FROM electronuserland/builder:latest
 
 # Install dependencies
-COPY package-lock.json .
+COPY *.json .
 
-RUN npm ci
+RUN npm install
 
 # Copy source code
 COPY . .
