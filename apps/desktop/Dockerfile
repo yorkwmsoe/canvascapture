@@ -1,14 +1,12 @@
 FROM electronuserland/builder:latest
 
-WORKDIR /usr/src/app
-
 # Install dependencies
-COPY apps/desktop/package-lock.json .
+COPY package-lock.json .
 
 RUN npm ci
 
 # Copy source code
-COPY apps/desktop .
+COPY . .
 
 # Build the app
 RUN npm run build:linux

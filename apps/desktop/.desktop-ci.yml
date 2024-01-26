@@ -32,7 +32,7 @@ release-desktop-linux:
   stage: 🚀 release
   needs: []
   script:
-    - docker build ./docker -f ./docker/Dockerfile.desktop
+    - docker build $DESKTOP_BASE_PATH
 # release-desktop-windows:
 #   image: $CI_REGISTRY_IMAGE/desktop:latest
 #   stage: 🚀 release
