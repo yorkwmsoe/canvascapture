@@ -30,6 +30,7 @@ release-desktop-linux:
   stage: 🚀 release
   needs: []
   script:
+    - apt-get update
     - apt-get install libgtk-3-0 libatk-bridge2.0-0
     - cd $DESKTOP_BASE_PATH/
     - npm ci
