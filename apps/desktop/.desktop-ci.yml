@@ -31,7 +31,7 @@ release-desktop-linux:
   needs: []
   script:
     - apt-get update -y
-    - apt-get install libgtk-3-0 libatk-bridge2.0-0 -y
+    - apt-get install libgtk-3-0 libatk-bridge2.0-0 libasound2 -y
     - cd $DESKTOP_BASE_PATH/
     - npm ci
     - npm run build:linux
