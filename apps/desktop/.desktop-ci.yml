@@ -26,13 +26,15 @@
 #   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 release-desktop-linux:
-  image: docker:stable
-  services:
-    - docker:dind
+  image: electronuserland/builder:latest
   stage: 🚀 release
   needs: []
   script:
-    - docker build $DESKTOP_BASE_PATH
+    - apt-get install libgtk-3-0 libatk-bridge2.0-0
+    - cd $DESKTOP_BASE_PATH/
+    - npm ci
+    - npm run build:linux
+
 # release-desktop-windows:
 #   image: $CI_REGISTRY_IMAGE/desktop:latest
 #   stage: 🚀 release
