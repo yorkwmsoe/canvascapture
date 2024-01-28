@@ -35,6 +35,9 @@ release-desktop-linux:
     - cd $DESKTOP_BASE_PATH/
     - npm ci
     - npm run build:linux
+  artifacts:
+    paths:
+      - $DESKTOP_BASE_PATH/dist/
 
 # release-desktop-windows:
 #   image: $CI_REGISTRY_IMAGE/desktop:latest
