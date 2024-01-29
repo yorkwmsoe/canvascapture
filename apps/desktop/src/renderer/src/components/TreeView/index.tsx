@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Tree } from 'antd';
 import type { TreeDataNode } from 'antd';
+import {box} from "../SwitchStepper";
 
-const treeData: TreeDataNode[] = [
+const treeDataDisplay: TreeDataNode[] = [
   {
     title: 'Math',
     key: '0',
@@ -36,11 +37,19 @@ const treeData: TreeDataNode[] = [
   },
 ];
 
-function TreeView() {
+
+
+function TreeView({steps}: { steps: box[] }) {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>(['0-0-0']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+
+  console.log(steps)
+  const boxToTree = (box) => {
+
+  }
+
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
     console.log('onExpand', expandedKeysValue);
@@ -60,7 +69,7 @@ function TreeView() {
     setSelectedKeys(selectedKeysValue);
   };
 
-  return (
+ return (
     <Tree
       checkable
       onExpand={onExpand}
@@ -70,7 +79,7 @@ function TreeView() {
       checkedKeys={checkedKeys}
       onSelect={onSelect}
       selectedKeys={selectedKeys}
-      treeData={treeData}
+      treeData={treeDataDisplay}
     />
   );
 };

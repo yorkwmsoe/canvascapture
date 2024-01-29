@@ -1,32 +1,22 @@
 import { Button, Card, Flex, Steps, theme, Skeleton, Space, Statistic, Typography } from 'antd'
 import {useState} from "react";
-import SwitchStepper from "../../components/SwitchStepper";
-import {stepItem} from "../../components/SwitchStepper";
+import SwitchStepper, {box} from "../../components/SwitchStepper";
+import {step} from "../../components/SwitchStepper";
 export function SelectionPage() {
 
 
-  const steps: stepItem[] = [
+  const steps: step[] = [
     {
       title: 'Select Courses',
-      content: [
-        { name: 'Math', isChecked: false },
-        { name: 'Science', isChecked: false },
-        { name: 'English', isChecked: false },
-        { name: 'Language', isChecked: false }
-      ],
+      stage: 'Course'
     },
     {
       title: 'Select Assignments',
-      content: [],
+      stage: 'Assign'
     },
     {
       title: 'Generate',
-      content: [
-        { name: 'orange', isChecked: false },
-        { name: 'banana', isChecked: false },
-        { name: 'muffin', isChecked: false },
-        { name: 'kiwi', isChecked: false }
-      ],
+      stage: 'Gen'
     },
   ];
 
