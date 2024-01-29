@@ -1,4 +1,4 @@
-export type CreditCardReponse = {
+export type CreditCardResponse = {
   id: number
   uid: string
   credit_card_number: string

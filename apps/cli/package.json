@@ -54,6 +54,7 @@
         "date-fns": "^2.30.0",
         "figlet": "^1.6.0",
         "gradient-string": "^2.0.2",
+        "pino": "^8.17.2",
         "prompt-sync": "^4.2.0",
         "zod": "^3.22.2"
     }
