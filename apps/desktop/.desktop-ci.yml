@@ -1,64 +1,75 @@
-# install-desktop:
-#   image: $CI_REGISTRY_IMAGE/desktop:latest
-#   stage: 🛞 install
-#   needs:
-#     - job: build-docker-desktop
-#       optional: true
-#   script:
-#     - cd $DESKTOP_BASE_PATH/
-#     - npm ci
-#   artifacts:
-#     paths:
-#       - $DESKTOP_BASE_PATH/node_modules/
-
-# test-desktop:
-#   image: $CI_REGISTRY_IMAGE/desktop:latest
-#   stage: 🤞 test
-#   needs: ['install-desktop']
-#   script:
-#     - cd $DESKTOP_BASE_PATH/
-#     - npm run coverage
-#   artifacts:
-#     when: always
-#     reports:
-#       junit:
-#         - $DESKTOP_BASE_PATH/junit.xml
-#   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
-
-release-desktop-linux-and-windows:
-  image: electronuserland/builder:wine
-  stage: 🚀 release
-  needs: []
+install-desktop:
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🛞 install
+  needs:
+    - job: build-docker-desktop
+      optional: true
   script:
-    - apt-get update -y
-    - apt-get install libgtk-3-0 libatk-bridge2.0-0 libasound2 -y
     - cd $DESKTOP_BASE_PATH/
     - npm ci
-    - npm run build:multi
+  artifacts:
+    paths:
+      - $DESKTOP_BASE_PATH/node_modules/
+
+test-desktop:
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🤞 test
+  needs: ['install-desktop']
+  script:
+    - cd $DESKTOP_BASE_PATH/
+    - npm run coverage
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - $DESKTOP_BASE_PATH/junit.xml
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+# release-desktop-linux-and-windows:
+#   image: electronuserland/builder:wine
+#   stage: 🚀 release
+#   needs: []
+#   script:
+#     - apt-get update -y
+#     - apt-get install libgtk-3-0 libatk-bridge2.0-0 libasound2 -y
+#     - cd $DESKTOP_BASE_PATH/
+#     - npm ci
+#     - npm run build:multi
+#   artifacts:
+#     paths:
+#       - $DESKTOP_BASE_PATH/dist/
+
+release-desktop-windows:
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🚀 release
+  needs: ['install-desktop']
+  script:
+    - cd $DESKTOP_BASE_PATH/
+    - npm run build:win
   artifacts:
     paths:
       - $DESKTOP_BASE_PATH/dist/
+  when: manual
 
-# release-desktop-windows:
-#   image: $CI_REGISTRY_IMAGE/desktop:latest
-#   stage: 🚀 release
-#   needs: ['install-desktop']
-#   script:
-#     - cd $DESKTOP_BASE_PATH/
-#     - npm run build:win
-#   artifacts:
-#     paths:
-#       - $DESKTOP_BASE_PATH/dist/
-#   when: manual
+release-desktop-mac:
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🚀 release
+  needs: ['install-desktop']
+  script:
+    - cd $DESKTOP_BASE_PATH/
+    - npm run build:mac
+  artifacts:
+    paths:
+      - $DESKTOP_BASE_PATH/dist/
+  when: manual
 
-# release-desktop-mac:
-#   image: $CI_REGISTRY_IMAGE/desktop:latest
-#   stage: 🚀 release
-#   needs: ['install-desktop']
-#   script:
-#     - cd $DESKTOP_BASE_PATH/
-#     - npm run build:mac
-#   artifacts:
-#     paths:
-#       - $DESKTOP_BASE_PATH/dist/
-#   when: manual
+release-desktop-linux:
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🚀 release
+  needs: ['install-desktop']
+  script:
+    - cd $DESKTOP_BASE_PATH/
+    - npm run build:linux
+  artifacts:
+    paths:
+      - $DESKTOP_BASE_PATH/dist/
+  when: manual
