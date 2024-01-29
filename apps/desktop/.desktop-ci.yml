@@ -24,19 +24,6 @@ test-desktop:
       junit:
         - $DESKTOP_BASE_PATH/junit.xml
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
-# release-desktop-linux-and-windows:
-#   image: electronuserland/builder:wine
-#   stage: 🚀 release
-#   needs: []
-#   script:
-#     - apt-get update -y
-#     - apt-get install libgtk-3-0 libatk-bridge2.0-0 libasound2 -y
-#     - cd $DESKTOP_BASE_PATH/
-#     - npm ci
-#     - npm run build:multi
-#   artifacts:
-#     paths:
-#       - $DESKTOP_BASE_PATH/dist/
 
 release-desktop-windows:
   image: $CI_REGISTRY_IMAGE/desktop:latest
