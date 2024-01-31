@@ -1,11 +1,10 @@
-import {Assignment} from '@renderer/types/canvas_api/assignment'
-import {useSettingsStore} from '@renderer/stores/settings.store'
-import {useQuery} from '@tanstack/react-query'
-import axios, {AxiosRequestHeaders} from 'axios'
-import {parseISO} from 'date-fns'
-import {Course} from '@renderer/types/canvas_api/course'
-import {Submission} from '@renderer/types/canvas_api/submission'
-import {Enrollment} from "../types/canvas_api/enrollment";
+import { Assignment } from '@renderer/types/canvas_api/assignment'
+import { useSettingsStore } from '@renderer/stores/settings.store'
+import { useQuery } from '@tanstack/react-query'
+import axios, { AxiosRequestHeaders } from 'axios'
+import { parseISO } from 'date-fns'
+import { Course } from '@renderer/types/canvas_api/course'
+import { Submission } from '@renderer/types/canvas_api/submission'
 
 // date handling from: https://stackoverflow.com/a/66238542
 export function handleDates(body: unknown) {
@@ -52,7 +51,7 @@ type Auth = {
 export const getCourses = async (args: Auth): Promise<Course[]> => {
   return (
     await api.get(`${args.canvasApiBaseUrl}/courses?exclude_blueprint_courses&per_page=1000`, {
-      headers: getApiHeaders({accessToken: args.accessToken})
+      headers: getApiHeaders({ accessToken: args.accessToken })
     })
   ).data
 }
@@ -64,7 +63,7 @@ export const getAssignments = async (
 ): Promise<Assignment[]> => {
   return (
     await api.get(`${args.canvasApiBaseUrl}/courses/${args.courseId}/assignments?per_page=1000`, {
-      headers: getApiHeaders({accessToken: args.accessToken})
+      headers: getApiHeaders({ accessToken: args.accessToken })
     })
   ).data
 }
@@ -78,15 +77,15 @@ export const getSubmissions = async (
   return (
     await api.get(
       `${args.canvasApiBaseUrl}/courses/${args.courseId}/assignments/${args.assignmentId}/submissions?include[]=rubric_assessment&include[]=submission_comments&per_page=1000`,
-      {headers: getApiHeaders({accessToken: args.accessToken})}
+      { headers: getApiHeaders({ accessToken: args.accessToken }) }
     )
   ).data
 }
 
 // Hooks
 
-export const useGetAssignments = ({courseIds}: { courseIds: number[] }) => {
-  const {canvasDomain, accessToken} = useSettingsStore()
+export const useGetAssignments = ({ courseIds }: { courseIds: number[] }) => {
+  const { canvasDomain, accessToken } = useSettingsStore()
   return useQuery({
     queryKey: ['assignments'],
     queryFn: async () => {
@@ -103,16 +102,15 @@ export const useGetAssignments = ({courseIds}: { courseIds: number[] }) => {
 }
 
 export const useGetCourses = () => {
-  const {canvasDomain, accessToken} = useSettingsStore()
+  const { canvasDomain, accessToken } = useSettingsStore()
   return useQuery({
     queryKey: ['courses'],
     queryFn: async () => {
-      const coursePromises = getCourses({
+      const courses = await getCourses({
         accessToken,
-        canvasApiBaseUrl: canvasDomain,
+        canvasApiBaseUrl: canvasDomain
       })
-      console.log(await coursePromises, "c")
-      return (await coursePromises)
+      return courses
     }
   })
 }
@@ -196,5 +194,3 @@ export const useGetCourses = () => {
 //     }
 //   })
 // }
-
-
