@@ -1,10 +1,8 @@
 import { Button, Card, Flex, Steps, theme, Skeleton, Space, Statistic, Typography } from 'antd'
-import {useState} from "react";
-import SwitchStepper, {box} from "../../components/SwitchStepper";
-import {step} from "../../components/SwitchStepper";
+import { useState } from 'react'
+import SwitchStepper, { box } from '../../components/SwitchStepper'
+import { step } from '../../components/SwitchStepper'
 export function SelectionPage() {
-
-
   const steps: step[] = [
     {
       title: 'Select Courses',
@@ -17,10 +15,8 @@ export function SelectionPage() {
     {
       title: 'Generate',
       stage: 'Gen'
-    },
-  ];
-
-
+    }
+  ]
 
   return (
     <div>

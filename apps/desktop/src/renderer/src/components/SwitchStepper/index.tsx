@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button, Checkbox, GetProp, message, Steps, theme } from 'antd'
 import TreeView from '../TreeView'
 import Courses from '../Courses'
+import { Assignments } from '../Assignments'
 
 // export type stepItem = {
 //   title: string,
@@ -53,7 +54,7 @@ function SwitchStepper({ steps }: { steps: step[] }) {
         {/*steps[current].content*/}
         {current === steps.length - 3 && <Courses />}
         {current === steps.length - 1 && <h1>Generating</h1>}
-        {current === steps.length - 2 && <TreeView steps={steps}></TreeView>}
+        {current === steps.length - 2 && <Assignments />}
         {/*stage === "Course" ? <Checkbox.Group options={steps[current].content.map(item =>  item.name)} onChange={onChange}/> :
         <TreeView></TreeView>*/}
       </div>
