@@ -1,15 +1,26 @@
+import { getConfig, setConfig } from '@renderer/lib/config'
 import { create } from 'zustand'
 
 export type SettingsStore = {
   canvasDomain: string
-  accessToken: string
+  canvasAccessToken: string
   setCanvasDomain: (domain: string) => void
-  setAccessToken: (token: string) => void
+  setCanvasAccessToken: (token: string) => void
 }
 
 export const useSettingsStore = create<SettingsStore>()((set) => ({
-  canvasDomain: '', // TODO: Load from local file
-  accessToken: '', // TODO: Load from local file
-  setCanvasDomain: (domain) => set({ canvasDomain: domain }),
-  setAccessToken: (token) => set({ accessToken: token })
+  canvasDomain: getConfig().canvasDomain,
+  canvasAccessToken: getConfig().canvasAccessToken,
+  setCanvasDomain: (domain) => {
+    set((state) => {
+      setConfig({ ...state, canvasDomain: domain })
+      return { canvasDomain: domain }
+    })
+  },
+  setCanvasAccessToken: (token) => {
+    set((state) => {
+      setConfig({ ...state, canvasAccessToken: token })
+      return { canvasAccessToken: token }
+    })
+  }
 }))

@@ -29,6 +29,7 @@
     "@ant-design/icons": "^5.2.6",
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
+    "@electron/remote": "^2.1.2",
     "@reduxjs/toolkit": "^2.0.1",
     "@tanstack/react-query": "^5.17.19",
     "@tanstack/react-query-devtools": "^5.17.21",
@@ -38,6 +39,7 @@
     "cross-env": "^7.0.3",
     "date-fns": "^3.3.1",
     "electron-updater": "^6.1.7",
+    "vite-plugin-electron": "^0.15.6",
     "zustand": "^4.4.7"
   },
   "devDependencies": {
@@ -61,6 +63,8 @@
     "react-dom": "^18.2.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.11",
+    "vite-plugin-electron-renderer": "^0.14.5",
+    "vite-plugin-node-polyfills": "^0.19.0",
     "vitest": "^1.2.1"
   }
 }

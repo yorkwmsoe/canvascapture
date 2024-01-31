@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+require('@electron/remote/main').initialize()
 
 function createWindow(): void {
   // Create the browser window.
@@ -12,10 +13,13 @@ function createWindow(): void {
     autoHideMenuBar: true,
     icon: icon,
     webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
   })
+  require('@electron/remote/main').enable(mainWindow.webContents)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
