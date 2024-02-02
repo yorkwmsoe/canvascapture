@@ -1,13 +1,8 @@
-import React, { useState } from 'react'
-import { Button, Checkbox, GetProp, message, Steps, theme } from 'antd'
-import TreeView from '../TreeView'
+import React, { useRef, useState } from 'react'
+import { Button, message, Steps, theme } from 'antd'
 import Courses from '../Courses'
 import { Assignments } from '../Assignments'
-
-// export type stepItem = {
-//   title: string,
-//   content: box[],
-// }
+import { useCheckStore } from '../../stores/check.store'
 
 export type box = {
   title: string
@@ -23,15 +18,30 @@ export type step = {
 function SwitchStepper({ steps }: { steps: step[] }) {
   const { token } = theme.useToken()
   const [current, setCurrent] = useState(0)
-  const [stage, setStage] = useState('Courses')
+  const stage = useRef('Courses')
+  const { courseCheck, setCourseCheck } = useCheckStore()
 
   // console.log(steps[current].children)
   // console.log("redone", steps[current].children.map(item => item.title))
   const next = () => {
-    setCurrent(current + 1)
+    if (courseCheck) {
+      setCurrent(current + 1)
+      checkStage()
+    }
+  }
+
+  const checkStage = () => {
+    if (current == 1) {
+      stage.current = 'Courses'
+    } else if (current == 2) {
+      stage.current = 'Assignments'
+    } else {
+      stage.current = 'Generation'
+    }
   }
 
   const prev = () => {
+    checkStage()
     setCurrent(current - 1)
   }
 
