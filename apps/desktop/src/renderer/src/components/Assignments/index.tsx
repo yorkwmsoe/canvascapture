@@ -1,19 +1,18 @@
 import { useGetAssignments } from '@renderer/apis/canvas.api'
 import { useCourses } from '@renderer/hooks/useCourses'
+import { useGenerationStore } from '@renderer/stores/generation.store'
+import { generateHierarchyId } from '@renderer/utils/assignments'
+import { isKeyArray } from '@renderer/utils/guards'
 import { Tree, TreeDataNode, TreeProps } from 'antd'
+import { isString } from 'lodash'
 import { useMemo, useState } from 'react'
-
-function isKeyArray(value: unknown): value is React.Key[] {
-  return Array.isArray(value)
-}
 
 export function Assignments() {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([])
   const { getCourseById } = useCourses()
   const { data } = useGetAssignments()
-
-  console.log(checkedKeys)
+  const { setAssignments } = useGenerationStore()
 
   const treeData = useMemo(() => {
     return data?.map<TreeDataNode>((assignment) => {
@@ -22,10 +21,11 @@ export function Assignments() {
         title: course?.name,
         key: assignment.courseId,
         selectable: false,
+        disableCheckbox: !assignment.assignments?.length,
         children: assignment.assignments?.map<TreeDataNode>((submission) => {
           return {
             title: submission.name,
-            key: `${assignment.courseId}-${submission.id}`,
+            key: generateHierarchyId(assignment.courseId, submission.id),
             selectable: false
           }
         })
@@ -39,6 +39,7 @@ export function Assignments() {
 
   const onCheck: TreeProps['onCheck'] = (checkedKeysValue) => {
     if (!isKeyArray(checkedKeysValue)) return
+    setAssignments(checkedKeysValue.filter(isString))
     setCheckedKeys(checkedKeysValue)
   }
 
