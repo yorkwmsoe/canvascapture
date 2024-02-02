@@ -2,7 +2,8 @@ import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-require('@electron/remote/main').initialize()
+import * as remote from '@electron/remote/main'
+remote.initialize()
 
 function createWindow(): void {
   // Create the browser window.
@@ -19,7 +20,7 @@ function createWindow(): void {
       sandbox: false
     }
   })
-  require('@electron/remote/main').enable(mainWindow.webContents)
+  remote.enable(mainWindow.webContents)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()

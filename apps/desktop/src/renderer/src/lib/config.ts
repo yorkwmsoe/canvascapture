@@ -8,13 +8,15 @@ export const getConfigPath = () => app.getPath('userData')
 export const getConfigFile = () => `${getConfigPath()}/${CONFIG_FILE_NAME}`
 
 export type Config = {
-  canvasDomain: string | undefined
-  canvasAccessToken: string | undefined
+  canvasDomain: string
+  canvasAccessToken: string
+  markdownEditor: boolean
 }
 
 export const defaultConfig: Config = {
   canvasDomain: 'https://msoe.instructure.com',
-  canvasAccessToken: undefined
+  canvasAccessToken: undefined,
+  markdownEditor: false
 }
 
 export const doesConfigExist = () => {
@@ -24,7 +26,7 @@ export const doesConfigExist = () => {
 export const getConfig = () => {
   const file = getConfigFile()
 
-  if (!doesConfigExist()) return {} as Config
+  if (!doesConfigExist()) return defaultConfig
 
   return JSON.parse(readFileSync(file, 'utf-8')) as Config
 }

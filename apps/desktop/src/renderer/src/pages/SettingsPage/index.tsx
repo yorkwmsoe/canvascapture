@@ -2,18 +2,21 @@ import { Config } from '@renderer/lib/config'
 import { useSettingsStore } from '@renderer/stores/settings.store'
 import { Button, Checkbox, Form, Input } from 'antd'
 
-type FieldType = {
-  advancedMarkdown?: string
-} & Config
-
 export function SettingsPage() {
-  const { setCanvasDomain, setCanvasAccessToken, canvasDomain, canvasAccessToken } =
-    useSettingsStore()
+  const {
+    setCanvasDomain,
+    setCanvasAccessToken,
+    setMarkdownEditor,
+    canvasDomain,
+    canvasAccessToken,
+    markdownEditor
+  } = useSettingsStore()
   const isSetup = false
 
-  const onFinish = (values: FieldType) => {
+  const onFinish = (values: Config) => {
     setCanvasDomain(values.canvasDomain)
     setCanvasAccessToken(values.canvasAccessToken)
+    setMarkdownEditor(values.markdownEditor)
   }
 
   return (
@@ -22,11 +25,11 @@ export function SettingsPage() {
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
       style={{ maxWidth: 600 }}
-      initialValues={{ username: canvasDomain, accessToken: canvasAccessToken }}
+      initialValues={{ canvasDomain, canvasAccessToken, markdownEditor }}
       onFinish={onFinish}
       autoComplete="off"
     >
-      <Form.Item<FieldType>
+      <Form.Item<Config>
         label="Canvas Domain"
         name="canvasDomain"
         rules={[
@@ -36,19 +39,19 @@ export function SettingsPage() {
           }
         ]}
       >
-        <Input placeholder="msoe.instructure.com" />
+        <Input />
       </Form.Item>
-      <Form.Item<FieldType>
+      <Form.Item<Config>
         label="Canvas Access Token"
         name="canvasAccessToken"
         rules={[{ required: true, message: 'Canvas access token is missing' }]}
       >
-        <Input.Password placeholder="XXXX~..." />
+        <Input.Password />
       </Form.Item>
       {!isSetup && (
-        <Form.Item<FieldType>
-          name="advancedMarkdown"
-          valuePropName="unchecked"
+        <Form.Item<Config>
+          name="markdownEditor"
+          valuePropName="checked"
           wrapperCol={{ offset: 8, span: 16 }}
         >
           <Checkbox>Show Markdown Editor</Checkbox>
@@ -56,7 +59,7 @@ export function SettingsPage() {
       )}
       <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <Button type="primary" htmlType="submit">
-          Submit
+          Save
         </Button>
       </Form.Item>
     </Form>
