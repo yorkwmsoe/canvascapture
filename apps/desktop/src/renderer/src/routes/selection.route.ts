@@ -1,9 +1,9 @@
 import { SelectionPage } from '@renderer/pages/SelectionPage'
 import { createRoute } from '@tanstack/react-router'
-import { homeRoute } from './home.route'
+import { rootRoute } from './root.route'
 
 export const selectionRoute = createRoute({
-  getParentRoute: () => homeRoute,
+  getParentRoute: () => rootRoute,
   path: '/selection',
   component: SelectionPage
 })

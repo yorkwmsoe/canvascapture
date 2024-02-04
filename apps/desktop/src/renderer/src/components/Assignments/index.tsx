@@ -8,29 +8,27 @@ import { useMemo, useState } from 'react'
 
 export function Assignments() {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
-  const { selectedAssignments, assignments, setSelectedAssignments, getAssignmentsByCourseId } =
-    useAssignments()
-  const { selectedCourses, getCourseById } = useCourses()
+  const { selectedAssignments, assignments, setSelectedAssignments } = useAssignments()
+  const { getCourseById } = useCourses()
 
   const treeData = useMemo(() => {
-    return selectedCourses.map<TreeDataNode>((courseId, idx) => {
-      const courseAssignments = getAssignmentsByCourseId(courseId)
-      const course = getCourseById(courseId)
+    return assignments.map<TreeDataNode>((assignment) => {
+      const course = getCourseById(assignment.courseId)
       return {
         title: course?.name,
-        key: course?.id ?? idx,
+        key: assignment.courseId,
         selectable: false,
-        disableCheckbox: !courseAssignments?.length,
-        children: courseAssignments?.map<TreeDataNode>((submission) => {
+        disableCheckbox: !assignment?.assignments.length,
+        children: assignment?.assignments.map<TreeDataNode>((submission) => {
           return {
             title: submission.name,
-            key: generateHierarchyId(courseId, submission.id),
+            key: generateHierarchyId(assignment.courseId, submission.id),
             selectable: false
           }
         })
       }
     })
-  }, [selectedCourses, assignments, getCourseById])
+  }, [assignments, getCourseById])
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue)
