@@ -1,92 +1,72 @@
-import React, { useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Button, message, Steps, theme } from 'antd'
-import Courses from '../Courses'
 import { Assignments } from '../Assignments'
-import { useCheckStore } from '../../stores/check.store'
+import { Courses } from '../Courses'
 
-export type box = {
-  title: string
-  isChecked: boolean
-  children: undefined | box[]
-}
+const STEPS = [
+  {
+    title: 'Courses',
+    content: <Courses />
+  },
+  {
+    title: 'Assignments',
+    content: <Assignments />
+  },
+  {
+    title: 'Generating',
+    content: <h1>Generating</h1>
+  }
+] as const
 
-export type step = {
-  title: string
-  stage: string
-}
-
-function SwitchStepper({ steps }: { steps: step[] }) {
+export function SwitchStepper() {
   const { token } = theme.useToken()
   const [current, setCurrent] = useState(0)
-  const stage = useRef('Courses')
-  const { courseCheck, setCourseCheck } = useCheckStore()
 
-  // console.log(steps[current].children)
-  // console.log("redone", steps[current].children.map(item => item.title))
-  const next = () => {
-    if (courseCheck) {
-      setCurrent(current + 1)
-      checkStage()
+  const next = useCallback(() => {
+    if (current !== STEPS.length - 1) {
+      setCurrent((prev) => prev + 1)
     }
-  }
+  }, [current])
 
-  const checkStage = () => {
-    if (current == 1) {
-      stage.current = 'Courses'
-    } else if (current == 2) {
-      stage.current = 'Assignments'
-    } else {
-      stage.current = 'Generation'
+  const prev = useCallback(() => {
+    if (current !== 0) {
+      setCurrent((prev) => prev - 1)
     }
-  }
+  }, [current])
 
-  const prev = () => {
-    checkStage()
-    setCurrent(current - 1)
-  }
-
-  const items = steps.map((item) => ({ key: item.title, title: item.title }))
-
-  const contentStyle: React.CSSProperties = {
-    lineHeight: '260px',
-    textAlign: 'center',
-    color: token.colorTextTertiary,
-    backgroundColor: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    border: `1px dashed ${token.colorBorder}`,
-    marginTop: 16
-  }
+  const items = useMemo(
+    () => STEPS.map((item) => ({ key: item.title, title: item.title })),
+    [STEPS]
+  )
 
   return (
     <>
       <Steps current={current} items={items} />
-      <div style={contentStyle}>
-        {/*steps[current].content*/}
-        {current === steps.length - 3 && <Courses />}
-        {current === steps.length - 1 && <h1>Generating</h1>}
-        {current === steps.length - 2 && <Assignments />}
-        {/*stage === "Course" ? <Checkbox.Group options={steps[current].content.map(item =>  item.name)} onChange={onChange}/> :
-        <TreeView></TreeView>*/}
+      <div
+        style={{
+          minHeight: 200,
+          color: token.colorTextTertiary,
+          borderRadius: token.borderRadiusLG,
+          padding: 24,
+          border: `1px dashed ${token.colorBorder}`,
+          marginTop: 16
+        }}
+      >
+        {STEPS[current].content}
       </div>
-      <div style={{ marginTop: 24 }}>
-        {current < steps.length - 1 && (
-          <Button type="primary" onClick={() => next()}>
+      <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between' }}>
+        {current > 0 && <Button onClick={prev}>Previous</Button>}
+        {current < STEPS.length - 1 && (
+          <Button style={{ marginLeft: 'auto' }} type="primary" onClick={next}>
             Next
           </Button>
         )}
-        {current === steps.length - 1 && (
+        {current === STEPS.length - 1 && (
           <Button type="primary" onClick={() => message.success('Processing complete!')}>
             Done
-          </Button>
-        )}
-        {current > 0 && (
-          <Button style={{ margin: '0 8px' }} onClick={() => prev()}>
-            Previous
           </Button>
         )}
       </div>
     </>
   )
 }
-
-export default SwitchStepper

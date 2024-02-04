@@ -16,13 +16,16 @@ export const useCourses = () => {
   )
 
   const setSelectedCourses = useCallback(
-    (selectedCourses: number[]) => {
-      setCourses(selectedCourses)
-      queryClient.invalidateQueries({
-        queryKey: ['assignments']
+    (courses: number[]) => {
+      selectedCourses.forEach((courseId) => {
+        if (courses.includes(courseId)) return
+        queryClient.invalidateQueries({
+          queryKey: ['assignments', courseId]
+        })
       })
+      setCourses(courses)
     },
-    [setCourses]
+    [selectedCourses, setCourses]
   )
 
   return {

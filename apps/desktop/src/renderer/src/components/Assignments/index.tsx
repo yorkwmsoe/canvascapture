@@ -1,6 +1,5 @@
-import { useGetAssignments } from '@renderer/apis/canvas.api'
+import { useAssignments } from '@renderer/hooks/useAssignments'
 import { useCourses } from '@renderer/hooks/useCourses'
-import { useGenerationStore } from '@renderer/stores/generation.store'
 import { generateHierarchyId } from '@renderer/utils/assignments'
 import { isKeyArray } from '@renderer/utils/guards'
 import { Tree, TreeDataNode, TreeProps } from 'antd'
@@ -9,29 +8,29 @@ import { useMemo, useState } from 'react'
 
 export function Assignments() {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
-  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([])
-  const { getCourseById } = useCourses()
-  const { data } = useGetAssignments()
-  const { setAssignments } = useGenerationStore()
+  const { selectedAssignments, assignments, setSelectedAssignments, getAssignmentsByCourseId } =
+    useAssignments()
+  const { selectedCourses, getCourseById } = useCourses()
 
   const treeData = useMemo(() => {
-    return data?.map<TreeDataNode>((assignment) => {
-      const course = getCourseById(assignment.courseId)
+    return selectedCourses.map<TreeDataNode>((courseId, idx) => {
+      const courseAssignments = getAssignmentsByCourseId(courseId)
+      const course = getCourseById(courseId)
       return {
         title: course?.name,
-        key: assignment.courseId,
+        key: course?.id ?? idx,
         selectable: false,
-        disableCheckbox: !assignment.assignments?.length,
-        children: assignment.assignments?.map<TreeDataNode>((submission) => {
+        disableCheckbox: !courseAssignments?.length,
+        children: courseAssignments?.map<TreeDataNode>((submission) => {
           return {
             title: submission.name,
-            key: generateHierarchyId(assignment.courseId, submission.id),
+            key: generateHierarchyId(courseId, submission.id),
             selectable: false
           }
         })
       }
     })
-  }, [data])
+  }, [selectedCourses, assignments, getCourseById])
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue)
@@ -39,8 +38,7 @@ export function Assignments() {
 
   const onCheck: TreeProps['onCheck'] = (checkedKeysValue) => {
     if (!isKeyArray(checkedKeysValue)) return
-    setAssignments(checkedKeysValue.filter(isString))
-    setCheckedKeys(checkedKeysValue)
+    setSelectedAssignments(checkedKeysValue.filter(isString))
   }
 
   return (
@@ -50,7 +48,7 @@ export function Assignments() {
         onExpand={onExpand}
         expandedKeys={expandedKeys}
         onCheck={onCheck}
-        checkedKeys={checkedKeys}
+        checkedKeys={selectedAssignments}
         treeData={treeData}
       />
     </div>

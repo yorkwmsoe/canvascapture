@@ -1,6 +1,6 @@
 import { Assignment } from '@renderer/types/canvas_api/assignment'
 import { useSettingsStore } from '@renderer/stores/settings.store'
-import { useQuery } from '@tanstack/react-query'
+import { useQueries, useQuery } from '@tanstack/react-query'
 import axios, { AxiosRequestHeaders } from 'axios'
 import { parseISO } from 'date-fns'
 import { Course } from '@renderer/types/canvas_api/course'
@@ -94,18 +94,18 @@ export const getSubmissions = async (
 export const useGetAssignments = () => {
   const { canvasDomain, accessToken } = useSettingsStore()
   const { courses } = useGenerationStore()
-  return useQuery({
-    queryKey: ['assignments'],
-    queryFn: async () => {
-      const assignmentPromises = courses.map((courseId) =>
-        getAssignments({
-          accessToken,
-          canvasApiBaseUrl: canvasDomain,
-          courseId
-        })
-      )
-      return await Promise.all(assignmentPromises)
-    }
+  return useQueries({
+    queries: courses.map((courseId) => {
+      return {
+        queryKey: ['assignments', courseId],
+        queryFn: () =>
+          getAssignments({
+            accessToken,
+            canvasApiBaseUrl: canvasDomain,
+            courseId
+          })
+      }
+    })
   })
 }
 
