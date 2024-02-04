@@ -16,14 +16,6 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src')
       }
     },
-    plugins: [
-      react(),
-      renderer({
-        resolve: {
-          //serialport: { type: 'esm' },
-          //got: { type: 'esm' }
-        }
-      })
-    ]
+    plugins: [react(), renderer()]
   }
 })
