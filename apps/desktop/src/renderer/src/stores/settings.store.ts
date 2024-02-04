@@ -1,15 +1,35 @@
+import { getConfig, setConfig } from '@renderer/lib/config'
 import { create } from 'zustand'
 
 export type SettingsStore = {
   canvasDomain: string
-  accessToken: string
+  canvasAccessToken: string
+  markdownEditor: boolean
   setCanvasDomain: (domain: string) => void
-  setAccessToken: (token: string) => void
+  setCanvasAccessToken: (token: string) => void
+  setMarkdownEditor: (enabled: boolean) => void
 }
 
 export const useSettingsStore = create<SettingsStore>()((set) => ({
-  canvasDomain: 'http://sdlstudentvm06.msoe.edu/api/v1', // TODO: Load from local file
-  accessToken: 'reK0qt1RHGt1tCVrNwrNasbWnOd8T52y2vW4BV3yM1mXZ9jtLAXU6Xn2mtzcNZ3B', // TODO: Load from local file
-  setCanvasDomain: (domain) => set({ canvasDomain: domain }),
-  setAccessToken: (token) => set({ accessToken: token })
+  canvasDomain: getConfig().canvasDomain,
+  canvasAccessToken: getConfig().canvasAccessToken,
+  markdownEditor: getConfig().markdownEditor,
+  setCanvasDomain: (domain) => {
+    set((state) => {
+      setConfig({ ...state, canvasDomain: domain })
+      return { canvasDomain: domain }
+    })
+  },
+  setCanvasAccessToken: (token) => {
+    set((state) => {
+      setConfig({ ...state, canvasAccessToken: token })
+      return { canvasAccessToken: token }
+    })
+  },
+  setMarkdownEditor: (enabled) => {
+    set((state) => {
+      setConfig({ ...state, markdownEditor: enabled })
+      return { markdownEditor: enabled }
+    })
+  }
 }))
