@@ -1,8 +1,8 @@
 import { DemoPage } from '@renderer/pages/DemoPage'
-import { Route } from '@tanstack/react-router'
+import { createRoute } from '@tanstack/react-router'
 import { rootRoute } from './root.route'
 
-export const demoRoute = new Route({
+export const demoRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/demo',
   component: DemoPage

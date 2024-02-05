@@ -1,8 +1,8 @@
 import { GenerationPage } from '@renderer/pages/GenerationPage'
-import { Route } from '@tanstack/react-router'
+import { createRoute } from '@tanstack/react-router'
 import { rootRoute } from './root.route'
 
-export const generationRoute = new Route({
+export const generationRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/generation',
   component: GenerationPage

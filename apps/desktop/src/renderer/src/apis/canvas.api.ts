@@ -1,10 +1,11 @@
 import { Assignment } from '@renderer/types/canvas_api/assignment'
 import { useSettingsStore } from '@renderer/stores/settings.store'
-import { useQuery } from '@tanstack/react-query'
+import { useQueries, useQuery } from '@tanstack/react-query'
 import axios, { AxiosRequestHeaders } from 'axios'
 import { parseISO } from 'date-fns'
 import { Course } from '@renderer/types/canvas_api/course'
 import { Submission } from '@renderer/types/canvas_api/submission'
+import { useGenerationStore } from '@renderer/stores/generation.store'
 
 // date handling from: https://stackoverflow.com/a/66238542
 export function handleDates(body: unknown) {
@@ -60,12 +61,18 @@ export const getAssignments = async (
   args: {
     courseId: number
   } & Auth
-): Promise<Assignment[]> => {
-  return (
-    await api.get(`${args.canvasApiBaseUrl}/courses/${args.courseId}/assignments?per_page=1000`, {
-      headers: getApiHeaders({ accessToken: args.accessToken })
-    })
-  ).data
+): Promise<{
+  courseId: number
+  assignments: Assignment[]
+}> => {
+  return {
+    courseId: args.courseId,
+    assignments: (
+      await api.get(`${args.canvasApiBaseUrl}/courses/${args.courseId}/assignments?per_page=1000`, {
+        headers: getApiHeaders({ accessToken: args.accessToken })
+      })
+    ).data
+  }
 }
 
 export const getSubmissions = async (
@@ -84,19 +91,34 @@ export const getSubmissions = async (
 
 // Hooks
 
-export const useGetAssignments = ({ courseIds }: { courseIds: number[] }) => {
+export const useGetAssignments = () => {
+  const { canvasDomain, accessToken } = useSettingsStore()
+  const { courses } = useGenerationStore()
+  return useQueries({
+    queries: courses.map((courseId) => {
+      return {
+        queryKey: ['assignments', courseId],
+        queryFn: () =>
+          getAssignments({
+            accessToken,
+            canvasApiBaseUrl: canvasDomain,
+            courseId
+          })
+      }
+    })
+  })
+}
+
+export const useGetCourses = () => {
   const { canvasDomain, accessToken } = useSettingsStore()
   return useQuery({
-    queryKey: ['assignments'],
+    queryKey: ['courses'],
     queryFn: async () => {
-      const assignmentPromises = courseIds.map((courseId) =>
-        getAssignments({
-          accessToken,
-          canvasApiBaseUrl: canvasDomain,
-          courseId
-        })
-      )
-      return (await Promise.all(assignmentPromises)).flat()
+      const courses = await getCourses({
+        accessToken,
+        canvasApiBaseUrl: canvasDomain
+      })
+      return courses
     }
   })
 }
