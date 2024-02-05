@@ -1,11 +1,11 @@
-import {Input, Layout, Button, Space, Card, Flex, Col, Row} from 'antd'
+import { Input, Layout, Button, Space, Card, Flex, Col, Row } from 'antd'
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useGetFolders } from '@renderer/hooks/useGetFolders'
 import { FileMarkdownOutlined } from '@ant-design/icons'
 
 const { Header, Content, Footer } = Layout
-const { Meta } = Card;
+const { Meta } = Card
 export function HomePage() {
   // TODO: Hook up name to the geration store
   const [generationName, setGenerationName] = useState<string>('')
@@ -24,7 +24,7 @@ export function HomePage() {
   }
 
   const goToCoursesPage = () => {
-    navigate({ to: '/generation' })
+    navigate({ to: '/selection' })
   }
 
   const openSettingsPage = () => {
@@ -90,8 +90,8 @@ export function HomePage() {
                 <Space.Compact>
                   <h3>ENTER GENERATION NAME!</h3>
                   <span className={'close'} onClick={() => exitGenerationNameWarning()}>
-                &times;
-              </span>
+                    &times;
+                  </span>
                 </Space.Compact>
               </div>
               <div className={'modal-content'}>Please Enter A Name For The Generation.</div>
@@ -99,7 +99,7 @@ export function HomePage() {
           </Flex>
         </div>
         <div>
-          <Flex align={'center'} justify={'center'} style={{paddingTop: 15}}>
+          <Flex align={'center'} justify={'center'} style={{ paddingTop: 15 }}>
             <div>
               <Row gutter={8}>
                 {folder?.map((folder) => <FolderCard key={folder} folder={folder}></FolderCard>)}
@@ -108,7 +108,9 @@ export function HomePage() {
           </Flex>
         </div>
       </Content>
-      <Footer style={{backgroundColor: 'white', color: 'gray', paddingLeft: 5, textAlign: 'left'}}>
+      <Footer
+        style={{ backgroundColor: 'white', color: 'gray', paddingLeft: 5, textAlign: 'left' }}
+      >
         <text>v0.01</text>
       </Footer>
     </Layout>
@@ -122,8 +124,12 @@ type FolderCardProps = {
 function FolderCard({ folder }: FolderCardProps) {
   return (
     <Col key={folder} span={8}>
-      <Card hoverable={true} style={{ width: 100 , height: 70}} cover={<FileMarkdownOutlined size={15} />}>
-        <Meta title={folder}/>
+      <Card
+        hoverable={true}
+        style={{ width: 100, height: 70 }}
+        cover={<FileMarkdownOutlined size={15} />}
+      >
+        <Meta title={folder} />
       </Card>
     </Col>
   )
