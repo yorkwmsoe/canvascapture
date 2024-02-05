@@ -42,9 +42,9 @@ function assembleDescriptionInfo(assignment: Assignment){
 function assembleSubmissionInfo(submission: Submission){
   const submissionHeader = convertToHeader('Submission', 2)
   let submissionBody = submission.body
-  if (submission.submission_type === 'online_quiz') {
+  //if (submission.submission_type === 'online_quiz') {
     submissionBody = 'No submission'
-  }
+  //}
   return [submissionHeader, submissionBody]
 }
 
