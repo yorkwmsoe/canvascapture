@@ -1,6 +1,3 @@
-variables:
-  DESKTOP_BASE_PATH: apps/desktop
-
 install-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🛞 install
@@ -8,7 +5,7 @@ install-desktop:
     - job: build-docker-desktop
       optional: true
   script:
-    - cd $DESKTOP_BASE_PATH
+    - cd $DESKTOP_BASE_PATH/
     - npm ci
   artifacts:
     paths:
@@ -19,8 +16,8 @@ test-desktop:
   stage: 🤞 test
   needs: ['install-desktop']
   script:
-    - cd $DESKTOP_BASE_PATH
-    - npm run test:ci
+    - cd $DESKTOP_BASE_PATH/
+    - npm run coverage
   artifacts:
     when: always
     reports:
@@ -28,39 +25,39 @@ test-desktop:
         - $DESKTOP_BASE_PATH/junit.xml
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
-build-desktop:
+release-desktop-windows:
   image: $CI_REGISTRY_IMAGE/desktop:latest
-  stage: 📦 build
+  stage: 🚀 release
   needs: ['install-desktop']
   script:
-    - cd $DESKTOP_BASE_PATH
-    - npm run build
+    - cd $DESKTOP_BASE_PATH/
+    - npm run build:win
   artifacts:
     paths:
-      - $DESKTOP_BASE_PATH/build/
-      - $DESKTOP_BASE_PATH/.svelte-kit/
+      - $DESKTOP_BASE_PATH/dist/
+  when: manual
+
+release-desktop-mac:
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🚀 release
+  needs: ['install-desktop']
+  script:
+    - cd $DESKTOP_BASE_PATH/
+    - npm i dmg-license
+    - npm run build:mac
+  artifacts:
+    paths:
+      - $DESKTOP_BASE_PATH/dist/
+  when: manual
 
 release-desktop-linux:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🚀 release
-  needs: ['install-desktop', 'build-desktop']
+  needs: ['install-desktop']
   script:
-    - cd $DESKTOP_BASE_PATH
-    - npm run tauri build -- --verbose
+    - cd $DESKTOP_BASE_PATH/
+    - npm run build:linux
   artifacts:
     paths:
-      - $DESKTOP_BASE_PATH/src-tauri/target/release/bundle/
+      - $DESKTOP_BASE_PATH/dist/
   when: manual
-
-release-desktop-windows:
-  image: $CI_REGISTRY_IMAGE/desktop/windows:latest
-  stage: 🚀 release
-  needs: ['install-desktop', 'build-desktop']
-  script:
-    - cd $DESKTOP_BASE_PATH
-    - npm run tauri build -- --verbose
-  artifacts:
-    paths:
-      - $DESKTOP_BASE_PATH/src-tauri/target/release/bundle/
-  when: manual
-  allow_failure: true

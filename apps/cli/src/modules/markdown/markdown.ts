@@ -2,6 +2,7 @@ import { appendFileSync } from "fs";
 import { writeFileSync } from "fs";
 import { spawnSync } from 'node:child_process';
 
+
 /**
  * writeToFile
  * Allows user to specify the file name which the markdown will be written to

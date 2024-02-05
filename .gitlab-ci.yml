@@ -5,6 +5,10 @@ stages:
   - 📦 build
   - 🚀 release
 
+variables:
+  CLI_BASE_PATH: apps/cli
+  DESKTOP_BASE_PATH: apps/desktop
+
 include:
   - local: /apps/cli/.cli-ci.yml
   - local: /apps/desktop/.desktop-ci.yml
@@ -26,8 +30,7 @@ build-docker-desktop:
   stage: 🐋 docker
   image: docker:stable
   services:
-    - name: docker:dind
-      alias: docker
+    - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build ./docker -f ./docker/Dockerfile.desktop -t $CI_REGISTRY_IMAGE/desktop
@@ -35,18 +38,3 @@ build-docker-desktop:
   only:
     changes:
       - docker/Dockerfile.desktop
-
-build-docker-desktop-windows:
-  stage: 🐋 docker
-  image: docker:stable
-  services:
-    - name: docker:dind
-      alias: docker
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build ./docker -f ./docker/Dockerfile.desktop.windows -t $CI_REGISTRY_IMAGE/desktop/windows
-    - docker push $CI_REGISTRY_IMAGE/desktop/windows
-  only:
-    changes:
-      - docker/Dockerfile.desktop.windows
-  allow_failure: true

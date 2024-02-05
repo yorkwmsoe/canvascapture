@@ -1,38 +1,70 @@
-# create-svelte
+# Canvas Capture Desktop
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+## Project Setup
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+### Install
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+$ npm install
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### Development
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+$ npm run dev
 ```
-
-## Building
-
-To create a production version of your app:
 
 ```bash
-npm run build
+# For the demo app that shows you how to use most of the libraries in this project
+$ npm run dev:demo
 ```
 
-You can preview the production build with `npm run preview`.
+#### Adding a new API
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+1. Create a new file in the `api` folder
+2. Add the api to the `spi/store.ts` file
+3. Add the api domain to the `connect-src` in the `index.html` file `Content-Security-Policy` meta tag
+
+#### Adding a new page
+
+1. Create a new folder in the `pages` folder
+2. Create a `index.tsx` file in the new folder
+3. Create a new file in the `routes` folder (ex. `{page}.route.ts`)
+4. Add the route to the `root.route.ts` file
+
+### Test
+
+```bash
+$ npm run test
+```
+
+```bash
+# For the vitest ui
+$ npm run test:ui
+```
+
+### Build
+
+```bash
+# For windows
+$ npm run build:win
+
+# For macOS
+$ npm run build:mac
+
+# For Linux
+$ npm run build:linux
+```
+
+## Coding Standards
+
+[React Handbook](https://reacthandbook.dev/)
+
+Note: the `features` folder is now the `pages` folder
+
+## Project Libraries
+
+- [TanStack Router](https://tanstack.com/router/v1/docs/overview)
+- [Ant Design](https://ant.design/)
+- [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
+- [React Query](https://tanstack.com/query/latest/)
