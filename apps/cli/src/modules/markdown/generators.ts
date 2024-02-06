@@ -3,6 +3,7 @@ import { Course } from '@modules/canvas_api/types/course'
 import { Submission } from '@modules/canvas_api/types/submission'
 import { addNewLine, convertToHeader, createList, createTableHeader, createTableRows, writeToFile } from './markdown'
 import { mkdirSync } from 'fs'
+import { stripHtml } from "string-strip-html";
 
 const basePath = 'output'
 
@@ -36,7 +37,7 @@ function assembleTitleAndGrade(assignment: Assignment, submission: Submission){
 function assembleDescriptionInfo(assignment: Assignment){
   const descriptionHeader = convertToHeader('Description', 2)
   const description = !!assignment.description ? assignment.description : 'No description'
-  return [descriptionHeader, description]
+  return [descriptionHeader, stripHtml(description).result]
 }
 
 function assembleSubmissionInfo(submission: Submission){
@@ -45,13 +46,13 @@ function assembleSubmissionInfo(submission: Submission){
   //if (submission.submission_type === 'online_quiz') {
     submissionBody = 'No submission'
   //}
-  return [submissionHeader, submissionBody]
+  return [submissionHeader, stripHtml(submissionBody).result]
 }
 
 function assembleFeedbackInfo(submission: Submission){
   const feedbackHeader = convertToHeader('Feedback', 2)
   const feedbackBody = !!submission?.submission_comments?.length ? createList(submission?.submission_comments.map((comment) => comment.comment), '-') : 'No feedback'
-  return [feedbackHeader, feedbackBody]
+  return [feedbackHeader, stripHtml(feedbackBody).result]
 }
 
 function assembleRubricInfo(assignment: Assignment, submission: Submission){
