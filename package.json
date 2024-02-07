@@ -1,0 +1,9 @@
+{
+  "name": "canvascapture",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "desktop": "pnpm --filter canvas-capture-desktop",
+    "cli": "pnpm --filter canvas-capture-cli"
+  }
+}
