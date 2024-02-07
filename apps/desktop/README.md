@@ -4,19 +4,21 @@
 
 ### Install
 
+from the root directory not `apps/desktop`
+
 ```bash
-$ npm install
+$ pnpm i
 ```
 
 ### Development
 
 ```bash
-$ npm run dev
+$ pnpm desktop dev
 ```
 
 ```bash
 # For the demo app that shows you how to use most of the libraries in this project
-$ npm run dev:demo
+$ pnpm desktop dev:demo
 ```
 
 #### Adding a new API
@@ -35,25 +37,25 @@ $ npm run dev:demo
 ### Test
 
 ```bash
-$ npm run test
+$ pnpm desktop test
 ```
 
 ```bash
 # For the vitest ui
-$ npm run test:ui
+$ pnpm desktop test:ui
 ```
 
 ### Build
 
 ```bash
 # For windows
-$ npm run build:win
+$ pnpm desktop build:win
 
 # For macOS
-$ npm run build:mac
+$ pnpm desktop build:mac
 
 # For Linux
-$ npm run build:linux
+$ pnpm desktop build:linux
 ```
 
 ## Coding Standards

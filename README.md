@@ -1,4 +1,4 @@
-# Canvas Capture v0.0.1
+# Canvas Capture v1.0.0
 
 ## Team Members
 
@@ -22,6 +22,7 @@ Programming Languages:
 
 Package Managers:
 
+- [Pnpm](https://pnpm.io/) (npm install -g pnpm)
 - [Nodejs](https://nodejs.org/en/)
 
 Web Development:
@@ -41,7 +42,7 @@ Continuous Integration/Continuous Deployment (CI/CD):
 
 - [Gitlab CI](https://docs.gitlab.com/ee/ci/)
 
-## Build Instructions
+## Readme Table of Contents
 
-- `docs/cli/Build.md`
-- `docs/desktop/Build.md`
+- `apps/cli/README.md`
+- `apps/desktop/README.md`
