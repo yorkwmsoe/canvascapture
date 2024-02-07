@@ -15,7 +15,7 @@ export type Config = {
 
 export const defaultConfig: Config = {
   canvasDomain: 'https://msoe.instructure.com',
-  canvasAccessToken: undefined,
+  canvasAccessToken: '',
   markdownEditor: false
 }
 
@@ -28,7 +28,11 @@ export const getConfig = () => {
 
   if (!doesConfigExist()) return defaultConfig
 
-  return JSON.parse(readFileSync(file, 'utf-8')) as Config
+  try {
+    return JSON.parse(readFileSync(file, 'utf-8')) as Config
+  } catch (e) {
+    return defaultConfig
+  }
 }
 
 export const setConfig = (config: Config) => {
