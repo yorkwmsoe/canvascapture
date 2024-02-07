@@ -1,4 +1,4 @@
-import { Input, Layout, Button, Space, Card, Flex, Col, Row } from 'antd'
+import { Input, Layout, Button, Space, Card, Flex, Col, Row, Typography } from 'antd'
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useGetFolders } from '@renderer/hooks/useGetFolders'
@@ -41,9 +41,9 @@ export function HomePage() {
   return (
     <Layout>
       <Header style={{ backgroundColor: 'white', textAlign: 'left', paddingLeft: 5 }}>
-        <text style={{ font: '12' }}>
+        <Typography.Text style={{ font: '12' }}>
           <b>Canvas Capture</b>
-        </text>
+        </Typography.Text>
         <Button style={{ left: '88%' }} onClick={() => openSettingsPage()}>
           Settings
         </Button>
@@ -111,7 +111,7 @@ export function HomePage() {
       <Footer
         style={{ backgroundColor: 'white', color: 'gray', paddingLeft: 5, textAlign: 'left' }}
       >
-        <text>v0.01</text>
+        <Typography.Text>v0.01</Typography.Text>
       </Footer>
     </Layout>
   )
