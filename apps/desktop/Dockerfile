@@ -1,6 +1,6 @@
 FROM electronuserland/builder:wine
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src
 
 RUN apt-get update -y
 RUN apt-get install libgtk-3-0 libatk-bridge2.0-0 libasound2 -y
@@ -12,4 +12,4 @@ COPY pnpm-lock.yaml .
 COPY pnpm-workspace.yaml .
 
 RUN pnpm install
-COPY apps/desktop .
+COPY apps/desktop apps/desktop

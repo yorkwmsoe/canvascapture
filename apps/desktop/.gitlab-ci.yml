@@ -13,14 +13,14 @@ typecheck-desktop:
   needs: ['build-docker-desktop']
   stage: 🤞 test
   script:
-    - pnpm typecheck
+    - pnpm desktop typecheck
 
 test-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🤞 test
   needs: ['build-docker-desktop']
   script:
-    - pnpm coverage
+    - pnpm desktop coverage
   artifacts:
     when: always
     reports:
@@ -32,7 +32,7 @@ release-desktop-windows:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🚀 release
   script:
-    - pnpm build:win
+    - pnpm desktop build:win
   artifacts:
     paths:
       - dist
@@ -43,7 +43,7 @@ release-desktop-mac:
   stage: 🚀 release
   script:
     - pnpm install dmg-license
-    - pnpm build:mac
+    - pnpm desktop build:mac
   artifacts:
     paths:
       - dist
@@ -53,7 +53,7 @@ release-desktop-linux:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🚀 release
   script:
-    - pnpm build:linux
+    - pnpm desktop build:linux
   artifacts:
     paths:
       - dist
