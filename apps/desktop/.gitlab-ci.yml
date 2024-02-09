@@ -12,31 +12,22 @@ build-docker-desktop:
     changes:
       - $DESKTOP_BASE_PATH/Dockerfile
 
-install-desktop:
+typecheck-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
-  stage: 🛞 install
-  needs:
-    - job: build-docker-desktop
-      optional: true
+  stage: 🤞 test
   script:
-    - cd $DESKTOP_BASE_PATH/
-    - npm ci
-  artifacts:
-    paths:
-      - $DESKTOP_BASE_PATH/node_modules/
+    - pnpm typecheck
 
 test-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🤞 test
-  needs: ['install-desktop']
   script:
-    - cd $DESKTOP_BASE_PATH/
-    - npm run coverage
+    - pnpm coverage
   artifacts:
     when: always
     reports:
       junit:
-        - $DESKTOP_BASE_PATH/junit.xml
+        - junit.xml
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 release-desktop-windows:
