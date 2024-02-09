@@ -7,6 +7,8 @@ FROM base AS build
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+COPY /apps/desktop /apps/desktop
+COPY /apps/cli /apps/cli
 
 FROM base AS cli
 COPY --from=build /apps/cli /apps/cli
