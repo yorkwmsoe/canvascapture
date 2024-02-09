@@ -13,3 +13,5 @@ COPY pnpm-workspace.yaml .
 COPY apps/desktop apps/desktop
 
 RUN pnpm install
+COPY node_modules .
+COPY apps/desktop/node_modules apps/desktop/node_modules
