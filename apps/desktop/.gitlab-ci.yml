@@ -14,6 +14,7 @@ build-docker-desktop:
 
 typecheck-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
+  needs: []
   stage: 🤞 test
   script:
     - pnpm typecheck
@@ -21,6 +22,7 @@ typecheck-desktop:
 test-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🤞 test
+  needs: []
   script:
     - pnpm coverage
   artifacts:
