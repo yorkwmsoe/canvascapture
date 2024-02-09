@@ -10,6 +10,6 @@ RUN npm install -g pnpm
 COPY package.json .
 COPY pnpm-lock.yaml .
 COPY pnpm-workspace.yaml .
+COPY apps/desktop apps/desktop
 
 RUN pnpm install
-COPY apps/desktop apps/desktop
