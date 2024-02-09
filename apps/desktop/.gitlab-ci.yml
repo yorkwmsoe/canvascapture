@@ -33,36 +33,30 @@ test-desktop:
 release-desktop-windows:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🚀 release
-  needs: ['install-desktop']
   script:
-    - cd $DESKTOP_BASE_PATH/
-    - npm run build:win
+    - pnpm build:win
   artifacts:
     paths:
-      - $DESKTOP_BASE_PATH/dist/
+      - dist
   when: manual
 
 release-desktop-mac:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🚀 release
-  needs: ['install-desktop']
   script:
-    - cd $DESKTOP_BASE_PATH/
-    - npm i dmg-license
-    - npm run build:mac
+    - pnpm install dmg-license
+    - pnpm build:mac
   artifacts:
     paths:
-      - $DESKTOP_BASE_PATH/dist/
+      - dist
   when: manual
 
 release-desktop-linux:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🚀 release
-  needs: ['install-desktop']
   script:
-    - cd $DESKTOP_BASE_PATH/
-    - npm run build:linux
+    - pnpm build:linux
   artifacts:
     paths:
-      - $DESKTOP_BASE_PATH/dist/
+      - dist
   when: manual
