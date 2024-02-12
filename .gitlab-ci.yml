@@ -20,5 +20,5 @@ build-docker-desktop:
     - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build $DESKTOP_BASE_PATH -t $CI_REGISTRY_IMAGE/desktop
+    - docker build . -f $DESKTOP_BASE_PATH/Dockerfile -t $CI_REGISTRY_IMAGE/desktop
     - docker push $CI_REGISTRY_IMAGE/desktop
