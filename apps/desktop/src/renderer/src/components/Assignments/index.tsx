@@ -19,10 +19,10 @@ export function Assignments() {
         key: assignment.courseId,
         selectable: false,
         disableCheckbox: !assignment?.assignments.length,
-        children: assignment?.assignments.map<TreeDataNode>((submission) => {
+        children: assignment?.assignments.map<TreeDataNode>((individualAssignment) => {
           return {
-            title: submission.name,
-            key: generateHierarchyId(assignment.courseId, submission.id),
+            title: individualAssignment.name,
+            key: generateHierarchyId(assignment.courseId, individualAssignment.id),
             selectable: false
           }
         })
