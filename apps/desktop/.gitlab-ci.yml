@@ -13,14 +13,14 @@ typecheck-desktop:
   needs: ['build-docker-desktop']
   stage: 🤞 test
   script:
-    - pnpm desktop typecheck
+    - pnpm typecheck
 
 test-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🤞 test
   needs: ['build-docker-desktop']
   script:
-    - pnpm desktop coverage
+    - pnpm coverage
   artifacts:
     when: always
     reports:
