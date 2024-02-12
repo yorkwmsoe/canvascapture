@@ -13,19 +13,19 @@ typecheck-desktop:
   needs: ['build-docker-desktop']
   stage: 🤞 test
   script:
-    - pnpm typecheck
+    - pnpm desktop typecheck
 
 test-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🤞 test
   needs: ['build-docker-desktop']
   script:
-    - pnpm coverage
+    - pnpm desktop coverage
   artifacts:
     when: always
     reports:
       junit:
-        - junit.xml
+        - $DESKTOP_BASE_PATH/junit.xml
   coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 release-desktop-windows:
