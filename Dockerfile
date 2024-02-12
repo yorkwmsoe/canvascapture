@@ -7,13 +7,3 @@ FROM base AS build
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN pnpm deploy --filter=canvas-capture-desktop /prod/desktop
-RUN pnpm deploy --filter=canvas-capture-cli /prod/cli
-
-FROM base AS cli
-COPY --from=build /prod/cli /prod/cli
-WORKDIR /prod/cli
-
-FROM base AS desktop
-COPY --from=build /prod/desktop /prod/desktop
-WORKDIR /prod/desktop

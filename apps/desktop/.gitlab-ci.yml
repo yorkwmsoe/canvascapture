@@ -1,16 +1,19 @@
-# build-docker-desktop:
-#   stage: 🐋 docker
-#   image: docker:stable
-#   services:
-#     - docker:dind
-#   script:
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#     - docker build . -f $DESKTOP_BASE_PATH/Dockerfile -t $CI_REGISTRY_IMAGE/desktop
-#     - docker push $CI_REGISTRY_IMAGE/desktop
+install-desktop:
+  image: $CI_REGISTRY_IMAGE/desktop:latest
+  stage: 🛞 install
+  needs:
+    - job: build-docker-desktop
+      optional: true
+  script:
+    - pnpm install
+  artifacts:
+    paths:
+      - node_modules/
+      - $DESKTOP_BASE_PATH/node_modules/
 
 typecheck-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
-  needs: ['build-docker-desktop']
+  needs: ['install-desktop']
   stage: 🤞 test
   script:
     - pnpm desktop typecheck
@@ -18,7 +21,7 @@ typecheck-desktop:
 test-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🤞 test
-  needs: ['build-docker-desktop']
+  needs: ['install-desktop']
   script:
     - pnpm desktop coverage
   artifacts:
