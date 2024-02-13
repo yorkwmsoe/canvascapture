@@ -14,7 +14,7 @@ include:
   - local: /apps/desktop/.gitlab-ci.yml
 
 install-packages:
-  image: $CI_REGISTRY_IMAGE/base
+  image: $CI_REGISTRY_IMAGE/base:latest
   stage: 🛞 install
   needs:
     - job: build-docker-base
