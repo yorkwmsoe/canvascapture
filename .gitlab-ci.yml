@@ -13,6 +13,33 @@ include:
   - local: /apps/cli/.gitlab-ci.yml
   - local: /apps/desktop/.gitlab-ci.yml
 
+install-packages:
+  image: $CI_REGISTRY_IMAGE/base
+  stage: 🛞 install
+  needs:
+    - job: build-docker-base
+      optional: true
+  script:
+    - pnpm install
+  artifacts:
+    paths:
+      - node_modules/
+      - $DESKTOP_BASE_PATH/node_modules/
+      - $CLI_BASE_PATH/node_modules/
+
+build-docker-base:
+  stage: 🐋 docker
+  image: docker:stable
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build . -t $CI_REGISTRY_IMAGE/base
+    - docker push $CI_REGISTRY_IMAGE/base
+  only:
+    changes:
+      - Dockerfile
+
 build-docker-desktop:
   stage: 🐋 docker
   image: docker:stable

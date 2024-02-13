@@ -1,27 +1,14 @@
-install-cli:
-    image: $CI_REGISTRY_IMAGE/cli:latest
-    stage: 🛞 install
-    needs:
-        - job: build-docker-cli
-          optional: true
-    script:
-        - pnpm install
-    artifacts:
-        paths:
-            - node_modules/
-            - $CLI_BASE_PATH/node_modules/
-
 test-format-cli:
     image: $CI_REGISTRY_IMAGE/cli:latest
     stage: 🤞 test
-    needs: ['install-cli']
+    needs: ['install-packages']
     script:
         - pnpm cli format:check
 
 test-cli:
     image: $CI_REGISTRY_IMAGE/cli:latest
     stage: 🤞 test
-    needs: ['install-cli']
+    needs: ['install-packages']
     script:
         - pnpm cli test:ci
     artifacts:
@@ -34,7 +21,7 @@ test-cli:
 build-cli:
     image: $CI_REGISTRY_IMAGE/cli:latest
     stage: 📦 build
-    needs: ['install-cli']
+    needs: ['install-packages']
     script:
         - pnpm cli build
     artifacts:
@@ -44,7 +31,7 @@ build-cli:
 release-cli:
     image: $CI_REGISTRY_IMAGE/cli:latest
     stage: 🚀 release
-    needs: ['install-cli', 'build-cli']
+    needs: ['install-packages', 'build-cli']
     script:
         - pnpm cli package:win-x64
     artifacts:

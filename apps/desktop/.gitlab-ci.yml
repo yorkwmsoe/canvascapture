@@ -1,19 +1,6 @@
-install-desktop:
-  image: $CI_REGISTRY_IMAGE/desktop:latest
-  stage: 🛞 install
-  needs:
-    - job: build-docker-desktop
-      optional: true
-  script:
-    - pnpm install
-  artifacts:
-    paths:
-      - node_modules/
-      - $DESKTOP_BASE_PATH/node_modules/
-
 typecheck-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
-  needs: ['install-desktop']
+  needs: ['install-packages']
   stage: 🤞 test
   script:
     - pnpm desktop typecheck
@@ -21,7 +8,7 @@ typecheck-desktop:
 test-desktop:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🤞 test
-  needs: ['install-desktop']
+  needs: ['install-packages']
   script:
     - pnpm desktop coverage
   artifacts:
@@ -34,6 +21,7 @@ test-desktop:
 release-desktop-windows:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🚀 release
+  needs: ['install-packages']
   script:
     - pnpm desktop build:win
   artifacts:
@@ -44,6 +32,7 @@ release-desktop-windows:
 release-desktop-mac:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🚀 release
+  needs: ['install-packages']
   script:
     - pnpm install dmg-license
     - pnpm desktop build:mac
@@ -55,6 +44,7 @@ release-desktop-mac:
 release-desktop-linux:
   image: $CI_REGISTRY_IMAGE/desktop:latest
   stage: 🚀 release
+  needs: ['install-packages']
   script:
     - pnpm desktop build:linux
   artifacts:
