@@ -10,8 +10,8 @@ variables:
   DESKTOP_BASE_PATH: apps/desktop
 
 include:
-  - local: /apps/cli/.gitlab-ci.yml
-  - local: /apps/desktop/.gitlab-ci.yml
+  - local: $CLI_BASE_PATH/.gitlab-ci.yml
+  - local: $DESKTOP_BASE_PATH/.gitlab-ci.yml
 
 build-docker-desktop:
   stage: 🐋 docker
@@ -22,6 +22,9 @@ build-docker-desktop:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build . -f $DESKTOP_BASE_PATH/Dockerfile -t $CI_REGISTRY_IMAGE/desktop
     - docker push $CI_REGISTRY_IMAGE/desktop
+  only:
+    changes:
+      - $DESKTOP_BASE_PATH/Dockerfile
 
 build-docker-cli:
     stage: 🐋 docker
@@ -32,3 +35,6 @@ build-docker-cli:
         - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
         - docker build . -f $CLI_BASE_PATH/Dockerfile -t $CI_REGISTRY_IMAGE/cli
         - docker push $CI_REGISTRY_IMAGE/cli
+    only:
+      changes:
+        - $CLI_BASE_PATH/Dockerfile
