@@ -10,8 +10,8 @@ variables:
   DESKTOP_BASE_PATH: apps/desktop
 
 include:
-  - local: $CLI_BASE_PATH/.gitlab-ci.yml
-  - local: $DESKTOP_BASE_PATH/.gitlab-ci.yml
+  - local: /apps/cli/.gitlab-ci.yml
+  - local: /apps/desktop/.gitlab-ci.yml
 
 build-docker-desktop:
   stage: 🐋 docker
