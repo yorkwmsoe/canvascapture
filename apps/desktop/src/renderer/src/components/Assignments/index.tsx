@@ -2,10 +2,22 @@ import { useAssignments } from '@renderer/hooks/useAssignments'
 import { useCourses } from '@renderer/hooks/useCourses'
 import { generateHierarchyId } from '@renderer/utils/assignments'
 import { isKeyArray } from '@renderer/utils/guards'
-import { Select, SelectProps, Tree, TreeDataNode, TreeProps } from 'antd'
+import { Select, Tree, TreeDataNode, TreeProps } from 'antd'
 import { isString } from 'lodash'
 import { useMemo, useState } from 'react'
 import { SubmissionType } from '../../types/canvas_api/submission'
+
+const options: {
+  label: string
+  value: SubmissionType
+}[] = [
+  { label: 'text entry', value: 'online_text_entry' },
+  { label: 'url', value: 'online_url' },
+  { label: 'file upload', value: 'online_upload' },
+  { label: 'quiz', value: 'online_quiz' },
+  { label: 'video recording', value: 'media_recording' },
+  { label: 'student annotation', value: 'student_annotation' }
+]
 
 export function Assignments() {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
@@ -56,34 +68,6 @@ export function Assignments() {
 
   const filterAssignments = (selectedOptions: SubmissionType[]) => {
     setSelectedSubmissionTypes(selectedOptions)
-  }
-
-  const submissionTypes: SubmissionType[] = [
-    'online_text_entry',
-    'online_url',
-    'online_upload',
-    'online_quiz',
-    'media_recording',
-    'student_annotation'
-  ]
-
-  const SubmissionTypeLabel = [
-    'text entry',
-    'url',
-    'file upload',
-    'quiz',
-    'video recording',
-    'student annotation'
-  ]
-
-  const options: SelectProps['options'] = []
-  let i = 0
-  for (const type of submissionTypes) {
-    options.push({
-      value: type,
-      label: SubmissionTypeLabel[i]
-    })
-    i++
   }
 
   return (
