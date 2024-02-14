@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { Button, message, Steps, theme } from 'antd'
 import { Assignments } from '../Assignments'
 import { Courses } from '../Courses'
+import { Generate } from '../Generate'
 
 const STEPS = [
   {
@@ -14,7 +15,7 @@ const STEPS = [
   },
   {
     title: 'Generating',
-    content: <h1>Generating</h1>
+    content: <Generate />
   }
 ] as const
 

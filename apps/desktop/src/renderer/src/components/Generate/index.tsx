@@ -1,22 +1,43 @@
-import { Checkbox, Spin } from 'antd'
-import { useMemo } from 'react'
+import { Button, Spin } from 'antd'
 import { useAssignments } from '@renderer/hooks/useAssignments'
 import { useCourses } from '@renderer/hooks/useCourses'
 import { generate } from './generate'
 import { parseHierarchyId } from '@renderer/utils/assignments'
+import { useState } from 'react'
+import { useSettingsStore } from '@renderer/stores/settings.store'
+
+type GenState = 'not-started' | 'started' | 'done'
 
 export function Generate() {
-  const { assignments, selectedAssignments } = useAssignments()
+  const { selectedAssignments, getAssignmentById } = useAssignments()
   const { courses, selectedCourses } = useCourses()
-  if (courses !== undefined && assignments !== undefined) {
-    generate(
-      courses.filter((x) => selectedCourses.includes(x.id)),
-      assignments.filter((x) => {
-        const splitIds = selectedAssignments.map((y) => parseHierarchyId(y))
-        return x
-      })
+  const selectedAssignmentsSplit = selectedAssignments.map((x) => parseHierarchyId(x))
+  const [genState, setGenState] = useState<GenState>('not-started')
+  const { canvasDomain, canvasAccessToken } = useSettingsStore()
+
+  const runGenerate = async () => {
+    setGenState('started')
+    await generate(
+      courses?.filter((x) => selectedCourses.includes(x.id)),
+      selectedAssignmentsSplit.flatMap(
+        ({ courseId, assignmentId }) => getAssignmentById(courseId, assignmentId) ?? []
+      ),
+      canvasAccessToken,
+      canvasDomain
     )
+    setGenState('done')
   }
 
-  return <Spin />
+  switch (genState) {
+    case 'not-started':
+      return (
+        <Button type="primary" onClick={runGenerate}>
+          Generate
+        </Button>
+      )
+    case 'started':
+      return <Spin />
+    default:
+      return <></>
+  }
 }

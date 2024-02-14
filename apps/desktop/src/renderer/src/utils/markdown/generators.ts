@@ -9,8 +9,9 @@ import {
   writeToFile
 } from './markdown'
 import { mkdirSync } from 'fs'
+import { getDocumentsPath } from '@renderer/lib/config'
 
-const basePath = 'output'
+const basePath = getDocumentsPath()
 
 export async function generateAssignment(
   course: Course,
@@ -20,6 +21,7 @@ export async function generateAssignment(
   commit: boolean = true
 ) {
   const folderPath = `${basePath}/${course.name}/${assignment.name}`
+  console.log(folderPath)
   mkdirSync(folderPath, { recursive: true })
 
   const items: string[] = [
