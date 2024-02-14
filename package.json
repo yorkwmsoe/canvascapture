@@ -1,11 +1,11 @@
 {
-  "name": "canvascapture",
+  "name": "canvas-capture",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "desktop": "pnpm -filter canvas-capture-desktop",
-    "cli": "pnpm -filter canvas-capture-cli"
+    "cli": "pnpm -filter canvas-capture-cli",
+    "canvas-api": "pnpm -filter @canvas-capture/canvas-api"
   },
   "keywords": [],
   "author": "",
