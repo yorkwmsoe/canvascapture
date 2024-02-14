@@ -21,7 +21,6 @@ export async function generateAssignment(
   commit: boolean = true
 ) {
   const folderPath = `${basePath}/${course.name}/${assignment.name}`
-  console.log(folderPath)
   mkdirSync(folderPath, { recursive: true })
 
   const items: string[] = [

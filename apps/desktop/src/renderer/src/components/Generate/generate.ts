@@ -4,7 +4,6 @@ import { Submission } from '@renderer/types/canvas_api/submission'
 import { generateAssignment } from '@renderer/utils/markdown/generators'
 import { rm } from 'fs/promises'
 import { getSubmissions } from '@renderer/apis/canvas.api'
-import { useSettingsStore } from '@renderer/stores/settings.store'
 
 // https://stackoverflow.com/a/70806192
 export const median = (arr: number[]): number => {
@@ -14,7 +13,12 @@ export const median = (arr: number[]): number => {
   return Math.ceil(res)
 }
 
-export const genAssignment = async (course: Course, assignment: Assignment, canvasAccessToken: string, canvasDomain: string) => {
+export const genAssignment = async (
+  course: Course,
+  assignment: Assignment,
+  canvasAccessToken: string,
+  canvasDomain: string
+) => {
   //console.log(`\tGenerating ${assignment.name}`)
   const submissions = await getSubmissions({
     canvasAccessToken,
@@ -44,7 +48,12 @@ export const genAssignment = async (course: Course, assignment: Assignment, canv
   }
 }
 
-export async function generate(courses: Course[] | undefined, assignments: Assignment[], canvasAccessToken: string, canvasDomain: string) {
+export async function generate(
+  courses: Course[] | undefined,
+  assignments: Assignment[],
+  canvasAccessToken: string,
+  canvasDomain: string
+) {
   if (courses && courses.length > 0) {
     for (const course of courses) {
       await rm('output', { recursive: true, force: true })
