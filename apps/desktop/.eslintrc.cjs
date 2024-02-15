@@ -10,4 +10,9 @@ module.exports = {
         'no-unused-vars': 'off',
         'no-console': 'warn',
     },
+    settings: {
+        react: {
+            version: 'detect',
+        },
+    },
 }
