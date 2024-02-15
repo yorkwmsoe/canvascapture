@@ -30,15 +30,21 @@ install-packages:
 
 check-format:
     image: $CI_REGISTRY_IMAGE/base:latest
+    needs:
+        - job: build-docker-base
+          optional: true
+        - job: install-packages
     stage: ✅ check
-    needs: ['install-packages']
     script:
         - pnpm format:check
 
 check-lint:
     image: $CI_REGISTRY_IMAGE/base:latest
+    needs:
+        - job: build-docker-base
+          optional: true
+        - job: install-packages
     stage: ✅ check
-    needs: ['install-packages']
     script:
         - pnpm lint
 
