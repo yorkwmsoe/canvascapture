@@ -1,5 +1,5 @@
 test-cli:
-    image: $CI_REGISTRY_IMAGE/cli:latest
+    image: $CLI_IMAGE
     stage: 🤞 test
     needs: ['install-packages']
     script:
@@ -12,7 +12,7 @@ test-cli:
     coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 build-cli:
-    image: $CI_REGISTRY_IMAGE/cli:latest
+    image: $CLI_IMAGE
     stage: 📦 build
     needs: ['install-packages']
     script:
@@ -22,7 +22,7 @@ build-cli:
             - $CLI_BASE_PATH/build/
 
 release-cli:
-    image: $CI_REGISTRY_IMAGE/cli:latest
+    image: $CLI_IMAGE
     stage: 🚀 release
     needs: ['install-packages', 'build-cli']
     script:

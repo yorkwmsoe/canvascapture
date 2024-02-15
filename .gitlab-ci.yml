@@ -9,18 +9,29 @@ stages:
 variables:
     CLI_BASE_PATH: apps/cli
     DESKTOP_BASE_PATH: apps/desktop
+    CI_REGISTRY_IMAGE_PATH: $CI_REGISTRY_IMAGE
+    CI_PIPELINE_ID: $CI_PIPELINE_ID
+    BASE_IMAGE: $CI_REGISTRY_IMAGE_PATH/base:$CI_PIPELINE_ID
+    CLI_IMAGE: $CI_REGISTRY_IMAGE_PATH/cli:$CI_PIPELINE_ID
+    DESKTOP_IMAGE: $CI_REGISTRY_IMAGE_PATH/desktop:$CI_PIPELINE_ID
 
 include:
+    - local: docker-ci.yml
     - local: /apps/cli/.gitlab-ci.yml
     - local: /apps/desktop/.gitlab-ci.yml
 
 install-packages:
-    image: $CI_REGISTRY_IMAGE/base:latest
+    image: $BASE_IMAGE
     stage: 🛞 install
     needs:
         - job: build-docker-base
           optional: true
     script:
+        # Install packages for all apps
+        - pnpm install
+        # Build packages for all apps
+        - pnpm package
+        # Symlink packages for all apps
         - pnpm install
     artifacts:
         paths:
@@ -29,7 +40,7 @@ install-packages:
             - $CLI_BASE_PATH/node_modules/
 
 check-format:
-    image: $CI_REGISTRY_IMAGE/base:latest
+    image: $BASE_IMAGE
     needs:
         - job: build-docker-base
           optional: true
@@ -39,7 +50,7 @@ check-format:
         - pnpm format:check
 
 check-lint:
-    image: $CI_REGISTRY_IMAGE/base:latest
+    image: $BASE_IMAGE
     needs:
         - job: build-docker-base
           optional: true
@@ -47,42 +58,3 @@ check-lint:
     stage: ✅ check
     script:
         - pnpm lint
-
-build-docker-base:
-    stage: 🐋 docker
-    image: docker:stable
-    services:
-        - docker:dind
-    script:
-        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - docker build . -t $CI_REGISTRY_IMAGE/base
-        - docker push $CI_REGISTRY_IMAGE/base
-    only:
-        changes:
-            - Dockerfile
-
-build-docker-desktop:
-    stage: 🐋 docker
-    image: docker:stable
-    services:
-        - docker:dind
-    script:
-        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - docker build . -f $DESKTOP_BASE_PATH/Dockerfile -t $CI_REGISTRY_IMAGE/desktop
-        - docker push $CI_REGISTRY_IMAGE/desktop
-    only:
-        changes:
-            - $DESKTOP_BASE_PATH/Dockerfile
-
-build-docker-cli:
-    stage: 🐋 docker
-    image: docker:stable
-    services:
-        - docker:dind
-    script:
-        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - docker build . -f $CLI_BASE_PATH/Dockerfile -t $CI_REGISTRY_IMAGE/cli
-        - docker push $CI_REGISTRY_IMAGE/cli
-    only:
-        changes:
-            - $CLI_BASE_PATH/Dockerfile

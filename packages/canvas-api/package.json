@@ -6,7 +6,7 @@
     "main": "./dist/canvas-api.js",
     "types": "./dist/index.d.ts",
     "scripts": {
-        "build": "tsc && vite build",
+        "package": "tsc && vite build",
         "lint": "eslint . --max-warnings=0",
         "lint:fix": "eslint . --fix"
     },

@@ -8,7 +8,8 @@
         "canvas-api": "pnpm -filter @canvas-capture/canvas-api",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "lint": "pnpm -r run lint"
+        "lint": "pnpm -r run lint",
+        "package": "pnpm -r run package"
     },
     "keywords": [],
     "author": "",

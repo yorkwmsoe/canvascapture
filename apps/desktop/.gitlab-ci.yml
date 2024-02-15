@@ -1,12 +1,12 @@
 typecheck-desktop:
-    image: $CI_REGISTRY_IMAGE/desktop:latest
+    image: $DESKTOP_IMAGE
     needs: ['install-packages']
     stage: 🤞 test
     script:
         - pnpm desktop typecheck
 
 test-desktop:
-    image: $CI_REGISTRY_IMAGE/desktop:latest
+    image: $DESKTOP_IMAGE
     stage: 🤞 test
     needs: ['install-packages']
     script:
@@ -19,7 +19,7 @@ test-desktop:
     coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 release-desktop-windows:
-    image: $CI_REGISTRY_IMAGE/desktop:latest
+    image: $DESKTOP_IMAGE
     stage: 🚀 release
     needs: ['install-packages']
     script:
@@ -30,7 +30,7 @@ release-desktop-windows:
     when: manual
 
 release-desktop-mac:
-    image: $CI_REGISTRY_IMAGE/desktop:latest
+    image: $DESKTOP_IMAGE
     stage: 🚀 release
     needs: ['install-packages']
     script:
@@ -42,7 +42,7 @@ release-desktop-mac:
     when: manual
 
 release-desktop-linux:
-    image: $CI_REGISTRY_IMAGE/desktop:latest
+    image: $DESKTOP_IMAGE
     stage: 🚀 release
     needs: ['install-packages']
     script:
