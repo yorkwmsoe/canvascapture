@@ -1,10 +1,3 @@
-test-format-cli:
-    image: $CI_REGISTRY_IMAGE/cli:latest
-    stage: 🤞 test
-    needs: ['install-packages']
-    script:
-        - pnpm cli format:check
-
 test-cli:
     image: $CI_REGISTRY_IMAGE/cli:latest
     stage: 🤞 test

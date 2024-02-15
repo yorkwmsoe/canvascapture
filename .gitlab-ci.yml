@@ -1,6 +1,7 @@
 stages:
     - 🐋 docker
     - 🛞 install
+    - ✅ check
     - 🤞 test
     - 📦 build
     - 🚀 release
@@ -26,6 +27,20 @@ install-packages:
             - node_modules/
             - $DESKTOP_BASE_PATH/node_modules/
             - $CLI_BASE_PATH/node_modules/
+
+check-format:
+    image: $CI_REGISTRY_IMAGE/base:latest
+    stage: ✅ check
+    needs: ['install-packages']
+    script:
+        - pnpm format:check
+
+check-lint:
+    image: $CI_REGISTRY_IMAGE/base:latest
+    stage: ✅ check
+    needs: ['install-packages']
+    script:
+        - pnpm lint
 
 build-docker-base:
     stage: 🐋 docker
