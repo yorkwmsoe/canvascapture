@@ -65,7 +65,7 @@ export async function generate() {
 }
 
 export function getHighMedLow(submissions: Submission[]) {
-    let copySubmissions = [...submissions]
+    const copySubmissions = [...submissions]
     let high = null
     let med = null
     let low = null

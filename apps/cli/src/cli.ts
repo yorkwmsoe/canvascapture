@@ -7,7 +7,7 @@ import { Command } from '@modules/command/types/command'
 import { AxiosError } from 'axios'
 import { logger } from '@lib/logger'
 
-async function loadConfig() {
+function loadConfig() {
     const config = getConfig()
     if (!config) {
         console.log('No config found. Please run the setup command.')
@@ -54,8 +54,9 @@ function parseCommand(result: string) {
 const main = async () => {
     console.log(generateTitle())
 
-    await loadConfig()
+    loadConfig()
 
+    // eslint-disable-next-line no-constant-condition
     while (true) {
         const result = prompt('Enter a command: ')
         const data = parseCommand(result)

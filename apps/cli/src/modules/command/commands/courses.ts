@@ -16,7 +16,7 @@ export async function select_courses() {
 
     const unfilteredCourses = await getCourses();
 
-    let courses: Course[] = [];
+    const courses: Course[] = [];
     for (const c of unfilteredCourses) {
         const assignments = await getAssignments(c.id)
         console.log(assignments)
