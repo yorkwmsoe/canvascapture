@@ -16,7 +16,7 @@ variables:
     DESKTOP_IMAGE: $CI_REGISTRY_IMAGE_PATH/desktop:$CI_PIPELINE_ID
 
 include:
-    - local: docker-ci.yml
+    - local: .docker-ci.yml
     - local: /apps/cli/.gitlab-ci.yml
     - local: /apps/desktop/.gitlab-ci.yml
 
