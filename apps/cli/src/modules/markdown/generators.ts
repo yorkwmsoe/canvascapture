@@ -46,7 +46,12 @@ function assembleSubmissionInfo(submission: Submission) {
 
 function assembleFeedbackInfo(submission: Submission) {
     const feedbackHeader = convertToHeader('Feedback', 2)
-    const feedbackBody = submission?.submission_comments?.length ? createList(submission?.submission_comments.map((comment) => comment.comment), '-') : 'No feedback'
+    const feedbackBody = submission?.submission_comments?.length
+        ? createList(
+              submission?.submission_comments.map((comment) => comment.comment),
+              '-'
+          )
+        : 'No feedback'
     return [feedbackHeader, feedbackBody]
 }
 

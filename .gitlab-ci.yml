@@ -1,57 +1,57 @@
 stages:
-  - 🐋 docker
-  - 🛞 install
-  - 🤞 test
-  - 📦 build
-  - 🚀 release
+    - 🐋 docker
+    - 🛞 install
+    - 🤞 test
+    - 📦 build
+    - 🚀 release
 
 variables:
-  CLI_BASE_PATH: apps/cli
-  DESKTOP_BASE_PATH: apps/desktop
+    CLI_BASE_PATH: apps/cli
+    DESKTOP_BASE_PATH: apps/desktop
 
 include:
-  - local: /apps/cli/.gitlab-ci.yml
-  - local: /apps/desktop/.gitlab-ci.yml
+    - local: /apps/cli/.gitlab-ci.yml
+    - local: /apps/desktop/.gitlab-ci.yml
 
 install-packages:
-  image: $CI_REGISTRY_IMAGE/base:latest
-  stage: 🛞 install
-  needs:
-    - job: build-docker-base
-      optional: true
-  script:
-    - pnpm install
-  artifacts:
-    paths:
-      - node_modules/
-      - $DESKTOP_BASE_PATH/node_modules/
-      - $CLI_BASE_PATH/node_modules/
+    image: $CI_REGISTRY_IMAGE/base:latest
+    stage: 🛞 install
+    needs:
+        - job: build-docker-base
+          optional: true
+    script:
+        - pnpm install
+    artifacts:
+        paths:
+            - node_modules/
+            - $DESKTOP_BASE_PATH/node_modules/
+            - $CLI_BASE_PATH/node_modules/
 
 build-docker-base:
-  stage: 🐋 docker
-  image: docker:stable
-  services:
-    - docker:dind
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build . -t $CI_REGISTRY_IMAGE/base
-    - docker push $CI_REGISTRY_IMAGE/base
-  only:
-    changes:
-      - Dockerfile
+    stage: 🐋 docker
+    image: docker:stable
+    services:
+        - docker:dind
+    script:
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker build . -t $CI_REGISTRY_IMAGE/base
+        - docker push $CI_REGISTRY_IMAGE/base
+    only:
+        changes:
+            - Dockerfile
 
 build-docker-desktop:
-  stage: 🐋 docker
-  image: docker:stable
-  services:
-    - docker:dind
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build . -f $DESKTOP_BASE_PATH/Dockerfile -t $CI_REGISTRY_IMAGE/desktop
-    - docker push $CI_REGISTRY_IMAGE/desktop
-  only:
-    changes:
-      - $DESKTOP_BASE_PATH/Dockerfile
+    stage: 🐋 docker
+    image: docker:stable
+    services:
+        - docker:dind
+    script:
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker build . -f $DESKTOP_BASE_PATH/Dockerfile -t $CI_REGISTRY_IMAGE/desktop
+        - docker push $CI_REGISTRY_IMAGE/desktop
+    only:
+        changes:
+            - $DESKTOP_BASE_PATH/Dockerfile
 
 build-docker-cli:
     stage: 🐋 docker
@@ -63,5 +63,5 @@ build-docker-cli:
         - docker build . -f $CLI_BASE_PATH/Dockerfile -t $CI_REGISTRY_IMAGE/cli
         - docker push $CI_REGISTRY_IMAGE/cli
     only:
-      changes:
-        - $CLI_BASE_PATH/Dockerfile
+        changes:
+            - $CLI_BASE_PATH/Dockerfile

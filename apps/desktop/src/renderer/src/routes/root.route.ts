@@ -9,11 +9,11 @@ import { selectionRoute } from './selection.route'
 export const rootRoute = createRootRoute()
 
 export const routeTree = rootRoute.addChildren([
-  homeRoute,
-  startupRoute,
-  settingsRoute,
-  generationRoute,
-  demoRoute,
-  selectionRoute
-  // Add your routes here
+    homeRoute,
+    startupRoute,
+    settingsRoute,
+    generationRoute,
+    demoRoute,
+    selectionRoute,
+    // Add your routes here
 ])

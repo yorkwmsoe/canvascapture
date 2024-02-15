@@ -21,6 +21,5 @@ describe('courses', () => {
         await select_courses()
 
         expect(state.courses).toBeUndefined()
-        
     })
 })

@@ -3,7 +3,7 @@ import { createRoute } from '@tanstack/react-router'
 import { rootRoute } from './root.route'
 
 export const generationRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/generation',
-  component: GenerationPage
+    getParentRoute: () => rootRoute,
+    path: '/generation',
+    component: GenerationPage,
 })

@@ -66,7 +66,7 @@ Note: the `features` folder is now the `pages` folder
 
 ## Project Libraries
 
-- [TanStack Router](https://tanstack.com/router/v1/docs/overview)
-- [Ant Design](https://ant.design/)
-- [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
-- [React Query](https://tanstack.com/query/latest/)
+-   [TanStack Router](https://tanstack.com/router/v1/docs/overview)
+-   [Ant Design](https://ant.design/)
+-   [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
+-   [React Query](https://tanstack.com/query/latest/)

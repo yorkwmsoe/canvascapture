@@ -3,7 +3,7 @@ import { rootRoute } from './root.route'
 import { StartupPage } from '@renderer/pages/StartupPage'
 
 export const startupRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/startup',
-  component: StartupPage
+    getParentRoute: () => rootRoute,
+    path: '/startup',
+    component: StartupPage,
 })

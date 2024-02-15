@@ -1,53 +1,53 @@
 typecheck-desktop:
-  image: $CI_REGISTRY_IMAGE/desktop:latest
-  needs: ['install-packages']
-  stage: 🤞 test
-  script:
-    - pnpm desktop typecheck
+    image: $CI_REGISTRY_IMAGE/desktop:latest
+    needs: ['install-packages']
+    stage: 🤞 test
+    script:
+        - pnpm desktop typecheck
 
 test-desktop:
-  image: $CI_REGISTRY_IMAGE/desktop:latest
-  stage: 🤞 test
-  needs: ['install-packages']
-  script:
-    - pnpm desktop coverage
-  artifacts:
-    when: always
-    reports:
-      junit:
-        - $DESKTOP_BASE_PATH/junit.xml
-  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+    image: $CI_REGISTRY_IMAGE/desktop:latest
+    stage: 🤞 test
+    needs: ['install-packages']
+    script:
+        - pnpm desktop coverage
+    artifacts:
+        when: always
+        reports:
+            junit:
+                - $DESKTOP_BASE_PATH/junit.xml
+    coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 release-desktop-windows:
-  image: $CI_REGISTRY_IMAGE/desktop:latest
-  stage: 🚀 release
-  needs: ['install-packages']
-  script:
-    - pnpm desktop build:win
-  artifacts:
-    paths:
-      - dist
-  when: manual
+    image: $CI_REGISTRY_IMAGE/desktop:latest
+    stage: 🚀 release
+    needs: ['install-packages']
+    script:
+        - pnpm desktop build:win
+    artifacts:
+        paths:
+            - dist
+    when: manual
 
 release-desktop-mac:
-  image: $CI_REGISTRY_IMAGE/desktop:latest
-  stage: 🚀 release
-  needs: ['install-packages']
-  script:
-    - pnpm install dmg-license
-    - pnpm desktop build:mac
-  artifacts:
-    paths:
-      - dist
-  when: manual
+    image: $CI_REGISTRY_IMAGE/desktop:latest
+    stage: 🚀 release
+    needs: ['install-packages']
+    script:
+        - pnpm install dmg-license
+        - pnpm desktop build:mac
+    artifacts:
+        paths:
+            - dist
+    when: manual
 
 release-desktop-linux:
-  image: $CI_REGISTRY_IMAGE/desktop:latest
-  stage: 🚀 release
-  needs: ['install-packages']
-  script:
-    - pnpm desktop build:linux
-  artifacts:
-    paths:
-      - dist
-  when: manual
+    image: $CI_REGISTRY_IMAGE/desktop:latest
+    stage: 🚀 release
+    needs: ['install-packages']
+    script:
+        - pnpm desktop build:linux
+    artifacts:
+        paths:
+            - dist
+    when: manual
