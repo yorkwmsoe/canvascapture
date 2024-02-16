@@ -7,10 +7,7 @@ build-docker-base:
         - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
         - docker build . -t $BASE_IMAGE
         - docker push $BASE_IMAGE
-    only:
-        changes:
-            - Dockerfile
-            - .docker-ci.yml
+    when: manual
 
 build-docker-desktop:
     stage: 🐋 docker
@@ -21,10 +18,7 @@ build-docker-desktop:
         - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
         - docker build . -f $DESKTOP_BASE_PATH/Dockerfile -t $DESKTOP_IMAGE
         - docker push $DESKTOP_IMAGE
-    only:
-        changes:
-            - $DESKTOP_BASE_PATH/Dockerfile
-            - .docker-ci.yml
+    when: manual
 
 build-docker-cli:
     stage: 🐋 docker
@@ -35,7 +29,4 @@ build-docker-cli:
         - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
         - docker build . -f $CLI_BASE_PATH/Dockerfile -t $CLI_IMAGE
         - docker push $CLI_IMAGE
-    only:
-        changes:
-            - $CLI_BASE_PATH/Dockerfile
-            - .docker-ci.yml
+    when: manual

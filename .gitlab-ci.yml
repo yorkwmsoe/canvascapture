@@ -11,9 +11,9 @@ variables:
     DESKTOP_BASE_PATH: apps/desktop
     CI_REGISTRY_IMAGE_PATH: $CI_REGISTRY_IMAGE
     CI_PIPELINE_ID: $CI_PIPELINE_ID
-    BASE_IMAGE: $CI_REGISTRY_IMAGE_PATH/base:$CI_PIPELINE_ID
-    CLI_IMAGE: $CI_REGISTRY_IMAGE_PATH/cli:$CI_PIPELINE_ID
-    DESKTOP_IMAGE: $CI_REGISTRY_IMAGE_PATH/desktop:$CI_PIPELINE_ID
+    BASE_IMAGE: $CI_REGISTRY_IMAGE_PATH/base:latest
+    CLI_IMAGE: $CI_REGISTRY_IMAGE_PATH/cli:latest
+    DESKTOP_IMAGE: $CI_REGISTRY_IMAGE_PATH/desktop:latest
 
 include:
     - local: .docker-ci.yml
@@ -23,9 +23,6 @@ include:
 install-packages:
     image: $BASE_IMAGE
     stage: 🛞 install
-    needs:
-        - job: build-docker-base
-          optional: true
     script:
         # Install packages for all apps
         - pnpm install
