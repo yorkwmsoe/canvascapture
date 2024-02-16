@@ -20,6 +20,7 @@ export default defineConfig({
                 '@renderer': resolve('src/renderer/src'),
             },
         },
+        // @ts-ignore - vite-plugin-electron-renderer is not yet typed
         plugins: [react(), renderer()],
     },
 })
