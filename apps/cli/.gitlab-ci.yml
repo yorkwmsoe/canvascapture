@@ -14,7 +14,7 @@ test-cli:
 build-cli:
     image: $CLI_IMAGE
     stage: 📦 build
-    needs: ['install-packages']
+    needs: ['install-packages', 'test-cli']
     script:
         - pnpm cli build
     artifacts:

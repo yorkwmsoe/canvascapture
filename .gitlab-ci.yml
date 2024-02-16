@@ -35,26 +35,19 @@ install-packages:
         - pnpm install
     artifacts:
         paths:
-            - node_modules/
-            - $DESKTOP_BASE_PATH/node_modules/
-            - $CLI_BASE_PATH/node_modules/
+            - /**/node_modules/
+            - packages/*/dist/
 
 check-format:
     image: $BASE_IMAGE
-    needs:
-        - job: build-docker-base
-          optional: true
-        - job: install-packages
+    needs: ['install-packages']
     stage: ✅ check
     script:
         - pnpm format:check
 
 check-lint:
     image: $BASE_IMAGE
-    needs:
-        - job: build-docker-base
-          optional: true
-        - job: install-packages
+    needs: ['install-packages']
     stage: ✅ check
     script:
         - pnpm lint

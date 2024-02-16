@@ -21,7 +21,7 @@ test-desktop:
 release-desktop-windows:
     image: $DESKTOP_IMAGE
     stage: 🚀 release
-    needs: ['install-packages']
+    needs: ['install-packages', 'test-desktop', 'typecheck-desktop']
     script:
         - pnpm desktop build:win
     artifacts:
@@ -32,7 +32,7 @@ release-desktop-windows:
 release-desktop-mac:
     image: $DESKTOP_IMAGE
     stage: 🚀 release
-    needs: ['install-packages']
+    needs: ['install-packages', 'test-desktop', 'typecheck-desktop']
     script:
         - pnpm install dmg-license
         - pnpm desktop build:mac
@@ -44,7 +44,7 @@ release-desktop-mac:
 release-desktop-linux:
     image: $DESKTOP_IMAGE
     stage: 🚀 release
-    needs: ['install-packages']
+    needs: ['install-packages', 'test-desktop', 'typecheck-desktop']
     script:
         - pnpm desktop build:linux
     artifacts:
