@@ -3,10 +3,10 @@
     "private": true,
     "version": "0.0.0",
     "type": "module",
-    "main": "./dist/lib.js",
+    "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "scripts": {
-        "package": "tsc && vite build",
+        "package": "tsc",
         "lint": "eslint . --max-warnings=0",
         "lint:fix": "eslint . --fix",
         "test": "vitest",
@@ -20,8 +20,6 @@
         "@vitest/ui": "^1.2.2",
         "eslint": "^8.56.0",
         "typescript": "^5.2.2",
-        "vite": "^5.1.0",
-        "vite-plugin-dts": "^3.7.2",
         "vitest": "^1.2.1"
     }
 }

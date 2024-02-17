@@ -26,6 +26,7 @@
         "coverage": "vitest run --coverage"
     },
     "dependencies": {
+        "@canvas-capture/lib": "workspace:*",
         "@ant-design/icons": "^5.2.6",
         "@electron-toolkit/preload": "^3.0.0",
         "@electron-toolkit/utils": "^3.0.0",
