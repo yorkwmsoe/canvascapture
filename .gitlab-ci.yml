@@ -34,7 +34,7 @@ install-packages:
     artifacts:
         paths:
             - node_modules/
-            - /@canvas-capturenode_modules/
+            - /@canvas-capture/node_modules/
             - /@canvas-capture/dist/
             - apps/*/node_modules/
 
