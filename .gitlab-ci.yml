@@ -34,9 +34,9 @@ install-packages:
     artifacts:
         paths:
             - node_modules/
-            - packages/*/node_modules/
+            - /@canvas-capturenode_modules/
+            - /@canvas-capture/dist/
             - apps/*/node_modules/
-            - packages/*/dist/
 
 check-format:
     image: $BASE_IMAGE
