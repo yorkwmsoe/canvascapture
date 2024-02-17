@@ -4,7 +4,7 @@ This package provides a library of common utilities shared between the various c
 
 ## Installation
 
-from the root directory not `packages/@canvas-capture`
+from the root directory not `canvas-capture`
 
 ```bash
 pnpm install

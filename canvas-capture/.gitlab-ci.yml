@@ -8,5 +8,5 @@ test-@canvas-capture:
         when: always
         reports:
             junit:
-                - /@canvas-capture/junit.xml
+                - canvas-capture/junit.xml
     coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
