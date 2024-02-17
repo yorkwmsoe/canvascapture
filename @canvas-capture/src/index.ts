@@ -8,6 +8,8 @@ import * as gradingTypes from './types/canvas_api/grading-period'
 import * as readTypes from './types/canvas_api/read-state'
 import * as submissionTypes from './types/canvas_api/submission'
 import * as userTypes from './types/canvas_api/user'
+import * as generators from './generators'
+import * as markdown from './markdown'
 
 export {
     canvasApi,
@@ -20,4 +22,6 @@ export {
     readTypes,
     submissionTypes,
     userTypes,
+    generators,
+    markdown,
 }

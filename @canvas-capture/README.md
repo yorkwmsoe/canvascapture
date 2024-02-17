@@ -1,10 +1,10 @@
-# Canvas API
+# Canvas Capture Library
 
-This package provides a simple way to interact with the Canvas API. It is a wrapper around the requests library and provides a simple way to interact with the API.
+This package provides a library of common utilities shared between the various canvas capture apps.
 
 ## Installation
 
-from the root directory not `packages/canvas-api`
+from the root directory not `packages/@canvas-capture`
 
 ```bash
 pnpm install
@@ -13,11 +13,11 @@ pnpm install
 ## Developing
 
 ```bash
-pnpm canvas-api build --watch
+pnpm @canvas-capture package --watch
 ```
 
 ## Testing
 
 ```bash
-pnpm canvas-api test
+pnpm @canvas-capture test
 ```
