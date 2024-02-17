@@ -17,9 +17,9 @@ variables:
 
 include:
     - local: .docker-ci.yml
-    - local: /apps/cli/.gitlab-ci.yml
-    - local: /apps/desktop/.gitlab-ci.yml
-    - local: /@canvas-capture/.gitlab-ci.yml
+    - local: ./apps/cli/.gitlab-ci.yml
+    - local: ./apps/desktop/.gitlab-ci.yml
+    - local: ./@canvas-capture/.gitlab-ci.yml
 
 install-packages:
     image: $BASE_IMAGE
@@ -33,10 +33,10 @@ install-packages:
         - pnpm install
     artifacts:
         paths:
-            - node_modules/
-            - /@canvas-capture/node_modules/
-            - /@canvas-capture/dist/
-            - apps/*/node_modules/
+            - ./node_modules/
+            - ./@canvas-capture/node_modules/
+            - ./@canvas-capture/dist/
+            - ./apps/*/node_modules/
 
 check-format:
     image: $BASE_IMAGE
