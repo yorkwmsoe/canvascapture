@@ -1,7 +1,7 @@
 typecheck-desktop:
     image: $DESKTOP_IMAGE
     needs: ['install-packages']
-    stage: 🤞 test
+    stage: ✅ check
     script:
         - pnpm desktop typecheck
 

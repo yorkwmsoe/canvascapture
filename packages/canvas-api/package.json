@@ -10,7 +10,8 @@
         "lint": "eslint . --max-warnings=0",
         "lint:fix": "eslint . --fix",
         "test": "vitest",
-        "test:ui": "vitest --ui"
+        "test:ui": "vitest --ui",
+        "coverage": "vitest run --coverage"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^7.0.1",
