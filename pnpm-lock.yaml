@@ -12,14 +12,41 @@ importers:
         specifier: ^3.2.5
         version: 3.2.5
 
+  '@canvas-capture':
+    devDependencies:
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^7.0.1
+        version: 7.0.1(@typescript-eslint/parser@7.0.1)(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: ^7.0.1
+        version: 7.0.1(eslint@8.56.0)(typescript@5.3.3)
+      '@vitest/coverage-v8':
+        specifier: ^1.2.1
+        version: 1.2.2(vitest@1.2.2)
+      '@vitest/ui':
+        specifier: ^1.2.2
+        version: 1.2.2(vitest@1.2.2)
+      eslint:
+        specifier: ^8.56.0
+        version: 8.56.0
+      typescript:
+        specifier: ^5.2.2
+        version: 5.3.3
+      vite:
+        specifier: ^5.1.0
+        version: 5.1.2(@types/node@18.19.14)
+      vite-plugin-dts:
+        specifier: ^3.7.2
+        version: 3.7.2(typescript@5.3.3)(vite@5.1.2)
+      vitest:
+        specifier: ^1.2.1
+        version: 1.2.2(@types/node@18.19.14)(@vitest/ui@1.2.2)
+
   apps/cli:
     dependencies:
-      '@canvas-capture/canvas-api':
+      '@canvas-capture/lib':
         specifier: workspace:*
-        version: link:../../packages/canvas-api
-      '@canvas-capture/markdown':
-        specifier: workspace:*
-        version: link:../../packages/markdown
+        version: link:../../@canvas-capture
       '@inquirer/prompts':
         specifier: ^3.2.0
         version: 3.3.2
@@ -211,66 +238,6 @@ importers:
       vite-plugin-electron-renderer:
         specifier: ^0.14.5
         version: 0.14.5
-      vitest:
-        specifier: ^1.2.1
-        version: 1.2.2(@types/node@18.19.14)(@vitest/ui@1.2.2)
-
-  packages/canvas-api:
-    devDependencies:
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^7.0.1
-        version: 7.0.1(@typescript-eslint/parser@7.0.1)(eslint@8.56.0)(typescript@5.3.3)
-      '@typescript-eslint/parser':
-        specifier: ^7.0.1
-        version: 7.0.1(eslint@8.56.0)(typescript@5.3.3)
-      '@vitest/coverage-v8':
-        specifier: ^1.2.1
-        version: 1.2.2(vitest@1.2.2)
-      '@vitest/ui':
-        specifier: ^1.2.2
-        version: 1.2.2(vitest@1.2.2)
-      eslint:
-        specifier: ^8.56.0
-        version: 8.56.0
-      typescript:
-        specifier: ^5.2.2
-        version: 5.3.3
-      vite:
-        specifier: ^5.1.0
-        version: 5.1.2(@types/node@18.19.14)
-      vite-plugin-dts:
-        specifier: ^3.7.2
-        version: 3.7.2(typescript@5.3.3)(vite@5.1.2)
-      vitest:
-        specifier: ^1.2.1
-        version: 1.2.2(@types/node@18.19.14)(@vitest/ui@1.2.2)
-
-  packages/markdown:
-    devDependencies:
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^7.0.1
-        version: 7.0.1(@typescript-eslint/parser@7.0.1)(eslint@8.56.0)(typescript@5.3.3)
-      '@typescript-eslint/parser':
-        specifier: ^7.0.1
-        version: 7.0.1(eslint@8.56.0)(typescript@5.3.3)
-      '@vitest/coverage-v8':
-        specifier: ^1.2.1
-        version: 1.2.2(vitest@1.2.2)
-      '@vitest/ui':
-        specifier: ^1.2.2
-        version: 1.2.2(vitest@1.2.2)
-      eslint:
-        specifier: ^8.56.0
-        version: 8.56.0
-      typescript:
-        specifier: ^5.2.2
-        version: 5.3.3
-      vite:
-        specifier: ^5.1.0
-        version: 5.1.2(@types/node@18.19.14)
-      vite-plugin-dts:
-        specifier: ^3.7.2
-        version: 3.7.2(typescript@5.3.3)(vite@5.1.2)
       vitest:
         specifier: ^1.2.1
         version: 1.2.2(@types/node@18.19.14)(@vitest/ui@1.2.2)

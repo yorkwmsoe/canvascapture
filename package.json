@@ -5,8 +5,7 @@
     "scripts": {
         "desktop": "pnpm -filter canvas-capture-desktop",
         "cli": "pnpm -filter canvas-capture-cli",
-        "canvas-api": "pnpm -filter @canvas-capture/canvas-api",
-        "markdown": "pnpm -filter @canvas-capture/markdown",
+        "@canvas-capture": "pnpm -filter @canvas-capture/lib",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "lint": "pnpm -r run lint",

@@ -48,8 +48,7 @@
         "typescript": "^5.2.2"
     },
     "dependencies": {
-        "@canvas-capture/canvas-api": "workspace:*",
-        "@canvas-capture/markdown": "workspace:*",
+        "@canvas-capture/lib": "workspace:*",
         "@inquirer/prompts": "^3.2.0",
         "@inquirer/testing": "^2.1.8",
         "axios": "^0.27.2",

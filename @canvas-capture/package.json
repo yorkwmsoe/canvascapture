@@ -1,9 +1,9 @@
 {
-    "name": "@canvas-capture/canvas-api",
+    "name": "@canvas-capture/lib",
     "private": true,
     "version": "0.0.0",
     "type": "module",
-    "main": "./dist/canvas-api.js",
+    "main": "./dist/lib.js",
     "types": "./dist/index.d.ts",
     "scripts": {
         "package": "tsc && vite build",

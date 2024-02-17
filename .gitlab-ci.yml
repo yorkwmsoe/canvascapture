@@ -9,7 +9,6 @@ stages:
 variables:
     CLI_BASE_PATH: apps/cli
     DESKTOP_BASE_PATH: apps/desktop
-    PACKAGES_BASE_PATH: packages
     CI_REGISTRY_IMAGE_PATH: $CI_REGISTRY_IMAGE
     CI_PIPELINE_ID: $CI_PIPELINE_ID
     BASE_IMAGE: $CI_REGISTRY_IMAGE_PATH/base:latest
@@ -20,7 +19,7 @@ include:
     - local: .docker-ci.yml
     - local: /apps/cli/.gitlab-ci.yml
     - local: /apps/desktop/.gitlab-ci.yml
-    - local: /packages/.gitlab-ci.yml
+    - local: /@canvas-capture/.gitlab-ci.yml
 
 install-packages:
     image: $BASE_IMAGE
