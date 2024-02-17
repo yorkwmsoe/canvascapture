@@ -7,3 +7,5 @@
 
 # Check subdirectories too
 !*/
+
+*/dist
