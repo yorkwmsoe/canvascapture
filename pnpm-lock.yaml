@@ -13,6 +13,13 @@ importers:
         version: 3.2.5
 
   '@canvas-capture':
+    dependencies:
+      axios:
+        specifier: ^1.6.7
+        version: 1.6.7
+      date-fns:
+        specifier: ^3.3.1
+        version: 3.3.1
     devDependencies:
       '@typescript-eslint/eslint-plugin':
         specifier: ^7.0.1
