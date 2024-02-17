@@ -20,6 +20,7 @@ include:
     - local: .docker-ci.yml
     - local: /apps/cli/.gitlab-ci.yml
     - local: /apps/desktop/.gitlab-ci.yml
+    - local: /packages/.gitlab-ci.yml
 
 install-packages:
     image: $BASE_IMAGE
