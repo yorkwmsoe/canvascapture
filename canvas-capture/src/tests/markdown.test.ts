@@ -19,7 +19,7 @@ describe('markdown test', () => {
     //Arrange
 
     //Directory of tests to append for file location
-    const testDir = './src/modules/markdown/tests/'
+    const testDir = './src/tests/'
     //Path of testing file
     const filePath = testDir + 'sample'
 
