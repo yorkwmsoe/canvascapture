@@ -6,6 +6,8 @@ import { Quiz } from './types/quiz'
 import { QuizSubmission } from './types/quiz-submissions'
 import { parseISO } from 'date-fns'
 import { getCanvasApiBaseUrl, getCanvasApiToken } from '@/env'
+import {QuizSubmissionQuestion} from "@modules/canvas_api/types/quiz_submission_question";
+import {QuizQuestion} from "@modules/canvas_api/types/quiz_question";
 
 // date handling from: https://stackoverflow.com/a/66238542
 export function handleDates(body: any) {
@@ -102,3 +104,45 @@ export const getQuizSubmission = async (course_id: number, quiz_id: number, subm
     }
     return submission
 }
+
+export const getQuizSubmissionQuestions = async (quizSubmissionId: number): Promise<QuizSubmissionQuestion[]> => {
+  let quizSubmissionQuestions: QuizSubmissionQuestion[] = []
+  const results = (await api.get(`${getCanvasApiBaseUrl()}/quiz_submissions/${quizSubmissionId}/questions?include[]=quiz_question`, { headers: getApiHeaders() })).data
+
+  for (const res of results.quiz_submission_questions) {
+    quizSubmissionQuestions.push(res)
+  }
+  return quizSubmissionQuestions
+}
+
+export const getQuizQuestionsNoParams = async (courseId: number, quizId: number):Promise<QuizQuestion[]> => {
+  let quizQuestions: QuizQuestion[] = []
+  const results = (await api.get(`${getCanvasApiBaseUrl()}/courses/${courseId}/quizzes/${quizId}/questions`, { headers: getApiHeaders() })).data
+
+  for (const res of results) {
+    quizQuestions.push(res)
+  }
+
+  return quizQuestions
+}
+
+export const getQuizQuestionsParams = async (courseId: number, quizId: number, submissionId: number, quizSubmissionAttempt: number):Promise<QuizQuestion[]> => {
+  let quizQuestions: QuizQuestion[] = []
+  // console.log(courseId, quizId, submissionId, quizSubmissionAttempt)
+  const results = (await api.get(`${getCanvasApiBaseUrl()}/courses/${courseId}/quizzes/${quizId}/questions?quiz_submission_id=${submissionId}&quiz_submission_attempt=${quizSubmissionAttempt}`, { headers: getApiHeaders() })).data
+  for (const res of results) {
+    quizQuestions.push(res)
+  }
+
+  return quizQuestions
+}
+
+
+
+
+
+
+
+
+
+
