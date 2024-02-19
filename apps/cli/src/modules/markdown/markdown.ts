@@ -195,8 +195,7 @@ export const createTableRows = (rows: string[][]) => {
         for (let col = 0; col < rows[0].length; col++) {
             rowPrint = rowPrint + ' ' + rows[row][col] + ' |'
         }
-        rowPrint = '|' + rowPrint + '\n'
-        rowsToPrint = rowsToPrint + rowPrint
+      rowsToPrint = rowsToPrint + '|' + rowPrint + '\n';
     }
     return rowsToPrint
 }
