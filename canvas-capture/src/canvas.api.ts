@@ -4,10 +4,13 @@ import { Assignment } from './types/canvas_api/assignment'
 import { Course } from './types/canvas_api/course'
 import { Submission } from './types/canvas_api/submission'
 
-export type AuthWithApi = {
-    api: ReturnType<typeof axios.create>
+export type Auth = {
     canvasAccessToken: string
     canvasDomain: string
+}
+
+export type AuthWithApi = Auth & {
+    api: ReturnType<typeof axios.create>
 }
 
 // date handling from: https://stackoverflow.com/a/66238542
@@ -54,10 +57,12 @@ const getCourses = async (args: AuthWithApi): Promise<Course[]> => {
     ).data
 }
 
+export type GetAssignmentsRequest = {
+    courseId: number
+}
+
 const getAssignments = async (
-    args: {
-        courseId: number
-    } & AuthWithApi
+    args: GetAssignmentsRequest & AuthWithApi
 ): Promise<{
     courseId: number
     assignments: Assignment[]
@@ -78,11 +83,13 @@ const getAssignments = async (
     }
 }
 
+export type GetSubmissionsRequest = {
+    courseId: number
+    assignmentId: number
+}
+
 const getSubmissions = async (
-    args: {
-        courseId: number
-        assignmentId: number
-    } & AuthWithApi
+    args: GetSubmissionsRequest & AuthWithApi
 ): Promise<Submission[]> => {
     const { api, canvasAccessToken, canvasDomain } = args
     return (
@@ -102,16 +109,14 @@ export const createCanvasApi = () => {
     })
 
     return {
-        getCourses: async (args: AuthWithApi) => {
-            return getCourses(args)
+        getCourses: async (args: Auth) => {
+            return getCourses({ ...args, api })
         },
-        getAssignments: async (args: { courseId: number } & AuthWithApi) => {
-            return getAssignments(args)
+        getAssignments: async (args: GetAssignmentsRequest & Auth) => {
+            return getAssignments({ ...args, api })
         },
-        getSubmissions: async (
-            args: { courseId: number; assignmentId: number } & AuthWithApi
-        ) => {
-            return getSubmissions(args)
+        getSubmissions: async (args: GetSubmissionsRequest & Auth) => {
+            return getSubmissions({ ...args, api })
         },
     }
 }
