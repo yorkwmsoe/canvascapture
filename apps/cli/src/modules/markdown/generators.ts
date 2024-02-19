@@ -3,9 +3,11 @@ import { Course } from '@modules/canvas_api/types/course'
 import { Submission } from '@modules/canvas_api/types/submission'
 import { addNewLine, convertToHeader, createList, createTableHeader, createTableRows, writeToFile } from './markdown'
 import { mkdirSync } from 'fs'
-import {getMostCommonQuizVersion, getQuiz, getQuizSubmission} from "@modules/canvas_api/api";
+import {getMostCommonQuizVersion, getQuiz, getQuizQuestionsNoParams, getQuizQuestionsParams, getQuizSubmission, getQuizSubmissionQuestions} from "@modules/canvas_api/api";
 import {Quiz} from "@modules/canvas_api/types/quiz";
 import {QuizSubmission} from "@modules/canvas_api/types/quiz-submissions";
+import {QuizSubmissionQuestion} from "@modules/canvas_api/types/quiz_submission_question";
+import {QuizQuestion, QuizSubmissionAnswer} from "@modules/canvas_api/types/quiz_question";
 
 const basePath = 'output'
 
@@ -45,6 +47,8 @@ export async function generateQuiz(course: Course, assignment: Assignment, submi
   if (commit) {
     writeAggregationToFile(cleanedItems, folderPath, score)
   }
+
+  await assembleQuizQuestionsAndComments(course, assignment, submission)
 
   return {
     items,
@@ -122,6 +126,69 @@ function writeAggregationToFile(cleanedItems: string[], folderPath: string, scor
   const filePath = `${folderPath}/${score}`;
   writeToFile(filePath, pseudoFile)
 }
+
+async function assembleQuizQuestionsAndComments(course: Course, assignment: Assignment, submission: Submission){
+  const user_id = submission.user_id
+  const submission_id = submission.id
+  const quiz_id = assignment.quiz_id as number;
+  const quizSubmission: QuizSubmission = await getQuizSubmission(course.id, quiz_id, submission_id)
+  const quizSubmissionId = quizSubmission.id as number
+  const quizSubmissionQuestions: QuizSubmissionQuestion[] = await getQuizSubmissionQuestions(quizSubmission.id)
+  const quizQuestionsParams: QuizQuestion[] = await getQuizQuestionsParams(course.id, quiz_id, quizSubmissionId, quizSubmission.attempt)
+  const quizQuestionsNoParams: QuizQuestion[] = await getQuizQuestionsNoParams(course.id, quiz_id)
+
+  type QuestionData = {
+    quiz_id: number
+    question_name: string
+    question_description: string
+    position: number
+    points_possible: number
+    correct_comments: string
+    neutral_comments: string
+    incorrect_comments: string
+    correct_answers: QuizSubmissionAnswer[]
+    correct: boolean
+    question_type: string //should eventually make this explicit
+  }
+  quizSubmissionQuestions.sort((a, b) => a.position - b.position)
+  quizQuestionsParams.sort((a, b) => a.position - b.position)
+  quizQuestionsNoParams.sort((a, b) => a.position - b.position)
+  console.log(quizSubmissionQuestions.length, "+++", quizQuestionsParams.length, "+++", quizQuestionsNoParams.length)
+  //The quizSubmissionQuestions has 2 more items than quizQuestionsParams/NoParams
+  //This is because there is a spacer which is not a question, and there is a question that has
+  //no grade associated with it.
+
+  let questionsData: QuestionData = []
+  for(let i = 0; i < quizQuestionsParams.length; i++){
+    let questionData = {
+      quiz_id: quizSubmissionQuestions[i].quiz_id
+      question_name: quizQuestionsNoParams[i].question_name
+      question_description: quizQuestionsNoParams[i].question_text
+      position: quizSubmissionQuestions[i].position
+      points_possible: quizQuestionsNoParams[i].points_possible
+      correct_comments: quizQuestionsParams[i].correct_comments_html
+      neutral_comments: quizQuestionsParams[i].neutral_comments_html
+      incorrect_comments: quizQuestionsParams[i].incorrect_comments_html
+      correct_answers: quizQuestionsNoParams[i].answers.filter((ans.))
+      correct: boolean
+      question_type: string //should eventually make this explicit
+    } as QuestionData
+  }
+
+}
+
+// function formatQuizQuestions(quizQuestions: QuizQuestion[]){
+//   let ret = []
+//   const numQuestions = quizQuestions.length
+//   for(const question in quizQuestions){
+//     const questionHeader = convertToHeader("Question 1: " + , 2)
+//   }
+//
+//
+//
+//
+//
+// }
 
 
 
