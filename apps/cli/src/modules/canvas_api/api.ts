@@ -78,11 +78,11 @@ export const getMostCommonQuizVersion = async (course_id: number, quiz_id: numbe
     return largestVal
 }
 
-// export const getLatestQuizVersion = async(course_id: number, quiz_id: number): Promise<number> => {
-//   let quiz: Quiz = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}`, { headers: getApiHeaders() })).data;
-//   //return (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}`, { headers: getApiHeaders() })).data;
-//   return quiz.version_number
-// };
+export const getLatestQuizVersion = async(course_id: number, quiz_id: number): Promise<number> => {
+  let quiz: Quiz = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}`, { headers: getApiHeaders() })).data;
+  //return (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}`, { headers: getApiHeaders() })).data;
+  return quiz.version_number
+};
 
 export const getQuiz = async (course_id: number, quiz_id?: number): Promise<Quiz> => {
     let quiz: Quiz = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}`, { headers: getApiHeaders() })).data

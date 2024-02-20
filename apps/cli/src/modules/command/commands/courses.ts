@@ -1,4 +1,4 @@
-import {getCourses, getAssignments, getLatestQuizVersion} from '@modules/canvas_api/api'
+import {getCourses, getAssignments} from '@modules/canvas_api/api'
 import { Command } from '../types/command'
 import { state } from '../state'
 import { checkbox } from '@inquirer/prompts'
