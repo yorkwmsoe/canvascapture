@@ -1,8 +1,10 @@
 import { useCallback, useMemo, useState } from 'react'
-import { Button, message, Steps, theme } from 'antd'
+import { Button, Steps, theme } from 'antd'
 import { Assignments } from '../Assignments'
 import { Courses } from '../Courses'
-import { Generate } from '../Generate'
+import { useCourses } from '@renderer/hooks/useCourses'
+import { useAssignments } from '@renderer/hooks/useAssignments'
+import { useNavigate } from '@tanstack/react-router'
 
 const STEPS = [
   {
@@ -12,16 +14,15 @@ const STEPS = [
   {
     title: 'Assignments',
     content: <Assignments />
-  },
-  {
-    title: 'Generating',
-    content: <Generate />
   }
 ] as const
 
 export function SwitchStepper() {
   const { token } = theme.useToken()
   const [current, setCurrent] = useState(0)
+  const { selectedCourses } = useCourses()
+  const { selectedAssignments } = useAssignments()
+  const navigate = useNavigate()
 
   const next = useCallback(() => {
     if (current !== STEPS.length - 1) {
@@ -58,12 +59,20 @@ export function SwitchStepper() {
       <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between' }}>
         {current > 0 && <Button onClick={prev}>Previous</Button>}
         {current < STEPS.length - 1 && (
-          <Button style={{ marginLeft: 'auto' }} type="primary" onClick={next}>
+          <Button
+            style={{ marginLeft: 'auto' }}
+            type="primary"
+            onClick={next}
+            disabled={
+              (STEPS[current].title === 'Courses' && selectedCourses.length === 0) ||
+              (STEPS[current].title === 'Assignments' && selectedAssignments.length === 0)
+            }
+          >
             Next
           </Button>
         )}
         {current === STEPS.length - 1 && (
-          <Button type="primary" onClick={() => message.success('Processing complete!')}>
+          <Button type="primary" onClick={() => navigate({ to: '/generation' })}>
             Done
           </Button>
         )}

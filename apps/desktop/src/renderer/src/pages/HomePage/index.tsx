@@ -1,14 +1,14 @@
 import { Input, Layout, Button, Space, Card, Flex, Col, Row } from 'antd'
-import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useGetFolders } from '@renderer/hooks/useGetFolders'
 import { FileMarkdownOutlined } from '@ant-design/icons'
+import { useGenerationStore } from '@renderer/stores/generation.store'
 
 const { Header, Content, Footer } = Layout
 const { Meta } = Card
 export function HomePage() {
   // TODO: Hook up name to the geration store
-  const [generationName, setGenerationName] = useState<string>('')
+  const { generationName, setGenerationName } = useGenerationStore()
   const navigate = useNavigate({ from: '/' })
   const { data: folder } = useGetFolders()
 

@@ -9,36 +9,32 @@ import {
   writeToFile
 } from './markdown'
 import { mkdirSync } from 'fs'
-import { getDocumentsPath } from '@renderer/lib/config'
-
-const basePath = getDocumentsPath()
 
 export async function generateAssignment(
   course: Course,
   assignment: Assignment,
-  submission: Submission,
+  submission: Submission | undefined,
   score: 'high' | 'median' | 'low',
+  outpath: string,
   commit: boolean = true
 ) {
-  const folderPath = `${basePath}/${course.name}/${assignment.name}`
-  mkdirSync(folderPath, { recursive: true })
+  if (submission !== undefined) {
+    const folderPath = `${outpath}/${course.name}/${assignment.name}`
+    mkdirSync(folderPath, { recursive: true })
 
-  const items: string[] = [
-    ...assembleTitleAndGrade(assignment, submission),
-    ...assembleFeedbackInfo(submission),
-    ...assembleDescriptionInfo(assignment),
-    ...assembleRubricInfo(assignment, submission),
-    ...assembleSubmissionInfo(submission)
-  ]
+    const items: string[] = [
+      ...assembleTitleAndGrade(assignment, submission),
+      ...assembleFeedbackInfo(submission),
+      ...assembleDescriptionInfo(assignment),
+      ...assembleRubricInfo(assignment, submission),
+      ...assembleSubmissionInfo(submission)
+    ]
 
-  const cleanedItems = items.filter((item) => !!item)
+    const cleanedItems = items.filter((item) => !!item)
 
-  if (commit) {
-    writeAggregationToFile(cleanedItems, folderPath, score)
-  }
-
-  return {
-    items
+    if (commit) {
+      writeAggregationToFile(cleanedItems, folderPath, score)
+    }
   }
 }
 

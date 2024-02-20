@@ -1,4 +1,4 @@
-import { getConfig, setConfig } from '@renderer/lib/config'
+import { getConfig, setConfig } from '@renderer/utils/config'
 import { create } from 'zustand'
 
 export type SettingsStore = {
