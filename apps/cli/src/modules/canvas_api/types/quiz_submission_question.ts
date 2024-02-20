@@ -1,3 +1,5 @@
+import {Formula, Match, Variable} from "@modules/canvas_api/types/quiz_question";
+
 export type QuizSubmissionQuestion = {
   // Unique identifier for the question
   id: number
@@ -18,19 +20,19 @@ export type QuizSubmissionQuestion = {
   // List of answers for the question
   answers: Answer[]
   // Variables associated with the question
-  variables: any
+  variables: Variable[]
   // Formulas associated with the question
-  formulas: any
+  formulas: Formula[]
   // Tolerance for answer comparison
-  answer_tolerance: any
+  answer_tolerance: number | null
   // Decimal places for formulas
-  formula_decimal_places: any
+  formula_decimal_places: number | null
   // Matches associated with the question
-  matches: any
+  matches: Match[]
   // Indicates if the question is flagged
   flagged: boolean
   // Indicates if the question is correct
-  correct: boolean
+  correct: boolean | "partial"
 }
 
 export type Answer = {

@@ -1,3 +1,4 @@
+// from endpoint http://sdlstudentvm06.msoe.edu/api/v1/courses/2/quizzes/3/questions?&quiz_submission_id=9&quiz_submission_attempt=1
 export type QuizQuestion = {
   // Unique identifier for the question
   id: number
@@ -32,17 +33,17 @@ export type QuizQuestion = {
   // List of answers for the question
   answers: QuizSubmissionAnswer[]
   // Variables associated with the question
-  variables: any
+  variables: null | Variable[]
   // Formulas associated with the question
-  formulas: any
+  formulas: null | Formula[]
   // Tolerance for answer comparison
-  answer_tolerance: any
+  answer_tolerance: null | number
   // Decimal places for formulas
-  formula_decimal_places: any
+  formula_decimal_places: null | number
   // Matches associated with the question
-  matches: any
+  matches: Match[]
   // Matching answer incorrect matches
-  matching_answer_incorrect_matches: any
+  matching_answer_incorrect_matches: null | string
 }
 
 export type QuizSubmissionAnswer = {
@@ -59,3 +60,33 @@ export type QuizSubmissionAnswer = {
   // Identifier for the blank associated with the answer
   blank_id: string
 }
+
+export type QuestionData = {
+  quiz_id: number
+  question_name: string
+  question_description: string
+  position: number
+  points_possible: number
+  correct_comments: string
+  neutral_comments: string
+  incorrect_comments: string
+  correct_answers: QuizSubmissionAnswer[]
+  correct: boolean | "partial"
+  question_type: string //should eventually make this explicit
+}
+
+export type Variable = {
+  name: string
+  min: number
+  max: number
+  scale: number
+};
+
+export type Formula = {
+  formula: string;
+};
+
+export type Match = {
+  text: string;
+  match_id: number;
+};

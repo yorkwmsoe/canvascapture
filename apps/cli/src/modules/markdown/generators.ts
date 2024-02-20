@@ -7,7 +7,8 @@ import {getMostCommonQuizVersion, getQuiz, getQuizQuestionsNoParams, getQuizQues
 import {Quiz} from "@modules/canvas_api/types/quiz";
 import {QuizSubmission} from "@modules/canvas_api/types/quiz-submissions";
 import {QuizSubmissionQuestion} from "@modules/canvas_api/types/quiz_submission_question";
-import {QuizQuestion, QuizSubmissionAnswer} from "@modules/canvas_api/types/quiz_question";
+import {QuestionData, QuizQuestion, QuizSubmissionAnswer} from "@modules/canvas_api/types/quiz_question";
+import {Question} from "inquirer";
 
 const basePath = 'output'
 
@@ -40,7 +41,8 @@ export async function generateQuiz(course: Course, assignment: Assignment, submi
     ...assembleDescriptionInfo(assignment),
     ...assembleFeedbackInfo(submission),
     ... await quizOverview(assignment),
-    ... await quizUserOverview(assignment, submission)]
+    ... await quizUserOverview(assignment, submission),
+    ... await assembleQuizQuestionsAndComments(course, assignment, submission)]
 
   const cleanedItems = items.filter((item) => !!item)
 
@@ -127,7 +129,7 @@ function writeAggregationToFile(cleanedItems: string[], folderPath: string, scor
   writeToFile(filePath, pseudoFile)
 }
 
-async function assembleQuizQuestionsAndComments(course: Course, assignment: Assignment, submission: Submission){
+async function assembleQuizQuestionsAndComments(course: Course, assignment: Assignment, submission: Submission) {
   const user_id = submission.user_id
   const submission_id = submission.id
   const quiz_id = assignment.quiz_id as number;
@@ -137,58 +139,73 @@ async function assembleQuizQuestionsAndComments(course: Course, assignment: Assi
   const quizQuestionsParams: QuizQuestion[] = await getQuizQuestionsParams(course.id, quiz_id, quizSubmissionId, quizSubmission.attempt)
   const quizQuestionsNoParams: QuizQuestion[] = await getQuizQuestionsNoParams(course.id, quiz_id)
 
-  type QuestionData = {
-    quiz_id: number
-    question_name: string
-    question_description: string
-    position: number
-    points_possible: number
-    correct_comments: string
-    neutral_comments: string
-    incorrect_comments: string
-    correct_answers: QuizSubmissionAnswer[]
-    correct: boolean
-    question_type: string //should eventually make this explicit
-  }
   quizSubmissionQuestions.sort((a, b) => a.position - b.position)
   quizQuestionsParams.sort((a, b) => a.position - b.position)
-  quizQuestionsNoParams.sort((a, b) => a.position - b.position)
-  console.log(quizSubmissionQuestions.length, "+++", quizQuestionsParams.length, "+++", quizQuestionsNoParams.length)
+  quizQuestionsNoParams.sort((a, b) => a.assessment_question_id - b.assessment_question_id)
+
   //The quizSubmissionQuestions has 2 more items than quizQuestionsParams/NoParams
   //This is because there is a spacer which is not a question, and there is a question that has
   //no grade associated with it.
 
-  let questionsData: QuestionData = []
+  let questionsData: QuestionData[] = []
   for(let i = 0; i < quizQuestionsParams.length; i++){
-    let questionData = {
-      quiz_id: quizSubmissionQuestions[i].quiz_id
-      question_name: quizQuestionsNoParams[i].question_name
-      question_description: quizQuestionsNoParams[i].question_text
-      position: quizSubmissionQuestions[i].position
-      points_possible: quizQuestionsNoParams[i].points_possible
-      correct_comments: quizQuestionsParams[i].correct_comments_html
-      neutral_comments: quizQuestionsParams[i].neutral_comments_html
-      incorrect_comments: quizQuestionsParams[i].incorrect_comments_html
-      correct_answers: quizQuestionsNoParams[i].answers.filter((ans.))
-      correct: boolean
-      question_type: string //should eventually make this explicit
+    let questionData: QuestionData = {
+      quiz_id: quizSubmissionQuestions[i].quiz_id,
+      question_name: quizQuestionsNoParams[i].question_name,
+      question_description: quizQuestionsNoParams[i].question_text,
+      position: quizSubmissionQuestions[i].position,
+      points_possible: quizQuestionsNoParams[i].points_possible,
+      correct_comments: quizQuestionsParams[i].correct_comments_html,
+      neutral_comments: quizQuestionsParams[i].neutral_comments_html,
+      incorrect_comments: quizQuestionsParams[i].incorrect_comments_html,
+      correct_answers: [], //quizQuestionsNoParams[i].answers.filter((ans.))
+      correct: quizSubmissionQuestions[i].correct,
+      question_type: quizSubmissionQuestions[i].question_type,
     } as QuestionData
+    questionsData.push(questionData)
   }
+
+  return formatQuizQuestions(questionsData)
 
 }
 
-// function formatQuizQuestions(quizQuestions: QuizQuestion[]){
-//   let ret = []
-//   const numQuestions = quizQuestions.length
-//   for(const question in quizQuestions){
-//     const questionHeader = convertToHeader("Question 1: " + , 2)
-//   }
-//
-//
-//
-//
-//
-// }
+function formatQuizQuestions(quizQuestions: QuestionData[]): string[]{
+  let formattedQuestions: string[] = []
+  const numQuestions = quizQuestions.length
+  quizQuestions.forEach((question) => {
+    const position = question.position.toString().replace(/(<([^>]+)>)/ig, '')
+    const question_name = question.question_name.replace(/(<([^>]+)>)/ig, '')
+    const points_possible = question.points_possible.toString().replace(/(<([^>]+)>)/ig, '')
+    const qDescription = question.question_description.replace(/(<([^>]+)>|\n|&nbsp;)/ig, '');
+    const qType = question.question_type.replace(/(<([^>]+)>)/ig, '')
+    const neutral_comments = question.neutral_comments.replace(/(<([^>]+)>)/ig, '')
+
+    const questionHeader = convertToHeader("Question " + position, 2) + '\n'
+    const questionTableHeader1 = createTableHeader(["Question Name", "Points Possible", "Question Description", "Question Type"])
+    const questionTableBody1 = createTableRows([[question_name, points_possible, qDescription, qType]]) + '\n'
+
+    let commentType = ""
+    let conditionalComments = ""
+    let score = ""
+    if(question.correct == true){
+      commentType = "Correct"
+      score = "Full"
+      conditionalComments = question.correct_comments.replace(/(<([^>]+)>)/ig, '')
+    } else {
+      commentType = "Incorrect"
+      conditionalComments = question.incorrect_comments.replace(/(<([^>]+)>)/ig, '')
+      score = (question.correct == "partial") ? "partial" : "No Points";
+    }
+
+    const questionTableHeader2 = createTableHeader(["Student Score", commentType + " Comments", "Neutral Comments", "Additional Comments"])
+    const questionTableBody2 = createTableRows([[score, conditionalComments, neutral_comments, "ADD FROM SCRAPING"]])
+    const questionString = questionHeader + questionTableHeader1 +  questionTableBody1 + questionTableHeader2 + questionTableBody2
+    formattedQuestions.push(questionString)
+  })
+
+
+  return formattedQuestions
+}
 
 
 

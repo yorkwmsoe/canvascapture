@@ -80,7 +80,7 @@ export type Quiz = {
   // Indicates if a lockdown browser monitor is required for the quiz.
   require_lockdown_browser_monitor: boolean;
   // Data related to lockdown browser monitoring.
-  lockdown_browser_monitor_data: any;
+  lockdown_browser_monitor_data: unknown;
   // The URL for speed grader associated with the quiz.
   speed_grader_url: string;
   // Permissions related to the quiz.
@@ -126,7 +126,7 @@ export type Quiz = {
   // Indicates if quiz data should be posted to the SIS (Student Information System).
   post_to_sis: boolean;
   // The migration identifier for the quiz.
-  migration_id: any;
+  migration_id: unknown;
   // Indicates if the quiz is in a paced course.
   in_paced_course: boolean;
   // Types of questions present in the quiz.
