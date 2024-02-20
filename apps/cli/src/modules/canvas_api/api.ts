@@ -80,7 +80,6 @@ export const getMostCommonQuizVersion = async (course_id: number, quiz_id: numbe
 
 export const getLatestQuizVersion = async(course_id: number, quiz_id: number): Promise<number> => {
   let quiz: Quiz = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}`, { headers: getApiHeaders() })).data;
-  //return (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}`, { headers: getApiHeaders() })).data;
   return quiz.version_number
 };
 
@@ -90,7 +89,6 @@ export const getQuiz = async (course_id: number, quiz_id?: number): Promise<Quiz
 }
 
 export const getQuizSubmission = async (course_id: number, quiz_id: number, submission_id: number): Promise<QuizSubmission> => {
-    //get all of the submissions for a quiz
     let quizSubmissions: QuizSubmission[] = []
     const results = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}/submissions`, { headers: getApiHeaders() })).data
     for (const res of results.quiz_submissions) {
@@ -118,7 +116,6 @@ export const getQuizSubmissionQuestions = async (quizSubmissionId: number): Prom
 export const getQuizQuestionsNoParams = async (courseId: number, quizId: number):Promise<QuizQuestion[]> => {
   let quizQuestions: QuizQuestion[] = []
   const results = (await api.get(`${getCanvasApiBaseUrl()}/courses/${courseId}/quizzes/${quizId}/questions`, { headers: getApiHeaders() })).data
-
   for (const res of results) {
     quizQuestions.push(res)
   }
@@ -128,7 +125,6 @@ export const getQuizQuestionsNoParams = async (courseId: number, quizId: number)
 
 export const getQuizQuestionsParams = async (courseId: number, quizId: number, submissionId: number, quizSubmissionAttempt: number):Promise<QuizQuestion[]> => {
   let quizQuestions: QuizQuestion[] = []
-  // console.log(courseId, quizId, submissionId, quizSubmissionAttempt)
   const results = (await api.get(`${getCanvasApiBaseUrl()}/courses/${courseId}/quizzes/${quizId}/questions?quiz_submission_id=${submissionId}&quiz_submission_attempt=${quizSubmissionAttempt}`, { headers: getApiHeaders() })).data
   for (const res of results) {
     quizQuestions.push(res)

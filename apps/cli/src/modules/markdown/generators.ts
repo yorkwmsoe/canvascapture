@@ -11,6 +11,7 @@ import {QuestionData, QuizQuestion, QuizSubmissionAnswer} from "@modules/canvas_
 import {Question} from "inquirer";
 
 const basePath = 'output'
+const rmHtml = "/(<([^>]+)>)/ig"
 
 export async function generateAssignment(course: Course, assignment: Assignment, submission: Submission, score: "high" | "median" | "low", commit: boolean = true) {
   const folderPath = `${basePath}/${course.name}/${assignment.name}`;
@@ -50,8 +51,6 @@ export async function generateQuiz(course: Course, assignment: Assignment, submi
     writeAggregationToFile(cleanedItems, folderPath, score)
   }
 
-  await assembleQuizQuestionsAndComments(course, assignment, submission)
-
   return {
     items,
   }
@@ -87,19 +86,19 @@ function assembleTitleAndGrade(assignment: Assignment, submission: Submission, t
 function assembleDescriptionInfo(assignment: Assignment){
   const descriptionHeader = convertToHeader('Description', 2)
   const description = !!assignment.description ? assignment.description : 'No description'
-  return [descriptionHeader, description.replace(/(<([^>]+)>)/ig, '')]
+  return [descriptionHeader, description.replace(rmHtml, '')]
 }
 
 function assembleSubmissionInfo(submission: Submission){
   const submissionHeader = convertToHeader('Submission', 2)
   let submissionBody = submission.body
-  return [submissionHeader, submissionBody.replace(/(<([^>]+)>)/ig, '')]
+  return [submissionHeader, submissionBody.replace(rmHtml, '')]
 }
 
 function assembleFeedbackInfo(submission: Submission){
   const feedbackHeader = convertToHeader('Feedback', 2)
   const feedbackBody = !!submission?.submission_comments?.length ? createList(submission?.submission_comments.map((comment) => comment.comment), '-') : 'No feedback'
-  return [feedbackHeader, feedbackBody.replace(/(<([^>]+)>)/ig, '')]
+  return [feedbackHeader, feedbackBody.replace(rmHtml, '')]
 }
 
 function assembleRubricInfo(assignment: Assignment, submission: Submission){
@@ -133,11 +132,11 @@ async function assembleQuizQuestionsAndComments(course: Course, assignment: Assi
   const user_id = submission.user_id
   const submission_id = submission.id
   const quiz_id = assignment.quiz_id as number;
-  const quizSubmission: QuizSubmission = await getQuizSubmission(course.id, quiz_id, submission_id)
+  const quizSubmission = await getQuizSubmission(course.id, quiz_id, submission_id)
   const quizSubmissionId = quizSubmission.id as number
-  const quizSubmissionQuestions: QuizSubmissionQuestion[] = await getQuizSubmissionQuestions(quizSubmission.id)
-  const quizQuestionsParams: QuizQuestion[] = await getQuizQuestionsParams(course.id, quiz_id, quizSubmissionId, quizSubmission.attempt)
-  const quizQuestionsNoParams: QuizQuestion[] = await getQuizQuestionsNoParams(course.id, quiz_id)
+  const quizSubmissionQuestions = await getQuizSubmissionQuestions(quizSubmission.id)
+  const quizQuestionsParams = await getQuizQuestionsParams(course.id, quiz_id, quizSubmissionId, quizSubmission.attempt)
+  const quizQuestionsNoParams = await getQuizQuestionsNoParams(course.id, quiz_id)
 
   quizSubmissionQuestions.sort((a, b) => a.position - b.position)
   quizQuestionsParams.sort((a, b) => a.position - b.position)
@@ -158,7 +157,7 @@ async function assembleQuizQuestionsAndComments(course: Course, assignment: Assi
       correct_comments: quizQuestionsParams[i].correct_comments_html,
       neutral_comments: quizQuestionsParams[i].neutral_comments_html,
       incorrect_comments: quizQuestionsParams[i].incorrect_comments_html,
-      correct_answers: [], //quizQuestionsNoParams[i].answers.filter((ans.))
+      correct_answers: [], //need further implementation
       correct: quizSubmissionQuestions[i].correct,
       question_type: quizSubmissionQuestions[i].question_type,
     } as QuestionData
@@ -173,12 +172,12 @@ function formatQuizQuestions(quizQuestions: QuestionData[]): string[]{
   let formattedQuestions: string[] = []
   const numQuestions = quizQuestions.length
   quizQuestions.forEach((question) => {
-    const position = question.position.toString().replace(/(<([^>]+)>)/ig, '')
-    const question_name = question.question_name.replace(/(<([^>]+)>)/ig, '')
-    const points_possible = question.points_possible.toString().replace(/(<([^>]+)>)/ig, '')
+    const position = question.position.toString().replace(rmHtml, '')
+    const question_name = question.question_name.replace(rmHtml, '')
+    const points_possible = question.points_possible.toString().replace(rmHtml, '')
     const qDescription = question.question_description.replace(/(<([^>]+)>|\n|&nbsp;)/ig, '');
-    const qType = question.question_type.replace(/(<([^>]+)>)/ig, '')
-    const neutral_comments = question.neutral_comments.replace(/(<([^>]+)>)/ig, '')
+    const qType = question.question_type.replace(rmHtml, '')
+    const neutral_comments = question.neutral_comments.replace(rmHtml, '')
 
     const questionHeader = convertToHeader("Question " + position, 2) + '\n'
     const questionTableHeader1 = createTableHeader(["Question Name", "Points Possible", "Question Description", "Question Type"])
@@ -187,14 +186,14 @@ function formatQuizQuestions(quizQuestions: QuestionData[]): string[]{
     let commentType = ""
     let conditionalComments = ""
     let score = ""
-    if(question.correct == true){
+    if(question.correct === true){
       commentType = "Correct"
       score = "Full"
-      conditionalComments = question.correct_comments.replace(/(<([^>]+)>)/ig, '')
+      conditionalComments = question.correct_comments.replace(rmHtml, '')
     } else {
       commentType = "Incorrect"
-      conditionalComments = question.incorrect_comments.replace(/(<([^>]+)>)/ig, '')
-      score = (question.correct == "partial") ? "partial" : "No Points";
+      conditionalComments = question.incorrect_comments.replace(rmHtml, '')
+      score = (question.correct === "partial") ? "partial" : "No Points";
     }
 
     const questionTableHeader2 = createTableHeader(["Student Score", commentType + " Comments", "Neutral Comments", "Additional Comments"])

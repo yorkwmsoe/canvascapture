@@ -126,7 +126,7 @@ export type Quiz = {
   // Indicates if quiz data should be posted to the SIS (Student Information System).
   post_to_sis: boolean;
   // The migration identifier for the quiz.
-  migration_id: unknown;
+  migration_id: number;
   // Indicates if the quiz is in a paced course.
   in_paced_course: boolean;
   // Types of questions present in the quiz.
