@@ -1,11 +1,13 @@
+import { getDocumentsPath } from '@renderer/utils/config'
 import { useQuery } from '@tanstack/react-query'
+import { readdirSync } from 'fs'
 
 export function useGetFolders() {
   return useQuery({
     queryKey: ['folders'],
     queryFn: async () => {
       return new Promise<string[]>((resolve) => {
-        return resolve(['folder1', 'folder2', 'folder3'])
+        return resolve(readdirSync(getDocumentsPath()))
       })
     }
   })

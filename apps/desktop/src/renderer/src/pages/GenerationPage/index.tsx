@@ -27,7 +27,7 @@ export function GenerationPage() {
 
   const runGenerate = async () => {
     await generate(filteredCourses, filteredAssignments, canvasAccessToken, canvasDomain, outpath)
-    //navigate({ to: '/' })
+    navigate({ to: '/' })
   }
 
   useEffect(() => {
@@ -35,7 +35,15 @@ export function GenerationPage() {
   }, [])
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: '100%'
+      }}
+    >
       <Typography.Text>Generating </Typography.Text>
       <Spin />
     </div>

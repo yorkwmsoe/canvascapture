@@ -41,6 +41,10 @@ export function SwitchStepper() {
     [STEPS]
   )
 
+  const isDisabled =
+    (STEPS[current].title === 'Courses' && selectedCourses.length === 0) ||
+    (STEPS[current].title === 'Assignments' && selectedAssignments.length === 0)
+
   return (
     <>
       <Steps current={current} items={items} />
@@ -63,16 +67,17 @@ export function SwitchStepper() {
             style={{ marginLeft: 'auto' }}
             type="primary"
             onClick={next}
-            disabled={
-              (STEPS[current].title === 'Courses' && selectedCourses.length === 0) ||
-              (STEPS[current].title === 'Assignments' && selectedAssignments.length === 0)
-            }
+            disabled={isDisabled}
           >
             Next
           </Button>
         )}
         {current === STEPS.length - 1 && (
-          <Button type="primary" onClick={() => navigate({ to: '/generation' })}>
+          <Button
+            type="primary"
+            onClick={() => navigate({ to: '/generation' })}
+            disabled={isDisabled}
+          >
             Done
           </Button>
         )}
