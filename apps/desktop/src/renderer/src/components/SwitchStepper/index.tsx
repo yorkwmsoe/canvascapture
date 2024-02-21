@@ -4,7 +4,7 @@ import { Assignments } from '../Assignments'
 import { Courses } from '../Courses'
 import { useCourses } from '@renderer/hooks/useCourses'
 import { useAssignments } from '@renderer/hooks/useAssignments'
-import { useNavigate } from '@tanstack/react-router'
+import { Generate } from '../Generate'
 
 const STEPS = [
   {
@@ -14,6 +14,10 @@ const STEPS = [
   {
     title: 'Assignments',
     content: <Assignments />
+  },
+  {
+    title: 'Generate',
+    content: <Generate />
   }
 ] as const
 
@@ -22,7 +26,6 @@ export function SwitchStepper() {
   const [current, setCurrent] = useState(0)
   const { selectedCourses } = useCourses()
   const { selectedAssignments } = useAssignments()
-  const navigate = useNavigate()
 
   const next = useCallback(() => {
     if (current !== STEPS.length - 1) {
@@ -69,16 +72,7 @@ export function SwitchStepper() {
             onClick={next}
             disabled={isDisabled}
           >
-            Next
-          </Button>
-        )}
-        {current === STEPS.length - 1 && (
-          <Button
-            type="primary"
-            onClick={() => navigate({ to: '/generation' })}
-            disabled={isDisabled}
-          >
-            Done
+            {STEPS[current + 1].title === 'Generate' ? <>Generate</> : <>Next</>}
           </Button>
         )}
       </div>

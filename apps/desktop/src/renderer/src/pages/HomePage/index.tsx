@@ -1,9 +1,9 @@
-import { Input, Layout, Button, Space, Card, Flex, Col, Row, Form } from 'antd'
+import { Input, Layout, Button, Space, Card, Flex, Form } from 'antd'
 import { useNavigate } from '@tanstack/react-router'
 import { useGetFolders } from '@renderer/hooks/useGetFolders'
 import { FileMarkdownOutlined } from '@ant-design/icons'
 import { useGenerationStore } from '@renderer/stores/generation.store'
-import {shell} from 'electron'
+import { shell } from 'electron'
 import { getDocumentsPath } from '@renderer/utils/config'
 
 const { Header, Content, Footer } = Layout
@@ -54,7 +54,7 @@ export function HomePage() {
         }}
       >
         <Form
-          name="basic"
+          name="generationNameForm"
           onFinish={generate}
           autoComplete="off"
           style={{ width: '70%', margin: 'auto' }}
@@ -71,17 +71,25 @@ export function HomePage() {
             <Flex align={'center'} justify={'center'}>
               <Space.Compact style={{ width: '100%' }}>
                 <Input placeholder="Report name" />
-                <Button htmlType="submit" style={{ color: 'white', background: '#051631' }}>
-                  Generate
+                <Button htmlType="submit" type="primary">
+                  Start
                 </Button>
               </Space.Compact>
             </Flex>
           </Form.Item>
         </Form>
-        <Flex align={'center'} justify={'center'} style={{ paddingTop: 15 }}>
-          <Row gutter={8} style={{ justifyContent: 'space-between' }}>
+        <Flex
+          align={'center'}
+          justify={'center'}
+          style={{ paddingTop: 15, width: '100%', justifyContent: 'center' }}
+        >
+          <Flex
+            align={'center'}
+            justify={'center'}
+            style={{ flexWrap: 'wrap', justifyContent: 'unset' }}
+          >
             {folder?.map((folder) => <FolderCard key={folder} folder={folder}></FolderCard>)}
-          </Row>
+          </Flex>
         </Flex>
       </Content>
       <Footer
@@ -99,18 +107,18 @@ type FolderCardProps = {
 
 function FolderCard({ folder }: FolderCardProps) {
   return (
-    <Col key={folder} style={{ padding: '5px' }}>
-      <Card
-        hoverable={true}
-        style={{
-          width: 175,
-          textAlign: 'center'
-        }}
-        onClick={() => shell.openPath(`${getDocumentsPath()}/${folder}`)}
-      >
-        <FileMarkdownOutlined />
-        <Meta title={folder} />
-      </Card>
-    </Col>
+    <Card
+      hoverable={true}
+      style={{
+        minWidth: 175,
+        maxWidth: 175,
+        width: 175,
+        textAlign: 'center'
+      }}
+      onClick={() => shell.openPath(`${getDocumentsPath()}/${folder}`)}
+    >
+      <FileMarkdownOutlined />
+      <Meta title={folder} />
+    </Card>
   )
 }

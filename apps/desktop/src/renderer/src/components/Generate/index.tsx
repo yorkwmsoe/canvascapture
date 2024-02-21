@@ -1,4 +1,4 @@
-import { Spin, Typography } from 'antd'
+import { Flex, Spin } from 'antd'
 import { useAssignments } from '@renderer/hooks/useAssignments'
 import { useCourses } from '@renderer/hooks/useCourses'
 import { generate } from './generate'
@@ -10,7 +10,7 @@ import { getDocumentsPath } from '@renderer/utils/config'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { useNavigate } from '@tanstack/react-router'
 
-export function GenerationPage() {
+export function Generate() {
   const navigate = useNavigate({ from: '/generation' })
   const { selectedAssignments, getAssignmentById } = useAssignments()
   const { courses, selectedCourses } = useCourses()
@@ -35,17 +35,10 @@ export function GenerationPage() {
   }, [])
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%',
-        height: '100%'
-      }}
-    >
-      <Typography.Text>Generating </Typography.Text>
+    <Flex justify="center" align="center" style={{ height: '100%', flexDirection: 'column' }}>
       <Spin />
-    </div>
+      <br />
+      Generating
+    </Flex>
   )
 }

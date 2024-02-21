@@ -4,17 +4,18 @@ import { Submission } from '@renderer/types/canvas_api/submission'
 import { generateAssignment } from '@renderer/utils/markdown/generators'
 import { rm } from 'fs/promises'
 import { getSubmissions } from '@renderer/apis/canvas.api'
+import _ from 'lodash'
 
 // https://stackoverflow.com/a/70806192
 export const median = (arr: number[]): number => {
-  const s = [...arr].sort((a, b) => a - b)
+  const s = arr.toSorted((a, b) => a - b)
   const mid = Math.floor(s.length / 2)
   const res = s.length % 2 === 0 ? (s[mid - 1] + s[mid]) / 2 : s[mid]
   return Math.ceil(res)
 }
 
 function getScores(submissions: Submission[]) {
-  return submissions.filter((a) => a.score !== null && a.score !== undefined).map((b) => b.score)
+  return submissions.filter((a) => _.isObject(a)).map((b) => b.score)
 }
 
 type SubmissionWithScore = {
