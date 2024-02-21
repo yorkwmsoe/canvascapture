@@ -14,7 +14,7 @@ export async function generateAssignment(course: Course, assignment: Assignment,
     ...assembleFeedbackInfo(submission),
     ...assembleDescriptionInfo(assignment),
     ...assembleRubricInfo(assignment, submission),
-    ...await assembleSubmissionInfo(assignment)]
+    ...await assembleSubmissionInfo(assignment, submission)]
 
   const cleanedItems = items.filter((item) => !!item)
 
@@ -39,13 +39,13 @@ function assembleDescriptionInfo(assignment: Assignment){
   return [descriptionHeader, description]
 }
 
-async function assembleSubmissionInfo(assignment: Assignment){
+async function assembleSubmissionInfo(assignment: Assignment, submission: Submission){
   const submissionHeader = convertToHeader('Submission', 2)
-  let AssignmentSubBody ='[download Submissions]' + '(' + assignment.submissions_download_url + ')'
-  if (assignment.submission_types[0] !== 'online_upload') {
-    AssignmentSubBody = 'No submission'
+  let submissionBody = submission.body;
+  if (assignment.submission_types[0] === "TYPE") {
+    submissionBody = '[download Submissions]' + '(' + assignment.submissions_download_url + ')'
   }
-  return [submissionHeader, AssignmentSubBody]
+  return [submissionHeader, submissionBody]
 }
 
 function assembleFeedbackInfo(submission: Submission){
