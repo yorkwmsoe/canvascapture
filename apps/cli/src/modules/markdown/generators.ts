@@ -3,6 +3,9 @@ import { Course } from '@modules/canvas_api/types/course'
 import { Submission } from '@modules/canvas_api/types/submission'
 import { addNewLine, convertToHeader, createList, createTableHeader, createTableRows, writeToFile } from './markdown'
 import { mkdirSync } from 'fs'
+import {getMostCommonQuizVersion, getQuiz, getQuizSubmission} from "@modules/canvas_api/api";
+import {Quiz} from "@modules/canvas_api/types/quiz";
+import {QuizSubmission} from "@modules/canvas_api/types/quiz-submissions";
 
 const basePath = 'output'
 
@@ -10,7 +13,7 @@ export async function generateAssignment(course: Course, assignment: Assignment,
   const folderPath = `${basePath}/${course.name}/${assignment.name}`;
   mkdirSync(folderPath, { recursive: true });
 
-  let items: string[] = [...assembleTitleAndGrade(assignment, submission),
+  let items: string[] = [...assembleTitleAndGrade(assignment, submission, ""),
     ...assembleFeedbackInfo(submission),
     ...assembleDescriptionInfo(assignment),
     ...assembleRubricInfo(assignment, submission),
@@ -27,8 +30,50 @@ export async function generateAssignment(course: Course, assignment: Assignment,
     }
 }
 
-function assembleTitleAndGrade(assignment: Assignment, submission: Submission){
-  const title = convertToHeader(assignment.name, 1)
+export async function generateQuiz(course: Course, assignment: Assignment, submission: Submission, score: "high" | "median" | "low", commit: boolean = true){
+  const folderPath = `${basePath}/${course.name}/${assignment.name}`;
+  mkdirSync(folderPath, { recursive: true });
+
+  let items: string[] = [...assembleTitleAndGrade(assignment, submission, "QUIZ: "),
+    ...assembleDescriptionInfo(assignment),
+    ...assembleFeedbackInfo(submission),
+    ... await quizOverview(assignment),
+    ... await quizUserOverview(assignment, submission)]
+
+  const cleanedItems = items.filter((item) => !!item)
+
+  if (commit) {
+    writeAggregationToFile(cleanedItems, folderPath, score)
+  }
+
+  return {
+    items,
+  }
+}
+
+async function quizOverview(assignment: Assignment){
+  const quiz_id = assignment.quiz_id as number;
+  const infoHeader = convertToHeader("Quiz Info", 2)
+  const quiz: Quiz = await getQuiz(assignment.course_id, quiz_id)
+  const quizHeader = createTableHeader(["Quiz Id", "Assignment Id", "# of Questions",
+    "Total Points", "Version #",  ])
+  const quizBody = createTableRows([[quiz_id.toString(), assignment.id.toString(),
+    quiz.question_count.toString(), quiz.points_possible.toString(), quiz.version_number.toString() ]])
+  return [infoHeader, quizHeader + quizBody]
+}
+async function quizUserOverview(assignment: Assignment, submission: Submission){
+  const userOverviewHeader = convertToHeader("User Overview", 2)
+  const quiz: Quiz = await getQuiz(assignment.course_id, assignment.quiz_id)
+  const quizSubmission: QuizSubmission = await getQuizSubmission(assignment.course_id, quiz.id, submission.id)
+  const userHeader = createTableHeader(["User Id", "Score", "Kept Score", "Attempt"])
+  const userBody = createTableRows([[submission.user_id.toString(), quizSubmission.score!.toString(),
+    quizSubmission.kept_score!.toString(), quizSubmission.attempt.toString()]])
+  return [userOverviewHeader, userHeader + userBody]
+
+}
+
+function assembleTitleAndGrade(assignment: Assignment, submission: Submission, type: string){
+  const title = convertToHeader(type + assignment.name, 1)
   const grade = `${submission.score}/${assignment.points_possible}`
   return [title, grade]
 }
@@ -36,7 +81,7 @@ function assembleTitleAndGrade(assignment: Assignment, submission: Submission){
 function assembleDescriptionInfo(assignment: Assignment){
   const descriptionHeader = convertToHeader('Description', 2)
   const description = !!assignment.description ? assignment.description : 'No description'
-  return [descriptionHeader, description]
+  return [descriptionHeader, description.replace(/(<([^>]+)>)/ig, '')]
 }
 
 async function assembleSubmissionInfo(assignment: Assignment, submission: Submission){
@@ -51,7 +96,7 @@ async function assembleSubmissionInfo(assignment: Assignment, submission: Submis
 function assembleFeedbackInfo(submission: Submission){
   const feedbackHeader = convertToHeader('Feedback', 2)
   const feedbackBody = !!submission?.submission_comments?.length ? createList(submission?.submission_comments.map((comment) => comment.comment), '-') : 'No feedback'
-  return [feedbackHeader, feedbackBody]
+  return [feedbackHeader, feedbackBody.replace(/(<([^>]+)>)/ig, '')]
 }
 
 function assembleRubricInfo(assignment: Assignment, submission: Submission){
@@ -80,7 +125,6 @@ function writeAggregationToFile(cleanedItems: string[], folderPath: string, scor
   const filePath = `${folderPath}/${score}`;
   writeToFile(filePath, pseudoFile)
 }
-
 
 
 
