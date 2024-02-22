@@ -4,8 +4,6 @@ import { Submission } from '@modules/canvas_api/types/submission'
 import { convertToHeader, createLinkNormal, createList, createTableHeader, createTableRows, writeToFile } from './markdown'
 import { mkdirSync } from 'fs'
 import { getQuiz, getQuizSubmission } from '@modules/canvas_api/api'
-import { Quiz } from '@modules/canvas_api/types/quiz'
-import { QuizSubmission } from '@modules/canvas_api/types/quiz-submissions'
 
 const basePath = 'output'
 
@@ -13,7 +11,7 @@ export async function generateAssignment(course: Course, assignment: Assignment,
     const folderPath = `${basePath}/${course.name}/${assignment.name}`
     mkdirSync(folderPath, { recursive: true })
 
-    let items: string[] = [...assembleTitleAndGrade(assignment, submission, ''), ...assembleFeedbackInfo(submission), ...assembleDescriptionInfo(assignment), ...assembleRubricInfo(assignment, submission), ...(await assembleSubmissionInfo(assignment, submission))]
+    const items = [...assembleTitleAndGrade(assignment, submission, ''), ...assembleFeedbackInfo(submission), ...assembleDescriptionInfo(assignment), ...assembleRubricInfo(assignment, submission), ...(await assembleSubmissionInfo(assignment, submission))]
 
     const cleanedItems = items.filter((item) => !!item)
 
@@ -30,7 +28,7 @@ export async function generateQuiz(course: Course, assignment: Assignment, submi
     const folderPath = `${basePath}/${course.name}/${assignment.name}`
     mkdirSync(folderPath, { recursive: true })
 
-    let items: string[] = [...assembleTitleAndGrade(assignment, submission, 'QUIZ: '), ...assembleDescriptionInfo(assignment), ...assembleFeedbackInfo(submission), ...(await quizOverview(assignment)), ...(await quizUserOverview(assignment, submission))]
+    const items = [...assembleTitleAndGrade(assignment, submission, 'QUIZ: '), ...assembleDescriptionInfo(assignment), ...assembleFeedbackInfo(submission), ...(await quizOverview(assignment)), ...(await quizUserOverview(assignment, submission))]
 
     const cleanedItems = items.filter((item) => !!item)
 
@@ -46,17 +44,28 @@ export async function generateQuiz(course: Course, assignment: Assignment, submi
 async function quizOverview(assignment: Assignment) {
     const quiz_id = assignment.quiz_id as number
     const infoHeader = convertToHeader('Quiz Info', 2)
-    const quiz: Quiz = await getQuiz(assignment.course_id, quiz_id)
+    const quiz = await getQuiz(assignment.course_id, quiz_id)
     const quizHeader = createTableHeader(['Quiz Id', 'Assignment Id', '# of Questions', 'Total Points', 'Version #'])
     const quizBody = createTableRows([[quiz_id.toString(), assignment.id.toString(), quiz.question_count.toString(), quiz.points_possible.toString(), quiz.version_number.toString()]])
     return [infoHeader, quizHeader + quizBody]
 }
 async function quizUserOverview(assignment: Assignment, submission: Submission) {
     const userOverviewHeader = convertToHeader('User Overview', 2)
-    const quiz: Quiz = await getQuiz(assignment.course_id, assignment.quiz_id)
-    const quizSubmission: QuizSubmission = await getQuizSubmission(assignment.course_id, quiz.id, submission.id)
+    const quiz = await getQuiz(assignment.course_id, assignment.quiz_id)
+    const quizSubmission = await getQuizSubmission(assignment.course_id, quiz.id, submission.id)
     const userHeader = createTableHeader(['User Id', 'Score', 'Kept Score', 'Attempt'])
-    const userBody = createTableRows([[submission.user_id.toString(), quizSubmission.score!.toString(), quizSubmission.kept_score!.toString(), quizSubmission.attempt.toString()]])
+    const rows = []
+    rows.push(submission.user_id.toString())
+    if (quizSubmission?.score) {
+        rows.push(quizSubmission.score.toString())
+    }
+    if (quizSubmission?.kept_score) {
+        rows.push(quizSubmission.kept_score.toString())
+    }
+    if (quizSubmission?.attempt) {
+        rows.push(quizSubmission.attempt.toString())
+    }
+    const userBody = createTableRows([rows])
     return [userOverviewHeader, userHeader + userBody]
 }
 
@@ -68,11 +77,11 @@ function assembleTitleAndGrade(assignment: Assignment, submission: Submission, t
 
 function assembleDescriptionInfo(assignment: Assignment) {
     const descriptionHeader = convertToHeader('Description', 2)
-    const description = !!assignment.description ? assignment.description : 'No description'
+    const description = assignment.description ? assignment.description : 'No description'
     return [descriptionHeader, description.replace(/(<([^>]+)>)/gi, '')]
 }
 
-async function assembleSubmissionInfo(assignment: Assignment, submission: Submission) {
+function assembleSubmissionInfo(assignment: Assignment, submission: Submission) {
     const submissionHeader = convertToHeader('Submission', 2)
     let submissionBody = submission.body
     if (submission.submission_type === 'online_upload') {
@@ -83,7 +92,7 @@ async function assembleSubmissionInfo(assignment: Assignment, submission: Submis
 
 function assembleFeedbackInfo(submission: Submission) {
     const feedbackHeader = convertToHeader('Feedback', 2)
-    const feedbackBody = !!submission?.submission_comments?.length
+    const feedbackBody = submission?.submission_comments?.length
         ? createList(
               submission?.submission_comments.map((comment) => comment.comment),
               '-'
@@ -95,7 +104,7 @@ function assembleFeedbackInfo(submission: Submission) {
 function assembleRubricInfo(assignment: Assignment, submission: Submission) {
     const rubricHeader = convertToHeader('Rubric', 2)
     const rubric = assignment.rubric
-    const rubricTableHeader = !!rubric ? createTableHeader(['Criteria', 'Score', 'Comments']) : null
+    const rubricTableHeader = rubric ? createTableHeader(['Criteria', 'Score', 'Comments']) : null
     const assessment = submission.rubric_assessment
     const rows = rubric?.map((criterion) => {
         const description = criterion.description
@@ -104,7 +113,7 @@ function assembleRubricInfo(assignment: Assignment, submission: Submission) {
         const score = assessment ? assessment[criterion.id]?.points : ''
         return [description, `${score}/${points}`, comments]
     })
-    const rubricTableBody = !!rows ? createTableRows(rows) : ''
+    const rubricTableBody = rows ? createTableRows(rows) : ''
     const rubricTable = !rubricTableHeader ? 'No rubric' : rubricTableHeader + rubricTableBody
 
     return [rubricHeader, rubricTable]
