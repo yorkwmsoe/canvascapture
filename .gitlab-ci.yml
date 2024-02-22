@@ -7,6 +7,7 @@ stages:
     - 🚀 release
 
 variables:
+    HUSKY: 0
     CLI_BASE_PATH: apps/cli
     DESKTOP_BASE_PATH: apps/desktop
     CI_REGISTRY_IMAGE_PATH: $CI_REGISTRY_IMAGE
