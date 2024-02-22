@@ -81,7 +81,7 @@ export function getHighMedLow(submissions: Submission[]) {
     //incremented, a user can have multiple submissions and mess with the median, the high, and the
     //low. Therefore, we need to find the latest attempt from every user and take into account the
     //quiz versions, and then find the high, med, and low that way
-    let copySubmissions = [...submissions]
+    const copySubmissions = [...submissions]
     let high = null
     let med = null
     let low = null

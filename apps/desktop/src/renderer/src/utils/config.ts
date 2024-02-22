@@ -7,41 +7,42 @@ export const getConfigPath = () => app.getPath('userData')
 
 export const getConfigFile = () => `${getConfigPath()}/${CONFIG_FILE_NAME}`
 
-export const getDocumentsPath = () => `${app.getPath('documents')}/canvas-capture-desktop`
+export const getDocumentsPath = () =>
+    `${app.getPath('documents')}/canvas-capture-desktop`
 
 export type Config = {
-  canvasDomain: string
-  canvasAccessToken: string
-  markdownEditor: boolean
+    canvasDomain: string
+    canvasAccessToken: string
+    markdownEditor: boolean
 }
 
 export const defaultConfig: Config = {
-  canvasDomain: 'https://msoe.instructure.com',
-  canvasAccessToken: '',
-  markdownEditor: false
+    canvasDomain: 'https://msoe.instructure.com',
+    canvasAccessToken: '',
+    markdownEditor: false,
 }
 
 export const doesConfigExist = () => {
-  return existsSync(getConfigFile())
+    return existsSync(getConfigFile())
 }
 
 export const getConfig = () => {
-  const file = getConfigFile()
+    const file = getConfigFile()
 
-  if (!doesConfigExist()) return defaultConfig
+    if (!doesConfigExist()) return defaultConfig
 
-  try {
-    return JSON.parse(readFileSync(file, 'utf-8')) as Config
-  } catch (e) {
-    return defaultConfig
-  }
+    try {
+        return JSON.parse(readFileSync(file, 'utf-8')) as Config
+    } catch (e) {
+        return defaultConfig
+    }
 }
 
 export const setConfig = (config: Config) => {
-  const path = getConfigPath()
-  const file = getConfigFile()
+    const path = getConfigPath()
+    const file = getConfigFile()
 
-  if (!doesConfigExist()) mkdirSync(path, { recursive: true })
+    if (!doesConfigExist()) mkdirSync(path, { recursive: true })
 
-  return writeFileSync(file, JSON.stringify(config, null, 2))
+    return writeFileSync(file, JSON.stringify(config, null, 2))
 }

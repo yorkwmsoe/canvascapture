@@ -1,0 +1,12 @@
+test-@canvas-capture:
+    image: $BASE_IMAGE
+    stage: 🤞 test
+    needs: ['install-packages']
+    script:
+        - pnpm @canvas-capture coverage
+    artifacts:
+        when: always
+        reports:
+            junit:
+                - canvas-capture/junit.xml
+    coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'

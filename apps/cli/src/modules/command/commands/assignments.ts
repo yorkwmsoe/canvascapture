@@ -21,7 +21,7 @@ export async function select_assignments() {
     for (const course of state.courses) {
         const unfilteredAssignments = await getAssignments(course.id)
 
-        let assignments: Assignment[] = []
+        const assignments: Assignment[] = []
         for (const a of unfilteredAssignments) {
             const submissions = await getSubmissions(course.id, a.id)
             if (submissions.filter((s) => s.workflow_state !== 'unsubmitted').length > 0) {

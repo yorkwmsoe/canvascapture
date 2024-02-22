@@ -71,14 +71,14 @@ export const performSpecialWordOperation = (content: string, word: string, type:
 
     for (let i = 0; i < indexes.length; i++) {
         if (specified.filter((value) => value == i + 1).length > 0) {
-            let pre = retContent.substring(0, indexes[i] + numPrevLength)
-            let post = retContent.substring(indexes[i] + word.length + numPrevLength)
+            const pre = retContent.substring(0, indexes[i] + numPrevLength)
+            const post = retContent.substring(indexes[i] + word.length + numPrevLength)
             retContent = pre + addition + word + addition + post
             numSpecialWords = numSpecialWords + 1
             numPrevLength = addLength * numSpecialWords
         } else {
-            let pre = retContent.substring(0, indexes[i] + numPrevLength)
-            let post = retContent.substring(indexes[i] + word.length + numPrevLength)
+            const pre = retContent.substring(0, indexes[i] + numPrevLength)
+            const post = retContent.substring(indexes[i] + word.length + numPrevLength)
             retContent = pre + word + post
             numPrevLength = addLength * numSpecialWords
         }

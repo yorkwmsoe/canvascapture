@@ -8,6 +8,7 @@ import { parseISO } from 'date-fns'
 import { getCanvasApiBaseUrl, getCanvasApiToken } from '@/env'
 
 // date handling from: https://stackoverflow.com/a/66238542
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function handleDates(body: any) {
     if (body === null || body === undefined || typeof body !== 'object') return body
 
@@ -46,7 +47,7 @@ export const getSubmissions = async (course_id: number, assignment_id: number): 
 }
 
 export const getMostCommonQuizVersion = async (course_id: number, quiz_id: number): Promise<number> => {
-    let quizSubmissions: QuizSubmission[] = []
+    const quizSubmissions: QuizSubmission[] = []
     const results = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}/submissions`, { headers: getApiHeaders() })).data
     for (const res of results.quiz_submissions) {
         quizSubmissions.push(res)
@@ -56,19 +57,16 @@ export const getMostCommonQuizVersion = async (course_id: number, quiz_id: numbe
         if (!versionNumberOccurrences.has(quiz.quiz_version)) {
             versionNumberOccurrences.set(quiz.quiz_version, 1)
         } else {
-            let count = versionNumberOccurrences.get(quiz.quiz_version)
-            // @ts-ignore
+            const count = versionNumberOccurrences.get(quiz.quiz_version) ?? 0
             versionNumberOccurrences.set(quiz.quiz_version, count + 1)
         }
     })
     let largestVal = -1
-    let largestKey = -1
+
     versionNumberOccurrences.forEach((key, value) => {
         if (value > largestVal) {
-            largestKey = key
             largestVal = value
         } else if (value == largestVal && key > largestVal) {
-            largestKey = key
             largestVal = value
         }
     })
@@ -76,29 +74,11 @@ export const getMostCommonQuizVersion = async (course_id: number, quiz_id: numbe
     return largestVal
 }
 
-// export const getLatestQuizVersion = async(course_id: number, quiz_id: number): Promise<number> => {
-//   let quiz: Quiz = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}`, { headers: getApiHeaders() })).data;
-//   //return (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}`, { headers: getApiHeaders() })).data;
-//   return quiz.version_number
-// };
-
 export const getQuiz = async (course_id: number, quiz_id?: number): Promise<Quiz> => {
-    let quiz: Quiz = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}`, { headers: getApiHeaders() })).data
-    return quiz
+    return (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}`, { headers: getApiHeaders() })).data
 }
 
-export const getQuizSubmission = async (course_id: number, quiz_id: number, submission_id: number): Promise<QuizSubmission> => {
-    //get all of the submissions for a quiz
-    let quizSubmissions: QuizSubmission[] = []
-    const results = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}/submissions`, { headers: getApiHeaders() })).data
-    for (const res of results.quiz_submissions) {
-        quizSubmissions.push(res)
-    }
-    let submission: QuizSubmission | undefined = quizSubmissions.find((sub) => sub.submission_id == submission_id)
-    if (submission == null) {
-        submission = {
-            id: -1,
-        } as QuizSubmission
-    }
-    return submission
+export const getQuizSubmission = async (course_id: number, quiz_id: number, submission_id: number): Promise<QuizSubmission | undefined> => {
+    const results: QuizSubmission[] = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}/submissions`, { headers: getApiHeaders() })).data.quiz_submissions
+    return results.find((sub) => sub.submission_id == submission_id)
 }

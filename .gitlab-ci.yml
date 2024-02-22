@@ -1,40 +1,54 @@
 stages:
-  - 🐋 docker
-  - 🛞 install
-  - 🤞 test
-  - 📦 build
-  - 🚀 release
+    - 🐋 docker
+    - 🛞 install
+    - ✅ check
+    - 🤞 test
+    - 📦 build
+    - 🚀 release
 
 variables:
-  CLI_BASE_PATH: apps/cli
-  DESKTOP_BASE_PATH: apps/desktop
+    HUSKY: 0
+    CLI_BASE_PATH: apps/cli
+    DESKTOP_BASE_PATH: apps/desktop
+    CI_REGISTRY_IMAGE_PATH: $CI_REGISTRY_IMAGE
+    CI_PIPELINE_ID: $CI_PIPELINE_ID
+    BASE_IMAGE: $CI_REGISTRY_IMAGE_PATH/base:latest
+    CLI_IMAGE: $CI_REGISTRY_IMAGE_PATH/cli:latest
+    DESKTOP_IMAGE: $CI_REGISTRY_IMAGE_PATH/desktop:latest
 
 include:
-  - local: /apps/cli/.cli-ci.yml
-  - local: /apps/desktop/.desktop-ci.yml
+    - local: .docker-ci.yml
+    - local: apps/cli/.gitlab-ci.yml
+    - local: apps/desktop/.gitlab-ci.yml
+    - local: canvas-capture/.gitlab-ci.yml
 
-build-docker-cli:
-  stage: 🐋 docker
-  image: docker:stable
-  services:
-    - docker:dind
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build ./docker -f ./docker/Dockerfile.cli -t $CI_REGISTRY_IMAGE/cli
-    - docker push $CI_REGISTRY_IMAGE/cli
-  only:
-    changes:
-      - docker/Dockerfile.cli
+install-packages:
+    image: $BASE_IMAGE
+    stage: 🛞 install
+    script:
+        # Install packages for all apps
+        - pnpm install
+        # Build packages for all apps
+        - pnpm package
+        # Symlink packages for all apps
+        - pnpm install
+    artifacts:
+        paths:
+            - node_modules/
+            - canvas-capture/node_modules/
+            - canvas-capture/dist/
+            - apps/*/node_modules/
 
-build-docker-desktop:
-  stage: 🐋 docker
-  image: docker:stable
-  services:
-    - docker:dind
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build ./docker -f ./docker/Dockerfile.desktop -t $CI_REGISTRY_IMAGE/desktop
-    - docker push $CI_REGISTRY_IMAGE/desktop
-  only:
-    changes:
-      - docker/Dockerfile.desktop
+check-format:
+    image: $BASE_IMAGE
+    needs: ['install-packages']
+    stage: ✅ check
+    script:
+        - pnpm format:check
+
+check-lint:
+    image: $BASE_IMAGE
+    needs: ['install-packages']
+    stage: ✅ check
+    script:
+        - pnpm lint

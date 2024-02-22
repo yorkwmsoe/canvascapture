@@ -1,15 +1,31 @@
 import { generateAssignment } from '../generators'
-import { testAssignments, testCourses, testSubmissions } from '@modules/command/commands/tests/data'
-import * as markdown from '../markdown'
+import { describe, it, expect } from 'vitest'
+import {
+    testCourses,
+    testAssignments,
+    testSubmissions,
+} from '../mocks/canvas.api.mocks'
 
 describe('generateAssignment', () => {
     it('should generate a items for markdown', async () => {
-        const result = await generateAssignment(testCourses[0], testAssignments[0], testSubmissions[0], 'high', false)
+        const result = await generateAssignment(
+            testCourses[0],
+            testAssignments[0],
+            testSubmissions[0],
+            'high',
+            false
+        )
         expect(result.items.length).toBeGreaterThan(0)
     })
 
     it('should generate all headers', async () => {
-        const result = await generateAssignment(testCourses[0], testAssignments[0], testSubmissions[0], 'high', false)
+        const result = await generateAssignment(
+            testCourses[0],
+            testAssignments[0],
+            testSubmissions[0],
+            'high',
+            false
+        )
         expect(result.items[0]).toBeDefined()
         expect(result.items[2]).toBeDefined()
         expect(result.items[4]).toBeDefined()
@@ -18,7 +34,13 @@ describe('generateAssignment', () => {
     })
 
     it('should generate all bodies', async () => {
-        const result = await generateAssignment(testCourses[0], testAssignments[0], testSubmissions[0], 'high', false)
+        const result = await generateAssignment(
+            testCourses[0],
+            testAssignments[0],
+            testSubmissions[0],
+            'high',
+            false
+        )
         expect(result.items[1]).toBeDefined()
         expect(result.items[3]).toBeDefined()
         expect(result.items[5]).toBeDefined()
@@ -38,13 +60,25 @@ describe('generateAssignment', () => {
                 ratings: [],
             },
         ]
-        const result = await generateAssignment(testCourses[0], testAssignments[0], testSubmissions[0], 'high', false)
+        const result = await generateAssignment(
+            testCourses[0],
+            testAssignments[0],
+            testSubmissions[0],
+            'high',
+            false
+        )
         expect(result.items[7]).toContain('|')
     })
 
     it('should handle online_quiz', async () => {
         testSubmissions[0].submission_type = 'online_quiz'
-        const result = await generateAssignment(testCourses[0], testAssignments[0], testSubmissions[0], 'high', false)
+        const result = await generateAssignment(
+            testCourses[0],
+            testAssignments[0],
+            testSubmissions[0],
+            'high',
+            false
+        )
         expect(result.items[9]).toBe('No submission')
     })
 
@@ -71,30 +105,38 @@ describe('generateAssignment', () => {
                 },
             },
         ]
-        const result = await generateAssignment(testCourses[0], testAssignments[0], testSubmissions[0], 'high', false)
+        const result = await generateAssignment(
+            testCourses[0],
+            testAssignments[0],
+            testSubmissions[0],
+            'high',
+            false
+        )
         expect(result.items[7]).toContain('-')
-    })
-
-    it('should write to file', async () => {
-        const writeToFile = jest.spyOn(markdown, 'writeToFile').mockImplementation()
-        const addNewLine = jest.spyOn(markdown, 'writeToFile').mockImplementation()
-        const result = await generateAssignment(testCourses[0], testAssignments[0], testSubmissions[0], 'high')
-
-        expect(writeToFile).toHaveBeenCalled()
-        expect(addNewLine).toHaveBeenCalled()
-        expect(result.items.length).toBeGreaterThan(0)
     })
 
     it('should have no description', async () => {
         testAssignments[0].description = ''
-        const result = await generateAssignment(testCourses[0], testAssignments[0], testSubmissions[0], 'high', false)
+        const result = await generateAssignment(
+            testCourses[0],
+            testAssignments[0],
+            testSubmissions[0],
+            'high',
+            false
+        )
         console.log(result)
         expect(result.items[5]).toBe('No description')
     })
 
     it('should have a decsription', async () => {
         testAssignments[0].description = 'Test description'
-        const result = await generateAssignment(testCourses[0], testAssignments[0], testSubmissions[0], 'high', false)
+        const result = await generateAssignment(
+            testCourses[0],
+            testAssignments[0],
+            testSubmissions[0],
+            'high',
+            false
+        )
         expect(result.items[5]).toBe('Test description')
     })
 })

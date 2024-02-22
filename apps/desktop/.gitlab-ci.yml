@@ -1,0 +1,53 @@
+typecheck-desktop:
+    image: $DESKTOP_IMAGE
+    needs: ['install-packages']
+    stage: ✅ check
+    script:
+        - pnpm desktop typecheck
+
+test-desktop:
+    image: $DESKTOP_IMAGE
+    stage: 🤞 test
+    needs: ['install-packages']
+    script:
+        - pnpm desktop coverage
+    artifacts:
+        when: always
+        reports:
+            junit:
+                - $DESKTOP_BASE_PATH/junit.xml
+    coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+
+release-desktop-windows:
+    image: $DESKTOP_IMAGE
+    stage: 🚀 release
+    needs: ['install-packages', 'test-desktop', 'typecheck-desktop']
+    script:
+        - pnpm desktop build:win
+    artifacts:
+        paths:
+            - $DESKTOP_BASE_PATH/dist
+    when: manual
+
+release-desktop-mac:
+    image: $DESKTOP_IMAGE
+    stage: 🚀 release
+    needs: ['install-packages', 'test-desktop', 'typecheck-desktop']
+    script:
+        - pnpm install dmg-license
+        - pnpm desktop build:mac
+    artifacts:
+        paths:
+            - $DESKTOP_BASE_PATH/dist
+    when: manual
+
+release-desktop-linux:
+    image: $DESKTOP_IMAGE
+    stage: 🚀 release
+    needs: ['install-packages', 'test-desktop', 'typecheck-desktop']
+    script:
+        - pnpm desktop build:linux
+    artifacts:
+        paths:
+            - $DESKTOP_BASE_PATH/dist
+    when: manual

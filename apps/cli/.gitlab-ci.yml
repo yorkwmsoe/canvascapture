@@ -1,0 +1,44 @@
+test-cli:
+    image: $CLI_IMAGE
+    stage: 🤞 test
+    needs: ['install-packages']
+    script:
+        - pnpm cli test:ci
+    artifacts:
+        when: always
+        reports:
+            junit:
+                - $CLI_BASE_PATH/junit.xml
+    coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+
+build-cli:
+    image: $CLI_IMAGE
+    stage: 📦 build
+    needs: ['install-packages', 'test-cli']
+    script:
+        - pnpm cli build
+    artifacts:
+        paths:
+            - $CLI_BASE_PATH/build/
+
+release-cli-windows:
+    image: $CLI_IMAGE
+    stage: 🚀 release
+    needs: ['install-packages', 'build-cli']
+    script:
+        - pnpm cli package:win-x64
+    artifacts:
+        paths:
+            - $CLI_BASE_PATH/release/
+    when: manual
+
+release-cli-linux:
+    image: $CLI_IMAGE
+    stage: 🚀 release
+    needs: ['install-packages', 'build-cli']
+    script:
+        - pnpm cli package:linux-x64
+    artifacts:
+        paths:
+            - $CLI_BASE_PATH/release/
+    when: manual

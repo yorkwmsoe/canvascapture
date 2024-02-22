@@ -10,115 +10,135 @@ const { Header, Content, Footer } = Layout
 const { Meta } = Card
 
 type GenerationNameForm = {
-  generationName: string
+    generationName: string
 }
 
 export function HomePage() {
-  const { setGenerationName } = useGenerationStore()
-  const navigate = useNavigate({ from: '/' })
-  const { data: folder } = useGetFolders()
+    const { setGenerationName } = useGenerationStore()
+    const navigate = useNavigate({ from: '/' })
+    const { data: folder } = useGetFolders()
 
-  const generate = (values: GenerationNameForm) => {
-    setGenerationName(values.generationName)
-    goToCoursesPage()
-  }
+    const generate = (values: GenerationNameForm) => {
+        setGenerationName(values.generationName)
+        goToCoursesPage()
+    }
 
-  const goToCoursesPage = () => {
-    navigate({ to: '/selection' })
-  }
+    const goToCoursesPage = () => {
+        navigate({ to: '/selection' })
+    }
 
-  const goToSettingsPage = () => {
-    navigate({ to: '/settings' })
-  }
+    const goToSettingsPage = () => {
+        navigate({ to: '/settings' })
+    }
 
-  return (
-    <Layout>
-      <Header style={{ backgroundColor: 'white', textAlign: 'left', paddingLeft: 5 }}>
-        <text style={{ font: '12' }}>
-          <b>Canvas Capture</b>
-        </text>
-        <Button style={{ left: '88%' }} onClick={goToSettingsPage}>
-          Settings
-        </Button>
-      </Header>
-      <Content
-        style={{
-          margin: 'auto',
-          width: '50%',
-          verticalAlign: 'middle',
-          alignItems: 'center',
-          height: 'auto',
-          minHeight: '490px',
-          justifyItems: 'center',
-          marginTop: 10
-        }}
-      >
-        <Form
-          name="generationNameForm"
-          onFinish={generate}
-          autoComplete="off"
-          style={{ width: '70%', margin: 'auto' }}
-        >
-          <Form.Item<GenerationNameForm>
-            name="generationName"
-            rules={[
-              {
-                required: true,
-                message: 'Report name is required'
-              }
-            ]}
-          >
-            <Flex align={'center'} justify={'center'}>
-              <Space.Compact style={{ width: '100%' }}>
-                <Input placeholder="Report name" />
-                <Button htmlType="submit" type="primary">
-                  Start
+    return (
+        <Layout>
+            <Header
+                style={{
+                    backgroundColor: 'white',
+                    textAlign: 'left',
+                    paddingLeft: 5,
+                }}
+            >
+                <text style={{ font: '12' }}>
+                    <b>Canvas Capture</b>
+                </text>
+                <Button style={{ left: '88%' }} onClick={goToSettingsPage}>
+                    Settings
                 </Button>
-              </Space.Compact>
-            </Flex>
-          </Form.Item>
-        </Form>
-        <Flex
-          align={'center'}
-          justify={'center'}
-          style={{ paddingTop: 15, width: '100%', justifyContent: 'center' }}
-        >
-          <Flex
-            align={'center'}
-            justify={'center'}
-            style={{ flexWrap: 'wrap', justifyContent: 'unset' }}
-          >
-            {folder?.map((folder) => <FolderCard key={folder} folder={folder}></FolderCard>)}
-          </Flex>
-        </Flex>
-      </Content>
-      <Footer
-        style={{ backgroundColor: 'white', color: 'gray', paddingLeft: 5, textAlign: 'left' }}
-      >
-        <text>v0.01</text>
-      </Footer>
-    </Layout>
-  )
+            </Header>
+            <Content
+                style={{
+                    margin: 'auto',
+                    width: '50%',
+                    verticalAlign: 'middle',
+                    alignItems: 'center',
+                    height: 'auto',
+                    minHeight: '490px',
+                    justifyItems: 'center',
+                    marginTop: 10,
+                }}
+            >
+                <Form
+                    name="generationNameForm"
+                    onFinish={generate}
+                    autoComplete="off"
+                    style={{ width: '70%', margin: 'auto' }}
+                >
+                    <Form.Item<GenerationNameForm>
+                        name="generationName"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Report name is required',
+                            },
+                        ]}
+                    >
+                        <Flex align={'center'} justify={'center'}>
+                            <Space.Compact style={{ width: '100%' }}>
+                                <Input placeholder="Report name" />
+                                <Button htmlType="submit" type="primary">
+                                    Start
+                                </Button>
+                            </Space.Compact>
+                        </Flex>
+                    </Form.Item>
+                </Form>
+                <Flex
+                    align={'center'}
+                    justify={'center'}
+                    style={{
+                        paddingTop: 15,
+                        width: '100%',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Flex
+                        align={'center'}
+                        justify={'center'}
+                        style={{ flexWrap: 'wrap', justifyContent: 'unset' }}
+                    >
+                        {folder?.map((folder) => (
+                            <FolderCard
+                                key={folder}
+                                folder={folder}
+                            ></FolderCard>
+                        ))}
+                    </Flex>
+                </Flex>
+            </Content>
+            <Footer
+                style={{
+                    backgroundColor: 'white',
+                    color: 'gray',
+                    paddingLeft: 5,
+                    textAlign: 'left',
+                }}
+            >
+                <text>v0.01</text>
+            </Footer>
+        </Layout>
+    )
 }
 
 type FolderCardProps = {
-  folder: string
+    folder: string
 }
 
 function FolderCard({ folder }: FolderCardProps) {
-  return (
-    <Card
-      hoverable={true}
-      style={{
-        minWidth: 175,
-        maxWidth: 175,
-        width: 175,
-        textAlign: 'center'
-      }}
-      onClick={() => shell.openPath(`${getDocumentsPath()}/${folder}`)}
-    >
-      <FileMarkdownOutlined />
-      <Meta title={folder} />
-    </Card>
-  )
+    return (
+        <Card
+            hoverable={true}
+            style={{
+                minWidth: 175,
+                maxWidth: 175,
+                width: 175,
+                textAlign: 'center',
+            }}
+            onClick={() => shell.openPath(`${getDocumentsPath()}/${folder}`)}
+        >
+            <FileMarkdownOutlined />
+            <Meta title={folder} />
+        </Card>
+    )
 }
