@@ -21,16 +21,15 @@ describe('assignments', () => {
 
         expect(state.assignments).toMatchObject(testAssignments)
     })
-    
+
     it('should filter out assignments with no submissions', async () => {
         state.courses = testCourses
         checkbox.mockReturnValue([testAssignments[0].id])
         getAssignments.mockReturnValue(Promise.resolve(testAssignments))
-        getSubmissions.mockReturnValue(Promise.resolve(testSubmissions.map(x => ({...x, workflow_state: 'unsubmitted'}))))
+        getSubmissions.mockReturnValue(Promise.resolve(testSubmissions.map((x) => ({ ...x, workflow_state: 'unsubmitted' }))))
 
         await select_assignments()
 
         expect(state.assignments).toBeUndefined()
-        
     })
 })

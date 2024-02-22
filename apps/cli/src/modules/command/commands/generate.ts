@@ -1,9 +1,9 @@
-import {getSubmissions} from '@modules/canvas_api/api'
+import { getSubmissions } from '@modules/canvas_api/api'
 import { Command } from '../types/command'
 import { state } from '../state'
 import { Assignment } from '@modules/canvas_api/types/assignment'
 import { Course } from '@modules/canvas_api/types/course'
-import {generateAssignment, generateQuiz} from '@modules/markdown/generators'
+import { generateAssignment, generateQuiz } from '@modules/markdown/generators'
 import { rm } from 'fs/promises'
 import { Submission } from '@modules/canvas_api/types/submission'
 
@@ -30,7 +30,7 @@ export const genAssignment = async (course: Course, assignment: Assignment) => {
         const { high, med, low } = getHighMedLow(submissions)
         if (high) {
             console.log(`\t\tGenerating high`)
-            if(assignment.is_quiz_assignment){
+            if (assignment.is_quiz_assignment) {
                 await generateQuiz(course, assignment, high, 'high')
             } else {
                 await generateAssignment(course, assignment, high, 'high')
@@ -38,7 +38,7 @@ export const genAssignment = async (course: Course, assignment: Assignment) => {
         }
         if (med) {
             console.log(`\t\tGenerating median`)
-            if(assignment.is_quiz_assignment){
+            if (assignment.is_quiz_assignment) {
                 await generateQuiz(course, assignment, med, 'median')
             } else {
                 await generateAssignment(course, assignment, med, 'median')
@@ -46,7 +46,7 @@ export const genAssignment = async (course: Course, assignment: Assignment) => {
         }
         if (low) {
             console.log(`\t\tGenerating low`)
-            if(assignment.is_quiz_assignment){
+            if (assignment.is_quiz_assignment) {
                 await generateQuiz(course, assignment, low, 'low')
             } else {
                 await generateAssignment(course, assignment, low, 'low')
@@ -77,10 +77,10 @@ export async function generate() {
 }
 
 export function getHighMedLow(submissions: Submission[]) {
-  //TECH DEBT!!!! Since a user can have multiple attempts AND!!!! that the quiz version can be
-  //incremented, a user can have multiple submissions and mess with the median, the high, and the
-  //low. Therefore, we need to find the latest attempt from every user and take into account the
-  //quiz versions, and then find the high, med, and low that way
+    //TECH DEBT!!!! Since a user can have multiple attempts AND!!!! that the quiz version can be
+    //incremented, a user can have multiple submissions and mess with the median, the high, and the
+    //low. Therefore, we need to find the latest attempt from every user and take into account the
+    //quiz versions, and then find the high, med, and low that way
     let copySubmissions = [...submissions]
     let high = null
     let med = null
