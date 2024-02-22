@@ -1,7 +1,6 @@
-import { appendFileSync } from "fs";
-import { writeFileSync } from "fs";
-import { spawnSync } from 'node:child_process';
-
+import { appendFileSync } from 'fs'
+import { writeFileSync } from 'fs'
+import { spawnSync } from 'node:child_process'
 
 /**
  * writeToFile
@@ -10,9 +9,9 @@ import { spawnSync } from 'node:child_process';
  * @param markdownContent
  */
 export const writeToFile = (filePath: string, markdownContent: string) => {
-  appendFileSync(filePath + ".md", markdownContent);
-  spawnSync('pandoc', ['--from=gfm', `${filePath}.md`, '-o', `${filePath}.pdf`]);
-};
+    appendFileSync(filePath + '.md', markdownContent)
+    spawnSync('pandoc', ['--from=gfm', `${filePath}.md`, '-o', `${filePath}.pdf`])
+}
 
 /**
  * convertToHeader
@@ -122,6 +121,17 @@ export const createLink = (content: string, wordClick: string, link: string) => 
 }
 
 /**
+ * createLinkNormal
+ * This creates a normal link within a block of text. Name is the name of the link and link is the actual desired link
+ * @param name
+ * @param link
+ * @returns link in markdown format
+ */
+export const createLinkNormal = (name: string, link: string) => {
+    return `[${name}](${link})`
+}
+
+/**
  * generateIMG
  * This takes in a path, local to one's machine or directory, and generates the image
  * If the image path is entered incorrectly, the text "Image not found" is displayed
@@ -137,17 +147,17 @@ export const generateIMG = (path: string) => {
  * @param filePath
  */
 export const addNewLine = (filePath: string) => {
-  appendFileSync(filePath + ".md", "\n");
-  appendFileSync(filePath + ".md", "\n");
-};
+    appendFileSync(filePath + '.md', '\n')
+    appendFileSync(filePath + '.md', '\n')
+}
 
 /**
  * Cleans the specified file
  * @param filePath
  */
 export const cleanFile = (filePath: string) => {
-  writeFileSync(filePath + ".md", "");
-};
+    writeFileSync(filePath + '.md', '')
+}
 
 /**
  * Creates inline code given the string content
@@ -195,7 +205,7 @@ export const createTableRows = (rows: string[][]) => {
         for (let col = 0; col < rows[0].length; col++) {
             rowPrint = rowPrint + ' ' + rows[row][col] + ' |'
         }
-      rowsToPrint = rowsToPrint + '|' + rowPrint + '\n';
+        rowsToPrint = rowsToPrint + '|' + rowPrint + '\n'
     }
     return rowsToPrint
 }
