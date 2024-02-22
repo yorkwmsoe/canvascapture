@@ -1,18 +1,3 @@
-import { appendFileSync } from 'fs'
-import { writeFileSync } from 'fs'
-//import { spawnSync } from 'child_process'
-
-/**
- * writeToFile
- * Allows user to specify the file name which the markdown will be written to
- * @param filePath
- * @param markdownContent
- */
-export const writeToFile = (filePath: string, markdownContent: string) => {
-  appendFileSync(filePath + '.md', markdownContent)
-  //spawnSync('pandoc', ['--from=gfm', `${filePath}.md`, '-o', `${filePath}.pdf`])
-}
-
 /**
  * convertToHeader
  * Allows the user to create header generated content and to specify a desired size
@@ -137,20 +122,11 @@ export const generateIMG = (path: string) => {
 
 /**
  * addNewLine
- * Kind of overkill for a method but it just adds a newline character to the specified file
+ * Kind of overkill for a method but it just adds two newlines (creating an empty line) to the specified file
  * @param filePath
  */
-export const addNewLine = (filePath: string) => {
-  appendFileSync(filePath + '.md', '\n')
-  appendFileSync(filePath + '.md', '\n')
-}
-
-/**
- * Cleans the specified file
- * @param filePath
- */
-export const cleanFile = (filePath: string) => {
-  writeFileSync(filePath + '.md', '')
+export const addNewLine = (content: string) => {
+  return content + '\n\n'
 }
 
 /**

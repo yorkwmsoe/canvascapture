@@ -1,10 +1,13 @@
 import { Assignment } from '@renderer/types/canvas_api/assignment'
 import { Course } from '@renderer/types/canvas_api/course'
 import { Submission } from '@renderer/types/canvas_api/submission'
-import { generateAssignment } from '@renderer/utils/markdown/generators'
-import { rm } from 'fs/promises'
+import { rm, writeFile } from 'fs/promises'
 import { getSubmissions } from '@renderer/apis/canvas.api'
 import _ from 'lodash'
+import { ipcRenderer } from 'electron'
+import { generateAssignment } from '@renderer/utils/markdown/generators'
+import markdownit from 'markdown-it'
+import { getDocumentsPath } from '@renderer/utils/config'
 
 // https://stackoverflow.com/a/70806192
 export const median = (arr: number[]): number => {
@@ -23,6 +26,11 @@ type SubmissionWithScore = {
   score: 'high' | 'median' | 'low'
 }
 
+type FilePathContentPair = {
+  filePath: string
+  pseudoFile: string
+}
+
 export const genAssignment = async (
   course: Course,
   assignment: Assignment,
@@ -38,9 +46,15 @@ export const genAssignment = async (
     { submission: chooseSubmission(copySubmissions, (s) => Math.min(...s)), score: 'low' }
   ]
 
+  const pairs: FilePathContentPair[] = []
+
   for (const ss of selectedSubmissions) {
-    await generateAssignment(course, assignment, ss.submission, ss.score, outpath)
+    const pair = await generateAssignment(course, assignment, ss.submission, ss.score, outpath)
+    if (pair !== null) {
+      pairs.push(pair)
+    }
   }
+  return pairs
 }
 
 export async function generate(
@@ -51,6 +65,7 @@ export async function generate(
   outpath: string
 ) {
   await rm(outpath, { recursive: true, force: true })
+  const pairsArr: FilePathContentPair[] = []
   for (const course of courses) {
     const filteredAssignments = assignments.filter((a) => a.course_id === course.id)
     for (const assignment of filteredAssignments) {
@@ -60,9 +75,27 @@ export async function generate(
         courseId: course.id,
         assignmentId: assignment.id
       })
-      await genAssignment(course, assignment, submissions, outpath)
+      const pairArr = await genAssignment(course, assignment, submissions, outpath)
+      if (pairArr !== undefined) {
+        pairsArr.push(...pairArr)
+      }
     }
   }
+  pairsArr.forEach((x) => writeFile(x.filePath + '.md', x.pseudoFile))
+
+  const md = markdownit({
+    linkify: true
+  })
+
+  const htmlData: FilePathContentPair[] = pairsArr.map((x) => {
+    return {
+      filePath: x.filePath.replace(getDocumentsPath(), '/files'),
+      pseudoFile: md.render(x.pseudoFile)
+    }
+  })
+  //htmlData.forEach((x) => console.log(x.pseudoFile))
+
+  ipcRenderer.send('generate', htmlData)
 }
 
 function chooseSubmission(submissions: Submission[], filterFunc: (s: number[]) => number) {

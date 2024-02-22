@@ -1,13 +1,7 @@
 import { Assignment } from '@renderer/types/canvas_api/assignment'
 import { Course } from '@renderer/types/canvas_api/course'
 import { Submission } from '@renderer/types/canvas_api/submission'
-import {
-  convertToHeader,
-  createList,
-  createTableHeader,
-  createTableRows,
-  writeToFile
-} from './markdown'
+import { convertToHeader, createList, createTableHeader, createTableRows } from './markdown'
 import { mkdirSync } from 'fs'
 
 export async function generateAssignment(
@@ -15,8 +9,7 @@ export async function generateAssignment(
   assignment: Assignment,
   submission: Submission | undefined,
   score: 'high' | 'median' | 'low',
-  outpath: string,
-  commit: boolean = true
+  outpath: string
 ) {
   if (submission !== undefined) {
     const folderPath = `${outpath}/${course.name}/${assignment.name}`
@@ -32,10 +25,9 @@ export async function generateAssignment(
 
     const cleanedItems = items.filter((item) => !!item)
 
-    if (commit) {
-      writeAggregationToFile(cleanedItems, folderPath, score)
-    }
+    return writeAggregationToFileNameAndString(cleanedItems, folderPath, score)
   }
+  return null
 }
 
 function assembleTitleAndGrade(assignment: Assignment, submission: Submission) {
@@ -88,11 +80,15 @@ function assembleRubricInfo(assignment: Assignment, submission: Submission) {
   return [rubricHeader, rubricTable]
 }
 
-function writeAggregationToFile(cleanedItems: string[], folderPath: string, score: string) {
+function writeAggregationToFileNameAndString(
+  cleanedItems: string[],
+  folderPath: string,
+  score: string
+) {
   let pseudoFile: string = ''
   cleanedItems.forEach((item) => {
     pseudoFile = pseudoFile + item + '\n'
   })
   const filePath = `${folderPath}/${score}`
-  writeToFile(filePath, pseudoFile)
+  return { filePath, pseudoFile }
 }
