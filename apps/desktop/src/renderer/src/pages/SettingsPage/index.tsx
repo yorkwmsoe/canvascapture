@@ -1,4 +1,4 @@
-import { Config } from '@renderer/lib/config'
+import { Config } from '@renderer/utils/config'
 import { useSettingsStore } from '@renderer/stores/settings.store'
 import { useNavigate } from '@tanstack/react-router'
 import { Button, Checkbox, Form, Input } from 'antd'

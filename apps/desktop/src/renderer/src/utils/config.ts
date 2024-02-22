@@ -7,6 +7,8 @@ export const getConfigPath = () => app.getPath('userData')
 
 export const getConfigFile = () => `${getConfigPath()}/${CONFIG_FILE_NAME}`
 
+export const getDocumentsPath = () => `${app.getPath('documents')}/canvas-capture-desktop`
+
 export type Config = {
     canvasDomain: string
     canvasAccessToken: string

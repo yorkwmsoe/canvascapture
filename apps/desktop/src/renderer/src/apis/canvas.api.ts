@@ -6,6 +6,7 @@ import { parseISO } from 'date-fns'
 import { Course } from '@renderer/types/canvas_api/course'
 import { Submission } from '@renderer/types/canvas_api/submission'
 import { useGenerationStore } from '@renderer/stores/generation.store'
+import { parseHierarchyId } from '@renderer/utils/assignments'
 
 // date handling from: https://stackoverflow.com/a/66238542
 export function handleDates(body: unknown) {
@@ -98,6 +99,19 @@ export const getSubmissions = async (
 }
 
 // Hooks
+export const useGetSubmissions = () => {
+  const { canvasDomain, canvasAccessToken } = useSettingsStore()
+  const { assignments } = useGenerationStore()
+  return useQueries({
+    queries: assignments.map((courseAssignmentId) => {
+      const { courseId, assignmentId } = parseHierarchyId(courseAssignmentId)
+      return {
+        queryKey: ['submissions', courseId, assignmentId],
+        queryFn: () => getSubmissions({ canvasAccessToken, canvasDomain, courseId, assignmentId })
+      }
+    })
+  })
+}
 
 export const useGetAssignments = () => {
     const { canvasDomain, canvasAccessToken } = useSettingsStore()

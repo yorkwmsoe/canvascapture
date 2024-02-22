@@ -1,11 +1,11 @@
-export function generateHierarchyId(courseId: number, submissionId: number) {
-    return `${courseId}:${submissionId}`
+export function generateHierarchyId(courseId: number, assignmentId: number) {
+    return `${courseId}:${assignmentId}`
 }
 
 export function parseHierarchyId(hierarchyId: string) {
-    const [courseId, submissionId] = hierarchyId.split(':')
+    const [courseId, assignmentId] = hierarchyId.split(':')
     return {
         courseId: parseInt(courseId, 10),
-        submissionId: parseInt(submissionId, 10),
+        assignmentId: parseInt(assignmentId, 10),
     }
 }

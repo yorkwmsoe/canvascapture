@@ -121,6 +121,17 @@ export const createLink = (content: string, wordClick: string, link: string) => 
 }
 
 /**
+ * createLinkNormal
+ * This creates a normal link within a block of text. Name is the name of the link and link is the actual desired link
+ * @param name
+ * @param link
+ * @returns link in markdown format
+ */
+export const createLinkNormal = (name: string, link: string) => {
+    return `[${name}](${link})`
+}
+
+/**
  * generateIMG
  * This takes in a path, local to one's machine or directory, and generates the image
  * If the image path is entered incorrectly, the text "Image not found" is displayed
@@ -194,8 +205,7 @@ export const createTableRows = (rows: string[][]) => {
         for (let col = 0; col < rows[0].length; col++) {
             rowPrint = rowPrint + ' ' + rows[row][col] + ' |'
         }
-        rowPrint = '|' + rowPrint + '\n'
-        rowsToPrint = rowsToPrint + rowPrint
+        rowsToPrint = rowsToPrint + '|' + rowPrint + '\n'
     }
     return rowsToPrint
 }

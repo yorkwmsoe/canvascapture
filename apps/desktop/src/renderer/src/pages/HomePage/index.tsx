@@ -1,51 +1,34 @@
-import {
-    Input,
-    Layout,
-    Button,
-    Space,
-    Card,
-    Flex,
-    Col,
-    Row,
-    Typography,
-} from 'antd'
-import { useState } from 'react'
+import { Input, Layout, Button, Space, Card, Flex, Form } from 'antd'
 import { useNavigate } from '@tanstack/react-router'
 import { useGetFolders } from '@renderer/hooks/useGetFolders'
 import { FileMarkdownOutlined } from '@ant-design/icons'
+import { useGenerationStore } from '@renderer/stores/generation.store'
+import { shell } from 'electron'
+import { getDocumentsPath } from '@renderer/utils/config'
 
 const { Header, Content, Footer } = Layout
 const { Meta } = Card
+
+type GenerationNameForm = {
+    generationName: string
+}
+
 export function HomePage() {
-    // TODO: Hook up name to the geration store
-    const [generationName, setGenerationName] = useState<string>('')
+    const { setGenerationName } = useGenerationStore()
     const navigate = useNavigate({ from: '/' })
     const { data: folder } = useGetFolders()
 
-    const generate = () => {
-        if (generationName !== '') {
-            goToCoursesPage()
-        } else {
-            const generationModal = document.getElementById('generationModal')
-            if (generationModal) {
-                generationModal.hidden = false
-            }
-        }
+    const generate = (values: GenerationNameForm) => {
+        setGenerationName(values.generationName)
+        goToCoursesPage()
     }
 
     const goToCoursesPage = () => {
         navigate({ to: '/selection' })
     }
 
-    const openSettingsPage = () => {
+    const goToSettingsPage = () => {
         navigate({ to: '/settings' })
-    }
-
-    const exitGenerationNameWarning = () => {
-        const generationModal = document.getElementById('generationModal')
-        if (generationModal) {
-            generationModal.hidden = true
-        }
     }
 
     return (
@@ -57,13 +40,10 @@ export function HomePage() {
                     paddingLeft: 5,
                 }}
             >
-                <Typography.Text style={{ font: '12' }}>
+                <text style={{ font: '12' }}>
                     <b>Canvas Capture</b>
-                </Typography.Text>
-                <Button
-                    style={{ left: '88%' }}
-                    onClick={() => openSettingsPage()}
-                >
+                </text>
+                <Button style={{ left: '88%' }} onClick={goToSettingsPage}>
                     Settings
                 </Button>
             </Header>
@@ -76,80 +56,56 @@ export function HomePage() {
                     height: 'auto',
                     minHeight: '490px',
                     justifyItems: 'center',
+                    marginTop: 10,
                 }}
             >
-                <div>
-                    <Flex align={'center'} justify={'center'}>
-                        <Space.Compact>
-                            <Input
-                                style={{ width: '350px' }}
-                                placeholder={'Generation name'}
-                                value={generationName}
-                                onChange={(e) =>
-                                    setGenerationName(e.target.value)
-                                }
-                            />
-                            <Button
-                                onClick={() => generate()}
-                                style={{
-                                    color: 'white',
-                                    background: '#051631',
-                                }}
-                            >
-                                Generate
-                            </Button>
-                        </Space.Compact>
-                        <div
-                            style={{
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                background: '#051631',
-                                color: 'white',
-                                borderRadius: '8px',
-                                width: '250px',
-                                textAlign: 'center',
-                            }}
-                            className={'modal'}
-                            hidden={true}
-                            id={'generationModal'}
-                        >
-                            <div className={'modal-header'}>
-                                <Space.Compact>
-                                    <h3>ENTER GENERATION NAME!</h3>
-                                    <span
-                                        className={'close'}
-                                        onClick={() =>
-                                            exitGenerationNameWarning()
-                                        }
-                                    >
-                                        &times;
-                                    </span>
-                                </Space.Compact>
-                            </div>
-                            <div className={'modal-content'}>
-                                Please Enter A Name For The Generation.
-                            </div>
-                        </div>
-                    </Flex>
-                </div>
-                <div>
+                <Form
+                    name="generationNameForm"
+                    onFinish={generate}
+                    autoComplete="off"
+                    style={{ width: '70%', margin: 'auto' }}
+                >
+                    <Form.Item<GenerationNameForm>
+                        name="generationName"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Report name is required',
+                            },
+                        ]}
+                    >
+                        <Flex align={'center'} justify={'center'}>
+                            <Space.Compact style={{ width: '100%' }}>
+                                <Input placeholder="Report name" />
+                                <Button htmlType="submit" type="primary">
+                                    Start
+                                </Button>
+                            </Space.Compact>
+                        </Flex>
+                    </Form.Item>
+                </Form>
+                <Flex
+                    align={'center'}
+                    justify={'center'}
+                    style={{
+                        paddingTop: 15,
+                        width: '100%',
+                        justifyContent: 'center',
+                    }}
+                >
                     <Flex
                         align={'center'}
                         justify={'center'}
-                        style={{ paddingTop: 15 }}
+                        style={{ flexWrap: 'wrap', justifyContent: 'unset' }}
                     >
-                        <div>
-                            <Row gutter={8}>
-                                {folder?.map((folder) => (
-                                    <FolderCard
-                                        key={folder}
-                                        folder={folder}
-                                    ></FolderCard>
-                                ))}
-                            </Row>
-                        </div>
+                        {folder?.map((folder) => (
+                            <FolderCard
+                                key={folder}
+                                folder={folder}
+                            ></FolderCard>
+                        ))}
                     </Flex>
-                </div>
+                </Flex>
             </Content>
             <Footer
                 style={{
@@ -159,7 +115,7 @@ export function HomePage() {
                     textAlign: 'left',
                 }}
             >
-                <Typography.Text>v0.01</Typography.Text>
+                <text>v0.01</text>
             </Footer>
         </Layout>
     )
@@ -171,14 +127,18 @@ type FolderCardProps = {
 
 function FolderCard({ folder }: FolderCardProps) {
     return (
-        <Col key={folder} span={8}>
-            <Card
-                hoverable={true}
-                style={{ width: 100, height: 70 }}
-                cover={<FileMarkdownOutlined size={15} />}
-            >
-                <Meta title={folder} />
-            </Card>
-        </Col>
+        <Card
+            hoverable={true}
+            style={{
+                minWidth: 175,
+                maxWidth: 175,
+                width: 175,
+                textAlign: 'center',
+            }}
+            onClick={() => shell.openPath(`${getDocumentsPath()}/${folder}`)}
+        >
+            <FileMarkdownOutlined />
+            <Meta title={folder} />
+        </Card>
     )
 }

@@ -38,11 +38,20 @@ export const useAssignments = () => {
         [assignments]
     )
 
+    const getSubmissionTypesForAssignment = useCallback(
+        (courseId: number, assignmentId: number) => {
+            const assignment = getAssignmentById(courseId, assignmentId)
+            return assignment ? assignment.submission_types : []
+        },
+        [getAssignmentById]
+    )
+
     return {
         assignments,
         selectedAssignments,
         setSelectedAssignments,
         getAssignmentsByCourseId,
         getAssignmentById,
+        getSubmissionTypesForAssignment,
     }
 }
