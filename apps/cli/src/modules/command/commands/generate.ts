@@ -50,7 +50,6 @@ export const genAssignment = async (course: Course, assignment: Assignment) => {
                 const quizSubmission = await getQuizSubmission(assignment.course_id, quiz.id, low.id)
                 generateQuiz(assignment, low, quiz, quizSubmission)
             }
-
         } else {
             if (high) {
                 generateAssignment(assignment, high)
@@ -73,26 +72,18 @@ const initPyodide = async () => {
     const micropip = pyodide.pyimport('micropip')
     await micropip.install('fpdf2')
     await pyodide.FS.mkdir('/files')
-    
+
     const documentsPath = getDocumentsPath()
     if (!existsSync(documentsPath)) mkdirSync(documentsPath)
     await pyodide.FS.mount(pyodide.FS.filesystems.NODEFS, { root: getDocumentsPath() }, '/files')
     return pyodide
 }
 
-
 export async function generateCmd() {
     const pyodide = await initPyodide()
     if (state.courses && state.assignments) {
         console.log('Generating...')
-        const htmlData = await generate(
-            state.courses,
-            state.assignments,
-            '',
-            '',
-            'generation',
-            'output'
-        )
+        const htmlData = await generate(state.courses, state.assignments, '', '', 'generation', 'output')
         // This just gets piped straight into Python, which doesn't care about the type anyway
         // @ts-expect-error noImplicitAny
         globalThis.htmlData = htmlData

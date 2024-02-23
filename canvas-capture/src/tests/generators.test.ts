@@ -1,15 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import {
-    testAssignments,
-    testSubmissions,
-} from '../mocks/canvas.api.mocks'
+import { testAssignments, testSubmissions } from '../mocks/canvas.api.mocks'
 import { generateAssignment } from '../generators'
 
 describe('generateAssignment', () => {
     it('should generate a items for markdown', () => {
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0],
+            testSubmissions[0]
         )
         expect(result.length).toBeGreaterThan(0)
     })
@@ -17,7 +14,7 @@ describe('generateAssignment', () => {
     it('should generate all headers', () => {
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0],
+            testSubmissions[0]
         )
         expect(result[0]).toBeDefined()
         expect(result[2]).toBeDefined()
@@ -29,7 +26,7 @@ describe('generateAssignment', () => {
     it('should generate all bodies', () => {
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0],
+            testSubmissions[0]
         )
         expect(result[1]).toBeDefined()
         expect(result[3]).toBeDefined()
@@ -52,7 +49,7 @@ describe('generateAssignment', () => {
         ]
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0],
+            testSubmissions[0]
         )
         expect(result[7]).toContain('|')
     })
@@ -61,7 +58,7 @@ describe('generateAssignment', () => {
         testSubmissions[0].submission_type = 'online_quiz'
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0],
+            testSubmissions[0]
         )
         expect(result[9]).toBe('No submission')
     })
@@ -91,7 +88,7 @@ describe('generateAssignment', () => {
         ]
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0],
+            testSubmissions[0]
         )
         expect(result[7]).toContain('-')
     })
@@ -100,7 +97,7 @@ describe('generateAssignment', () => {
         testAssignments[0].description = ''
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0],
+            testSubmissions[0]
         )
         console.log(result)
         expect(result[5]).toBe('No description')
@@ -110,7 +107,7 @@ describe('generateAssignment', () => {
         testAssignments[0].description = 'Test description'
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0],
+            testSubmissions[0]
         )
         expect(result[5]).toBe('Test description')
     })

@@ -63,7 +63,7 @@ describe('markdown test', () => {
     const block: string = createCodeBlock('HELP MEEEEE')
 
     beforeAll(() => {
-        let mdString = ""
+        let mdString = ''
 
         //Add all headers
         mdString += header1
@@ -110,9 +110,9 @@ describe('markdown test', () => {
         mdString = addNewLine(mdString)
         mdString += inline
         mdString += block
-        
+
         //Write result to file
-        writeFileSync(filePath + ".md", mdString)
+        writeFileSync(filePath + '.md', mdString)
     })
 
     test('that the generated markdown file is equal to the sample file', () => {

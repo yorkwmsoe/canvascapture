@@ -2,8 +2,15 @@ import { Assignment } from '@canvas-capture/lib/src/types/canvas_api/assignment'
 import { Course } from '@canvas-capture/lib/src/types/canvas_api/course'
 import { Submission } from '@canvas-capture/lib/src/types/canvas_api/submission'
 import { Quiz } from '@canvas-capture/lib/src/types/canvas_api/quiz'
-import { getQuiz, getSubmissions, getQuizSubmission } from '@renderer/apis/canvas.api'
-import { generateAssignment, generateQuiz } from '@canvas-capture/lib/src/generators'
+import {
+    getQuiz,
+    getSubmissions,
+    getQuizSubmission,
+} from '@renderer/apis/canvas.api'
+import {
+    generateAssignment,
+    generateQuiz,
+} from '@canvas-capture/lib/src/generators'
 import { rm, writeFile } from 'fs/promises'
 import markdownit from 'markdown-it'
 import _ from 'lodash'
@@ -18,14 +25,26 @@ export const median = (arr: number[]): number => {
 }
 
 type FilePathContentPair = {
-  filePath: string
-  content: string
+    filePath: string
+    content: string
 }
 
 // FIXME: I hate that I have to do this
-const generateAssignmentOrQuiz = async (assignment: Assignment, submission: Submission, quiz: Quiz | undefined, canvasAccessToken: string, canvasDomain: string) => {
+const generateAssignmentOrQuiz = async (
+    assignment: Assignment,
+    submission: Submission,
+    quiz: Quiz | undefined,
+    canvasAccessToken: string,
+    canvasDomain: string
+) => {
     if (assignment.is_quiz_assignment && quiz !== undefined) {
-        const quizSubmission = await getQuizSubmission({canvasAccessToken, canvasDomain, courseId: assignment.course_id, quizId: quiz.id, submissionId: submission.id})
+        const quizSubmission = await getQuizSubmission({
+            canvasAccessToken,
+            canvasDomain,
+            courseId: assignment.course_id,
+            quizId: quiz.id,
+            submissionId: submission.id,
+        })
         return generateQuiz(assignment, submission, quiz, quizSubmission)
     } else {
         return generateAssignment(assignment, submission)
@@ -40,24 +59,52 @@ export const generatePairs = async (
     canvasAccessToken: string,
     canvasDomain: string
 ): Promise<FilePathContentPair[]> => {
-    const highSubmission = _.maxBy(submissions, (s) => s.score) ?? submissions[0]
+    const highSubmission =
+        _.maxBy(submissions, (s) => s.score) ?? submissions[0]
     const highPair = {
         filePath: `${assignmentsPath}/high`,
-        content: (await generateAssignmentOrQuiz(assignment, highSubmission, quiz, canvasAccessToken, canvasDomain)).join('\n')
+        content: (
+            await generateAssignmentOrQuiz(
+                assignment,
+                highSubmission,
+                quiz,
+                canvasAccessToken,
+                canvasDomain
+            )
+        ).join('\n'),
     }
-    
-    const medianSubmission = submissions.filter((s) => s.score === median(submissions.map(x => x.score)))[0] ?? submissions[0]
+
+    const medianSubmission =
+        submissions.filter(
+            (s) => s.score === median(submissions.map((x) => x.score))
+        )[0] ?? submissions[0]
     const medianPair = {
         filePath: `${assignmentsPath}/median`,
-        content: (await generateAssignmentOrQuiz(assignment, medianSubmission, quiz, canvasAccessToken, canvasDomain)).join('\n')
+        content: (
+            await generateAssignmentOrQuiz(
+                assignment,
+                medianSubmission,
+                quiz,
+                canvasAccessToken,
+                canvasDomain
+            )
+        ).join('\n'),
     }
 
     const lowSubmission = _.minBy(submissions, (s) => s.score) ?? submissions[0]
     const lowPair = {
         filePath: `${assignmentsPath}/low`,
-        content: (await generateAssignmentOrQuiz(assignment, lowSubmission, quiz, canvasAccessToken, canvasDomain)).join('\n')
+        content: (
+            await generateAssignmentOrQuiz(
+                assignment,
+                lowSubmission,
+                quiz,
+                canvasAccessToken,
+                canvasDomain
+            )
+        ).join('\n'),
     }
-    
+
     switch (submissions.length) {
         case 1:
             return [highPair]
@@ -76,7 +123,10 @@ export async function generate(
     generationName: string,
     documentsPath: string
 ) {
-    await rm(`${documentsPath}/${generationName}`, { recursive: true, force: true })
+    await rm(`${documentsPath}/${generationName}`, {
+        recursive: true,
+        force: true,
+    })
 
     const pairs: FilePathContentPair[] = []
     for (const course of courses) {
@@ -91,40 +141,48 @@ export async function generate(
                 courseId: course.id,
                 assignmentId: assignment.id,
             })
-            const uniqueSubmissions = _.uniqBy(submissions.filter(s => !_.isNil(s.score)), (s) => s.score)
+            const uniqueSubmissions = _.uniqBy(
+                submissions.filter((s) => !_.isNil(s.score)),
+                (s) => s.score
+            )
             if (uniqueSubmissions.length > 0) {
                 const assignmentsPath = `${generationName}/${course.name}/${assignment.name}`
-                mkdirSync(`${documentsPath}/${assignmentsPath}`, { recursive: true })
-                const quiz = assignment.is_quiz_assignment ?
-                    (await getQuiz({
+                mkdirSync(`${documentsPath}/${assignmentsPath}`, {
+                    recursive: true,
+                })
+                const quiz = assignment.is_quiz_assignment
+                    ? await getQuiz({
+                          canvasAccessToken,
+                          canvasDomain,
+                          courseId: assignment.course_id,
+                          quizId: assignment.quiz_id,
+                      })
+                    : undefined
+                pairs.push(
+                    ...(await generatePairs(
+                        assignment,
+                        uniqueSubmissions,
+                        quiz,
+                        assignmentsPath,
                         canvasAccessToken,
-                        canvasDomain,
-                        courseId: assignment.course_id,
-                        quizId: assignment.quiz_id
-                    })) :
-                    undefined
-                pairs.push(...(await generatePairs(
-                    assignment,
-                    uniqueSubmissions,
-                    quiz,
-                    assignmentsPath,
-                    canvasAccessToken,
-                    canvasDomain
-                )))
+                        canvasDomain
+                    ))
+                )
             }
         }
     }
-    
-    pairs.forEach((x) => writeFile(`${documentsPath}/${x.filePath}.md`, x.content))
-    
+
+    pairs.forEach((x) =>
+        writeFile(`${documentsPath}/${x.filePath}.md`, x.content)
+    )
+
     const md = markdownit({ linkify: true })
-  
+
     const htmlData: FilePathContentPair[] = pairs.map((x) => {
         return {
             filePath: x.filePath,
-            content: md.render(x.content)
+            content: md.render(x.content),
         }
     })
     return htmlData
-  
 }

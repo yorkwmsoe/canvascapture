@@ -115,7 +115,8 @@ ipcMain.on('generate', async (_event, htmlData: FilePathContentPair[]) => {
     `)
 })
 
-const getDocumentsPath = () => `${app.getPath('documents')}/canvas-capture-desktop`
+const getDocumentsPath = () =>
+    `${app.getPath('documents')}/canvas-capture-desktop`
 
 const initPyodide = async () => {
     const pyodide = await loadPyodide()
@@ -123,10 +124,14 @@ const initPyodide = async () => {
     const micropip = pyodide.pyimport('micropip')
     await micropip.install('fpdf2')
     await pyodide.FS.mkdir('/files')
-    
+
     const documentsPath = getDocumentsPath()
     if (!existsSync(documentsPath)) mkdirSync(documentsPath)
-    await pyodide.FS.mount(pyodide.FS.filesystems.NODEFS, { root: getDocumentsPath() }, '/files')
+    await pyodide.FS.mount(
+        pyodide.FS.filesystems.NODEFS,
+        { root: getDocumentsPath() },
+        '/files'
+    )
     globalThis.pyodide = pyodide
 }
 

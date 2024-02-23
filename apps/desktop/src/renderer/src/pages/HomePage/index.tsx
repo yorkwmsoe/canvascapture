@@ -22,9 +22,8 @@ export function HomePage() {
     const { data: folder, refetch: refreshFolders } = useGetFolders()
     const { setSelectedAssignments } = useAssignments()
     const { setSelectedCourses } = useCourses()
-    
+
     useEffect(() => {
-        console.log("refreshed")
         setSelectedCourses([])
         setSelectedAssignments([])
         refreshFolders()

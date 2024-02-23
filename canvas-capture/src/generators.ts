@@ -2,12 +2,16 @@ import { Assignment } from './types/canvas_api/assignment'
 import { Submission } from './types/canvas_api/submission'
 import { Quiz } from './types/canvas_api/quiz'
 import { QuizSubmission } from './types/canvas_api/quiz-submissions'
-import { convertToHeader, createList, createTableHeader, createTableRows }
-from './markdown'
+import {
+    convertToHeader,
+    createList,
+    createTableHeader,
+    createTableRows,
+} from './markdown'
 
 export function generateAssignment(
     assignment: Assignment,
-    submission: Submission,
+    submission: Submission
 ) {
     const items = [
         ...assembleTitleAndGrade(assignment, submission, ''),
@@ -30,8 +34,9 @@ export function generateQuiz(
         ...assembleTitleAndGrade(assignment, submission, 'QUIZ: '),
         ...assembleDescriptionInfo(assignment),
         ...assembleFeedbackInfo(submission),
-        ...(quizOverview(assignment, quiz)),
-        ...(quizUserOverview(submission, quizSubmission))]
+        ...quizOverview(assignment, quiz),
+        ...quizUserOverview(submission, quizSubmission),
+    ]
 
     return items.filter((item) => !!item)
 }
@@ -39,14 +44,36 @@ export function generateQuiz(
 function quizOverview(assignment: Assignment, quiz: Quiz) {
     const quiz_id = assignment.quiz_id as number
     const infoHeader = convertToHeader('Quiz Info', 2)
-    const quizHeader = createTableHeader(['Quiz Id', 'Assignment Id', '# of Questions', 'Total Points', 'Version #'])
-    const quizBody = createTableRows([[quiz_id.toString(), assignment.id.toString(), quiz.question_count.toString(), quiz.points_possible.toString(), quiz.version_number.toString()]])
+    const quizHeader = createTableHeader([
+        'Quiz Id',
+        'Assignment Id',
+        '# of Questions',
+        'Total Points',
+        'Version #',
+    ])
+    const quizBody = createTableRows([
+        [
+            quiz_id.toString(),
+            assignment.id.toString(),
+            quiz.question_count.toString(),
+            quiz.points_possible.toString(),
+            quiz.version_number.toString(),
+        ],
+    ])
     return [infoHeader, quizHeader + quizBody]
 }
 
-function quizUserOverview(submission: Submission, quizSubmission: QuizSubmission | undefined) {
+function quizUserOverview(
+    submission: Submission,
+    quizSubmission: QuizSubmission | undefined
+) {
     const userOverviewHeader = convertToHeader('User Overview', 2)
-    const userHeader = createTableHeader(['User Id', 'Score', 'Kept Score', 'Attempt'])
+    const userHeader = createTableHeader([
+        'User Id',
+        'Score',
+        'Kept Score',
+        'Attempt',
+    ])
     const rows = []
     rows.push(submission.user_id.toString())
     if (quizSubmission?.score) {
@@ -62,7 +89,11 @@ function quizUserOverview(submission: Submission, quizSubmission: QuizSubmission
     return [userOverviewHeader, userHeader + userBody]
 }
 
-function assembleTitleAndGrade(assignment: Assignment, submission: Submission, type: string) {
+function assembleTitleAndGrade(
+    assignment: Assignment,
+    submission: Submission,
+    type: string
+) {
     const title = convertToHeader(type + assignment.name, 1)
     const grade = `${submission.score}/${assignment.points_possible}`
     return [title, grade]
