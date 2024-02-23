@@ -74,7 +74,7 @@ function quizUserOverview(
         'Kept Score',
         'Attempt',
     ])
-    const rows = []
+    const rows: string[] = []
     rows.push(submission.user_id.toString())
     if (quizSubmission?.score) {
         rows.push(quizSubmission.score.toString())

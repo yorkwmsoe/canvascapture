@@ -20,13 +20,13 @@ build-docker-desktop:
         - docker push $DESKTOP_IMAGE
     when: manual
 
-build-docker-cli:
-    stage: 🐋 docker
-    image: docker:stable
-    services:
-        - docker:dind
-    script:
-        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - docker build . -f $CLI_BASE_PATH/Dockerfile -t $CLI_IMAGE
-        - docker push $CLI_IMAGE
-    when: manual
+#build-docker-cli:
+#    stage: 🐋 docker
+#    image: docker:stable
+#    services:
+#        - docker:dind
+#    script:
+#        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#        - docker build . -f $CLI_BASE_PATH/Dockerfile -t $CLI_IMAGE
+#        - docker push $CLI_IMAGE
+#    when: manual
