@@ -2,16 +2,15 @@ import { Assignment } from '@canvas-capture/lib/src/types/canvas_api/assignment'
 import { Course } from '@canvas-capture/lib/src/types/canvas_api/course'
 import { Submission } from '@canvas-capture/lib/src/types/canvas_api/submission'
 import { Quiz } from '@canvas-capture/lib/src/types/canvas_api/quiz'
-import { getQuiz, getSubmissions, getQuizSubmission } from '@renderer/apis/canvas.api'
+import { getQuiz, getSubmissions, getQuizSubmission } from '@modules/canvas_api/api'
 import { generateAssignment, generateQuiz } from '@canvas-capture/lib/src/generators'
-import { rm, writeFile } from 'fs/promises'
 import markdownit from 'markdown-it'
 import _ from 'lodash'
-import { mkdirSync } from 'fs'
+import { mkdirSync, rmSync, writeFileSync } from 'fs'
 
 // https://stackoverflow.com/a/70806192
 export const median = (arr: number[]): number => {
-    const s = arr.toSorted((a, b) => a - b)
+    const s = [...arr].sort((a, b) => a - b)
     const mid = Math.floor(s.length / 2)
     const res = s.length % 2 === 0 ? (s[mid - 1] + s[mid]) / 2 : s[mid]
     return Math.ceil(res)
@@ -23,9 +22,10 @@ type FilePathContentPair = {
 }
 
 // FIXME: I hate that I have to do this
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const generateAssignmentOrQuiz = async (assignment: Assignment, submission: Submission, quiz: Quiz | undefined, canvasAccessToken: string, canvasDomain: string) => {
     if (assignment.is_quiz_assignment && quiz !== undefined) {
-        const quizSubmission = await getQuizSubmission({canvasAccessToken, canvasDomain, courseId: assignment.course_id, quizId: quiz.id, submissionId: submission.id})
+        const quizSubmission = await getQuizSubmission(assignment.course_id, quiz.id, submission.id)
         return generateQuiz(assignment, submission, quiz, quizSubmission)
     } else {
         return generateAssignment(assignment, submission)
@@ -76,32 +76,30 @@ export async function generate(
     generationName: string,
     documentsPath: string
 ) {
-    await rm(`${documentsPath}/${generationName}`, { recursive: true, force: true })
+    rmSync(`${documentsPath}/${generationName}`, { recursive: true, force: true })
 
     const pairs: FilePathContentPair[] = []
     for (const course of courses) {
         const filteredAssignments = assignments.filter(
             (a) => a.course_id === course.id
         )
+        console.log("first: ", course.id)
 
         for (const assignment of filteredAssignments) {
-            const submissions = await getSubmissions({
-                canvasAccessToken,
-                canvasDomain,
-                courseId: course.id,
-                assignmentId: assignment.id,
-            })
+            console.log(course.id)
+            const submissions = await getSubmissions(
+                course.id,
+                assignment.id,
+            )
             const uniqueSubmissions = _.uniqBy(submissions.filter(s => !_.isNil(s.score)), (s) => s.score)
             if (uniqueSubmissions.length > 0) {
                 const assignmentsPath = `${generationName}/${course.name}/${assignment.name}`
                 mkdirSync(`${documentsPath}/${assignmentsPath}`, { recursive: true })
                 const quiz = assignment.is_quiz_assignment ?
-                    (await getQuiz({
-                        canvasAccessToken,
-                        canvasDomain,
-                        courseId: assignment.course_id,
-                        quizId: assignment.quiz_id
-                    })) :
+                    (await getQuiz(
+                        assignment.course_id,
+                        assignment.quiz_id
+                    )) :
                     undefined
                 pairs.push(...(await generatePairs(
                     assignment,
@@ -115,7 +113,7 @@ export async function generate(
         }
     }
     
-    pairs.forEach((x) => writeFile(`${documentsPath}/${x.filePath}.md`, x.content))
+    pairs.forEach((x) => writeFileSync(`${documentsPath}/${x.filePath}.md`, x.content))
     
     const md = markdownit({ linkify: true })
   

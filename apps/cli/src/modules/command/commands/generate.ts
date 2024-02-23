@@ -1,16 +1,21 @@
-import { getSubmissions } from '@modules/canvas_api/api'
+import { getQuiz, getQuizSubmission, getSubmissions } from '@modules/canvas_api/api'
 import { Command } from '../types/command'
 import { state } from '../state'
 import { Assignment } from '@modules/canvas_api/types/assignment'
 import { Course } from '@modules/canvas_api/types/course'
-import { generateAssignment, generateQuiz } from '@modules/markdown/generators'
-import { rm } from 'fs/promises'
+import { generateAssignment, generateQuiz } from '@canvas-capture/lib/src/generators'
 import { Submission } from '@modules/canvas_api/types/submission'
+import { generate } from '@/modules/markdown/generate'
+import { loadPyodide } from 'pyodide'
+import { existsSync, mkdirSync } from 'fs'
+import { resolve } from 'path'
+
+export const getDocumentsPath = () => resolve('output')
 
 export const generateCommand = {
     name: 'generate',
     description: 'Generate markdown files.',
-    run: generate,
+    run: generateCmd,
     category: 'general',
 } satisfies Command
 
@@ -28,28 +33,33 @@ export const genAssignment = async (course: Course, assignment: Assignment) => {
     const filteredScores = submissions.filter((a) => a.score !== null && a.score !== undefined).map((b) => b.score)
     if (filteredScores.length > 0) {
         const { high, med, low } = getHighMedLow(submissions)
-        if (high) {
-            console.log(`\t\tGenerating high`)
-            if (assignment.is_quiz_assignment) {
-                await generateQuiz(course, assignment, high, 'high')
-            } else {
-                await generateAssignment(course, assignment, high, 'high')
+
+        if (assignment.is_quiz_assignment) {
+            if (high) {
+                const quiz = await getQuiz(assignment.course_id, assignment.quiz_id)
+                const quizSubmission = await getQuizSubmission(assignment.course_id, quiz.id, high.id)
+                generateQuiz(assignment, high, quiz, quizSubmission)
             }
-        }
-        if (med) {
-            console.log(`\t\tGenerating median`)
-            if (assignment.is_quiz_assignment) {
-                await generateQuiz(course, assignment, med, 'median')
-            } else {
-                await generateAssignment(course, assignment, med, 'median')
+            if (med) {
+                const quiz = await getQuiz(assignment.course_id, assignment.quiz_id)
+                const quizSubmission = await getQuizSubmission(assignment.course_id, quiz.id, med.id)
+                generateQuiz(assignment, med, quiz, quizSubmission)
             }
-        }
-        if (low) {
-            console.log(`\t\tGenerating low`)
-            if (assignment.is_quiz_assignment) {
-                await generateQuiz(course, assignment, low, 'low')
-            } else {
-                await generateAssignment(course, assignment, low, 'low')
+            if (low) {
+                const quiz = await getQuiz(assignment.course_id, assignment.quiz_id)
+                const quizSubmission = await getQuizSubmission(assignment.course_id, quiz.id, low.id)
+                generateQuiz(assignment, low, quiz, quizSubmission)
+            }
+
+        } else {
+            if (high) {
+                generateAssignment(assignment, high)
+            }
+            if (med) {
+                generateAssignment(assignment, med)
+            }
+            if (low) {
+                generateAssignment(assignment, low)
             }
         }
     } else {
@@ -57,22 +67,46 @@ export const genAssignment = async (course: Course, assignment: Assignment) => {
     }
 }
 
-export async function generate() {
-    if (state.courses && state.courses.length > 0) {
-        for (const course of state.courses) {
-            await rm('output', { recursive: true, force: true })
-            console.log(`Generating ${course.name}`)
-            const filteredAssignments = state.assignments?.filter((a) => a.course_id === course.id)
-            if (filteredAssignments && filteredAssignments.length > 0) {
-                for (const assignment of filteredAssignments) {
-                    await genAssignment(course, assignment)
-                }
-            } else {
-                console.log('No assignments selected')
-            }
-        }
-    } else {
-        console.log('No courses selected')
+const initPyodide = async () => {
+    const pyodide = await loadPyodide()
+    await pyodide.loadPackage('micropip')
+    const micropip = pyodide.pyimport('micropip')
+    await micropip.install('fpdf2')
+    await pyodide.FS.mkdir('/files')
+    
+    const documentsPath = getDocumentsPath()
+    if (!existsSync(documentsPath)) mkdirSync(documentsPath)
+    await pyodide.FS.mount(pyodide.FS.filesystems.NODEFS, { root: getDocumentsPath() }, '/files')
+    return pyodide
+}
+
+
+export async function generateCmd() {
+    const pyodide = await initPyodide()
+    if (state.courses && state.assignments) {
+        console.log('Generating...')
+        const htmlData = await generate(
+            state.courses,
+            state.assignments,
+            '',
+            '',
+            'generation',
+            'output'
+        )
+        // This just gets piped straight into Python, which doesn't care about the type anyway
+        // @ts-expect-error noImplicitAny
+        globalThis.htmlData = htmlData
+        pyodide.runPython(`
+        import os
+        from fpdf import FPDF
+        import js
+        
+        for item in js.htmlData:
+          pdf = FPDF()
+          pdf.add_page()
+          pdf.write_html(item.content)
+          pdf.output("/files/" + item.filePath + ".pdf")
+        `)
     }
 }
 

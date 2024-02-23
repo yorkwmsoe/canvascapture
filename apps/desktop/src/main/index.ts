@@ -1,8 +1,11 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import * as remote from '@electron/remote/main'
+import { loadPyodide } from 'pyodide'
+import { existsSync, mkdirSync } from 'fs'
+
 remote.initialize()
 
 function createWindow(): void {
@@ -91,6 +94,43 @@ app.on('window-all-closed', () => {
         app.quit()
     }
 })
+
+type FilePathContentPair = {
+    filePath: string
+    content: string
+}
+
+ipcMain.on('generate', async (_event, htmlData: FilePathContentPair[]) => {
+    globalThis.htmlData = htmlData
+    globalThis.pyodide.runPython(`
+    import os
+    from fpdf import FPDF
+    import js
+    
+    for item in js.htmlData:
+      pdf = FPDF()
+      pdf.add_page()
+      pdf.write_html(item.content)
+      pdf.output("/files/" + item.filePath + ".pdf")
+    `)
+})
+
+const getDocumentsPath = () => `${app.getPath('documents')}/canvas-capture-desktop`
+
+const initPyodide = async () => {
+    const pyodide = await loadPyodide()
+    await pyodide.loadPackage('micropip')
+    const micropip = pyodide.pyimport('micropip')
+    await micropip.install('fpdf2')
+    await pyodide.FS.mkdir('/files')
+    
+    const documentsPath = getDocumentsPath()
+    if (!existsSync(documentsPath)) mkdirSync(documentsPath)
+    await pyodide.FS.mount(pyodide.FS.filesystems.NODEFS, { root: getDocumentsPath() }, '/files')
+    globalThis.pyodide = pyodide
+}
+
+initPyodide()
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.

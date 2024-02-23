@@ -6,9 +6,10 @@ import { parseHierarchyId } from '@renderer/utils/assignments'
 import { useEffect } from 'react'
 import { useSettingsStore } from '@renderer/stores/settings.store'
 import { Course } from '@renderer/types/canvas_api/course'
-import { getDocumentsPath } from '@renderer/utils/config'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { useNavigate } from '@tanstack/react-router'
+import { ipcRenderer } from 'electron'
+import { getDocumentsPath } from '@renderer/utils/config'
 
 export function Generate() {
     const navigate = useNavigate({ from: '/generation' })
@@ -16,8 +17,8 @@ export function Generate() {
     const { courses, selectedCourses } = useCourses()
     const { canvasDomain, canvasAccessToken } = useSettingsStore()
     const { generationName } = useGenerationStore()
+    const documentsPath = getDocumentsPath()
 
-    const outpath = `${getDocumentsPath()}/${generationName}`
     const selectedAssignmentsSplit = selectedAssignments.map((x) =>
         parseHierarchyId(x)
     )
@@ -31,12 +32,15 @@ export function Generate() {
     ) as Course[]
 
     const runGenerate = async () => {
-        await generate(
-            filteredCourses,
-            filteredAssignments,
-            canvasAccessToken,
-            canvasDomain,
-            outpath
+        ipcRenderer.send('generate',
+            await generate(
+                filteredCourses,
+                filteredAssignments,
+                canvasAccessToken,
+                canvasDomain,
+                generationName,
+                documentsPath
+            )
         )
         navigate({ to: '/' })
     }

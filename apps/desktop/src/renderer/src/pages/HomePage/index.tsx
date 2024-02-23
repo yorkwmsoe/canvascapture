@@ -5,6 +5,9 @@ import { FileMarkdownOutlined } from '@ant-design/icons'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { shell } from 'electron'
 import { getDocumentsPath } from '@renderer/utils/config'
+import { useEffect } from 'react'
+import { useAssignments } from '@renderer/hooks/useAssignments'
+import { useCourses } from '@renderer/hooks/useCourses'
 
 const { Header, Content, Footer } = Layout
 const { Meta } = Card
@@ -16,7 +19,16 @@ type GenerationNameForm = {
 export function HomePage() {
     const { setGenerationName } = useGenerationStore()
     const navigate = useNavigate({ from: '/' })
-    const { data: folder } = useGetFolders()
+    const { data: folder, refetch: refreshFolders } = useGetFolders()
+    const { setSelectedAssignments } = useAssignments()
+    const { setSelectedCourses } = useCourses()
+    
+    useEffect(() => {
+        console.log("refreshed")
+        setSelectedCourses([])
+        setSelectedAssignments([])
+        refreshFolders()
+    }, [])
 
     const generate = (values: GenerationNameForm) => {
         setGenerationName(values.generationName)

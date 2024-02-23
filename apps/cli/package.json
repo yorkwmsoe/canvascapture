@@ -33,6 +33,7 @@
         "@types/gradient-string": "^1.1.2",
         "@types/inquirer": "^9.0.3",
         "@types/jest": "^29.5.5",
+        "@types/markdown-it": "^13.0.7",
         "@types/node": "^20.8.9",
         "@types/prompt-sync": "^4.2.0",
         "@typescript-eslint/eslint-plugin": "^6.7.4",
@@ -55,8 +56,10 @@
         "date-fns": "^2.30.0",
         "figlet": "^1.6.0",
         "gradient-string": "^2.0.2",
+        "markdown-it": "^14.0.0",
         "pino": "^8.17.2",
         "prompt-sync": "^4.2.0",
+        "pyodide": "^0.25.0",
         "zod": "^3.22.2"
     }
 }

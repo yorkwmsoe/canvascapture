@@ -88,7 +88,7 @@ export type GetSubmissionsRequest = {
     assignmentId: number
 }
 
-const getSubmissions = async (
+export const getSubmissions = async (
     args: GetSubmissionsRequest & AuthWithApi
 ): Promise<Submission[]> => {
     const { api, canvasAccessToken, canvasDomain } = args
