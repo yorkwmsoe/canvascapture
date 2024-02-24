@@ -99,7 +99,6 @@ describe('generateAssignment', () => {
             testAssignments[0],
             testSubmissions[0]
         )
-        console.log(result)
         expect(result[5]).toBe('No description')
     })
 

@@ -33,6 +33,10 @@ const generateAssignmentOrQuiz = async (assignment: Assignment, submission: Subm
 }
 
 export const generatePairs = async (assignment: Assignment, submissions: Submission[], quiz: Quiz | undefined, assignmentsPath: string, canvasAccessToken: string, canvasDomain: string): Promise<FilePathContentPair[]> => {
+    //TECH DEBT!!!! Since a user can have multiple attempts AND!!!! that the quiz version can be
+    //incremented, a user can have multiple submissions and mess with the median, the high, and the
+    //low. Therefore, we need to find the latest attempt from every user and take into account the
+    //quiz versions, and then find the high, med, and low that way
     const highSubmission = _.maxBy(submissions, (s) => s.score) ?? submissions[0]
     const highPair = {
         filePath: `${assignmentsPath}/high`,
@@ -62,15 +66,18 @@ export const generatePairs = async (assignment: Assignment, submissions: Submiss
 }
 
 export async function generate(courses: Course[], assignments: Assignment[], canvasAccessToken: string, canvasDomain: string, generationName: string, documentsPath: string) {
+    if (courses.length === 0) {
+        console.log("No courses selected")
+        return []
+    }
     rmSync(`${documentsPath}/${generationName}`, { recursive: true, force: true })
 
     const pairs: FilePathContentPair[] = []
     for (const course of courses) {
         const filteredAssignments = assignments.filter((a) => a.course_id === course.id)
-        console.log('first: ', course.id)
+        if (filteredAssignments.length === 0) console.log(`No assignments selected for course ${course.name}`)
 
         for (const assignment of filteredAssignments) {
-            console.log(course.id)
             const submissions = await getSubmissions(course.id, assignment.id)
             const uniqueSubmissions = _.uniqBy(
                 submissions.filter((s) => !_.isNil(s.score)),

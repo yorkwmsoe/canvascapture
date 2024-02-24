@@ -11,5 +11,6 @@ const config = {
     },
     reporters: ['default', 'jest-junit'],
     coveragePathIgnorePatterns: ['<rootDir>/src/modules/canvas_api/api.ts'],
+    restoreMocks: true,
 }
 export default config

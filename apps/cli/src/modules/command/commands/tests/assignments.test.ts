@@ -30,6 +30,6 @@ describe('assignments', () => {
 
         await select_assignments()
 
-        expect(state.assignments).toBeUndefined()
+        expect(state.assignments).toStrictEqual([])
     })
 })
