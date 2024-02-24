@@ -6,11 +6,11 @@ import { state } from '@modules/command/state'
 jest.mock('@modules/canvas_api/api', () => ({
     getSubmissions: jest.fn(() => testSubmissions),
 }))
-    
+
 jest.mock('fs', () => ({
     rmSync: jest.fn().mockReturnValue(undefined),
     mkdirSync: jest.fn().mockReturnValue(undefined),
-    writeFileSync: jest.fn().mockReturnValue(undefined)
+    writeFileSync: jest.fn().mockReturnValue(undefined),
 }))
 
 describe('generate', () => {
@@ -51,23 +51,23 @@ describe('generatePairs', () => {
         const submissions = testSubmissions
         const pairs = await generateFunctions.generatePairs(testAssignments[0], submissions, undefined, '', '', '')
         expect(pairs.length).toEqual(3)
-        expect(pairs.find(x => x.filePath.includes("high"))).toBeDefined()
-        expect(pairs.find(x => x.filePath.includes("median"))).toBeDefined()
-        expect(pairs.find(x => x.filePath.includes("low"))).toBeDefined()
+        expect(pairs.find((x) => x.filePath.includes('high'))).toBeDefined()
+        expect(pairs.find((x) => x.filePath.includes('median'))).toBeDefined()
+        expect(pairs.find((x) => x.filePath.includes('low'))).toBeDefined()
     })
 
     it('should return high and low', async () => {
         const submissions = [testSubmissions[0], testSubmissions[1]]
         const pairs = await generateFunctions.generatePairs(testAssignments[0], submissions, undefined, '', '', '')
         expect(pairs.length).toEqual(2)
-        expect(pairs.find(x => x.filePath.includes("high"))).toBeDefined()
-        expect(pairs.find(x => x.filePath.includes("low"))).toBeDefined()
+        expect(pairs.find((x) => x.filePath.includes('high'))).toBeDefined()
+        expect(pairs.find((x) => x.filePath.includes('low'))).toBeDefined()
     })
 
     it('should return high', async () => {
         const submissions = [testSubmissions[0]]
         const pairs = await generateFunctions.generatePairs(testAssignments[0], submissions, undefined, '', '', '')
         expect(pairs.length).toEqual(1)
-        expect(pairs.find(x => x.filePath.includes("high"))).toBeDefined()
+        expect(pairs.find((x) => x.filePath.includes('high'))).toBeDefined()
     })
 })

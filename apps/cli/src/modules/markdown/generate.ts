@@ -67,7 +67,7 @@ export const generatePairs = async (assignment: Assignment, submissions: Submiss
 
 export async function generate(courses: Course[], assignments: Assignment[], canvasAccessToken: string, canvasDomain: string, generationName: string, documentsPath: string) {
     if (courses.length === 0) {
-        console.log("No courses selected")
+        console.log('No courses selected')
         return []
     }
     rmSync(`${documentsPath}/${generationName}`, { recursive: true, force: true })
