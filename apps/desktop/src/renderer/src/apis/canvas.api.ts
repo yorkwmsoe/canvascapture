@@ -7,8 +7,8 @@ import { Course } from '@renderer/types/canvas_api/course'
 import { Submission } from '@renderer/types/canvas_api/submission'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { parseHierarchyId } from '@renderer/utils/assignments'
-import { Quiz } from '@canvas-capture/lib/src/types/canvas_api/quiz'
-import { QuizSubmission } from '@canvas-capture/lib/src/types/canvas_api/quiz-submissions'
+import { Quiz } from '@canvas-capture/lib/dist/types/canvas_api/quiz'
+import { QuizSubmission } from '@canvas-capture/lib/dist/types/canvas_api/quiz-submissions'
 
 // date handling from: https://stackoverflow.com/a/66238542
 export function handleDates(body: unknown) {

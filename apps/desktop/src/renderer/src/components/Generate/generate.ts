@@ -1,7 +1,7 @@
-import { Assignment } from '@canvas-capture/lib/src/types/canvas_api/assignment'
-import { Course } from '@canvas-capture/lib/src/types/canvas_api/course'
-import { Submission } from '@canvas-capture/lib/src/types/canvas_api/submission'
-import { Quiz } from '@canvas-capture/lib/src/types/canvas_api/quiz'
+import { Assignment } from '@canvas-capture/lib/dist/types/canvas_api/assignment'
+import { Course } from '@canvas-capture/lib/dist/types/canvas_api/course'
+import { Submission } from '@canvas-capture/lib/dist/types/canvas_api/submission'
+import { Quiz } from '@canvas-capture/lib/dist/types/canvas_api/quiz'
 import {
     getQuiz,
     getSubmissions,
@@ -10,7 +10,7 @@ import {
 import {
     generateAssignment,
     generateQuiz,
-} from '@canvas-capture/lib/src/generators'
+} from '@canvas-capture/lib/dist/generators'
 import { rm, writeFile } from 'fs/promises'
 import markdownit from 'markdown-it'
 import _ from 'lodash'
