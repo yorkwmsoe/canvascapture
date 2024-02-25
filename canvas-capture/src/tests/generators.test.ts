@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { testAssignments, testSubmissions } from '../mocks/canvas.api.mocks'
-import { generateAssignment } from '../generators'
+import { testAssignments, testSubmissions } from '../mocks/canvas.api.mocks.js'
+import { generateAssignment } from '../generators.js'
 
 describe('generateAssignment', () => {
     it('should generate a items for markdown', () => {

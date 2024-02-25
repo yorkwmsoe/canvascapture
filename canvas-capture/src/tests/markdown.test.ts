@@ -9,7 +9,7 @@ import {
     createInlineCode,
     createCodeBlock,
     addNewLine,
-} from '../markdown'
+} from '../markdown.js'
 import { readFileSync, writeFileSync } from 'fs'
 import { describe, test, expect, beforeAll } from 'vitest'
 

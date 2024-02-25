@@ -116,10 +116,12 @@ ipcMain.on('generate', async (_event, htmlData: FilePathContentPair[]) => {
 })
 
 const getDocumentsPath = () =>
-    `${app.getPath('documents')}/canvas-capture-desktop`
+    join(app.getPath('documents'), 'canvas-capture-desktop')
 
 const initPyodide = async () => {
-    const pyodide = await loadPyodide()
+    const pyodide = await loadPyodide({
+        packageCacheDir: join(app.getPath('temp'), 'canvas-capture-desktop'),
+    })
     await pyodide.loadPackage('micropip')
     const micropip = pyodide.pyimport('micropip')
     await micropip.install('fpdf2')

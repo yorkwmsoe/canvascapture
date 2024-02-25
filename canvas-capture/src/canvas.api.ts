@@ -1,8 +1,8 @@
 import axios, { AxiosRequestHeaders } from 'axios'
 import { parseISO } from 'date-fns'
-import { Assignment } from './types/canvas_api/assignment'
-import { Course } from './types/canvas_api/course'
-import { Submission } from './types/canvas_api/submission'
+import { Assignment } from './types/canvas_api/assignment.js'
+import { Course } from './types/canvas_api/course.js'
+import { Submission } from './types/canvas_api/submission.js'
 
 export type Auth = {
     canvasAccessToken: string

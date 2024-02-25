@@ -7,14 +7,14 @@ import {
     getSubmissions,
     getQuizSubmission,
 } from '@renderer/apis/canvas.api'
-import {
-    generateAssignment,
-    generateQuiz,
-} from '@canvas-capture/lib/dist/generators'
+import { generators } from '@canvas-capture/lib'
 import { rm, writeFile } from 'fs/promises'
 import markdownit from 'markdown-it'
 import _ from 'lodash'
 import { mkdirSync } from 'fs'
+import { join } from 'path'
+
+const { generateAssignment, generateQuiz } = generators
 
 // https://stackoverflow.com/a/70806192
 export const median = (arr: number[]): number => {
@@ -62,7 +62,7 @@ export const generatePairs = async (
     const highSubmission =
         _.maxBy(submissions, (s) => s.score) ?? submissions[0]
     const highPair = {
-        filePath: `${assignmentsPath}/high`,
+        filePath: join(assignmentsPath, 'high'),
         content: (
             await generateAssignmentOrQuiz(
                 assignment,
@@ -79,7 +79,7 @@ export const generatePairs = async (
             (s) => s.score === median(submissions.map((x) => x.score))
         )[0] ?? submissions[0]
     const medianPair = {
-        filePath: `${assignmentsPath}/median`,
+        filePath: join(assignmentsPath, 'median'),
         content: (
             await generateAssignmentOrQuiz(
                 assignment,
@@ -93,7 +93,7 @@ export const generatePairs = async (
 
     const lowSubmission = _.minBy(submissions, (s) => s.score) ?? submissions[0]
     const lowPair = {
-        filePath: `${assignmentsPath}/low`,
+        filePath: join(assignmentsPath, 'low'),
         content: (
             await generateAssignmentOrQuiz(
                 assignment,
@@ -123,7 +123,7 @@ export async function generate(
     generationName: string,
     documentsPath: string
 ) {
-    await rm(`${documentsPath}/${generationName}`, {
+    await rm(join(documentsPath, generationName), {
         recursive: true,
         force: true,
     })
@@ -146,8 +146,12 @@ export async function generate(
                 (s) => s.score
             )
             if (uniqueSubmissions.length > 0) {
-                const assignmentsPath = `${generationName}/${course.name}/${assignment.name}`
-                mkdirSync(`${documentsPath}/${assignmentsPath}`, {
+                const assignmentsPath = join(
+                    generationName,
+                    course.name,
+                    assignment.name
+                )
+                mkdirSync(join(documentsPath, assignmentsPath), {
                     recursive: true,
                 })
                 const quiz = assignment.is_quiz_assignment
@@ -173,7 +177,7 @@ export async function generate(
     }
 
     pairs.forEach((x) =>
-        writeFile(`${documentsPath}/${x.filePath}.md`, x.content)
+        writeFile(join(documentsPath, x.filePath + '.md'), x.content)
     )
 
     const md = markdownit({ linkify: true })

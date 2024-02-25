@@ -1,13 +1,13 @@
-import { Assignment } from './types/canvas_api/assignment'
-import { Submission } from './types/canvas_api/submission'
-import { Quiz } from './types/canvas_api/quiz'
-import { QuizSubmission } from './types/canvas_api/quiz-submissions'
+import { Assignment } from './types/canvas_api/assignment.js'
+import { Submission } from './types/canvas_api/submission.js'
+import { Quiz } from './types/canvas_api/quiz.js'
+import { QuizSubmission } from './types/canvas_api/quiz-submissions.js'
 import {
     convertToHeader,
     createList,
     createTableHeader,
     createTableRows,
-} from './markdown'
+} from './markdown.js'
 
 export function generateAssignment(
     assignment: Assignment,
