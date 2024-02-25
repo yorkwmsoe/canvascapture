@@ -1,7 +1,7 @@
 import { input } from '@inquirer/prompts'
-import { Command } from '../types/command'
-import { state } from '../state'
-import { Config, setConfig } from '@lib/config'
+import { Command } from '../types/command.js'
+import { state } from '../state.js'
+import { Config, setConfig } from '@lib/config.js'
 
 export const setupCommand = {
     name: 'setup',

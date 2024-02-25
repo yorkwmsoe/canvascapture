@@ -1,8 +1,9 @@
-import { convertTwoArraysToObject, generatePaddedColumn, generateTitle } from '@lib/utils'
+import { expect, describe, test, vi } from 'vitest'
+import { convertTwoArraysToObject, generatePaddedColumn, generateTitle } from '@lib/utils.js'
 import { textSync } from 'figlet'
 
-jest.mock('figlet', () => ({
-    textSync: jest.fn(),
+vi.mock('figlet', () => ({
+    textSync: vi.fn(),
 }))
 
 describe('convertTwoArraysToObject', () => {

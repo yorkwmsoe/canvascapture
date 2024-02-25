@@ -1,7 +1,7 @@
 import { Assignment } from '@modules/canvas_api/types/assignment.js'
 import { Course } from '@modules/canvas_api/types/course.js'
-import { Enrollment } from '@modules/canvas_api/types/enrollment'
-import { Submission } from '@modules/canvas_api/types/submission'
+import { Enrollment } from '@modules/canvas_api/types/enrollment.js'
+import { Submission } from '@modules/canvas_api/types/submission.js'
 import { parse } from 'date-fns'
 
 export const testAssignments: Assignment[] = [

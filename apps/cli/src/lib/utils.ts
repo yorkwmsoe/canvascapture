@@ -1,10 +1,11 @@
 import gradient from 'gradient-string'
 import { textSync } from 'figlet'
-import { theme } from '@constants/theme'
-import { TITLE_TEXT } from '@constants/base-info'
+import { theme } from '@constants/theme.js'
+import { TITLE_TEXT } from '@constants/base-info.js'
 import promptSync from 'prompt-sync'
 
 export function generateTitle() {
+    //console.log("Canvas Capture")
     const titleGradient = gradient(Object.values(theme))
     return titleGradient.multiline(textSync(TITLE_TEXT, { font: 'Standard' }))
 }

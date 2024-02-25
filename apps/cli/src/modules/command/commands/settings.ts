@@ -1,6 +1,6 @@
 import { checkbox } from '@inquirer/prompts'
-import { Command } from '../types/command'
-import { state } from '../state'
+import { Command } from '../types/command.js'
+import { state } from '../state.js'
 
 export const settingsCommand = {
     name: 'settings',

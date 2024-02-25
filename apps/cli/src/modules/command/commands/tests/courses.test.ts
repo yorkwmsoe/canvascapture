@@ -1,7 +1,8 @@
-import { checkbox, getCourses, getAssignments } from './mocks'
-import { select_courses } from '../courses'
-import { testCourses, testAssignments } from './data'
-import { state } from '@modules/command/state'
+import { expect, describe, it } from 'vitest'
+import { checkbox, getCourses, getAssignments } from './mocks.js'
+import { select_courses } from '../courses.js'
+import { testCourses, testAssignments } from './data.js'
+import { state } from '@modules/command/state.js'
 
 describe('courses', () => {
     it('should return a course', async () => {

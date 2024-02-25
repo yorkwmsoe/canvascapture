@@ -1,5 +1,5 @@
-import { VERSION_TEXT } from '@constants/base-info'
-import { Command } from '../types/command'
+import { VERSION_TEXT } from '@constants/base-info.js'
+import { Command } from '../types/command.js'
 
 export const versionCommand = {
     name: 'version',

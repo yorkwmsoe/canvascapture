@@ -1,4 +1,4 @@
-import { CommandCategory } from './category'
+import { CommandCategory } from './category.js'
 
 export type Command = {
     name: string // name of the command

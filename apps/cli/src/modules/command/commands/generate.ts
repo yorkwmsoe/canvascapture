@@ -1,6 +1,6 @@
-import { Command } from '../types/command'
-import { state } from '../state'
-import { generate } from '@/modules/markdown/generate'
+import { Command } from '../types/command.js'
+import { state } from '../state.js'
+import { generate } from '@/modules/markdown/generate.js'
 import { loadPyodide } from 'pyodide'
 import { existsSync, mkdirSync } from 'fs'
 import { resolve } from 'path'
@@ -15,7 +15,7 @@ export const generateCommand = {
 } satisfies Command
 
 const initPyodide = async () => {
-    const pyodide = await loadPyodide()
+    const pyodide = await loadPyodide({ indexURL: 'node_modules/pyodide' })
     await pyodide.loadPackage('micropip')
     const micropip = pyodide.pyimport('micropip')
     await micropip.install('fpdf2')

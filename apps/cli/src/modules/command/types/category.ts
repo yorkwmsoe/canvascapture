@@ -1,3 +1,3 @@
-import { commandCategories } from '../categories'
+import { commandCategories } from '../categories.js'
 
 export type CommandCategory = (typeof commandCategories)[number]
