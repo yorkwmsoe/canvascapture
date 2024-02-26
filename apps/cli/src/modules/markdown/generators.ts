@@ -142,11 +142,11 @@ async function assembleQuizQuestionsAndComments(course: Course, assignment: Assi
   quizQuestionsParams.sort((a, b) => a.position - b.position)
   quizQuestionsNoParams.sort((a, b) => a.assessment_question_id - b.assessment_question_id)
 
-  //The quizSubmissionQuestions has 2 more items than quizQuestionsParams/NoParams
+  //The quizSubmissionQuestions has 2 more items, depending on the quiz than quizQuestionsParams/NoParams
   //This is because there is a spacer which is not a question, and there is a question that has
   //no grade associated with it.
 
-  let questionsData: QuestionData[] = []
+  const questionsData: QuestionData[] = []
   for(let i = 0; i < quizQuestionsParams.length; i++){
     let questionData: QuestionData = {
       quiz_id: quizSubmissionQuestions[i].quiz_id,
@@ -171,7 +171,7 @@ async function assembleQuizQuestionsAndComments(course: Course, assignment: Assi
 function formatQuizQuestions(quizQuestions: QuestionData[]): string[]{
   let formattedQuestions: string[] = []
   const numQuestions = quizQuestions.length
-  quizQuestions.forEach((question) => {
+  quizQuestions.map((question) => {
     const position = question.position.toString().replace(rmHtml, '')
     const question_name = question.question_name.replace(rmHtml, '')
     const points_possible = question.points_possible.toString().replace(rmHtml, '')

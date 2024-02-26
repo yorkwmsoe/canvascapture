@@ -48,11 +48,8 @@ export const getSubmissions = async (course_id: number, assignment_id: number): 
 }
 
 export const getMostCommonQuizVersion = async (course_id: number, quiz_id: number): Promise<number> => {
-    let quizSubmissions: QuizSubmission[] = []
-    const results = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}/submissions`, { headers: getApiHeaders() })).data
-    for (const res of results.quiz_submissions) {
-        quizSubmissions.push(res)
-    }
+    let quizSubmissions: QuizSubmission[] = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}/submissions`, { headers: getApiHeaders() })).data.quiz_submissions as QuizSubmission[]
+
     const versionNumberOccurrences = new Map<number, number>()
     quizSubmissions.forEach((quiz) => {
         if (!versionNumberOccurrences.has(quiz.quiz_version)) {
@@ -89,11 +86,8 @@ export const getQuiz = async (course_id: number, quiz_id?: number): Promise<Quiz
 }
 
 export const getQuizSubmission = async (course_id: number, quiz_id: number, submission_id: number): Promise<QuizSubmission> => {
-    let quizSubmissions: QuizSubmission[] = []
-    const results = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}/submissions`, { headers: getApiHeaders() })).data
-    for (const res of results.quiz_submissions) {
-        quizSubmissions.push(res)
-    }
+    let quizSubmissions: QuizSubmission[] = (await api.get(`${getCanvasApiBaseUrl()}/courses/${course_id}/quizzes/${quiz_id}/submissions`, { headers: getApiHeaders() })).data.quiz_submissions
+
     let submission: QuizSubmission | undefined = quizSubmissions.find((sub) => sub.submission_id == submission_id)
     if (submission == null) {
         submission = {
@@ -104,31 +98,19 @@ export const getQuizSubmission = async (course_id: number, quiz_id: number, subm
 }
 
 export const getQuizSubmissionQuestions = async (quizSubmissionId: number): Promise<QuizSubmissionQuestion[]> => {
-  let quizSubmissionQuestions: QuizSubmissionQuestion[] = []
-  const results = (await api.get(`${getCanvasApiBaseUrl()}/quiz_submissions/${quizSubmissionId}/questions?include[]=quiz_question`, { headers: getApiHeaders() })).data
+  let quizSubmissionQuestions: QuizSubmissionQuestion[] = (await api.get(`${getCanvasApiBaseUrl()}/quiz_submissions/${quizSubmissionId}/questions?include[]=quiz_question`, { headers: getApiHeaders() })).data.quiz_submission_questions
 
-  for (const res of results.quiz_submission_questions) {
-    quizSubmissionQuestions.push(res)
-  }
   return quizSubmissionQuestions
 }
 
 export const getQuizQuestionsNoParams = async (courseId: number, quizId: number):Promise<QuizQuestion[]> => {
-  let quizQuestions: QuizQuestion[] = []
-  const results = (await api.get(`${getCanvasApiBaseUrl()}/courses/${courseId}/quizzes/${quizId}/questions`, { headers: getApiHeaders() })).data
-  for (const res of results) {
-    quizQuestions.push(res)
-  }
+  let quizQuestions: QuizQuestion[] = (await api.get(`${getCanvasApiBaseUrl()}/courses/${courseId}/quizzes/${quizId}/questions`, { headers: getApiHeaders() })).data
 
   return quizQuestions
 }
 
 export const getQuizQuestionsParams = async (courseId: number, quizId: number, submissionId: number, quizSubmissionAttempt: number):Promise<QuizQuestion[]> => {
-  let quizQuestions: QuizQuestion[] = []
-  const results = (await api.get(`${getCanvasApiBaseUrl()}/courses/${courseId}/quizzes/${quizId}/questions?quiz_submission_id=${submissionId}&quiz_submission_attempt=${quizSubmissionAttempt}`, { headers: getApiHeaders() })).data
-  for (const res of results) {
-    quizQuestions.push(res)
-  }
+  let quizQuestions: QuizQuestion[] = (await api.get(`${getCanvasApiBaseUrl()}/courses/${courseId}/quizzes/${quizId}/questions?quiz_submission_id=${submissionId}&quiz_submission_attempt=${quizSubmissionAttempt}`, { headers: getApiHeaders() })).data
 
   return quizQuestions
 }
