@@ -14,22 +14,22 @@ export const coursesCommand = {
 export async function select_courses() {
     state.courses = undefined
 
-    const unfilteredCourses = await getCourses();
+    const unfilteredCourses = await getCourses()
 
-    let courses: Course[] = [];
+    const courses: Course[] = []
     for (const c of unfilteredCourses) {
         const assignments = await getAssignments(c.id)
         console.log(assignments)
         if (assignments.length > 0) {
-            courses.push(c);
+            courses.push(c)
         }
     }
-    
+
     if (courses.length === 0) {
         console.log('No courses found')
         return
     }
-    
+
     const answer = await checkbox({
         message: 'What courses should be used?',
         choices: courses.map((c) => {

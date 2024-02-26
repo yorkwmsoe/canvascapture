@@ -1,10 +1,10 @@
-# Canvas Capture v0.0.1
+# Canvas Capture v1.0.0
 
 ## Team Members
 
-- Samuel Brand
-- Wesley Jochman
-- Patrick McDonald
+-   Samuel Brand
+-   Wesley Jochman
+-   Patrick McDonald
 
 ## Product Owner
 
@@ -18,30 +18,31 @@ This project is a tool that allows users to capture their work on Canvas, an onl
 
 Programming Languages:
 
-- [Typescript](https://www.typescriptlang.org/)
+-   [Typescript](https://www.typescriptlang.org/)
 
 Package Managers:
 
-- [Nodejs](https://nodejs.org/en/)
+-   [Pnpm](https://pnpm.io/) (npm install -g pnpm)
+-   [Nodejs](https://nodejs.org/en/)
 
 Web Development:
 
-- [Canvas API](https://canvas.instructure.com/doc/api/index.html)
-- [Ant Design](https://ant.design/)
+-   [Canvas API](https://canvas.instructure.com/doc/api/index.html)
+-   [Ant Design](https://ant.design/)
 
 Document Conversion:
 
-- [Pandoc](https://pandoc.org/)
+-   [Pandoc](https://pandoc.org/)
 
 Containerization:
 
-- [Docker](https://www.docker.com/)
+-   [Docker](https://www.docker.com/)
 
 Continuous Integration/Continuous Deployment (CI/CD):
 
-- [Gitlab CI](https://docs.gitlab.com/ee/ci/)
+-   [Gitlab CI](https://docs.gitlab.com/ee/ci/)
 
-## Build Instructions
+## Readme Table of Contents
 
-- `docs/cli/Build.md`
-- `docs/desktop/Build.md`
+-   `apps/cli/README.md`
+-   `apps/desktop/README.md`

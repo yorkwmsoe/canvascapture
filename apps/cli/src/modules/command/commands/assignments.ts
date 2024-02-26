@@ -12,7 +12,7 @@ export const assignmentsCommand = {
 } satisfies Command
 
 export async function select_assignments() {
-    state.assignments = undefined;
+    state.assignments = undefined
     if (!state.courses || state.courses.length === 0) {
         console.log('No courses selected')
         return
@@ -20,20 +20,20 @@ export async function select_assignments() {
 
     for (const course of state.courses) {
         const unfilteredAssignments = await getAssignments(course.id)
-        
-        let assignments: Assignment[] = [];
+
+        const assignments: Assignment[] = []
         for (const a of unfilteredAssignments) {
             const submissions = await getSubmissions(course.id, a.id)
-            if (submissions.filter(s => s.workflow_state !== 'unsubmitted').length > 0) {
-                assignments.push(a);
+            if (submissions.filter((s) => s.workflow_state !== 'unsubmitted').length > 0) {
+                assignments.push(a)
             }
         }
-        
+
         if (assignments.length === 0) {
             console.log('No assignments found')
             return
         }
-        
+
         const answer = await checkbox({
             message: `What assignments from ${course.name} should be used?`,
             choices: assignments.map((a) => {

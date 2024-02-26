@@ -1,0 +1,22 @@
+{
+  "name": "canvas-capture",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "prepare": "husky",
+    "desktop": "pnpm -filter canvas-capture-desktop",
+    "cli": "pnpm -filter canvas-capture-cli",
+    "@canvas-capture": "pnpm -filter @canvas-capture/lib",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "pnpm -r run lint",
+    "package": "pnpm -r run package"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "prettier": "^3.2.5"
+  }
+}

@@ -1,6 +1,5 @@
-import type { Config } from '@jest/types'
 // Sync object
-const config: Config.InitialOptions = {
+const config = {
     roots: ['<rootDir>/src'],
     transform: {
         '^.+\\.ts?$': 'ts-jest',
