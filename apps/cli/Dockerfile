@@ -4,4 +4,7 @@ WORKDIR /usr/src
 
 RUN apt-get update -y
 
+RUN apt-get install curl unzip -y
+RUN curl -fsSL https://bun.sh/install | bash
+
 RUN npm install -g pnpm
