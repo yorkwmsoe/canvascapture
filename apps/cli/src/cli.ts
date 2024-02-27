@@ -61,10 +61,10 @@ const main = async () => {
     while (true) {
         const prompt = createInterface({
             input: process.stdin,
-            output: process.stdout
-        });
+            output: process.stdout,
+        })
         const result = await prompt.question('Enter a command: ')
-        prompt.close();
+        prompt.close()
         const data = parseCommand(result)
         await handleCommand(data)
     }

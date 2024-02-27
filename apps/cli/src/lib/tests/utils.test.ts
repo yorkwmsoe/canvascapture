@@ -42,7 +42,9 @@ describe('generatePaddedColumn', () => {
 
 describe('generateTitle', () => {
     test('generate title', () => {
-        const textSyncSpy = vi.spyOn(figlet, 'textSync').mockImplementation(() => { return '' })
+        const textSyncSpy = vi.spyOn(figlet, 'textSync').mockImplementation(() => {
+            return ''
+        })
         expect(generateTitle()).toBeDefined()
         expect(textSyncSpy).toBeCalledTimes(1)
     })
