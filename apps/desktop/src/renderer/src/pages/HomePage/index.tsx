@@ -33,25 +33,21 @@ export function HomePage() {
 
     return (
         <Layout>
-
             <Header
-              style={{
-                backgroundColor: 'white',
-                textAlign: 'left',
-                paddingLeft: 5,
-              }}
+                style={{
+                    backgroundColor: 'white',
+                    textAlign: 'left',
+                    paddingLeft: 5,
+                }}
             >
-              <Flex
-                justify={"space-between"}
-                align={"center"}
-              >
-              <text style={{ font: '12' }}>
-                <b>Canvas Capture</b>
-              </text>
-              <Button style={{}} onClick={goToSettingsPage}>
-                Settings
-              </Button>
-            </Flex>
+                <Flex justify={'space-between'} align={'center'}>
+                    <text style={{ font: '12' }}>
+                        <b>Canvas Capture</b>
+                    </text>
+                    <Button style={{}} onClick={goToSettingsPage}>
+                        Settings
+                    </Button>
+                </Flex>
             </Header>
 
             <Content
