@@ -1,4 +1,4 @@
-import { convertTwoArraysToObject, generateTitle, prompt } from '@lib/utils.js'
+import { convertTwoArraysToObject, generateTitle } from '@lib/utils.js'
 import { getCommand } from '@modules/command/index.js'
 import { ZodError } from 'zod'
 import { state } from '@modules/command/state.js'
@@ -6,6 +6,7 @@ import { getConfig } from '@lib/config.js'
 import { Command } from '@modules/command/types/command.js'
 import { AxiosError } from 'axios'
 import { logger } from '@lib/logger.js'
+import { createInterface } from 'readline/promises'
 
 function loadConfig() {
     const config = getConfig()
@@ -58,7 +59,12 @@ const main = async () => {
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-        const result = prompt('Enter a command: ')
+        const prompt = createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
+        const result = await prompt.question('Enter a command: ')
+        prompt.close();
         const data = parseCommand(result)
         await handleCommand(data)
     }

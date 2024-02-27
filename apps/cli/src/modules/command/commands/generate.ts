@@ -32,19 +32,20 @@ export async function generateCmd() {
     if (state.courses && state.assignments) {
         console.log('Generating...')
         const htmlData = await generate(state.courses, state.assignments, '', '', 'generation', 'output')
-        // This just gets piped straight into Python, which doesn't care about the type anyway
-        // @ts-expect-error noImplicitAny
-        globalThis.htmlData = htmlData
-        pyodide.runPython(`
-        import os
-        from fpdf import FPDF
-        import js
-        
-        for item in js.htmlData:
-          pdf = FPDF()
-          pdf.add_page()
-          pdf.write_html(item.content)
-          pdf.output("/files/" + item.filePath + ".pdf")
-        `)
+        // don't do this for loop in python, it causes bun to break for some reason
+        htmlData.forEach((item) => {
+            // This just gets piped straight into Python, which doesn't care about the type anyway
+            // @ts-expect-error noImplicitAny
+            globalThis.htmlItem = item
+            pyodide.runPython(`
+            from fpdf import FPDF
+            import js
+            
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.write_html(js.htmlItem.content)
+            pdf.output("/files/" + js.htmlItem.filePath + ".pdf")
+            `)
+        })
     }
 }
