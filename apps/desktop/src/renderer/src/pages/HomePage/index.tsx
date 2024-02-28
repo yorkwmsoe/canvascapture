@@ -18,7 +18,6 @@ export function HomePage() {
     const navigate = useNavigate({ from: '/' })
     const { data: folder } = useGetFolders()
 
-
     const generate = (values: GenerationNameForm) => {
         setGenerationName(values.generationName)
         goToCoursesPage()
@@ -47,11 +46,13 @@ export function HomePage() {
                         <b>Canvas Capture</b>
                     </text>
                     <Button
-                      style={{
-                        fontSize: `clamp(${12}px, 2vw, ${40}px`,
-                        height: 'auto',
-                        textAlign: 'center',
-                      }} onClick={goToSettingsPage}>
+                        style={{
+                            fontSize: `clamp(${12}px, 2vw, ${40}px`,
+                            height: 'auto',
+                            textAlign: 'center',
+                        }}
+                        onClick={goToSettingsPage}
+                    >
                         Settings
                     </Button>
                 </Flex>
@@ -67,14 +68,13 @@ export function HomePage() {
                     minWidth: 300,
                     justifyItems: 'center',
                     marginTop: 10,
-
                 }}
             >
                 <Form
                     name="generationNameForm"
                     onFinish={generate}
                     autoComplete="off"
-                    style={{ width: '50%', margin: 'auto'}}
+                    style={{ width: '50%', margin: 'auto' }}
                 >
                     <Form.Item<GenerationNameForm>
                         name="generationName"
@@ -87,15 +87,21 @@ export function HomePage() {
                     >
                         <Flex align={'center'} justify={'center'}>
                             <Space.Compact style={{ width: '100%' }}>
-                                <Input placeholder="Report name"
-                                style={{
-                                  fontSize: 'clamp(15px, 2.5vh, 40px)',
-                                  height: 'auto'
-                                }}/>
-                                <Button htmlType="submit" type="primary" style={{
-                                  fontSize: 'clamp(15px, 2.5h, 40px)',
-                                  height: 'auto'
-                                }}>
+                                <Input
+                                    placeholder="Report name"
+                                    style={{
+                                        fontSize: 'clamp(15px, 2.5vh, 40px)',
+                                        height: 'auto',
+                                    }}
+                                />
+                                <Button
+                                    htmlType="submit"
+                                    type="primary"
+                                    style={{
+                                        fontSize: 'clamp(15px, 2.5h, 40px)',
+                                        height: 'auto',
+                                    }}
+                                >
                                     Start
                                 </Button>
                             </Space.Compact>
