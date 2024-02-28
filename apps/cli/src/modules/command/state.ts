@@ -1,7 +1,7 @@
-import { Course } from '../canvas_api/types/course.js'
-import { Assignment } from '../canvas_api/types/assignment.js'
-import { Settings, defaultSettings } from '@constants/settings.js'
-import { Config, defaultConfig } from '@lib/config.js'
+import { Course } from '../canvas_api/types/course'
+import { Assignment } from '../canvas_api/types/assignment'
+import { Settings, defaultSettings } from '@constants/settings'
+import { Config, defaultConfig } from '@lib/config'
 
 export type State = {
     courses?: Course[]

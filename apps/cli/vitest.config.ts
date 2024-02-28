@@ -10,6 +10,7 @@ export default defineConfig({
             exclude: [...configDefaults.exclude, '**/types/**', '**/build/**', '**/canvas_api/api.ts', '**/command/categories.ts', '**/.eslintrc.js', '**/index.ts'],
         },
         reporters: ['junit'],
+        outputFile: 'junit.xml',
         alias: {
             '@': resolve(__dirname, './src'),
             '@modules': resolve(__dirname, './src/modules'),

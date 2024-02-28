@@ -1,7 +1,7 @@
-import { Command } from './types/command.js'
-import { helpCommand, versionCommand, greetCommand, exitCommand, coursesCommand, assignmentsCommand, generateCommand } from './commands/index.js'
-import { settingsCommand } from './commands/settings.js'
-import { setupCommand } from './commands/setup.js'
+import { Command } from './types/command'
+import { helpCommand, versionCommand, greetCommand, exitCommand, coursesCommand, assignmentsCommand, generateCommand } from './commands/index'
+import { settingsCommand } from './commands/settings'
+import { setupCommand } from './commands/setup'
 
 export const commands = {
     [helpCommand.name.toLowerCase()]: helpCommand,

@@ -1,11 +1,11 @@
-import { convertTwoArraysToObject, generateTitle } from '@lib/utils.js'
-import { getCommand } from '@modules/command/index.js'
+import { convertTwoArraysToObject, generateTitle } from '@lib/utils'
+import { getCommand } from '@modules/command/index'
 import { ZodError } from 'zod'
-import { state } from '@modules/command/state.js'
-import { getConfig } from '@lib/config.js'
-import { Command } from '@modules/command/types/command.js'
+import { state } from '@modules/command/state'
+import { getConfig } from '@lib/config'
+import { Command } from '@modules/command/types/command'
 import { AxiosError } from 'axios'
-import { logger } from '@lib/logger.js'
+import { logger } from '@lib/logger'
 import { createInterface } from 'readline/promises'
 
 function loadConfig() {

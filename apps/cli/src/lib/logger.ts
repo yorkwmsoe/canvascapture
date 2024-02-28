@@ -1,10 +1,10 @@
-import { LOG_FILE } from '@constants/base-info.js'
+import { LOG_FILE } from '@constants/base-info'
 import { existsSync, truncateSync } from 'fs'
 import pino from 'pino'
 
 function getLogger() {
     if (existsSync(LOG_FILE)) truncateSync(LOG_FILE, 0)
-    return pino.pino(
+    return pino(
         {
             timestamp: pino.stdTimeFunctions.isoTime,
         },

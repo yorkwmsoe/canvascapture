@@ -1,4 +1,4 @@
-import { Enrollment } from './enrollment.js'
+import { Enrollment } from './enrollment'
 
 export type User = {
     // The ID of the user.

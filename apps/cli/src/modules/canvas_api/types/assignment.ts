@@ -1,5 +1,5 @@
-import { DiscussionTopic } from './discussion-topic.js'
-import { Submission } from './submission.js'
+import { DiscussionTopic } from './discussion-topic'
+import { Submission } from './submission'
 
 export type Assignment = {
     // the ID of the assignment

@@ -1,7 +1,7 @@
 import { expect, describe, it, vi } from 'vitest'
-import * as generateFunctions from '../generate.js'
-import { testCourses, testAssignments, testSubmissions } from '../../command/commands/tests/data.js'
-import { state } from '@modules/command/state.js'
+import * as generateFunctions from '../generate'
+import { testCourses, testAssignments, testSubmissions } from '../../command/commands/tests/data'
+import { state } from '@modules/command/state'
 
 vi.mock('@modules/canvas_api/api', () => ({
     getSubmissions: vi.fn(() => testSubmissions),

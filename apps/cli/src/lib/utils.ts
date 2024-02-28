@@ -1,7 +1,7 @@
 import gradient from 'gradient-string'
 import figlet from 'figlet'
-import { theme } from '@constants/theme.js'
-import { TITLE_TEXT } from '@constants/base-info.js'
+import { theme } from '@constants/theme'
+import { TITLE_TEXT } from '@constants/base-info'
 
 export function generateTitle() {
     const titleGradient = gradient(Object.values(theme))

@@ -1,5 +1,5 @@
 import { expect, describe, test, vi } from 'vitest'
-import { convertTwoArraysToObject, generatePaddedColumn, generateTitle } from '@lib/utils.js'
+import { convertTwoArraysToObject, generatePaddedColumn, generateTitle } from '@lib/utils'
 import figlet from 'figlet'
 
 describe('convertTwoArraysToObject', () => {

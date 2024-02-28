@@ -1,4 +1,4 @@
-import { Command } from '../types/command.js'
+import { Command } from '../types/command'
 
 export const exitCommand = {
     name: 'exit',

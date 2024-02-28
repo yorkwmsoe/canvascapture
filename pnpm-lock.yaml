@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  pyodide@0.25.0:
+    hash: no7wjrk3gfdy7yagcs3aa7mqga
+    path: patches/pyodide@0.25.0.patch
+
 importers:
 
   .:
@@ -52,7 +57,7 @@ importers:
         version: 4.2.0
       pyodide:
         specifier: ^0.25.0
-        version: 0.25.0
+        version: 0.25.0(patch_hash=no7wjrk3gfdy7yagcs3aa7mqga)
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -161,7 +166,7 @@ importers:
         version: 14.0.0
       pyodide:
         specifier: ^0.25.0
-        version: 0.25.0
+        version: 0.25.0(patch_hash=no7wjrk3gfdy7yagcs3aa7mqga)
       vite-plugin-electron:
         specifier: ^0.15.6
         version: 0.15.6(vite-plugin-electron-renderer@0.14.5)
@@ -2339,7 +2344,7 @@ packages:
       std-env: 3.7.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
-      vitest: 1.2.2(@types/node@18.19.14)(@vitest/ui@1.2.2)
+      vitest: 1.2.2(@types/node@20.11.19)(@vitest/ui@1.2.2)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -2439,7 +2444,7 @@ packages:
       pathe: 1.1.2
       picocolors: 1.0.0
       sirv: 2.0.4
-      vitest: 1.2.2(@types/node@18.19.14)(@vitest/ui@1.2.2)
+      vitest: 1.2.2(@types/node@20.11.19)(@vitest/ui@1.2.2)
     dev: true
 
   /@vitest/ui@1.3.1(vitest@1.3.1):
@@ -5440,7 +5445,7 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /pyodide@0.25.0:
+  /pyodide@0.25.0(patch_hash=no7wjrk3gfdy7yagcs3aa7mqga):
     resolution: {integrity: sha512-RagtX3TfV2M0QAfThG2SMvwE31ikqAFDUXc5/4xhppEoVf4VbL7L0kbKOIdSNg7MbVsHELVxftk66WvT926GpA==}
     dependencies:
       base-64: 1.0.0
@@ -5449,6 +5454,7 @@ packages:
       - bufferutil
       - utf-8-validate
     dev: false
+    patched: true
 
   /qrcode.react@3.1.0(react@18.2.0):
     resolution: {integrity: sha512-oyF+Urr3oAMUG/OiOuONL3HXM+53wvuH3mtIWQrYmsXoAq0DkvZp2RYUWFSMFtbdOpuS++9v+WAkzNVkMlNW6Q==}

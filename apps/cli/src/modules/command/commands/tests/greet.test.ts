@@ -1,5 +1,5 @@
 import { expect, describe, it, vi } from 'vitest'
-import { greet } from '../greet.js'
+import { greet } from '../greet'
 
 describe('greet', () => {
     it('should return a greeting', () => {

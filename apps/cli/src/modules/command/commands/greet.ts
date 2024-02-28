@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { Command } from '../types/command.js'
+import { Command } from '../types/command'
 
 export const greetCommand = {
     name: 'greet',

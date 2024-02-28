@@ -1,11 +1,11 @@
 import axios, { AxiosRequestHeaders } from 'axios'
-import { Assignment } from './types/assignment.js'
-import { Course } from './types/course.js'
-import { Submission } from './types/submission.js'
-import { Quiz } from './types/quiz.js'
-import { QuizSubmission } from './types/quiz-submissions.js'
+import { Assignment } from './types/assignment'
+import { Course } from './types/course'
+import { Submission } from './types/submission'
+import { Quiz } from './types/quiz'
+import { QuizSubmission } from './types/quiz-submissions'
 import { parseISO } from 'date-fns'
-import { getCanvasApiBaseUrl, getCanvasApiToken } from '@/env.js'
+import { getCanvasApiBaseUrl, getCanvasApiToken } from '@/env'
 
 // date handling from: https://stackoverflow.com/a/66238542
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

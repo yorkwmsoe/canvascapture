@@ -1,5 +1,5 @@
 import { expect, describe, test, vi } from 'vitest'
-import { exit } from '../exit.js'
+import { exit } from '../exit'
 
 describe('exit', () => {
     test('exit', () => {

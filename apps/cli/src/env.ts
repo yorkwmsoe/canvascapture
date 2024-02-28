@@ -1,4 +1,4 @@
-import { state } from '@modules/command/state.js'
+import { state } from '@modules/command/state'
 
 export const getCanvasDomain = () => {
     return state.config.canvasDomain

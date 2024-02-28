@@ -1,4 +1,4 @@
-import { LockInfo } from './assignment.js'
+import { LockInfo } from './assignment'
 
 export type File = {
     id: number

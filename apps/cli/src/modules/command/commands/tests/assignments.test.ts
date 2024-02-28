@@ -1,8 +1,8 @@
 import { expect, describe, it, vi } from 'vitest'
-import { checkbox, getAssignments, getSubmissions } from './mocks.js'
-import { select_assignments } from '../assignments.js'
-import { testCourses, testAssignments, testSubmissions } from './data.js'
-import { state } from '@modules/command/state.js'
+import { checkbox, getAssignments, getSubmissions } from './mocks'
+import { select_assignments } from '../assignments'
+import { testCourses, testAssignments, testSubmissions } from './data'
+import { state } from '@modules/command/state'
 
 describe('assignments', () => {
     it('should log no courses selected', async () => {

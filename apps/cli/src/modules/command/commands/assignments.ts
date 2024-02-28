@@ -1,8 +1,8 @@
-import { getAssignments, getSubmissions } from '@modules/canvas_api/api.js'
-import { Command } from '../types/command.js'
-import { state } from '@modules/command/state.js'
+import { getAssignments, getSubmissions } from '@modules/canvas_api/api'
+import { Command } from '../types/command'
+import { state } from '@modules/command/state'
 import { checkbox } from '@inquirer/prompts'
-import { Assignment } from '@modules/canvas_api/types/assignment.js'
+import { Assignment } from '@modules/canvas_api/types/assignment'
 
 export const assignmentsCommand = {
     name: 'assignments',

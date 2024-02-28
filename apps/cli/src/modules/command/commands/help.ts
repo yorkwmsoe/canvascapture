@@ -1,8 +1,8 @@
-import { generatePaddedColumn } from '@lib/utils.js'
-import { commandMap } from '../index.js'
-import { Command } from '../types/command.js'
-import { HELP_COMMAND_WIDTH, HELP_DESCRIPTION_WIDTH, HELP_INPUT_WIDTH } from '@constants/base-info.js'
-import { commandCategories } from '../categories.js'
+import { generatePaddedColumn } from '@lib/utils'
+import { commandMap } from '../index'
+import { Command } from '../types/command'
+import { HELP_COMMAND_WIDTH, HELP_DESCRIPTION_WIDTH, HELP_INPUT_WIDTH } from '@constants/base-info'
+import { commandCategories } from '../categories'
 
 export const helpCommand = {
     name: 'help',

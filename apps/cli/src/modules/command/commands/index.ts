@@ -1,9 +1,9 @@
-import { exitCommand } from './exit.js'
-import { helpCommand } from './help.js'
-import { versionCommand } from './version.js'
-import { greetCommand } from './greet.js'
-import { coursesCommand } from './courses.js'
-import { assignmentsCommand } from './assignments.js'
-import { generateCommand } from './generate.js'
+import { exitCommand } from './exit'
+import { helpCommand } from './help'
+import { versionCommand } from './version'
+import { greetCommand } from './greet'
+import { coursesCommand } from './courses'
+import { assignmentsCommand } from './assignments'
+import { generateCommand } from './generate'
 
 export { exitCommand, helpCommand, versionCommand, greetCommand, coursesCommand, assignmentsCommand, generateCommand }

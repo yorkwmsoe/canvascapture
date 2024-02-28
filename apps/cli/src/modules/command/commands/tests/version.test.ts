@@ -1,6 +1,6 @@
 import { expect, describe, it, vi } from 'vitest'
-import { VERSION_TEXT } from '@constants/base-info.js'
-import { version } from '../version.js'
+import { VERSION_TEXT } from '@constants/base-info'
+import { version } from '../version'
 
 describe('version', () => {
     it('should return the version', () => {
