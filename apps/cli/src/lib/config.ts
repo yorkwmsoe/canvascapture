@@ -1,5 +1,5 @@
 import { CONFIG_FILE_NAME, TITLE_TEXT } from '@constants/base-info'
-import envPaths from '@modules/env-paths'
+import envPaths from '@modules/env-paths/index'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
 
 // DO NOT CHANGE AFTER RELEASE (BREAKS CONFIG)

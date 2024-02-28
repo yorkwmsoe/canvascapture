@@ -19,7 +19,6 @@ export async function select_courses() {
     const courses: Course[] = []
     for (const c of unfilteredCourses) {
         const assignments = await getAssignments(c.id)
-        console.log(assignments)
         if (assignments.length > 0) {
             courses.push(c)
         }

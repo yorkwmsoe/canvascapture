@@ -1,14 +1,15 @@
 import { CONFIG_FILE_NAME } from '@renderer/utils/base-info'
 import { app } from '@electron/remote'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
+import { join } from 'path'
 
 // DO NOT CHANGE AFTER RELEASE (BREAKS CONFIG)
 export const getConfigPath = () => app.getPath('userData')
 
-export const getConfigFile = () => `${getConfigPath()}/${CONFIG_FILE_NAME}`
+export const getConfigFile = () => join(getConfigPath(), CONFIG_FILE_NAME)
 
 export const getDocumentsPath = () =>
-    `${app.getPath('documents')}/canvas-capture-desktop`
+    join(app.getPath('documents'), 'canvas-capture-desktop')
 
 export type Config = {
     canvasDomain: string

@@ -7,6 +7,8 @@ import { Course } from '@renderer/types/canvas_api/course'
 import { Submission } from '@renderer/types/canvas_api/submission'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { parseHierarchyId } from '@renderer/utils/assignments'
+import { Quiz } from '@canvas-capture/lib/dist/types/canvas_api/quiz'
+import { QuizSubmission } from '@canvas-capture/lib/dist/types/canvas_api/quiz-submissions'
 
 // date handling from: https://stackoverflow.com/a/66238542
 export function handleDates(body: unknown) {
@@ -96,6 +98,36 @@ export const getSubmissions = async (
             { headers: getApiHeaders({ accessToken: args.canvasAccessToken }) }
         )
     ).data
+}
+
+export const getQuiz = async (
+    args: {
+        courseId: number
+        quizId?: number
+    } & Auth
+): Promise<Quiz> => {
+    return (
+        await api.get(
+            `${args.canvasDomain}/api/v1/courses/${args.courseId}/quizzes/${args.quizId}`,
+            { headers: getApiHeaders({ accessToken: args.canvasAccessToken }) }
+        )
+    ).data
+}
+
+export const getQuizSubmission = async (
+    args: {
+        courseId: number
+        quizId: number
+        submissionId: number
+    } & Auth
+): Promise<QuizSubmission | undefined> => {
+    const results: QuizSubmission[] = (
+        await api.get(
+            `${args.canvasDomain}/api/v1/courses/${args.courseId}/quizzes/${args.quizId}/submissions`,
+            { headers: getApiHeaders({ accessToken: args.canvasAccessToken }) }
+        )
+    ).data.quiz_submissions
+    return results.find((sub) => sub.submission_id === args.submissionId)
 }
 
 // Hooks

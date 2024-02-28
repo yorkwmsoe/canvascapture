@@ -1,5 +1,5 @@
 import { Command } from './types/command'
-import { helpCommand, versionCommand, greetCommand, exitCommand, coursesCommand, assignmentsCommand, generateCommand } from './commands'
+import { helpCommand, versionCommand, greetCommand, exitCommand, coursesCommand, assignmentsCommand, generateCommand } from './commands/index'
 import { settingsCommand } from './commands/settings'
 import { setupCommand } from './commands/setup'
 

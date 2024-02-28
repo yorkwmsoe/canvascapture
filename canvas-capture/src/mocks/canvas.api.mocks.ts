@@ -1,8 +1,8 @@
 import { parse } from 'date-fns'
-import { Assignment } from '../types/canvas_api/assignment'
-import { Course } from '../types/canvas_api/course'
-import { Enrollment } from '../types/canvas_api/enrollment'
-import { Submission } from '../types/canvas_api/submission'
+import { Assignment } from '../types/canvas_api/assignment.js'
+import { Course } from '../types/canvas_api/course.js'
+import { Enrollment } from '../types/canvas_api/enrollment.js'
+import { Submission } from '../types/canvas_api/submission.js'
 
 export const testAssignments: Assignment[] = [
     {

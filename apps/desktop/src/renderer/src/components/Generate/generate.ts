@@ -1,10 +1,20 @@
-import { Assignment } from '@renderer/types/canvas_api/assignment'
-import { Course } from '@renderer/types/canvas_api/course'
-import { Submission } from '@renderer/types/canvas_api/submission'
-import { generateAssignment } from '@renderer/utils/markdown/generators'
-import { rm } from 'fs/promises'
-import { getSubmissions } from '@renderer/apis/canvas.api'
+import { Assignment } from '@canvas-capture/lib/dist/types/canvas_api/assignment'
+import { Course } from '@canvas-capture/lib/dist/types/canvas_api/course'
+import { Submission } from '@canvas-capture/lib/dist/types/canvas_api/submission'
+import { Quiz } from '@canvas-capture/lib/dist/types/canvas_api/quiz'
+import {
+    getQuiz,
+    getSubmissions,
+    getQuizSubmission,
+} from '@renderer/apis/canvas.api'
+import { generators } from '@canvas-capture/lib'
+import { rm, writeFile } from 'fs/promises'
+import markdownit from 'markdown-it'
 import _ from 'lodash'
+import { mkdirSync } from 'fs'
+import { join } from 'path'
+
+const { generateAssignment, generateQuiz } = generators
 
 // https://stackoverflow.com/a/70806192
 export const median = (arr: number[]): number => {
@@ -14,51 +24,94 @@ export const median = (arr: number[]): number => {
     return Math.ceil(res)
 }
 
-function getScores(submissions: Submission[]) {
-    return submissions.filter((a) => _.isObject(a)).map((b) => b.score)
+type FilePathContentPair = {
+    filePath: string
+    content: string
 }
 
-type SubmissionWithScore = {
-    submission: Submission
-    score: 'high' | 'median' | 'low'
+// FIXME: I hate that I have to do this
+const generateAssignmentOrQuiz = async (
+    assignment: Assignment,
+    submission: Submission,
+    quiz: Quiz | undefined,
+    canvasAccessToken: string,
+    canvasDomain: string
+) => {
+    if (assignment.is_quiz_assignment && quiz !== undefined) {
+        const quizSubmission = await getQuizSubmission({
+            canvasAccessToken,
+            canvasDomain,
+            courseId: assignment.course_id,
+            quizId: quiz.id,
+            submissionId: submission.id,
+        })
+        return generateQuiz(assignment, submission, quiz, quizSubmission)
+    } else {
+        return generateAssignment(assignment, submission)
+    }
 }
 
-export const genAssignment = async (
-    course: Course,
+export const generatePairs = async (
     assignment: Assignment,
     submissions: Submission[],
-    outpath: string
-) => {
-    if (getScores(submissions).length === 0) return
+    quiz: Quiz | undefined,
+    assignmentsPath: string,
+    canvasAccessToken: string,
+    canvasDomain: string
+): Promise<FilePathContentPair[]> => {
+    const highSubmission =
+        _.maxBy(submissions, (s) => s.score) ?? submissions[0]
+    const highPair = {
+        filePath: join(assignmentsPath, 'high'),
+        content: (
+            await generateAssignmentOrQuiz(
+                assignment,
+                highSubmission,
+                quiz,
+                canvasAccessToken,
+                canvasDomain
+            )
+        ).join('\n'),
+    }
 
-    const copySubmissions = [...submissions]
-    const selectedSubmissions: SubmissionWithScore[] = [
-        {
-            submission: chooseSubmission(copySubmissions, (s) =>
-                Math.max(...s)
-            ),
-            score: 'high',
-        },
-        {
-            submission: chooseSubmission(copySubmissions, (s) => median(s)),
-            score: 'median',
-        },
-        {
-            submission: chooseSubmission(copySubmissions, (s) =>
-                Math.min(...s)
-            ),
-            score: 'low',
-        },
-    ]
+    const medianSubmission =
+        submissions.filter(
+            (s) => s.score === median(submissions.map((x) => x.score))
+        )[0] ?? submissions[0]
+    const medianPair = {
+        filePath: join(assignmentsPath, 'median'),
+        content: (
+            await generateAssignmentOrQuiz(
+                assignment,
+                medianSubmission,
+                quiz,
+                canvasAccessToken,
+                canvasDomain
+            )
+        ).join('\n'),
+    }
 
-    for (const ss of selectedSubmissions) {
-        await generateAssignment(
-            course,
-            assignment,
-            ss.submission,
-            ss.score,
-            outpath
-        )
+    const lowSubmission = _.minBy(submissions, (s) => s.score) ?? submissions[0]
+    const lowPair = {
+        filePath: join(assignmentsPath, 'low'),
+        content: (
+            await generateAssignmentOrQuiz(
+                assignment,
+                lowSubmission,
+                quiz,
+                canvasAccessToken,
+                canvasDomain
+            )
+        ).join('\n'),
+    }
+
+    switch (submissions.length) {
+        case 1:
+            return [highPair]
+        case 2:
+            return [highPair, lowPair]
+        default:
+            return [highPair, medianPair, lowPair]
     }
 }
 
@@ -67,13 +120,20 @@ export async function generate(
     assignments: Assignment[],
     canvasAccessToken: string,
     canvasDomain: string,
-    outpath: string
+    generationName: string,
+    documentsPath: string
 ) {
-    await rm(outpath, { recursive: true, force: true })
+    await rm(join(documentsPath, generationName), {
+        recursive: true,
+        force: true,
+    })
+
+    const pairs: FilePathContentPair[] = []
     for (const course of courses) {
         const filteredAssignments = assignments.filter(
             (a) => a.course_id === course.id
         )
+
         for (const assignment of filteredAssignments) {
             const submissions = await getSubmissions({
                 canvasAccessToken,
@@ -81,24 +141,52 @@ export async function generate(
                 courseId: course.id,
                 assignmentId: assignment.id,
             })
-            await genAssignment(course, assignment, submissions, outpath)
+            const uniqueSubmissions = _.uniqBy(
+                submissions.filter((s) => !_.isNil(s.score)),
+                (s) => s.score
+            )
+            if (uniqueSubmissions.length > 0) {
+                const assignmentsPath = join(
+                    generationName,
+                    course.name,
+                    assignment.name
+                )
+                mkdirSync(join(documentsPath, assignmentsPath), {
+                    recursive: true,
+                })
+                const quiz = assignment.is_quiz_assignment
+                    ? await getQuiz({
+                          canvasAccessToken,
+                          canvasDomain,
+                          courseId: assignment.course_id,
+                          quizId: assignment.quiz_id,
+                      })
+                    : undefined
+                pairs.push(
+                    ...(await generatePairs(
+                        assignment,
+                        uniqueSubmissions,
+                        quiz,
+                        assignmentsPath,
+                        canvasAccessToken,
+                        canvasDomain
+                    ))
+                )
+            }
         }
     }
-}
 
-function chooseSubmission(
-    submissions: Submission[],
-    filterFunc: (s: number[]) => number
-) {
-    const submission = submissions.filter(
-        (s) => s.score === filterFunc(getScores(submissions))
-    )[0]
-    const index = submissions.findIndex((item) => item.id === submission?.id)
+    pairs.forEach((x) =>
+        writeFile(join(documentsPath, x.filePath + '.md'), x.content)
+    )
 
-    // side effect: remove if found
-    if (index > -1) {
-        submissions.splice(index, 1)
-    }
+    const md = markdownit({ linkify: true })
 
-    return submission
+    const htmlData: FilePathContentPair[] = pairs.map((x) => {
+        return {
+            filePath: x.filePath,
+            content: md.render(x.content),
+        }
+    })
+    return htmlData
 }

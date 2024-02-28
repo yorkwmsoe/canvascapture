@@ -5,6 +5,10 @@ import { FileMarkdownOutlined } from '@ant-design/icons'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { shell } from 'electron'
 import { getDocumentsPath } from '@renderer/utils/config'
+import { useEffect } from 'react'
+import { useAssignments } from '@renderer/hooks/useAssignments'
+import { useCourses } from '@renderer/hooks/useCourses'
+import { join } from 'path'
 
 const { Header, Content, Footer } = Layout
 const { Meta } = Card
@@ -16,7 +20,15 @@ type GenerationNameForm = {
 export function HomePage() {
     const { setGenerationName } = useGenerationStore()
     const navigate = useNavigate({ from: '/' })
-    const { data: folder } = useGetFolders()
+    const { data: folder, refetch: refreshFolders } = useGetFolders()
+    const { setSelectedAssignments } = useAssignments()
+    const { setSelectedCourses } = useCourses()
+
+    useEffect(() => {
+        setSelectedCourses([])
+        setSelectedAssignments([])
+        refreshFolders()
+    }, [])
 
     const generate = (values: GenerationNameForm) => {
         setGenerationName(values.generationName)
@@ -159,7 +171,7 @@ function FolderCard({ folder }: FolderCardProps) {
                 width: 175,
                 textAlign: 'center',
             }}
-            onClick={() => shell.openPath(`${getDocumentsPath()}/${folder}`)}
+            onClick={() => shell.openPath(join(getDocumentsPath(), folder))}
         >
             <FileMarkdownOutlined />
             <Meta title={folder} />

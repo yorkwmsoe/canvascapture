@@ -1,5 +1,5 @@
 import { generatePaddedColumn } from '@lib/utils'
-import { commandMap } from '..'
+import { commandMap } from '../index'
 import { Command } from '../types/command'
 import { HELP_COMMAND_WIDTH, HELP_DESCRIPTION_WIDTH, HELP_INPUT_WIDTH } from '@constants/base-info'
 import { commandCategories } from '../categories'

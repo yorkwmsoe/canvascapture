@@ -12,7 +12,7 @@ export const assignmentsCommand = {
 } satisfies Command
 
 export async function select_assignments() {
-    state.assignments = undefined
+    state.assignments = []
     if (!state.courses || state.courses.length === 0) {
         console.log('No courses selected')
         return
@@ -40,6 +40,6 @@ export async function select_assignments() {
                 return { name: a.name, value: a.id }
             }),
         })
-        state.assignments = assignments.filter((a) => answer.includes(a.id))
+        state.assignments = state.assignments.concat(assignments.filter((a) => answer.includes(a.id)))
     }
 }

@@ -1,9 +1,6 @@
+import { expect, describe, test, vi } from 'vitest'
 import { convertTwoArraysToObject, generatePaddedColumn, generateTitle } from '@lib/utils'
-import { textSync } from 'figlet'
-
-jest.mock('figlet', () => ({
-    textSync: jest.fn(),
-}))
+import figlet from 'figlet'
 
 describe('convertTwoArraysToObject', () => {
     test('two empty array = empty object', () => {
@@ -45,7 +42,10 @@ describe('generatePaddedColumn', () => {
 
 describe('generateTitle', () => {
     test('generate title', () => {
+        const textSyncSpy = vi.spyOn(figlet, 'textSync').mockImplementation(() => {
+            return ''
+        })
         expect(generateTitle()).toBeDefined()
-        expect(textSync).toBeCalledTimes(1)
+        expect(textSyncSpy).toBeCalledTimes(1)
     })
 })
