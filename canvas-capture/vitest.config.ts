@@ -6,5 +6,6 @@ export default defineConfig({
             provider: 'v8',
         },
         reporters: ['junit'],
+        outputFile: 'junit.xml',
     },
 })
