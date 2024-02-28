@@ -38,23 +38,34 @@ export function HomePage() {
                     backgroundColor: 'white',
                     textAlign: 'left',
                     paddingLeft: 5,
+                    fontSize: `clamp(${12}px, 2vw, ${40}px`,
                 }}
             >
-                <text style={{ font: '12' }}>
-                    <b>Canvas Capture</b>
-                </text>
-                <Button style={{ left: '88%' }} onClick={goToSettingsPage}>
-                    Settings
-                </Button>
+                <Flex justify={'space-between'} align={'center'}>
+                    <text style={{ font: '12' }}>
+                        <b>Canvas Capture</b>
+                    </text>
+                    <Button
+                        style={{
+                            fontSize: `clamp(${12}px, 2vw, ${40}px`,
+                            height: 'auto',
+                            textAlign: 'center',
+                        }}
+                        onClick={goToSettingsPage}
+                    >
+                        Settings
+                    </Button>
+                </Flex>
             </Header>
+
             <Content
                 style={{
                     margin: 'auto',
-                    width: '50%',
                     verticalAlign: 'middle',
                     alignItems: 'center',
-                    height: 'auto',
-                    minHeight: '490px',
+                    height: 'clamp(300px, 70vh, 700px)',
+                    width: '80%',
+                    minWidth: 300,
                     justifyItems: 'center',
                     marginTop: 10,
                 }}
@@ -63,7 +74,7 @@ export function HomePage() {
                     name="generationNameForm"
                     onFinish={generate}
                     autoComplete="off"
-                    style={{ width: '70%', margin: 'auto' }}
+                    style={{ width: '50%', margin: 'auto' }}
                 >
                     <Form.Item<GenerationNameForm>
                         name="generationName"
@@ -76,8 +87,21 @@ export function HomePage() {
                     >
                         <Flex align={'center'} justify={'center'}>
                             <Space.Compact style={{ width: '100%' }}>
-                                <Input placeholder="Report name" />
-                                <Button htmlType="submit" type="primary">
+                                <Input
+                                    placeholder="Report name"
+                                    style={{
+                                        fontSize: 'clamp(15px, 2.5vh, 40px)',
+                                        height: 'auto',
+                                    }}
+                                />
+                                <Button
+                                    htmlType="submit"
+                                    type="primary"
+                                    style={{
+                                        fontSize: 'clamp(15px, 2.5h, 40px)',
+                                        height: 'auto',
+                                    }}
+                                >
                                     Start
                                 </Button>
                             </Space.Compact>
