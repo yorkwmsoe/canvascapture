@@ -23,7 +23,7 @@ export function SettingsPage() {
     }
 
     const goToHomePage = () => {
-      navigate({ to: '/' })
+        navigate({ to: '/' })
     }
 
     return (
@@ -36,17 +36,31 @@ export function SettingsPage() {
             onFinish={onFinish}
             autoComplete="off"
         >
-            <Flex style={{
-              justifyContent: "space-between",
-              alignItems: "center"
-            }}>
-              <Button style={{
-                marginLeft: 10,
-                fontSize: `clamp(${12}px, 1.5vw, ${40}px`,
-                textAlign: "center",
-                height: "auto"
-              }} onClick={goToHomePage}>{'\u2B05'}Back</Button>
-              <h1 style={{marginRight: 10, fontSize: `clamp(${12}px, 2vw, ${40}px`,}}>Settings</h1>
+            <Flex
+                style={{
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                }}
+            >
+                <Button
+                    style={{
+                        marginLeft: 10,
+                        fontSize: `clamp(${12}px, 1.5vw, ${40}px`,
+                        textAlign: 'center',
+                        height: 'auto',
+                    }}
+                    onClick={goToHomePage}
+                >
+                    {'\u2B05'}Back
+                </Button>
+                <h1
+                    style={{
+                        marginRight: 10,
+                        fontSize: `clamp(${12}px, 2vw, ${40}px`,
+                    }}
+                >
+                    Settings
+                </h1>
             </Flex>
             <Form.Item<Config>
                 label="Canvas Domain"
