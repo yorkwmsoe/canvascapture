@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
-import { Button, Steps, theme } from 'antd'
+import { Button, Steps, theme} from 'antd'
 import { Assignments } from '../Assignments'
 import { Courses } from '../Courses'
 import { useCourses } from '@renderer/hooks/useCourses'
@@ -40,8 +40,8 @@ export function SwitchStepper() {
     }, [current])
 
     const items = useMemo(
-        () => STEPS.map((item) => ({ key: item.title, title: item.title })),
-        [STEPS]
+      () => STEPS.map((item) => ({ key: item.title, title: item.title })),
+      [STEPS]
     )
 
     const isDisabled =

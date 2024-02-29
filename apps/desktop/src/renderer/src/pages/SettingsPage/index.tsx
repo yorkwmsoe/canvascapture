@@ -1,7 +1,7 @@
 import { Config } from '@renderer/utils/config'
 import { useSettingsStore } from '@renderer/stores/settings.store'
 import { useNavigate } from '@tanstack/react-router'
-import { Button, Checkbox, Form, Input } from 'antd'
+import { Button, Checkbox, Form, Input, Flex } from 'antd'
 
 export function SettingsPage() {
     const {
@@ -22,6 +22,10 @@ export function SettingsPage() {
         navigate({ to: '/' })
     }
 
+    const goToHomePage = () => {
+      navigate({ to: '/' })
+    }
+
     return (
         <Form
             name="basic"
@@ -32,7 +36,18 @@ export function SettingsPage() {
             onFinish={onFinish}
             autoComplete="off"
         >
-            <h1>Settings</h1>
+            <Flex style={{
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}>
+              <Button style={{
+                marginLeft: 10,
+                fontSize: `clamp(${12}px, 1.5vw, ${40}px`,
+                textAlign: "center",
+                height: "auto"
+              }} onClick={goToHomePage}>{'\u2B05'}Back</Button>
+              <h1 style={{marginRight: 10, fontSize: `clamp(${12}px, 2vw, ${40}px`,}}>Settings</h1>
+            </Flex>
             <Form.Item<Config>
                 label="Canvas Domain"
                 name="canvasDomain"
