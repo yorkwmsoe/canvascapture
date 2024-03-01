@@ -1,4 +1,3 @@
-import axios, { AxiosRequestHeaders } from 'axios'
 import { parseISO } from 'date-fns'
 import { Assignment } from './types/canvas_api/assignment.js'
 import { Course } from './types/canvas_api/course.js'
@@ -9,12 +8,12 @@ export type Auth = {
     canvasDomain: string
 }
 
-export type AuthWithApi = Auth & {
-    api: ReturnType<typeof axios.create>
+function toJSON<T>(response: Response): Promise<T> {
+    return response.json()
 }
 
 // date handling from: https://stackoverflow.com/a/66238542
-export function handleDates(body: unknown) {
+function handleDates(body: unknown) {
     if (body === null || body === undefined || typeof body !== 'object') return
 
     for (const key of Object.keys(body)) {
@@ -33,11 +32,16 @@ export function handleDates(body: unknown) {
     return
 }
 
+async function intercept(response: Response) {
+    handleDates(response)
+    return response
+}
+
 const getApiHeaders = (
     args: {
         accessToken: string
     },
-    headers?: AxiosRequestHeaders
+    headers?: HeadersInit
 ) => {
     return {
         ...headers,
@@ -45,41 +49,47 @@ const getApiHeaders = (
     }
 }
 
-const getCourses = async (args: AuthWithApi): Promise<Course[]> => {
-    const { api, canvasAccessToken, canvasDomain } = args
-    return (
-        await api.get(
-            `${canvasDomain}/api/v1/courses?exclude_blueprint_courses&per_page=1000`,
-            {
-                headers: getApiHeaders({ accessToken: canvasAccessToken }),
-            }
-        )
-    ).data
+const getCourses = async (args: Auth) => {
+    const { canvasAccessToken, canvasDomain } = args
+    return await fetch(
+        `${canvasDomain}/api/v1/courses?exclude_blueprint_courses&per_page=1000`,
+        {
+            headers: getApiHeaders({ accessToken: canvasAccessToken }),
+        }
+    )
+        .then(intercept)
+        .then(toJSON<Course[]>)
 }
 
 export type GetAssignmentsRequest = {
     courseId: number
 }
 
-const getAssignments = async (
-    args: GetAssignmentsRequest & AuthWithApi
-): Promise<{
-    courseId: number
-    assignments: Assignment[]
-}> => {
-    const { api, canvasAccessToken, canvasDomain } = args
+const getAssignments = async (args: GetAssignmentsRequest & Auth) => {
+    const { canvasAccessToken, canvasDomain } = args
+    return await fetch(
+        `${canvasDomain}/api/v1/courses/${args.courseId}/assignments?per_page=1000`,
+        {
+            headers: getApiHeaders({
+                accessToken: canvasAccessToken,
+            }),
+        }
+    )
+        .then(intercept)
+        .then(toJSON<Assignment[]>)
+}
+
+const getAssignmentsWithCourseId = async (
+    args: GetAssignmentsRequest & Auth
+) => {
+    const { canvasAccessToken, canvasDomain } = args
     return {
         courseId: args.courseId,
-        assignments: (
-            await api.get(
-                `${canvasDomain}/api/v1/courses/${args.courseId}/assignments?per_page=1000`,
-                {
-                    headers: getApiHeaders({
-                        accessToken: canvasAccessToken,
-                    }),
-                }
-            )
-        ).data,
+        assignments: await getAssignments({
+            canvasAccessToken: canvasAccessToken,
+            canvasDomain: canvasDomain,
+            courseId: args.courseId,
+        }),
     }
 }
 
@@ -88,35 +98,21 @@ export type GetSubmissionsRequest = {
     assignmentId: number
 }
 
-export const getSubmissions = async (
-    args: GetSubmissionsRequest & AuthWithApi
-): Promise<Submission[]> => {
-    const { api, canvasAccessToken, canvasDomain } = args
-    return (
-        await api.get(
-            `${canvasDomain}/api/v1/courses/${args.courseId}/assignments/${args.assignmentId}/submissions?include[]=rubric_assessment&include[]=submission_comments&per_page=1000`,
-            { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
-        )
-    ).data
+export const getSubmissions = async (args: GetSubmissionsRequest & Auth) => {
+    const { canvasAccessToken, canvasDomain } = args
+    return await fetch(
+        `${canvasDomain}/api/v1/courses/${args.courseId}/assignments/${args.assignmentId}/submissions?include[]=rubric_assessment&include[]=submission_comments&per_page=1000`,
+        { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
+    )
+        .then(intercept)
+        .then(toJSON<Submission[]>)
 }
 
 export const createCanvasApi = () => {
-    const api = axios.create()
-
-    api.interceptors.response.use((originalResponse) => {
-        handleDates(originalResponse.data)
-        return originalResponse
-    })
-
     return {
-        getCourses: async (args: Auth) => {
-            return getCourses({ ...args, api })
-        },
-        getAssignments: async (args: GetAssignmentsRequest & Auth) => {
-            return getAssignments({ ...args, api })
-        },
-        getSubmissions: async (args: GetSubmissionsRequest & Auth) => {
-            return getSubmissions({ ...args, api })
-        },
+        getCourses,
+        getAssignments,
+        getAssignmentsWithCourseId,
+        getSubmissions,
     }
 }

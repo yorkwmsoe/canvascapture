@@ -5,7 +5,7 @@ export default defineConfig({
         coverage: {
             provider: 'v8',
         },
-        reporters: ['junit'],
+        reporters: ['default', 'junit'],
         outputFile: 'junit.xml',
     },
 })
