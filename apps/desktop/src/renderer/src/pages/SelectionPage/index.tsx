@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { Button } from 'antd'
 
 export function SelectionPage() {
-    const navigate = useNavigate() // Correct usage of useNavigate
+    const navigate = useNavigate()
 
     const goToHomePage = () => {
         navigate({ to: '/' })
