@@ -2,11 +2,14 @@
     "name": "@canvas-capture/lib",
     "private": true,
     "version": "0.0.0",
-    "type": "module",
     "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
     "scripts": {
-        "package": "tsc",
+        "package": "tsup",
         "lint": "eslint . --max-warnings=0",
         "lint:fix": "eslint . --fix",
         "test": "vitest",
@@ -25,6 +28,7 @@
     "dependencies": {
         "@types/node": "^20.11.19",
         "axios": "^1.6.7",
-        "date-fns": "^3.3.1"
+        "date-fns": "^3.3.1",
+        "tsup": "^8.0.2"
     }
 }
