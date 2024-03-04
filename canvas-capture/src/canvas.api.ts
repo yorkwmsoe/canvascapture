@@ -2,6 +2,8 @@ import { parseISO } from 'date-fns'
 import { Assignment } from './types/canvas_api/assignment'
 import { Course } from './types/canvas_api/course'
 import { Submission } from './types/canvas_api/submission'
+import { Quiz } from './types/canvas_api/quiz'
+import { QuizSubmission } from './types/canvas_api/quiz-submissions'
 
 export type Auth = {
     canvasAccessToken: string
@@ -108,11 +110,99 @@ export const getSubmissions = async (args: GetSubmissionsRequest & Auth) => {
         .then(toJSON<Submission[]>)
 }
 
-export const createCanvasApi = () => {
+export type GetQuizRequest = {
+    courseId: number
+    quizId?: number
+}
+
+export const getQuiz = async (args: GetQuizRequest & Auth) => {
+    const { canvasAccessToken, canvasDomain } = args
+    return await fetch(
+        `${canvasDomain}/api/v1/courses/${args.courseId}/quizzes/${args?.quizId}`,
+        { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
+    )
+        .then(intercept)
+        .then(toJSON<Quiz>)
+}
+
+export type GetQuizSubmissionRequest = {
+    courseId: number
+    quizId: number
+    submissionId: number
+}
+
+export const getQuizSubmission = async (
+    args: GetQuizSubmissionRequest & Auth
+) => {
+    const { canvasAccessToken, canvasDomain } = args
+    const results = await fetch(
+        `${canvasDomain}api/v1/courses/${args.courseId}/quizzes/${args.quizId}/submissions`,
+        { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
+    )
+        .then(intercept)
+        .then(toJSON<QuizSubmission[]>)
+    return results.find((sub) => sub.submission_id == args.submissionId)
+}
+
+export type CreateCanvasAPiConfig =
+    | {
+          type: 'withAuth'
+          accessToken: string
+          domain: string
+      }
+    | {
+          type: 'withoutAuth'
+      }
+
+export const createCanvasApi = (
+    config: CreateCanvasAPiConfig = { type: 'withoutAuth' }
+) => {
+    if (config.type === 'withAuth') {
+        return {
+            getCourses: () =>
+                getCourses({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                }),
+            getAssignments: (args: GetAssignmentsRequest) =>
+                getAssignments({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                    ...args,
+                }),
+            getAssignmentsWithCourseId: (args: GetAssignmentsRequest) =>
+                getAssignmentsWithCourseId({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                    ...args,
+                }),
+            getSubmissions: (args: GetSubmissionsRequest) =>
+                getSubmissions({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                    ...args,
+                }),
+            getQuiz: (args: GetQuizRequest) =>
+                getQuiz({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                    ...args,
+                }),
+            getQuizSubmission: (args: GetQuizSubmissionRequest) =>
+                getQuizSubmission({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                    ...args,
+                }),
+        }
+    }
+
     return {
         getCourses,
         getAssignments,
         getAssignmentsWithCourseId,
         getSubmissions,
+        getQuiz,
+        getQuizSubmission,
     }
 }
