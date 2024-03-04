@@ -14,6 +14,7 @@
         "coverage": "vitest run --coverage",
         "start": "bun run src/cli.ts",
         "build": "bun build --target node src/cli.ts --outdir build",
+        "package": "bun build src/cli.ts --compile --outfile release/canvascapture",
         "lint": "eslint . --max-warnings=0",
         "lint:fix": "eslint . --fix",
         "package:win-x64": "bun build src/cli.ts --compile --outfile release/canvascapture-win-x64",
