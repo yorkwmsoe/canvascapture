@@ -9,6 +9,7 @@ import { ReadState } from './types/canvas_api/read-state'
 import { Submission } from './types/canvas_api/submission'
 import { User } from './types/canvas_api/user'
 import { Quiz } from './types/canvas_api/quiz'
+import { QuizSubmission } from './types/canvas_api/quiz-submissions'
 import { generateAssignment, generateQuiz } from './generators'
 import * as markdown from './markdown'
 
@@ -24,6 +25,7 @@ export {
     Submission,
     User,
     Quiz,
+    QuizSubmission,
     generateAssignment,
     generateQuiz,
     markdown,
