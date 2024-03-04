@@ -1,8 +1,9 @@
+import { expect, describe, it, vi } from 'vitest'
 import { greet } from '../greet'
 
 describe('greet', () => {
     it('should return a greeting', () => {
-        const log = jest.spyOn(console, 'log').mockImplementation()
+        const log = vi.spyOn(console, 'log').mockImplementation(() => {})
         greet({
             name: 'World',
         })

@@ -1,11 +1,12 @@
-import { convertTwoArraysToObject, generateTitle, prompt } from '@lib/utils'
-import { getCommand } from '@modules/command'
+import { convertTwoArraysToObject, generateTitle } from '@lib/utils'
+import { getCommand } from '@modules/command/index'
 import { ZodError } from 'zod'
 import { state } from '@modules/command/state'
 import { getConfig } from '@lib/config'
 import { Command } from '@modules/command/types/command'
 import { AxiosError } from 'axios'
 import { logger } from '@lib/logger'
+import { createInterface } from 'readline/promises'
 
 function loadConfig() {
     const config = getConfig()
@@ -31,7 +32,7 @@ async function handleCommand({ command, args }: { command: Command | undefined; 
                 console.log('Something went wrong.')
                 if (error instanceof AxiosError) {
                     logger.error(error.code)
-                    logger.error(error.config.url)
+                    logger.error(error.config?.url)
                     logger.error(error.message)
                 } else {
                     logger.error((error as Error).message)
@@ -58,7 +59,12 @@ const main = async () => {
 
     // eslint-disable-next-line no-constant-condition
     while (true) {
-        const result = prompt('Enter a command: ')
+        const prompt = createInterface({
+            input: process.stdin,
+            output: process.stdout,
+        })
+        const result = await prompt.question('Enter a command: ')
+        prompt.close()
         const data = parseCommand(result)
         await handleCommand(data)
     }

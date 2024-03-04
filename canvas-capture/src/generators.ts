@@ -1,48 +1,100 @@
+import { Assignment } from './types/canvas_api/assignment.js'
+import { Submission } from './types/canvas_api/submission.js'
+import { Quiz } from './types/canvas_api/quiz.js'
+import { QuizSubmission } from './types/canvas_api/quiz-submissions.js'
 import {
     convertToHeader,
     createList,
     createTableHeader,
     createTableRows,
-    writeToFile,
-} from './markdown'
-import { mkdirSync } from 'fs'
-import { Assignment } from './types/canvas_api/assignment'
-import { Course } from './types/canvas_api/course'
-import { Submission } from './types/canvas_api/submission'
-
-const basePath = 'output'
+} from './markdown.js'
 
 export function generateAssignment(
-    course: Course,
     assignment: Assignment,
-    submission: Submission,
-    score: 'high' | 'median' | 'low',
-    commit: boolean = true
+    submission: Submission
 ) {
-    const folderPath = `${basePath}/${course.name}/${assignment.name}`
-    mkdirSync(folderPath, { recursive: true })
-
-    const items: string[] = [
-        ...assembleTitleAndGrade(assignment, submission),
+    const items = [
+        ...assembleTitleAndGrade(assignment, submission, ''),
         ...assembleFeedbackInfo(submission),
         ...assembleDescriptionInfo(assignment),
         ...assembleRubricInfo(assignment, submission),
         ...assembleSubmissionInfo(submission),
     ]
 
-    const cleanedItems = items.filter((item) => !!item)
-
-    if (commit) {
-        writeAggregationToFile(cleanedItems, folderPath, score)
-    }
-
-    return {
-        items,
-    }
+    return items.filter((item) => !!item)
 }
 
-function assembleTitleAndGrade(assignment: Assignment, submission: Submission) {
-    const title = convertToHeader(assignment.name, 1)
+export function generateQuiz(
+    assignment: Assignment,
+    submission: Submission,
+    quiz: Quiz,
+    quizSubmission: QuizSubmission | undefined
+) {
+    const items = [
+        ...assembleTitleAndGrade(assignment, submission, 'QUIZ: '),
+        ...assembleDescriptionInfo(assignment),
+        ...assembleFeedbackInfo(submission),
+        ...quizOverview(assignment, quiz),
+        ...quizUserOverview(submission, quizSubmission),
+    ]
+
+    return items.filter((item) => !!item)
+}
+
+function quizOverview(assignment: Assignment, quiz: Quiz) {
+    const quiz_id = assignment.quiz_id as number
+    const infoHeader = convertToHeader('Quiz Info', 2)
+    const quizHeader = createTableHeader([
+        'Quiz Id',
+        'Assignment Id',
+        '# of Questions',
+        'Total Points',
+        'Version #',
+    ])
+    const quizBody = createTableRows([
+        [
+            quiz_id.toString(),
+            assignment.id.toString(),
+            quiz.question_count.toString(),
+            quiz.points_possible.toString(),
+            quiz.version_number.toString(),
+        ],
+    ])
+    return [infoHeader, quizHeader + quizBody]
+}
+
+function quizUserOverview(
+    submission: Submission,
+    quizSubmission: QuizSubmission | undefined
+) {
+    const userOverviewHeader = convertToHeader('User Overview', 2)
+    const userHeader = createTableHeader([
+        'User Id',
+        'Score',
+        'Kept Score',
+        'Attempt',
+    ])
+    const rows: string[] = []
+    rows.push(submission.user_id.toString())
+    if (quizSubmission?.score) {
+        rows.push(quizSubmission.score.toString())
+    }
+    if (quizSubmission?.kept_score) {
+        rows.push(quizSubmission.kept_score.toString())
+    }
+    if (quizSubmission?.attempt) {
+        rows.push(quizSubmission.attempt.toString())
+    }
+    const userBody = createTableRows([rows])
+    return [userOverviewHeader, userHeader + userBody]
+}
+
+function assembleTitleAndGrade(
+    assignment: Assignment,
+    submission: Submission,
+    type: string
+) {
+    const title = convertToHeader(type + assignment.name, 1)
     const grade = `${submission.score}/${assignment.points_possible}`
     return [title, grade]
 }
@@ -95,17 +147,4 @@ function assembleRubricInfo(assignment: Assignment, submission: Submission) {
         : rubricTableHeader + rubricTableBody
 
     return [rubricHeader, rubricTable]
-}
-
-function writeAggregationToFile(
-    cleanedItems: string[],
-    folderPath: string,
-    score: string
-) {
-    let pseudoFile: string = ''
-    cleanedItems.forEach((item) => {
-        pseudoFile = pseudoFile + item + '\n'
-    })
-    const filePath = `${folderPath}/${score}`
-    writeToFile(filePath, pseudoFile)
 }

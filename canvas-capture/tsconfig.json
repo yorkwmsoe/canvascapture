@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "es2015",
-        "module": "commonjs",
+        "module": "NodeNext",
         "skipLibCheck": true,
 
         /* Linting */
@@ -13,5 +13,6 @@
         "declaration": true,
         "outDir": "./dist"
     },
+    "moduleResolution":"NodeNext",
     "include": ["src/**/*"]
 }

@@ -1,5 +1,5 @@
-import { Assignment } from '@modules/canvas_api/types/assignment.js'
-import { Course } from '@modules/canvas_api/types/course.js'
+import { Assignment } from '@modules/canvas_api/types/assignment'
+import { Course } from '@modules/canvas_api/types/course'
 import { Enrollment } from '@modules/canvas_api/types/enrollment'
 import { Submission } from '@modules/canvas_api/types/submission'
 import { parse } from 'date-fns'

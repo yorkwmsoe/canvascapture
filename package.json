@@ -18,5 +18,10 @@
   "devDependencies": {
     "husky": "^9.0.11",
     "prettier": "^3.2.5"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "pyodide@0.25.0": "patches/pyodide@0.25.0.patch"
+    }
   }
 }
