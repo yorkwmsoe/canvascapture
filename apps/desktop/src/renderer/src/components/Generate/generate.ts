@@ -1,20 +1,21 @@
-import { Assignment } from '@canvas-capture/lib/dist/types/canvas_api/assignment'
-import { Course } from '@canvas-capture/lib/dist/types/canvas_api/course'
-import { Submission } from '@canvas-capture/lib/dist/types/canvas_api/submission'
-import { Quiz } from '@canvas-capture/lib/dist/types/canvas_api/quiz'
 import {
     getQuiz,
     getSubmissions,
     getQuizSubmission,
 } from '@renderer/apis/canvas.api'
-import { generators } from '@canvas-capture/lib'
 import { rm, writeFile } from 'fs/promises'
 import markdownit from 'markdown-it'
 import _ from 'lodash'
 import { mkdirSync } from 'fs'
 import { join } from 'path'
-
-const { generateAssignment, generateQuiz } = generators
+import {
+    Assignment,
+    Course,
+    Quiz,
+    Submission,
+    generateAssignment,
+    generateQuiz,
+} from '@canvas-capture/lib'
 
 // https://stackoverflow.com/a/70806192
 export const median = (arr: number[]): number => {

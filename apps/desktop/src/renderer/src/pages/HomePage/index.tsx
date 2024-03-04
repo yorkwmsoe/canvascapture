@@ -1,4 +1,13 @@
-import { Input, Layout, Button, Space, Card, Flex, Form } from 'antd'
+import {
+    Input,
+    Layout,
+    Button,
+    Space,
+    Card,
+    Flex,
+    Form,
+    Typography,
+} from 'antd'
 import { useNavigate } from '@tanstack/react-router'
 import { useGetFolders } from '@renderer/hooks/useGetFolders'
 import { FileMarkdownOutlined } from '@ant-design/icons'
@@ -54,9 +63,9 @@ export function HomePage() {
                 }}
             >
                 <Flex justify={'space-between'} align={'center'}>
-                    <text style={{ font: '12' }}>
+                    <Typography.Text style={{ font: '12' }}>
                         <b>Canvas Capture</b>
-                    </text>
+                    </Typography.Text>
                     <Button
                         style={{
                             fontSize: `clamp(${12}px, 2vw, ${40}px`,
@@ -151,7 +160,7 @@ export function HomePage() {
                     textAlign: 'left',
                 }}
             >
-                <text>v0.01</text>
+                <Typography.Text>v0.01</Typography.Text>
             </Footer>
         </Layout>
     )
