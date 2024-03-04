@@ -1,7 +1,7 @@
 import { parseISO } from 'date-fns'
-import { Assignment } from './types/canvas_api/assignment.js'
-import { Course } from './types/canvas_api/course.js'
-import { Submission } from './types/canvas_api/submission.js'
+import { Assignment } from './types/canvas_api/assignment'
+import { Course } from './types/canvas_api/course'
+import { Submission } from './types/canvas_api/submission'
 
 export type Auth = {
     canvasAccessToken: string
