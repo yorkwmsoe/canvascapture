@@ -7,6 +7,7 @@
     "desktop": "pnpm -filter canvas-capture-desktop",
     "cli": "pnpm -filter canvas-capture-cli",
     "@canvas-capture": "pnpm -filter @canvas-capture/lib",
+    "test": "pnpm -r run test:cli",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "pnpm -r run lint",

@@ -9,6 +9,7 @@
         "lint": "eslint . --max-warnings=0",
         "lint:fix": "eslint . --fix",
         "test": "vitest",
+        "test:cli": "vitest run",
         "test:ui": "vitest --ui",
         "coverage": "vitest run --coverage"
     },

@@ -5,6 +5,7 @@
     "private": true,
     "scripts": {
         "test": "vitest",
+        "test:cli": "vitest run",
         "test:ui": "vitest --ui",
         "coverage": "vitest run --coverage",
         "start": "bun run src/cli.ts",
