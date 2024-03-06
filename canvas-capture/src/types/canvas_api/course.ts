@@ -1,5 +1,5 @@
-import { Enrollment } from './enrollment.js'
-import { GradingPeriod } from './grading-period.js'
+import { Enrollment } from './enrollment'
+import { GradingPeriod } from './grading-period'
 
 export type Course = {
     // the unique identifier for the course

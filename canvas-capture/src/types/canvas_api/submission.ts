@@ -1,7 +1,7 @@
-import { Assignment } from './assignment.js'
-import { Course } from './course.js'
-import { ReadState } from './read-state.js'
-import { User, UserDisplay } from './user.js'
+import { Assignment } from './assignment'
+import { Course } from './course'
+import { ReadState } from './read-state'
+import { User, UserDisplay } from './user'
 
 export type Submission = {
     id: number

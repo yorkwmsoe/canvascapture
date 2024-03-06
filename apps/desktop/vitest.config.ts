@@ -1,11 +1,32 @@
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 
 export default defineConfig({
     test: {
         coverage: {
             provider: 'v8',
+            exclude: [
+                ...configDefaults.exclude,
+                '**/out/**',
+                '**/preload/**',
+                '**/main/**',
+                '**/types/**',
+                '**/build/**',
+                '**/*.api.ts',
+                '**/command/categories.ts',
+                '**/.eslintrc.js',
+                '**/index.ts',
+                '**/*.tsx',
+                '**/*.config.ts',
+                '**/use*.ts',
+                '**/*.route.ts',
+                '**/*.store.ts',
+                '**/*.d.ts',
+                '**/utils/base-info.ts',
+                '**/utils/config.ts',
+                '**/utils/guards.ts',
+            ],
         },
-        reporters: ['junit'],
+        reporters: ['default', 'junit'],
         outputFile: 'junit.xml',
     },
 })

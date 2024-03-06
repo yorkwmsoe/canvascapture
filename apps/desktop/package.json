@@ -22,6 +22,7 @@
         "build:linux": "electron-vite build && electron-builder --linux --config",
         "build:multi": "electron-vite build && electron-builder -wl --config",
         "test": "vitest",
+        "test:cli": "vitest run",
         "test:ui": "vitest --ui",
         "coverage": "vitest run --coverage"
     },

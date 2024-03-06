@@ -1,5 +1,5 @@
-import { File } from './file.js'
-import { ReadState } from './read-state.js'
+import { File } from './file'
+import { ReadState } from './read-state'
 
 export type DiscussionTopic = {
     // The ID of this topic.
