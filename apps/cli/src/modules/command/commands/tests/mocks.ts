@@ -8,8 +8,10 @@ vi.mock('@inquirer/prompts', () => ({
     checkbox: checkbox,
 }))
 
-vi.mock('@modules/canvas_api/api', () => ({
-    getCourses: getCourses,
-    getAssignments: getAssignments,
-    getSubmissions: getSubmissions,
+vi.mock('@canvas-capture/lib', () => ({
+    createCanvasApi: vi.fn().mockImplementation(() => ({
+        getCourses: getCourses,
+        getAssignments: getAssignments,
+        getSubmissions: getSubmissions,
+    })),
 }))
