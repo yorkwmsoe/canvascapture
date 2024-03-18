@@ -43,7 +43,6 @@
         "@canvas-capture/lib": "workspace:*",
         "@inquirer/prompts": "^3.3.2",
         "@inquirer/testing": "^2.1.11",
-        "axios": "^1.6.7",
         "date-fns": "^2.30.0",
         "figlet": "^1.7.0",
         "gradient-string": "^2.0.2",

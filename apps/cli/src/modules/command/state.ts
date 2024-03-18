@@ -1,5 +1,4 @@
-import { Course } from '../canvas_api/types/course'
-import { Assignment } from '../canvas_api/types/assignment'
+import { Assignment, Course } from '@canvas-capture/lib'
 import { Settings, defaultSettings } from '@constants/settings'
 import { Config, defaultConfig } from '@lib/config'
 
