@@ -136,7 +136,7 @@ export const getQuizSubmission = async (
 ) => {
     const { canvasAccessToken, canvasDomain } = args
     const results = await fetch(
-        `${canvasDomain}api/v1/courses/${args.courseId}/quizzes/${args.quizId}/submissions`,
+        `${canvasDomain}/api/v1/courses/${args.courseId}/quizzes/${args.quizId}/submissions`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
     )
         .then(intercept)

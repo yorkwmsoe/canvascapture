@@ -1,7 +1,4 @@
-import { Assignment } from '@modules/canvas_api/types/assignment'
-import { Course } from '@modules/canvas_api/types/course'
-import { Enrollment } from '@modules/canvas_api/types/enrollment'
-import { Submission } from '@modules/canvas_api/types/submission'
+import { Assignment, Course, Enrollment, Submission } from '@canvas-capture/lib'
 import { parse } from 'date-fns'
 
 export const testAssignments: Assignment[] = [

@@ -1,8 +1,8 @@
-import { getQuiz, getSubmissions, getQuizSubmission } from '@modules/canvas_api/api'
 import markdownit from 'markdown-it'
 import _ from 'lodash'
 import { mkdirSync, rmSync, writeFileSync } from 'fs'
 import { Assignment, Submission, Quiz, generateQuiz, generateAssignment, Course } from '@canvas-capture/lib'
+import { canvasApi } from '@/lib/canvas.api'
 
 // https://stackoverflow.com/a/70806192
 export const median = (arr: number[]): number => {
@@ -17,11 +17,15 @@ type FilePathContentPair = {
     content: string
 }
 
-// FIXME: I hate that I have to do this
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const generateAssignmentOrQuiz = async (assignment: Assignment, submission: Submission, quiz: Quiz | undefined, canvasAccessToken: string, canvasDomain: string) => {
     if (assignment.is_quiz_assignment && quiz !== undefined) {
-        const quizSubmission = await getQuizSubmission(assignment.course_id, quiz.id, submission.id)
+        const quizSubmission = await canvasApi.getQuizSubmission({
+            courseId: assignment.course_id,
+            quizId: quiz.id,
+            submissionId: submission.id,
+            canvasAccessToken,
+            canvasDomain,
+        })
         return generateQuiz(assignment, submission, quiz, quizSubmission)
     } else {
         return generateAssignment(assignment, submission)
@@ -74,7 +78,12 @@ export async function generate(courses: Course[], assignments: Assignment[], can
         if (filteredAssignments.length === 0) console.log(`No assignments selected for course ${course.name}`)
 
         for (const assignment of filteredAssignments) {
-            const submissions = await getSubmissions(course.id, assignment.id)
+            const submissions = await canvasApi.getSubmissions({
+                courseId: course.id,
+                assignmentId: assignment.id,
+                canvasAccessToken,
+                canvasDomain,
+            })
             const uniqueSubmissions = _.uniqBy(
                 submissions.filter((s) => !_.isNil(s.score)),
                 (s) => s.score
@@ -82,7 +91,7 @@ export async function generate(courses: Course[], assignments: Assignment[], can
             if (uniqueSubmissions.length > 0) {
                 const assignmentsPath = `${generationName}/${course.name}/${assignment.name}`
                 mkdirSync(`${documentsPath}/${assignmentsPath}`, { recursive: true })
-                const quiz = assignment.is_quiz_assignment ? await getQuiz(assignment.course_id, assignment.quiz_id) : undefined
+                const quiz = assignment.is_quiz_assignment ? await canvasApi.getQuiz({ courseId: assignment.course_id, quizId: assignment.quiz_id, canvasAccessToken, canvasDomain }) : undefined
                 pairs.push(...(await generatePairs(assignment, uniqueSubmissions, quiz, assignmentsPath, canvasAccessToken, canvasDomain)))
             }
         }
