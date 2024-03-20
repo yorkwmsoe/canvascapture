@@ -144,6 +144,51 @@ export const getQuizSubmission = async (
     return results.find((sub) => sub.submission_id == args.submissionId)
 }
 
+export const getQuizQuestions = async (args: GetQuizQuestionRequest & Auth) => {
+    const { canvasAccessToken, canvasDomain } = args
+    const results = await fetch(
+        `${canvasDomain}/api/v1/quiz_submissions/${args.quizSubmissionId}/questions`,
+        { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
+    )
+        .then(intercept)
+        .then((resp) => resp.json())
+        .then((quiz_resp) => {
+            quiz_resp.quiz_submission_questions
+        })
+    return results
+}
+
+export type GetQuizQuestionRequest = {
+    quizSubmissionId: number
+}
+
+export const getQuizHTML = async (args: GetQuizHTMLRequest & Auth) => {
+    const { canvasAccessToken, canvasDomain } = args
+    const sessionURL = await fetch(
+        `${canvasDomain}/api/v1/login/session_token?return_to=http://sdlstudentvm06.msoe.edu/
+        courses/${args.courseId}/quizzes/${args.quizId}/history?quiz_submission_id=${args.quizSubmissionId}`,
+        { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
+    )
+        .then(intercept)
+        .then((resp) => resp.json())
+        .then((session_resp) => {
+            session_resp.session_url
+        })
+    const quizHTML =
+        await fetch(`${canvasDomain}/courses/${args.courseId}/quizzes/${args.quizId}
+    /history?quiz_submission_id=${args.quizSubmissionId}&session_token=${sessionURL}
+`)
+            .then(intercept)
+            .then((htmlResp) => htmlResp.text())
+    return quizHTML
+}
+
+export type GetQuizHTMLRequest = {
+    quizId: number
+    quizSubmissionId: number
+    courseId: number
+}
+
 export type CreateCanvasAPiConfig =
     | {
           type: 'withAuth'
