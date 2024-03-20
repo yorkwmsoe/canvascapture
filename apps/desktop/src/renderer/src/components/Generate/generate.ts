@@ -11,7 +11,7 @@ import {
     generateAssignment,
     generateQuiz,
 } from '@canvas-capture/lib'
-import {canvasApi} from "../../apis/canvas.api";
+import { canvasApi } from '../../apis/canvas.api'
 
 // https://stackoverflow.com/a/70806192
 export const median = (arr: number[]): number => {

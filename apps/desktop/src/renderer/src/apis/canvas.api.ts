@@ -2,10 +2,14 @@ import { useSettingsStore } from '@renderer/stores/settings.store'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { parseHierarchyId } from '@renderer/utils/assignments'
-import {Assignment, Auth, createCanvasApi, GetAssignmentsRequest} from '@canvas-capture/lib'
+import {
+    Assignment,
+    Auth,
+    createCanvasApi,
+    GetAssignmentsRequest,
+} from '@canvas-capture/lib'
 
 export const canvasApi = createCanvasApi()
-
 
 export const getAssignments = async (
     args: GetAssignmentsRequest & Auth
@@ -15,12 +19,9 @@ export const getAssignments = async (
 }> => {
     return {
         courseId: args.courseId,
-        assignments: (
-            await canvasApi.getAssignments(
-               args))
+        assignments: await canvasApi.getAssignments(args),
     }
 }
-
 
 // Hooks
 export const useGetSubmissions = () => {
