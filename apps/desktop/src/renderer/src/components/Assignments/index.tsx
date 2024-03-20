@@ -5,7 +5,7 @@ import { isKeyArray } from '@renderer/utils/guards'
 import { Select, Tree, TreeDataNode, TreeProps } from 'antd'
 import { isString } from 'lodash'
 import { useMemo, useState } from 'react'
-import { SubmissionType } from '../../types/canvas_api/submission'
+import { SubmissionType } from '@canvas-capture/lib'
 
 const options: {
     label: string

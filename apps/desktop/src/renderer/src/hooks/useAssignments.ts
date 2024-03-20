@@ -1,6 +1,6 @@
 import { useGetAssignments } from '@renderer/apis/canvas.api'
 import { useGenerationStore } from '@renderer/stores/generation.store'
-import { Assignment } from '@renderer/types/canvas_api/assignment'
+import { Assignment } from '@canvas-capture/lib'
 import { isObject } from 'lodash'
 import { useCallback, useMemo } from 'react'
 
