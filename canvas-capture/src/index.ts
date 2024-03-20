@@ -1,4 +1,4 @@
-import { createCanvasApi } from './canvas.api'
+import { createCanvasApi, Auth, GetAssignmentsRequest, GetSubmissionsRequest, GetQuizRequest, GetQuizSubmissionRequest, CreateCanvasApiConfig } from './canvas.api'
 import { Assignment } from './types/canvas_api/assignment'
 import { Course } from './types/canvas_api/course'
 import { DiscussionTopic } from './types/canvas_api/discussion-topic'
@@ -29,4 +29,10 @@ export {
     generateAssignment,
     generateQuiz,
     markdown,
+    Auth,
+    GetAssignmentsRequest,
+    GetSubmissionsRequest,
+    GetQuizRequest,
+    GetQuizSubmissionRequest,
+    CreateCanvasApiConfig
 }

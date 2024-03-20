@@ -1,8 +1,3 @@
-import {
-    getQuiz,
-    getSubmissions,
-    getQuizSubmission,
-} from '@renderer/apis/canvas.api'
 import { rm, writeFile } from 'fs/promises'
 import markdownit from 'markdown-it'
 import _ from 'lodash'
@@ -16,6 +11,7 @@ import {
     generateAssignment,
     generateQuiz,
 } from '@canvas-capture/lib'
+import {canvasApi} from "../../apis/canvas.api";
 
 // https://stackoverflow.com/a/70806192
 export const median = (arr: number[]): number => {
@@ -39,7 +35,7 @@ const generateAssignmentOrQuiz = async (
     canvasDomain: string
 ) => {
     if (assignment.is_quiz_assignment && quiz !== undefined) {
-        const quizSubmission = await getQuizSubmission({
+        const quizSubmission = await canvasApi.getQuizSubmission({
             canvasAccessToken,
             canvasDomain,
             courseId: assignment.course_id,
@@ -136,7 +132,7 @@ export async function generate(
         )
 
         for (const assignment of filteredAssignments) {
-            const submissions = await getSubmissions({
+            const submissions = await canvasApi.getSubmissions({
                 canvasAccessToken,
                 canvasDomain,
                 courseId: course.id,
@@ -156,7 +152,7 @@ export async function generate(
                     recursive: true,
                 })
                 const quiz = assignment.is_quiz_assignment
-                    ? await getQuiz({
+                    ? await canvasApi.getQuiz({
                           canvasAccessToken,
                           canvasDomain,
                           courseId: assignment.course_id,
