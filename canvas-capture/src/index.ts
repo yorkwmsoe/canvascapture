@@ -14,7 +14,7 @@ import { Enrollment } from './types/canvas_api/enrollment'
 import { File } from './types/canvas_api/file'
 import { GradingPeriod } from './types/canvas_api/grading-period'
 import { ReadState } from './types/canvas_api/read-state'
-import { Submission } from './types/canvas_api/submission'
+import { Submission, SubmissionComment, MediaComment, RubricAssessment, RubricAssessmentCriterion, WorkflowState, LatePolicyStatus, SubmissionType } from './types/canvas_api/submission'
 import { User } from './types/canvas_api/user'
 import { Quiz } from './types/canvas_api/quiz'
 import { QuizSubmission } from './types/canvas_api/quiz-submissions'
@@ -43,4 +43,11 @@ export {
     GetQuizRequest,
     GetQuizSubmissionRequest,
     CreateCanvasApiConfig,
+    SubmissionComment,
+    MediaComment,
+    RubricAssessment,
+    RubricAssessmentCriterion,
+    WorkflowState,
+    LatePolicyStatus,
+    SubmissionType
 }
