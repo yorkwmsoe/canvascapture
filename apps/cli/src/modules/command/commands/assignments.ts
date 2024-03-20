@@ -1,8 +1,8 @@
-import { getAssignments, getSubmissions } from '@modules/canvas_api/api'
 import { Command } from '../types/command'
 import { state } from '@modules/command/state'
 import { checkbox } from '@inquirer/prompts'
-import { Assignment } from '@modules/canvas_api/types/assignment'
+import { Assignment } from '@canvas-capture/lib'
+import { canvasApi } from '@/lib/canvas.api'
 
 export const assignmentsCommand = {
     name: 'assignments',
@@ -19,11 +19,21 @@ export async function select_assignments() {
     }
 
     for (const course of state.courses) {
-        const unfilteredAssignments = await getAssignments(course.id)
+        const unfilteredAssignments = await canvasApi.getAssignments({
+            canvasAccessToken: state.config.canvasApiToken,
+            canvasDomain: state.config.canvasDomain,
+            courseId: course.id,
+        })
 
         const assignments: Assignment[] = []
         for (const a of unfilteredAssignments) {
-            const submissions = await getSubmissions(course.id, a.id)
+            const submissions = await canvasApi.getSubmissions({
+                canvasAccessToken: state.config.canvasApiToken,
+                canvasDomain: state.config.canvasDomain,
+                courseId: course.id,
+                assignmentId: a.id,
+            })
+
             if (submissions.filter((s) => s.workflow_state !== 'unsubmitted').length > 0) {
                 assignments.push(a)
             }

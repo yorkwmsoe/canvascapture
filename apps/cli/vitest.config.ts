@@ -5,7 +5,7 @@ export default defineConfig({
     test: {
         coverage: {
             provider: 'v8',
-            exclude: [...configDefaults.exclude, '**/types/**', '**/build/**', '**/canvas_api/api.ts', '**/command/categories.ts', '**/.eslintrc.js', '**/index.ts'],
+            exclude: [...configDefaults.exclude, '**/types/**', '**/build/**', '**/canvas_api/api.ts', '**/command/categories.ts', '**/.eslintrc.js', '**/index.ts', '**/cli.ts', '**/env.ts', '**/logger.ts'],
         },
         reporters: ['default', 'junit'],
         outputFile: 'junit.xml',
