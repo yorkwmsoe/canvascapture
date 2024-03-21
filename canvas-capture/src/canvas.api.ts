@@ -190,7 +190,7 @@ export type GetQuizHTMLRequest = {
     courseId: number
 }
 
-export type CreateCanvasAPiConfig =
+export type CreateCanvasApiConfig =
     | {
           type: 'withAuth'
           accessToken: string
