@@ -140,7 +140,8 @@ export const getQuizSubmission = async (
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
     )
         .then(intercept)
-        .then(toJSON<QuizSubmission[]>)
+        .then(toJSON<{ quiz_submissions: QuizSubmission[] }>)
+        .then((data) => data.quiz_submissions)
     return results.find((sub) => sub.submission_id == args.submissionId)
 }
 
@@ -200,7 +201,7 @@ export type CreateCanvasAPiConfig =
       }
 
 export const createCanvasApi = (
-    config: CreateCanvasAPiConfig = { type: 'withoutAuth' }
+    config: CreateCanvasApiConfig = { type: 'withoutAuth' }
 ) => {
     if (config.type === 'withAuth') {
         return {
