@@ -8,6 +8,10 @@ import {
     createTableHeader,
     createTableRows,
 } from './markdown'
+import {Auth} from "./canvas.api";
+import {parseQuizHTML, QuestionInfo} from "./quiz-scraper";
+
+const rmHtml = "/(<([^>]+)>)/ig"
 
 export function generateAssignment(
     assignment: Assignment,
@@ -24,18 +28,21 @@ export function generateAssignment(
     return items.filter((item) => !!item)
 }
 
-export function generateQuiz(
+export async function generateQuiz(
     assignment: Assignment,
     submission: Submission,
     quiz: Quiz,
-    quizSubmission: QuizSubmission | undefined
+    quizSubmission: QuizSubmission | undefined,
+    auth: Auth
 ) {
+    const quizQuestionsData: QuestionInfo[] = await parseQuizHTML(assignment, submission, auth) as QuestionInfo[];
     const items = [
         ...assembleTitleAndGrade(assignment, submission, 'QUIZ: '),
         ...assembleDescriptionInfo(assignment),
         ...assembleFeedbackInfo(submission),
         ...quizOverview(assignment, quiz),
         ...quizUserOverview(submission, quizSubmission),
+        ...formatQuizQuestions(quizQuestionsData)
     ]
 
     return items.filter((item) => !!item)
@@ -147,4 +154,43 @@ function assembleRubricInfo(assignment: Assignment, submission: Submission) {
         : rubricTableHeader + rubricTableBody
 
     return [rubricHeader, rubricTable]
+}
+
+function formatQuizQuestions(quizQuestions: QuestionInfo[]): string[]{
+    Array.prototype.toString = function() {
+        return this.join(" | ");
+    };
+    const formattedQuestions: string[] = []
+    quizQuestions.map((question) => {
+        const position = question.questionNum.toString()
+        const pointsPossible = question.possiblePoints.toString()
+        const qDescription = question.questionDescription.replace(/(<([^>]+)>|\n|&nbsp;)/ig, '');
+        const qType = question.questionType.replace(rmHtml, '')
+        const neutralComments = question.neutralComments.replace(rmHtml, '')
+        const additionalComments = question.additionalComments.replace(rmHtml, '')
+        const studentGuesses = question.userGuesses.map(userGuess => userGuess.guess).toString()
+        const correctAnswers = question.answers.toString()
+
+        const questionHeader = convertToHeader("Question " + position, 2) + '\n'
+        const questionTableHeader1 = createTableHeader(["Points Possible", "Question Description", "Question Type"])
+        const questionTableBody1 = createTableRows([[pointsPossible, qDescription, qType]]) + '\n'
+
+        let commentType = ""
+        let conditionalComments = ""
+        const score = question.actualPoints
+        if(score == pointsPossible){
+            commentType = "Correct"
+            conditionalComments = question.correctComments.replace(rmHtml, '')
+        } else {
+            commentType = "Incorrect"
+            conditionalComments = question.incorrectComments.replace(rmHtml, '')
+        }
+
+        const questionTableHeader2 = createTableHeader(["Student Guesses", "Correct Answers", "Student Score", commentType + " Comments", "Neutral Comments", "Additional Comments"])
+        const questionTableBody2 = createTableRows([[studentGuesses, correctAnswers, score, conditionalComments, neutralComments, additionalComments]])
+        const questionString = questionHeader + questionTableHeader1 +  questionTableBody1 + questionTableHeader2 + questionTableBody2
+        formattedQuestions.push(questionString)
+    })
+
+    return formattedQuestions
 }

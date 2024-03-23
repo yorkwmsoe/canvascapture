@@ -1,9 +1,10 @@
-import { parseISO } from 'date-fns'
-import { Assignment } from './types/canvas_api/assignment'
-import { Course } from './types/canvas_api/course'
-import { Submission } from './types/canvas_api/submission'
-import { Quiz } from './types/canvas_api/quiz'
-import { QuizSubmission } from './types/canvas_api/quiz-submissions'
+import {parseISO} from 'date-fns'
+import {Assignment} from './types/canvas_api/assignment'
+import {Course} from './types/canvas_api/course'
+import {Submission} from './types/canvas_api/submission'
+import {Quiz} from './types/canvas_api/quiz'
+import {QuizSubmission} from './types/canvas_api/quiz-submissions'
+import {QuizQuestion} from "./types/canvas_api/quiz-question";
 
 export type Auth = {
     canvasAccessToken: string
@@ -145,18 +146,17 @@ export const getQuizSubmission = async (
     return results.find((sub) => sub.submission_id == args.submissionId)
 }
 
+
 export const getQuizQuestions = async (args: GetQuizQuestionRequest & Auth) => {
     const { canvasAccessToken, canvasDomain } = args
-    const results = await fetch(
+    const results: QuizQuestion[] = await fetch(
         `${canvasDomain}/api/v1/quiz_submissions/${args.quizSubmissionId}/questions`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
     )
         .then(intercept)
         .then((resp) => resp.json())
-        .then((quiz_resp) => {
-            quiz_resp.quiz_submission_questions
-        })
-    return results
+        .then((quiz_resp) => quiz_resp.quiz_submission_questions)
+    return results.map(res => res.id)
 }
 
 export type GetQuizQuestionRequest = {
@@ -166,22 +166,26 @@ export type GetQuizQuestionRequest = {
 export const getQuizHTML = async (args: GetQuizHTMLRequest & Auth) => {
     const { canvasAccessToken, canvasDomain } = args
     const sessionURL = await fetch(
-        `${canvasDomain}/api/v1/login/session_token?return_to=http://sdlstudentvm06.msoe.edu/
-        courses/${args.courseId}/quizzes/${args.quizId}/history?quiz_submission_id=${args.quizSubmissionId}`,
+        `${canvasDomain}/api/v1/login/session_token?return_to=${canvasDomain}/courses/${args.courseId}/quizzes/${args.quizId}/history?quiz_submission_id=${args.quizSubmissionId}`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
     )
         .then(intercept)
         .then((resp) => resp.json())
-        .then((session_resp) => {
-            session_resp.session_url
-        })
-    const quizHTML =
-        await fetch(`${canvasDomain}/courses/${args.courseId}/quizzes/${args.quizId}
-    /history?quiz_submission_id=${args.quizSubmissionId}&session_token=${sessionURL}
-`)
+        .then((session_resp) => session_resp.session_url)
+
+    //console.log(sessionURL)
+    console.log(`${sessionURL}`)
+    const userAgentHeader = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+
+    return await fetch(sessionURL, {
+        headers: {
+            ...getApiHeaders({accessToken: canvasAccessToken}),
+            'User-Agent': userAgentHeader
+        }
+    })
+
             .then(intercept)
-            .then((htmlResp) => htmlResp.text())
-    return quizHTML
+        .then((htmlResp) => htmlResp.text())
 }
 
 export type GetQuizHTMLRequest = {
@@ -240,6 +244,18 @@ export const createCanvasApi = (
                     canvasDomain: config.domain,
                     ...args,
                 }),
+            getQuizHTML: (args: GetQuizHTMLRequest) =>
+                getQuizHTML({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                    ...args,
+                }),
+            getQuizQuestions: (args: GetQuizQuestionRequest) =>
+                getQuizQuestions({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                    ...args,
+                })
         }
     }
 

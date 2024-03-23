@@ -7,7 +7,7 @@ type Answer = {
     html: string
 }
 
-type QuizQuestion = {
+export type QuizQuestion = {
     // Unique identifier for the question
     id: number
     // Identifier for the quiz this question belongs to
@@ -27,15 +27,15 @@ type QuizQuestion = {
     // Array of possible answers for the question
     answers: Answer[]
     // Optional variables associated with the question
-    variables: any | null
+    variables: string | undefined
     // Optional formulas associated with the question
-    formulas: any | null
+    formulas: string | null
     // Optional tolerance for answers
-    answer_tolerance: any | null
+    answer_tolerance: number | null
     // Optional decimal places for formulas
     formula_decimal_places: number | null
     // Optional matches associated with the question
-    matches: any | null
+    matches: string | null
     // Indicates if the question is flagged
     flagged: boolean
     // Indicates if the question is answered correctly
