@@ -1,8 +1,8 @@
-import {Assignment} from './types/canvas_api/assignment'
+import { Assignment } from './types/canvas_api/assignment'
 // import { Submission } from './types/canvas_api/submission'
 // import { Quiz } from './types/canvas_api/quiz'
 // import { QuizSubmission } from './types/canvas_api/quiz-submissions'
-import {HTMLElement, parse} from 'node-html-parser'
+import { HTMLElement, parse } from 'node-html-parser'
 import {
     Auth,
     getQuizHTML,
@@ -12,7 +12,7 @@ import {
     getQuizSubmission,
     GetQuizSubmissionRequest,
 } from './canvas.api'
-import {Submission} from './types/canvas_api/submission'
+import { Submission } from './types/canvas_api/submission'
 
 type UserGuess = {
     guess: string
@@ -301,7 +301,8 @@ const getAnswers = (
         correctAnswers?.map((correctAnswer) => {
             let answerText = undefined
             if (questionType == 'numerical_question') {
-                answerText = correctAnswer?.querySelector('span.answer_exact')?.innerText
+                answerText =
+                    correctAnswer?.querySelector('span.answer_exact')?.innerText
             } else if (questionType == 'calculated_question') {
                 answerText = correctAnswer?.querySelector(
                     'span.answer_equation'
