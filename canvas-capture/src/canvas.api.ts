@@ -1,10 +1,10 @@
-import {parseISO} from 'date-fns'
-import {Assignment} from './types/canvas_api/assignment'
-import {Course} from './types/canvas_api/course'
-import {Submission} from './types/canvas_api/submission'
-import {Quiz} from './types/canvas_api/quiz'
-import {QuizSubmission} from './types/canvas_api/quiz-submissions'
-import {QuizQuestion} from "./types/canvas_api/quiz-question";
+import { parseISO } from 'date-fns'
+import { Assignment } from './types/canvas_api/assignment'
+import { Course } from './types/canvas_api/course'
+import { Submission } from './types/canvas_api/submission'
+import { Quiz } from './types/canvas_api/quiz'
+import { QuizSubmission } from './types/canvas_api/quiz-submissions'
+import { QuizQuestion } from './types/canvas_api/quiz-question'
 
 export type Auth = {
     canvasAccessToken: string
@@ -146,7 +146,6 @@ export const getQuizSubmission = async (
     return results.find((sub) => sub.submission_id == args.submissionId)
 }
 
-
 export const getQuizQuestions = async (args: GetQuizQuestionRequest & Auth) => {
     const { canvasAccessToken, canvasDomain } = args
     const results: QuizQuestion[] = await fetch(
@@ -156,7 +155,7 @@ export const getQuizQuestions = async (args: GetQuizQuestionRequest & Auth) => {
         .then(intercept)
         .then((resp) => resp.json())
         .then((quiz_resp) => quiz_resp.quiz_submission_questions)
-    return results.map(res => res.id)
+    return results.map((res) => res.id)
 }
 
 export type GetQuizQuestionRequest = {
@@ -175,16 +174,16 @@ export const getQuizHTML = async (args: GetQuizHTMLRequest & Auth) => {
 
     //console.log(sessionURL)
     console.log(`${sessionURL}`)
-    const userAgentHeader = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    const userAgentHeader =
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 
     return await fetch(sessionURL, {
         headers: {
-            ...getApiHeaders({accessToken: canvasAccessToken}),
-            'User-Agent': userAgentHeader
-        }
+            ...getApiHeaders({ accessToken: canvasAccessToken }),
+            'User-Agent': userAgentHeader,
+        },
     })
-
-            .then(intercept)
+        .then(intercept)
         .then((htmlResp) => htmlResp.text())
 }
 
@@ -255,7 +254,7 @@ export const createCanvasApi = (
                     canvasAccessToken: config.accessToken,
                     canvasDomain: config.domain,
                     ...args,
-                })
+                }),
         }
     }
 
