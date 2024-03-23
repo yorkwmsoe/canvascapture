@@ -192,8 +192,8 @@ function formatQuizQuestions(quizQuestions: QuestionInfo[]): string[] {
         const questionTableBody1 =
             createTableRows([[pointsPossible, qDescription, qType]]) + '\n'
 
-        let commentType = ''
-        let conditionalComments = ''
+        let commentType: string
+        let conditionalComments: string
         const score = question.actualPoints
         if (score == pointsPossible) {
             commentType = 'Correct'
