@@ -1,7 +1,9 @@
 {
     "compilerOptions": {
-        "target": "es2015",
-        "module": "commonjs",
+        "module": "NodeNext",
+        "esModuleInterop": true,
+        "target": "ES2020",
+        "sourceMap": true,
         "skipLibCheck": true,
 
         /* Linting */
@@ -11,7 +13,7 @@
         "noFallthroughCasesInSwitch": true,
 
         "declaration": true,
-        "outDir": "./dist"
+        "outDir": "./dist",
     },
     "include": ["src/**/*"]
 }

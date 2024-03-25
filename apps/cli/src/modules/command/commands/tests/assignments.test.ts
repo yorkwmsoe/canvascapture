@@ -1,3 +1,4 @@
+import { expect, describe, it, vi } from 'vitest'
 import { checkbox, getAssignments, getSubmissions } from './mocks'
 import { select_assignments } from '../assignments'
 import { testCourses, testAssignments, testSubmissions } from './data'
@@ -5,7 +6,7 @@ import { state } from '@modules/command/state'
 
 describe('assignments', () => {
     it('should log no courses selected', async () => {
-        const consoleSpy = jest.spyOn(console, 'log')
+        const consoleSpy = vi.spyOn(console, 'log')
 
         await select_assignments()
 
@@ -30,6 +31,6 @@ describe('assignments', () => {
 
         await select_assignments()
 
-        expect(state.assignments).toBeUndefined()
+        expect(state.assignments).toStrictEqual([])
     })
 })

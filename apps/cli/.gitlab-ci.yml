@@ -3,7 +3,7 @@ test-cli:
     stage: 🤞 test
     needs: ['install-packages']
     script:
-        - pnpm cli test:ci
+        - pnpm cli coverage
     artifacts:
         when: always
         reports:

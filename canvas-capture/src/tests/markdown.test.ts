@@ -8,11 +8,9 @@ import {
     generateIMG,
     createInlineCode,
     createCodeBlock,
-    cleanFile,
-    writeToFile,
     addNewLine,
 } from '../markdown'
-import { readFileSync, existsSync } from 'fs'
+import { readFileSync, writeFileSync } from 'fs'
 import { describe, test, expect, beforeAll } from 'vitest'
 
 describe('markdown test', () => {
@@ -65,52 +63,56 @@ describe('markdown test', () => {
     const block: string = createCodeBlock('HELP MEEEEE')
 
     beforeAll(() => {
-        //Cleanfile and write all headers
-        cleanFile(filePath)
-        writeToFile(filePath, header1)
-        addNewLine(filePath)
-        writeToFile(filePath, header2)
-        addNewLine(filePath)
-        writeToFile(filePath, header3)
-        addNewLine(filePath)
-        writeToFile(filePath, header4)
-        addNewLine(filePath)
-        writeToFile(filePath, header5)
-        addNewLine(filePath)
-        writeToFile(filePath, header6)
-        addNewLine(filePath)
+        let mdString = ''
 
-        //Append phrase to file
-        writeToFile(filePath, phrase)
-        addNewLine(filePath)
+        //Add all headers
+        mdString += header1
+        mdString = addNewLine(mdString)
+        mdString += header2
+        mdString = addNewLine(mdString)
+        mdString += header3
+        mdString = addNewLine(mdString)
+        mdString += header4
+        mdString = addNewLine(mdString)
+        mdString += header5
+        mdString = addNewLine(mdString)
+        mdString += header6
+        mdString = addNewLine(mdString)
 
-        //Append Table to file
-        writeToFile(filePath, head)
-        writeToFile(filePath, rows)
-        addNewLine(filePath)
+        //Append phrase to string
+        mdString += phrase
+        mdString = addNewLine(mdString)
 
-        //Append all lists to file
-        writeToFile(filePath, simpList + ' Check')
-        addNewLine(filePath)
-        writeToFile(filePath, checkList)
-        writeToFile(filePath, simpList + ' Asterisk')
-        addNewLine(filePath)
-        writeToFile(filePath, astList)
-        writeToFile(filePath, simpList + ' Plus')
-        addNewLine(filePath)
-        writeToFile(filePath, plusList)
-        writeToFile(filePath, simpList + ' Dash')
-        addNewLine(filePath)
-        writeToFile(filePath, dashList)
-        addNewLine(filePath)
+        //Append Table to string
+        mdString += head
+        mdString += rows
+        mdString = addNewLine(mdString)
 
-        //Append link and image to file
-        writeToFile(filePath, ikeaLink)
-        addNewLine(filePath)
-        writeToFile(filePath, image)
-        addNewLine(filePath)
-        writeToFile(filePath, inline)
-        writeToFile(filePath, block)
+        //Append all lists to string
+        mdString += simpList + ' Check'
+        mdString = addNewLine(mdString)
+        mdString += checkList
+        mdString += simpList + ' Asterisk'
+        mdString = addNewLine(mdString)
+        mdString += astList
+        mdString += simpList + ' Plus'
+        mdString = addNewLine(mdString)
+        mdString += plusList
+        mdString += simpList + ' Dash'
+        mdString = addNewLine(mdString)
+        mdString += dashList
+        mdString = addNewLine(mdString)
+
+        //Append link and image to string
+        mdString += ikeaLink
+        mdString = addNewLine(mdString)
+        mdString += image
+        mdString = addNewLine(mdString)
+        mdString += inline
+        mdString += block
+
+        //Write result to file
+        writeFileSync(filePath + '.md', mdString)
     })
 
     test('that the generated markdown file is equal to the sample file', () => {
@@ -119,12 +121,5 @@ describe('markdown test', () => {
 
         //Act and Assert
         expect(testbuf.equals(samplebuf)).toBe(true)
-    })
-
-    test('that the pdf exists', () => {
-        //Act and Assert
-        console.log(`${filePath}.pdf`)
-        console.log('path exists?: ' + existsSync(`${filePath}.pdf`))
-        expect(existsSync(`${filePath}.pdf`)).toBe(true)
     })
 })

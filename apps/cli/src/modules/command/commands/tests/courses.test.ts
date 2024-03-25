@@ -1,3 +1,4 @@
+import { expect, describe, it } from 'vitest'
 import { checkbox, getCourses, getAssignments } from './mocks'
 import { select_courses } from '../courses'
 import { testCourses, testAssignments } from './data'

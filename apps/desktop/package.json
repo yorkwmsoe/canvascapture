@@ -22,12 +22,13 @@
         "build:linux": "electron-vite build && electron-builder --linux --config",
         "build:multi": "electron-vite build && electron-builder -wl --config",
         "test": "vitest",
+        "test:cli": "vitest run",
         "test:ui": "vitest --ui",
         "coverage": "vitest run --coverage"
     },
     "dependencies": {
-        "@canvas-capture/lib": "workspace:*",
         "@ant-design/icons": "^5.2.6",
+        "@canvas-capture/lib": "workspace:*",
         "@electron-toolkit/preload": "^3.0.0",
         "@electron-toolkit/utils": "^3.0.0",
         "@electron/remote": "^2.1.2",
@@ -42,6 +43,8 @@
         "date-fns": "^3.3.1",
         "electron-updater": "^6.1.7",
         "lodash": "^4.17.21",
+        "markdown-it": "^14.0.0",
+        "pyodide": "^0.25.0",
         "vite-plugin-electron": "^0.15.6",
         "zustand": "^4.4.7"
     },

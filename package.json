@@ -7,6 +7,8 @@
     "desktop": "pnpm -filter canvas-capture-desktop",
     "cli": "pnpm -filter canvas-capture-cli",
     "@canvas-capture": "pnpm -filter @canvas-capture/lib",
+    "documentation": "pnpm -filter canvas-capture-documentation",
+    "test": "pnpm -r run test:cli",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "pnpm -r run lint",
@@ -17,6 +19,12 @@
   "license": "ISC",
   "devDependencies": {
     "husky": "^9.0.11",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.3"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "pyodide@0.25.0": "patches/pyodide@0.25.0.patch"
+    }
   }
 }

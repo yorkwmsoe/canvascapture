@@ -1,8 +1,8 @@
-import { getCourses, getAssignments } from '@modules/canvas_api/api'
 import { Command } from '../types/command'
 import { state } from '../state'
 import { checkbox } from '@inquirer/prompts'
-import { Course } from '@modules/canvas_api/types/course'
+import { Course } from '@canvas-capture/lib'
+import { canvasApi } from '@/lib/canvas.api'
 
 export const coursesCommand = {
     name: 'courses',
@@ -14,12 +14,18 @@ export const coursesCommand = {
 export async function select_courses() {
     state.courses = undefined
 
-    const unfilteredCourses = await getCourses()
+    const unfilteredCourses = await canvasApi.getCourses({
+        canvasAccessToken: state.config.canvasApiToken,
+        canvasDomain: state.config.canvasDomain,
+    })
 
     const courses: Course[] = []
     for (const c of unfilteredCourses) {
-        const assignments = await getAssignments(c.id)
-        console.log(assignments)
+        const assignments = await canvasApi.getAssignments({
+            canvasAccessToken: state.config.canvasApiToken,
+            canvasDomain: state.config.canvasDomain,
+            courseId: c.id,
+        })
         if (assignments.length > 0) {
             courses.push(c)
         }

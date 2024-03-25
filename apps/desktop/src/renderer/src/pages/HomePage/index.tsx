@@ -1,10 +1,23 @@
-import { Input, Layout, Button, Space, Card, Flex, Form } from 'antd'
+import {
+    Input,
+    Layout,
+    Button,
+    Space,
+    Card,
+    Flex,
+    Form,
+    Typography,
+} from 'antd'
 import { useNavigate } from '@tanstack/react-router'
 import { useGetFolders } from '@renderer/hooks/useGetFolders'
 import { FileMarkdownOutlined } from '@ant-design/icons'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { shell } from 'electron'
 import { getDocumentsPath } from '@renderer/utils/config'
+import { useEffect } from 'react'
+import { useAssignments } from '@renderer/hooks/useAssignments'
+import { useCourses } from '@renderer/hooks/useCourses'
+import { join } from 'path'
 
 const { Header, Content, Footer } = Layout
 const { Meta } = Card
@@ -16,7 +29,15 @@ type GenerationNameForm = {
 export function HomePage() {
     const { setGenerationName } = useGenerationStore()
     const navigate = useNavigate({ from: '/' })
-    const { data: folder } = useGetFolders()
+    const { data: folder, refetch: refreshFolders } = useGetFolders()
+    const { setSelectedAssignments } = useAssignments()
+    const { setSelectedCourses } = useCourses()
+
+    useEffect(() => {
+        setSelectedCourses([])
+        setSelectedAssignments([])
+        refreshFolders()
+    }, [])
 
     const generate = (values: GenerationNameForm) => {
         setGenerationName(values.generationName)
@@ -38,23 +59,34 @@ export function HomePage() {
                     backgroundColor: 'white',
                     textAlign: 'left',
                     paddingLeft: 5,
+                    fontSize: `clamp(${12}px, 2vw, ${40}px`,
                 }}
             >
-                <text style={{ font: '12' }}>
-                    <b>Canvas Capture</b>
-                </text>
-                <Button style={{ left: '88%' }} onClick={goToSettingsPage}>
-                    Settings
-                </Button>
+                <Flex justify={'space-between'} align={'center'}>
+                    <Typography.Text style={{ font: '12' }}>
+                        <b>Canvas Capture</b>
+                    </Typography.Text>
+                    <Button
+                        style={{
+                            fontSize: `clamp(${12}px, 2vw, ${40}px`,
+                            height: 'auto',
+                            textAlign: 'center',
+                        }}
+                        onClick={goToSettingsPage}
+                    >
+                        Settings
+                    </Button>
+                </Flex>
             </Header>
+
             <Content
                 style={{
                     margin: 'auto',
-                    width: '50%',
                     verticalAlign: 'middle',
                     alignItems: 'center',
-                    height: 'auto',
-                    minHeight: '490px',
+                    height: 'clamp(300px, 70vh, 700px)',
+                    width: '80%',
+                    minWidth: 300,
                     justifyItems: 'center',
                     marginTop: 10,
                 }}
@@ -63,7 +95,7 @@ export function HomePage() {
                     name="generationNameForm"
                     onFinish={generate}
                     autoComplete="off"
-                    style={{ width: '70%', margin: 'auto' }}
+                    style={{ width: '50%', margin: 'auto' }}
                 >
                     <Form.Item<GenerationNameForm>
                         name="generationName"
@@ -76,8 +108,21 @@ export function HomePage() {
                     >
                         <Flex align={'center'} justify={'center'}>
                             <Space.Compact style={{ width: '100%' }}>
-                                <Input placeholder="Report name" />
-                                <Button htmlType="submit" type="primary">
+                                <Input
+                                    placeholder="Report name"
+                                    style={{
+                                        fontSize: 'clamp(15px, 2.5vh, 40px)',
+                                        height: 'auto',
+                                    }}
+                                />
+                                <Button
+                                    htmlType="submit"
+                                    type="primary"
+                                    style={{
+                                        fontSize: 'clamp(15px, 2.5h, 40px)',
+                                        height: 'auto',
+                                    }}
+                                >
                                     Start
                                 </Button>
                             </Space.Compact>
@@ -115,7 +160,7 @@ export function HomePage() {
                     textAlign: 'left',
                 }}
             >
-                <text>v0.01</text>
+                <Typography.Text>v0.01</Typography.Text>
             </Footer>
         </Layout>
     )
@@ -135,7 +180,7 @@ function FolderCard({ folder }: FolderCardProps) {
                 width: 175,
                 textAlign: 'center',
             }}
-            onClick={() => shell.openPath(`${getDocumentsPath()}/${folder}`)}
+            onClick={() => shell.openPath(join(getDocumentsPath(), folder))}
         >
             <FileMarkdownOutlined />
             <Meta title={folder} />

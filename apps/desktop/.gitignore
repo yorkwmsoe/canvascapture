@@ -8,3 +8,4 @@ out
 !.env.example
 
 coverage/
+junit.xml

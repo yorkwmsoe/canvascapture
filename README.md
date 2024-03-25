@@ -4,6 +4,7 @@
 
 -   Samuel Brand
 -   Wesley Jochman
+-   David Mbele 
 -   Patrick McDonald
 
 ## Product Owner
@@ -44,5 +45,5 @@ Continuous Integration/Continuous Deployment (CI/CD):
 
 ## Readme Table of Contents
 
--   `apps/cli/README.md`
--   `apps/desktop/README.md`
+-   `apps/documentation-site/docs/CLI/README/README.md`
+-   `apps/documentation-site/docs/Desktop/README/README.md`
