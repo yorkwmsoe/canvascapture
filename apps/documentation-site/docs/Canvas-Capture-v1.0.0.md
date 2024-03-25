@@ -45,5 +45,5 @@ Continuous Integration/Continuous Deployment (CI/CD):
 
 ## Readme Table of Contents
 
--   `apps/documentation-site/docs/read-me/canvas-capture-cli.md`
--   `apps/documentation-site/docs/read-me/canvas-capture-desktop.md`
+-   `apps/documentation-site/docs/CLI/README/README.md`
+-   `apps/documentation-site/docs/Desktop/README/README.md`
