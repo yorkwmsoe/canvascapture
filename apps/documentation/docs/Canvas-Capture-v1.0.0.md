@@ -42,8 +42,3 @@ Containerization:
 Continuous Integration/Continuous Deployment (CI/CD):
 
 -   [Gitlab CI](https://docs.gitlab.com/ee/ci/)
-
-## Readme Table of Contents
-
--   `apps/documentation-site/docs/CLI/README/README.md`
--   `apps/documentation-site/docs/Desktop/README/README.md`
