@@ -4,8 +4,8 @@ image: $BASE_IMAGE
 pages:
   stage: deploy
   script:
-    - npm install
-    - npm build:gitlab
+    - pnpm documentation install
+    - pnpm documentation build:gitlab
   artifacts:
     paths:
       - public
