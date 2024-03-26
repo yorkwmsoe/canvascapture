@@ -2,7 +2,7 @@ build-docusaurus:
   image: $BASE_IMAGE
   stage:  📦 build
   script:
-    - pnpm docusaurus start
+    - pnpm documentation docusaurus start
   environment:
     name: documentation-ci
   only:
