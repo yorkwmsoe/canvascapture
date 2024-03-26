@@ -5,6 +5,7 @@ stages:
     - 🤞 test
     - 📦 build
     - 🚀 release
+    - deploy
 
 variables:
     HUSKY: 0

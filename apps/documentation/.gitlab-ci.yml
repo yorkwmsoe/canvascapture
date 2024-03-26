@@ -1,10 +1,13 @@
-build-docusaurus:
-  image: $BASE_IMAGE
-  stage:  📦 build
+
+
+image: $BASE_IMAGE
+pages:
+  stage: deploy
   script:
-    - pnpm documentation docusaurus start
-  environment:
-    name: documentation-ci
+    - npm install
+    - npm build:gitlab
+  artifacts:
+    paths:
+      - public
   only:
-    refs:
-      - documentation-ci
+    - documentation-ci
