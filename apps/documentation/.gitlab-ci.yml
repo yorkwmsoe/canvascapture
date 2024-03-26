@@ -5,7 +5,7 @@ pages:
   stage: deploy
   script:
     - pnpm documentation install
-    - pnpm documentation build:gitlab
+    - pnpm documentation build
   artifacts:
     paths:
       - public
