@@ -1,6 +1,6 @@
 build-docusaurus:
   image: $BASE_IMAGE
-  stage: build
+  stage:  📦 build
   script:
     - pnpm docusaurus start
   environment:
