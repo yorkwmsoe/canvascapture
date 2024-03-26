@@ -1,0 +1,10 @@
+build-docusaurus:
+  image: $BASE_IMAGE
+  stage: build
+  script:
+    - pnpm docusaurus start
+  environment:
+    name: documentation-ci
+  only:
+    refs:
+      - documentation-ci
