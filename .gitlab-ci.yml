@@ -5,6 +5,7 @@ stages:
     - 🤞 test
     - 📦 build
     - 🚀 release
+    - deploy
 
 variables:
     HUSKY: 0
@@ -61,7 +62,7 @@ cache:
 
 pages:
     image: $BASE_IMAGE
-    stage: 🚀 release
+    stage: deploy
     needs: ['install-packages']
     script:
         - pnpm documentation build:gitlab
