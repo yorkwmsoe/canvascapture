@@ -1,16 +1,54 @@
-# The Docker image that will be used to build your app
-image: node:latest
-# Functions that should be executed before the build script is run
-before_script:
-  - pnpm documentation install
-pages:
-  script:
-    - pnpm documentation build:gitlab
-  artifacts:
-    paths:
-      # The folder that contains the files to be exposed at the Page URL
-      - public
-  rules:
-    # This ensures that only pushes to the default branch will trigger
-    # a pages deploy
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+stages:
+    - 🐋 docker
+    - 🛞 install
+    - ✅ check
+    - 🤞 test
+    - 📦 build
+    - 🚀 release
+
+variables:
+    HUSKY: 0
+    CLI_BASE_PATH: apps/cli
+    DESKTOP_BASE_PATH: apps/desktop
+    CI_REGISTRY_IMAGE_PATH: $CI_REGISTRY_IMAGE
+    CI_PIPELINE_ID: $CI_PIPELINE_ID
+    BASE_IMAGE: $CI_REGISTRY_IMAGE_PATH/base:latest
+    CLI_IMAGE: $CI_REGISTRY_IMAGE_PATH/cli:latest
+    DESKTOP_IMAGE: $CI_REGISTRY_IMAGE_PATH/desktop:latest
+
+include:
+    - local: .docker-ci.yml
+    - local: apps/cli/.gitlab-ci.yml
+    - local: apps/desktop/.gitlab-ci.yml
+    - local: canvas-capture/.gitlab-ci.yml
+
+install-packages:
+    image: $BASE_IMAGE
+    stage: 🛞 install
+    script:
+        # Install packages for all apps
+        - pnpm install
+        # Build packages for all apps
+        - pnpm package
+        # Symlink packages for all apps
+        - pnpm install
+    artifacts:
+        paths:
+            - node_modules/
+            - canvas-capture/node_modules/
+            - canvas-capture/dist/
+            - apps/*/node_modules/
+
+check-format:
+    image: $BASE_IMAGE
+    needs: ['install-packages']
+    stage: ✅ check
+    script:
+        - pnpm format:check
+
+check-lint:
+    image: $BASE_IMAGE
+    needs: ['install-packages']
+    stage: ✅ check
+    script:
+        - pnpm lint
