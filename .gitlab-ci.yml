@@ -21,6 +21,7 @@ include:
     - local: apps/cli/.gitlab-ci.yml
     - local: apps/desktop/.gitlab-ci.yml
     - local: canvas-capture/.gitlab-ci.yml
+    - local: apps/documentation/.gitlab-ci.yml
 
 install-packages:
     image: $BASE_IMAGE

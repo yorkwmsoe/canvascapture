@@ -1,13 +1,11 @@
 
-
-image: $BASE_IMAGE
 pages:
-  stage: deploy
+  image: $BASE_IMAGE
+  stage: 🚀 release
+  needs: ['install-packages']
   script:
-    - pnpm documentation install
     - pnpm documentation build:gitlab
   artifacts:
     paths:
       - public
-  only:
-    - documentation-ci
+    when: manual
