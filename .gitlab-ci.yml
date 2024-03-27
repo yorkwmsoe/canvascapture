@@ -55,12 +55,13 @@ check-lint:
         - pnpm lint
 
 pages:
-  image: $BASE_IMAGE
-  stage: 🚀 release
-  needs: ['install-packages']
-  script:
-    - pnpm documentation build:gitlab
-  artifacts:
-    paths:
-      - $DOCUMENTATION_BASE_PATH/public
-  when: manual
+    image: $BASE_IMAGE
+    stage: 🚀 release
+    needs: ['install-packages']
+    script:
+        - pnpm documentation build:gitlab
+    artifacts:
+        paths:
+            - $DOCUMENTATION_BASE_PATH/public
+    publish: $DOCUMENTATION_BASE_PATH/public
+    when: manual
