@@ -5,7 +5,6 @@ stages:
     - 🤞 test
     - 📦 build
     - 🚀 release
-    - deploy
 
 variables:
     HUSKY: 0
@@ -62,12 +61,12 @@ cache:
 
 pages:
     image: $BASE_IMAGE
-    stage: deploy
+    stage: 🚀 release
     needs: ['install-packages']
     script:
         - pnpm documentation build:gitlab
+        - mv $DOCUMENTATION_BASE_PATH/public public
     artifacts:
         paths:
-            - $DOCUMENTATION_BASE_PATH/public
-    publish: $DOCUMENTATION_BASE_PATH/public
+            - public
     when: manual
