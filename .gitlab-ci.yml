@@ -22,7 +22,6 @@ include:
     - local: apps/cli/.gitlab-ci.yml
     - local: apps/desktop/.gitlab-ci.yml
     - local: canvas-capture/.gitlab-ci.yml
-    - local: apps/documentation/.gitlab-ci.yml
 
 install-packages:
     image: $BASE_IMAGE
@@ -54,3 +53,14 @@ check-lint:
     stage: ✅ check
     script:
         - pnpm lint
+
+pages:
+  image: $BASE_IMAGE
+  stage: 🚀 release
+  needs: ['install-packages']
+  script:
+    - pnpm documentation build:gitlab
+  artifacts:
+    paths:
+      - $DOCUMENTATION_BASE_PATH/public
+  when: manual
