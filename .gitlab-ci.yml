@@ -54,6 +54,11 @@ check-lint:
     script:
         - pnpm lint
 
+cache:
+    paths:
+    - .cache/
+    - $DOCUMENTATION_BASE_PATH/public
+
 pages:
     image: $BASE_IMAGE
     stage: 🚀 release
