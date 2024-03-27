@@ -10,6 +10,7 @@ variables:
     HUSKY: 0
     CLI_BASE_PATH: apps/cli
     DESKTOP_BASE_PATH: apps/desktop
+    DOCUMENTATION_BASE_PATH: apps/documentation
     CI_REGISTRY_IMAGE_PATH: $CI_REGISTRY_IMAGE
     CI_PIPELINE_ID: $CI_PIPELINE_ID
     BASE_IMAGE: $CI_REGISTRY_IMAGE_PATH/base:latest

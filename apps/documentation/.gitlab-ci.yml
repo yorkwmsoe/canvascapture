@@ -7,5 +7,5 @@ pages:
     - pnpm documentation build:gitlab
   artifacts:
     paths:
-      - public
+      - $DOCUMENTATION_BASE_PATH/public
   when: manual
