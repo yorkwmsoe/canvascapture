@@ -1,9 +1,13 @@
-import { Input } from 'antd'
+import { Input, Tabs } from 'antd'
 import { DirectoryTree } from '../DirectoryTree'
 import { SideBar } from './Sidebar'
 import { DirectoryTreeProps } from 'antd/es/tree'
-import { Key, useState } from 'react'
+import { ChangeEventHandler, Key, useState } from 'react'
 import { popConfirm } from '@renderer/lib/model'
+import Markdown from 'react-markdown'
+import { useTheme } from '@renderer/lib/useTheme'
+import remarkGfm from 'remark-gfm'
+import { ExternalLink } from '../ExternalLink'
 
 const treeData = [
     {
@@ -37,15 +41,22 @@ const treeData = [
     },
 ] satisfies DirectoryTreeProps['treeData']
 
-export function MarkdownEditor() {
+export type MarkdownEditorProps = {
+    defaultValue: string
+}
+
+export function MarkdownEditor({ defaultValue }: MarkdownEditorProps) {
+    const { token } = useTheme()
+    const [text, setText] = useState<string>(defaultValue)
     const [selectedFile, setSelectedFile] = useState<string>(
         treeData[0].children[0].key
     )
 
     const [isDirty, setIsDirty] = useState(false)
 
-    const handleTextChange = () => {
+    const handleTextChange: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
         setIsDirty(true)
+        setText(e.target.value)
     }
 
     const handleChangeFile = (files: Key[]) => {
@@ -69,6 +80,50 @@ export function MarkdownEditor() {
         setIsDirty(false)
     }
 
+    const tabs = [
+        {
+            key: '1',
+            label: 'Edit',
+            children: (
+                <Input.TextArea
+                    autoSize={{ maxRows: 15 }}
+                    onChange={handleTextChange}
+                    value={text}
+                    style={{ flex: 4 }}
+                />
+            ),
+        },
+        {
+            key: '2',
+            label: 'View',
+            children: (
+                <div
+                    style={{
+                        borderColor: token.colorBorder,
+                        borderRadius: token.borderRadius,
+                        borderWidth: token.lineWidth,
+                        borderStyle: 'solid',
+                        paddingInline: '0.5rem',
+                        overflow: 'auto',
+                    }}
+                >
+                    <Markdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                            a: ({ href, children }) => (
+                                <ExternalLink href={href}>
+                                    {children}
+                                </ExternalLink>
+                            ),
+                        }}
+                    >
+                        {text}
+                    </Markdown>
+                </div>
+            ),
+        },
+    ]
+
     return (
         <div
             style={{
@@ -84,10 +139,9 @@ export function MarkdownEditor() {
                 onSelect={handleChangeFile}
                 selectedKeys={[selectedFile]}
             />
-            <Input.TextArea
-                onChange={handleTextChange}
-                style={{ flex: 4, minHeight: '500px' }}
-            />
+            <div style={{ width: '600px' }}>
+                <Tabs defaultActiveKey="1" items={tabs} type="card" />
+            </div>
             <SideBar onSave={handleSave} />
         </div>
     )

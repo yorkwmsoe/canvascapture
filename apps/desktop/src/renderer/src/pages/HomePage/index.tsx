@@ -18,8 +18,9 @@ import { useEffect } from 'react'
 import { useAssignments } from '@renderer/hooks/useAssignments'
 import { useCourses } from '@renderer/hooks/useCourses'
 import { join } from 'path'
+import { Navbar } from '@renderer/components/Navbar'
 
-const { Header, Content, Footer } = Layout
+const { Content, Footer } = Layout
 const { Meta } = Card
 
 type GenerationNameForm = {
@@ -54,30 +55,12 @@ export function HomePage() {
 
     return (
         <Layout>
-            <Header
-                style={{
-                    backgroundColor: 'white',
-                    textAlign: 'left',
-                    paddingLeft: 5,
-                    fontSize: `clamp(${12}px, 2vw, ${40}px`,
-                }}
-            >
-                <Flex justify={'space-between'} align={'center'}>
-                    <Typography.Text style={{ font: '12' }}>
-                        <b>Canvas Capture</b>
-                    </Typography.Text>
-                    <Button
-                        style={{
-                            fontSize: `clamp(${12}px, 2vw, ${40}px`,
-                            height: 'auto',
-                            textAlign: 'center',
-                        }}
-                        onClick={goToSettingsPage}
-                    >
-                        Settings
-                    </Button>
-                </Flex>
-            </Header>
+            <Navbar>
+                <Typography.Title level={4} style={{ margin: 0 }}>
+                    Canvas Capture
+                </Typography.Title>
+                <Button onClick={goToSettingsPage}>Settings</Button>
+            </Navbar>
 
             <Content
                 style={{
@@ -88,7 +71,6 @@ export function HomePage() {
                     width: '80%',
                     minWidth: 300,
                     justifyItems: 'center',
-                    marginTop: 10,
                 }}
             >
                 <Form

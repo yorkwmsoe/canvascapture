@@ -45,6 +45,8 @@
         "lodash": "^4.17.21",
         "markdown-it": "^14.0.0",
         "pyodide": "^0.25.0",
+        "react-markdown": "^9.0.1",
+        "remark-gfm": "^4.0.0",
         "vite-plugin-electron": "^0.15.6",
         "zustand": "^4.4.7"
     },

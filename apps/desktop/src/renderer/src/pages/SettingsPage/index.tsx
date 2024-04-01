@@ -1,7 +1,9 @@
 import { Config } from '@renderer/utils/config'
 import { useSettingsStore } from '@renderer/stores/settings.store'
 import { useNavigate } from '@tanstack/react-router'
-import { Button, Checkbox, Form, Input, Flex } from 'antd'
+import { Button, Checkbox, Form, Input, Typography } from 'antd'
+import { Navbar } from '@renderer/components/Navbar'
+import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
 
 export function SettingsPage() {
     const {
@@ -27,79 +29,69 @@ export function SettingsPage() {
     }
 
     return (
-        <Form
-            name="basic"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ maxWidth: '90%' }}
-            initialValues={{ canvasDomain, canvasAccessToken, markdownEditor }}
-            onFinish={onFinish}
-            autoComplete="off"
-        >
-            <Flex
-                style={{
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                }}
-            >
-                <Button
-                    style={{
-                        marginLeft: 10,
-                        fontSize: `clamp(${12}px, 1.5vw, ${40}px`,
-                        textAlign: 'center',
-                        height: 'auto',
-                    }}
-                    onClick={goToHomePage}
-                >
-                    {'\u2B05'}Back
+        <div>
+            <Navbar>
+                <Button onClick={goToHomePage} icon={<LeftArrowIcon />}>
+                    Back
                 </Button>
-                <h1
-                    style={{
-                        marginRight: 10,
-                        fontSize: `clamp(${12}px, 2vw, ${40}px`,
-                    }}
-                >
+            </Navbar>
+            <div>
+                <Typography.Title level={2} style={{ textAlign: 'center' }}>
                     Settings
-                </h1>
-            </Flex>
-            <Form.Item<Config>
-                label="Canvas Domain"
-                name="canvasDomain"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Canvas domain is missing',
-                    },
-                ]}
-            >
-                <Input />
-            </Form.Item>
-            <Form.Item<Config>
-                label="Canvas Access Token"
-                name="canvasAccessToken"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Canvas access token is missing',
-                    },
-                ]}
-            >
-                <Input.Password />
-            </Form.Item>
-            {!isSetup && (
-                <Form.Item<Config>
-                    name="markdownEditor"
-                    valuePropName="checked"
-                    wrapperCol={{ offset: 8, span: 16 }}
+                </Typography.Title>
+                <Form
+                    name="basic"
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}
+                    style={{ maxWidth: '90%' }}
+                    initialValues={{
+                        canvasDomain,
+                        canvasAccessToken,
+                        markdownEditor,
+                    }}
+                    onFinish={onFinish}
+                    autoComplete="off"
                 >
-                    <Checkbox>Show Markdown Editor</Checkbox>
-                </Form.Item>
-            )}
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" htmlType="submit">
-                    Save
-                </Button>
-            </Form.Item>
-        </Form>
+                    <Form.Item<Config>
+                        label="Canvas Domain"
+                        name="canvasDomain"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Canvas domain is missing',
+                            },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item<Config>
+                        label="Canvas Access Token"
+                        name="canvasAccessToken"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Canvas access token is missing',
+                            },
+                        ]}
+                    >
+                        <Input.Password />
+                    </Form.Item>
+                    {!isSetup && (
+                        <Form.Item<Config>
+                            name="markdownEditor"
+                            valuePropName="checked"
+                            wrapperCol={{ offset: 8, span: 16 }}
+                        >
+                            <Checkbox>Show Markdown Editor</Checkbox>
+                        </Form.Item>
+                    )}
+                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                        <Button type="primary" htmlType="submit">
+                            Save
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </div>
+        </div>
     )
 }
