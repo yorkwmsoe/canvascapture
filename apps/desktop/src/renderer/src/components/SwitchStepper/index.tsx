@@ -5,8 +5,10 @@ import { Courses } from '../Courses'
 import { useCourses } from '@renderer/hooks/useCourses'
 import { useAssignments } from '@renderer/hooks/useAssignments'
 import { Generate } from '../Generate'
+import { useSettingsStore } from '@renderer/stores/settings.store'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 
-const STEPS = [
+export const STEPS = [
     {
         title: 'Courses',
         content: <Courses />,
@@ -22,13 +24,18 @@ const STEPS = [
 ] as const
 
 export function SwitchStepper() {
+    const { step } = useSearch({ from: '/selection' })
     const { token } = theme.useToken()
-    const [current, setCurrent] = useState(0)
+    const [current, setCurrent] = useState(step ?? 0)
     const { selectedCourses } = useCourses()
     const { selectedAssignments } = useAssignments()
+    const { markdownEditor } = useSettingsStore()
+    const navigate = useNavigate({ from: '/selection' })
 
     const next = useCallback(() => {
-        if (current !== STEPS.length - 1) {
+        if (STEPS[current].title === 'Assignments' && markdownEditor) {
+            navigate({ to: '/markdown-editor' })
+        } else if (current !== STEPS.length - 1) {
             setCurrent((prev) => prev + 1)
         }
     }, [current])
@@ -79,11 +86,9 @@ export function SwitchStepper() {
                         onClick={next}
                         disabled={isDisabled}
                     >
-                        {STEPS[current + 1].title === 'Generate' ? (
-                            <>Generate</>
-                        ) : (
-                            <>Next</>
-                        )}
+                        {STEPS[current + 1].title === 'Generate'
+                            ? 'Generate'
+                            : 'Next'}
                     </Button>
                 )}
             </div>

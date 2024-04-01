@@ -43,9 +43,13 @@ const treeData = [
 
 export type MarkdownEditorProps = {
     defaultValue: string
+    handleFinish: () => void
 }
 
-export function MarkdownEditor({ defaultValue }: MarkdownEditorProps) {
+export function MarkdownEditor({
+    defaultValue,
+    handleFinish,
+}: MarkdownEditorProps) {
     const { token } = useTheme()
     const [text, setText] = useState<string>(defaultValue)
     const [selectedFile, setSelectedFile] = useState<string>(
@@ -142,7 +146,7 @@ export function MarkdownEditor({ defaultValue }: MarkdownEditorProps) {
             <div style={{ width: '600px' }}>
                 <Tabs defaultActiveKey="1" items={tabs} type="card" />
             </div>
-            <SideBar onSave={handleSave} />
+            <SideBar onSave={handleSave} onFinish={handleFinish} />
         </div>
     )
 }
