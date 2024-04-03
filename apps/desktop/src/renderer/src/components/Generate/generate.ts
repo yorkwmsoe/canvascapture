@@ -145,7 +145,7 @@ export async function generate(
             if (uniqueSubmissions.length > 0) {
                 const assignmentsPath = join(
                     generationName,
-                    course.name,
+                    course.original_name ?? course.name,
                     assignment.name
                 )
                 mkdirSync(join(documentsPath, assignmentsPath), {
