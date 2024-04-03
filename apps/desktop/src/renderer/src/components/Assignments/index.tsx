@@ -49,7 +49,7 @@ export function Assignments() {
                 }
             )
             return {
-                title: course?.name,
+                title: course?.original_name ?? course?.name,
                 key: assignment.courseId,
                 selectable: false,
                 disableCheckbox: !filteredAssignments.length,
