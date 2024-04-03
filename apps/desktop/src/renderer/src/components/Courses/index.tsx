@@ -7,7 +7,7 @@ export function Courses() {
 
     const options = useMemo(() => {
         return courses?.map((course) => ({
-            label: course.name,
+            label: course?.original_name ?? course.name,
             value: course.id,
         }))
     }, [courses])
