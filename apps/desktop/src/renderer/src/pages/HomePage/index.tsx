@@ -28,7 +28,7 @@ type GenerationNameForm = {
 }
 
 export function HomePage() {
-    const { setGenerationName } = useGenerationStore()
+    const { setGenerationName, reset } = useGenerationStore()
     const navigate = useNavigate({ from: '/' })
     const { data: folder, refetch: refreshFolders } = useGetFolders()
     const { setSelectedAssignments } = useAssignments()
@@ -41,6 +41,7 @@ export function HomePage() {
     }, [])
 
     const generate = (values: GenerationNameForm) => {
+        reset()
         setGenerationName(values.generationName)
         goToCoursesPage()
     }
