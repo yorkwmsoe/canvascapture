@@ -1,13 +1,14 @@
 import { Checkbox } from 'antd'
 import { useMemo } from 'react'
 import { useCourses } from '@renderer/hooks/useCourses'
+import { getCourseName } from '@renderer/utils/courses'
 
 export function Courses() {
     const { courses, selectedCourses, setSelectedCourses } = useCourses()
 
     const options = useMemo(() => {
         return courses?.map((course) => ({
-            label: course?.original_name ?? course.name,
+            label: getCourseName(course),
             value: course.id,
         }))
     }, [courses])

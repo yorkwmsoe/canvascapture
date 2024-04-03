@@ -12,6 +12,7 @@ import {
     generateQuiz,
 } from '@canvas-capture/lib'
 import { canvasApi } from '../../apis/canvas.api'
+import { getCourseName } from '@renderer/utils/courses'
 
 // https://stackoverflow.com/a/70806192
 export const median = (arr: number[]): number => {
@@ -145,7 +146,7 @@ export async function generate(
             if (uniqueSubmissions.length > 0) {
                 const assignmentsPath = join(
                     generationName,
-                    course.original_name ?? course.name,
+                    getCourseName(course),
                     assignment.name
                 )
                 mkdirSync(join(documentsPath, assignmentsPath), {

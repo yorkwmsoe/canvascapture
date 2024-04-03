@@ -6,6 +6,7 @@ import { Select, Tree, TreeDataNode, TreeProps } from 'antd'
 import { isString } from 'lodash'
 import { useMemo, useState } from 'react'
 import { SubmissionType } from '@canvas-capture/lib'
+import { getCourseName } from '@renderer/utils/courses'
 
 const options: {
     label: string
@@ -49,7 +50,7 @@ export function Assignments() {
                 }
             )
             return {
-                title: course?.original_name ?? course?.name,
+                title: getCourseName(course),
                 key: assignment.courseId,
                 selectable: false,
                 disableCheckbox: !filteredAssignments.length,
