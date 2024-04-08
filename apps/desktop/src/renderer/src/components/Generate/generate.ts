@@ -27,6 +27,11 @@ type FilePathContentPair = {
     content: string
 }
 
+type FilePreview = {
+    folderNames: string[]
+    content: string
+}
+
 // FIXME: I hate that I have to do this
 const generateAssignmentOrQuiz = async (
     assignment: Assignment,
@@ -111,6 +116,65 @@ export const generatePairs = async (
         default:
             return [highPair, medianPair, lowPair]
     }
+}
+
+export async function preGenerate(
+    courses: Course[],
+    assignments: Assignment[],
+    canvasAccessToken: string,
+    canvasDomain: string
+) {
+    const pairs: FilePreview[] = []
+    for (const course of courses) {
+        const filteredAssignments = assignments.filter(
+            (a) => a.course_id === course.id
+        )
+
+        for (const assignment of filteredAssignments) {
+            const submissions = await canvasApi.getSubmissions({
+                canvasAccessToken,
+                canvasDomain,
+                courseId: course.id,
+                assignmentId: assignment.id,
+            })
+            const uniqueSubmissions = _.uniqBy(
+                submissions.filter((s) => !_.isNil(s.score)),
+                (s) => s.score
+            )
+            if (uniqueSubmissions.length > 0) {
+                const assignmentsPath = join(
+                    getCourseName(course),
+                    assignment.name
+                )
+                const quiz = assignment.is_quiz_assignment
+                    ? await canvasApi.getQuiz({
+                          canvasAccessToken,
+                          canvasDomain,
+                          courseId: assignment.course_id,
+                          quizId: assignment.quiz_id,
+                      })
+                    : undefined
+                const pariData = [
+                    ...(await generatePairs(
+                        assignment,
+                        uniqueSubmissions,
+                        quiz,
+                        assignmentsPath,
+                        canvasAccessToken,
+                        canvasDomain
+                    )),
+                ]
+                const data = pariData.map<FilePreview>((x) => {
+                    return {
+                        folderNames: x.filePath.split('/'),
+                        content: x.content,
+                    }
+                })
+                pairs.push(...data)
+            }
+        }
+    }
+    return pairs
 }
 
 export async function generate(

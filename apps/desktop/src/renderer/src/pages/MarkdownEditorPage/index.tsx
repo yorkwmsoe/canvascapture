@@ -1,3 +1,4 @@
+import { useGenerate } from '@renderer/components/Generate/useGenerate'
 import { MarkdownEditor } from '@renderer/components/MarkdownEditor'
 import { Navbar } from '@renderer/components/Navbar'
 import { STEPS } from '@renderer/components/SwitchStepper'
@@ -21,6 +22,9 @@ A table:
 
 export function MarkdownEditorPage() {
     const navigate = useNavigate({ from: '/markdown-editor' })
+    const { runPreGenerate } = useGenerate()
+
+    console.log(runPreGenerate())
 
     const goBack = () => {
         navigate({ to: '/selection', search: { step: STEPS.length - 2 } })

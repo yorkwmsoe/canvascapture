@@ -1,53 +1,18 @@
-import { Flex, Spin } from 'antd'
-import { useAssignments } from '@renderer/hooks/useAssignments'
-import { useCourses } from '@renderer/hooks/useCourses'
-import { generate } from './generate'
-import { parseHierarchyId } from '@renderer/utils/assignments'
+import { Flex, Spin, Typography } from 'antd'
 import { useEffect } from 'react'
-import { useSettingsStore } from '@renderer/stores/settings.store'
-import { Course } from '@canvas-capture/lib'
-import { useGenerationStore } from '@renderer/stores/generation.store'
 import { useNavigate } from '@tanstack/react-router'
-import { ipcRenderer } from 'electron'
-import { getDocumentsPath } from '@renderer/utils/config'
+import { useGenerate } from './useGenerate'
 
 export function Generate() {
     const navigate = useNavigate({ from: '/generation' })
-    const { selectedAssignments, getAssignmentById } = useAssignments()
-    const { courses, selectedCourses } = useCourses()
-    const { canvasDomain, canvasAccessToken } = useSettingsStore()
-    const { generationName } = useGenerationStore()
-    const documentsPath = getDocumentsPath()
-
-    const selectedAssignmentsSplit = selectedAssignments.map((x) =>
-        parseHierarchyId(x)
-    )
-    const filteredAssignments = selectedAssignmentsSplit.flatMap(
-        ({ courseId, assignmentId }) =>
-            getAssignmentById(courseId, assignmentId) ?? []
-    )
-    /* Cannot be undefined, as the UI prevents it */
-    const filteredCourses = courses?.filter((x) =>
-        selectedCourses.includes(x.id)
-    ) as Course[]
-
-    const runGenerate = async () => {
-        ipcRenderer.send(
-            'generate',
-            await generate(
-                filteredCourses,
-                filteredAssignments,
-                canvasAccessToken,
-                canvasDomain,
-                generationName,
-                documentsPath
-            )
-        )
-        navigate({ to: '/' })
-    }
+    const { runGenerate } = useGenerate()
 
     useEffect(() => {
-        runGenerate()
+        const run = async () => {
+            await runGenerate()
+            navigate({ to: '/' })
+        }
+        run()
     }, [])
 
     return (
@@ -57,8 +22,7 @@ export function Generate() {
             style={{ height: '100%', flexDirection: 'column' }}
         >
             <Spin />
-            <br />
-            Generating
+            <Typography.Text>Generating</Typography.Text>
         </Flex>
     )
 }
