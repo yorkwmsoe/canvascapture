@@ -90,6 +90,33 @@ export type Submission = {
     entered_grade: string
     entered_score: number
     rubric_assessment?: RubricAssessment
+    attachments?: SubmissionAttachment[]
+}
+
+export type SubmissionAttachment = {
+    id: number,
+    uuid: string,
+    folder_id: number,
+    display_name: string,
+    filename: string,
+    upload_status: string,
+    "content-type": string,
+    url: string,
+    size: number,
+    created_at: Date,
+    updated_at: Date,
+    unlock_at: null,
+    locked: boolean,
+    hidden: boolean,
+    lock_at: null,
+    hidden_for_user: boolean,
+    thumbnail_url: string,
+    modified_at: Date,
+    mime_class: string,
+    media_entry_id: null,
+    category: string,
+    locked_for_user: boolean,
+    preview_url: null
 }
 
 export type SubmissionComment = {

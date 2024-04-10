@@ -4,6 +4,7 @@ import { Quiz } from './types/canvas_api/quiz'
 import { QuizSubmission } from './types/canvas_api/quiz-submissions'
 import {
     convertToHeader,
+    createLinkNormal,
     createList,
     createTableHeader,
     createTableRows,
@@ -102,16 +103,32 @@ function assembleTitleAndGrade(
 function assembleDescriptionInfo(assignment: Assignment) {
     const descriptionHeader = convertToHeader('Description', 2)
     const description = assignment.description
-        ? assignment.description
+        ? '\n<code>\n' + assignment.description + '\n</code>\n'
         : 'No description'
     return [descriptionHeader, description]
 }
 
 function assembleSubmissionInfo(submission: Submission) {
     const submissionHeader = convertToHeader('Submission', 2)
-    let submissionBody = submission.body
-    if (submission.submission_type === 'online_quiz') {
-        submissionBody = 'No submission'
+    let submissionBody = '\n<code>\n' + submission.body + '\n</code>\n'
+    switch (submission.submission_type) {
+        case 'online_quiz': {
+            submissionBody = 'No submission'
+            break;
+        }
+        case 'online_upload': {
+            const attachment = submission.attachments?.[0]
+            submissionBody = attachment ? createLinkNormal(attachment.display_name, attachment.url) : 'No upload'
+            break;
+        }
+        case 'online_url': {
+            submissionBody = submission.url ?? 'No URL'
+            break;
+        }
+        case 'student_annotation': {
+            submissionBody = 'No submission'
+            break;
+        }
     }
     return [submissionHeader, submissionBody]
 }
@@ -120,7 +137,7 @@ function assembleFeedbackInfo(submission: Submission) {
     const feedbackHeader = convertToHeader('Feedback', 2)
     const feedbackBody = submission?.submission_comments?.length
         ? createList(
-              submission?.submission_comments.map((comment) => comment.comment),
+              submission?.submission_comments.map((comment) => `${comment.author_name}: ${comment.comment}`),
               '-'
           )
         : 'No feedback'

@@ -92,7 +92,7 @@ export function SettingsPage() {
                     valuePropName="checked"
                     wrapperCol={{ offset: 8, span: 16 }}
                 >
-                    <Checkbox>Show Markdown Editor</Checkbox>
+                    <Checkbox>Show Markdown Editor (allows for manual edits before generating PDFs)</Checkbox>
                 </Form.Item>
             )}
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
