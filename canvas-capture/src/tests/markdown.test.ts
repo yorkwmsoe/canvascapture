@@ -13,7 +13,90 @@ import {
 import { readFileSync, writeFileSync } from 'fs'
 import { describe, test, expect, beforeAll } from 'vitest'
 
-describe('markdown test', () => {
+type headerSizes = {
+    size: number,
+    output: string
+}
+describe('markdown convertToHeader', () => {
+    //Arrange
+    const sampleHeader = "SampleHeader"
+    const listOfHeaderSizes: headerSizes[] = [
+        {size: 1, output: "# SampleHeader",},
+        {size: 2, output: "## SampleHeader"},
+        {size: 3, output: "### SampleHeader"},
+        {size: 4, output: "#### SampleHeader"},
+        {size: 5, output: "##### SampleHeader"},
+        {size: 6, output: "###### SampleHeader"}]
+    //Act and Assert
+    test.each(listOfHeaderSizes)('convertToHeader is same as SampleHeader', (head) => {
+        const retrievedHeader = convertToHeader(sampleHeader, head.size)
+        expect(retrievedHeader).toBe(head.output)
+    })
+})
+
+describe('Create list', () => {
+    type ListCheck = {
+        bullet: string,
+        output: string
+    }
+    const correctLists: ListCheck[] = [
+        {bullet: "- [ ]", output: "- [ ] one\n- [ ] two\n- [ ] three\n"},
+        {bullet: "*", output: "* one\n* two\n* three\n"},
+        {bullet: "+", output: "+ one\n+ two\n+ three\n"},
+        {bullet: "-", output: "- one\n- two\n- three\n"},
+
+    ]
+    test.each(correctLists)('Testing lists', (listCheck) => {
+        const checkList: string = createList(['one', 'two', 'three'], listCheck.bullet)
+        expect(checkList).toBe(listCheck.output)
+    })
+})
+
+describe('Testing createlink', () => {
+    const ikeaLink = createLink(
+        'This Link to Ikea',
+        'Link',
+        'https://ikea.com'
+    )
+
+    test('createlink', () => {
+        const testLink = "This [Link](https://ikea.com) to Ikea"
+        expect(ikeaLink).toBe(testLink)
+    })
+})
+
+describe('Test Markdown Code', () => {
+    const inlineCode = '`' + "Sample Inline Code" + '`'
+    test('Inline Code', () => {
+        expect(createInlineCode("Sample Inline Code"), inlineCode)
+    })
+
+    const multiLineCode = '\n```\n' + "Sample Multi-Line Code" + '\n```\n'
+    test('Multi line Code', () => {
+        expect(createInlineCode("Sample Multi-Line Code"), multiLineCode)
+    })
+})
+
+describe('Test Table Header', () => {
+    const tableHeader = "| head1 | head2 | head3 |\n| --- | --- | --- |\n"
+    test('Table Header ', () => {
+        const returnedTableHeader = createTableHeader(["head1", "head2", "head3"])
+        console.log(returnedTableHeader)
+        console.log(tableHeader)
+        expect(returnedTableHeader).toBe(tableHeader)
+    })
+})
+
+describe("Test Create Table Rows", () => {
+    const tableRows = "| r1c1 | r1c2 | r1c3 |\n| r2c1 | r2c2 | r2c3 |\n"
+    const tableRowsToPass = [['r1c1', 'r1c2', 'r1c3'], ['r2c1', 'r2c2', 'r2c3']]
+
+    test("Table Rows Correctness", () => {
+        expect(createTableRows(tableRowsToPass)).toBe(tableRows)
+    })
+})
+
+describe('markdown output test', () => {
     //Arrange
 
     //Directory of tests to append for file location
