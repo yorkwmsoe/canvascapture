@@ -144,11 +144,9 @@ export async function generate(
                 (s) => s.score
             )
             if (uniqueSubmissions.length > 0) {
-                const assignmentsPath = sanitizePath(join(
-                    generationName,
-                    course.name,
-                    assignment.name
-                ))
+                const assignmentsPath = sanitizePath(
+                    join(generationName, course.name, assignment.name)
+                )
                 mkdirSync(join(documentsPath, assignmentsPath), {
                     recursive: true,
                 })

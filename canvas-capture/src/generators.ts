@@ -110,34 +110,64 @@ function assembleDescriptionInfo(assignment: Assignment) {
 
 function assembleSubmissionInfo(submission: Submission) {
     const submissionHeader = convertToHeader('Submission', 2)
-    let submissionBody = '\n<code>\n' + submission.body + '\n</code>\n'
     switch (submission.submission_type) {
+        case 'online_text_entry': {
+            const submissionBody =
+                '\n<code>\n' + submission.body + '\n</code>\n'
+            return [submissionHeader, submissionBody]
+        }
         case 'online_quiz': {
-            submissionBody = 'No submission'
-            break;
+            return [submissionHeader, 'See quiz below']
         }
         case 'online_upload': {
             const attachment = submission.attachments?.[0]
-            submissionBody = attachment ? createLinkNormal(attachment.display_name, attachment.url) : 'No upload'
-            break;
+            const submissionBody = attachment
+                ? createLinkNormal(attachment.display_name, attachment.url)
+                : 'No upload'
+            return [submissionHeader, submissionBody]
         }
         case 'online_url': {
-            submissionBody = submission.url ?? 'No URL'
-            break;
+            return [submissionHeader, submission.url ?? 'No URL']
         }
         case 'student_annotation': {
-            submissionBody = 'No submission'
-            break;
+            return [
+                submissionHeader,
+                'This submission type is not currently handled.',
+            ]
+        }
+        case 'media_recording': {
+            let submissionBody
+            const media_comment = submission.media_comment
+            if (!media_comment) {
+                submissionBody = 'No media'
+            } else {
+                if (media_comment?.display_name) {
+                    submissionBody = createLinkNormal(
+                        media_comment.display_name ?? 'Link to media',
+                        media_comment.url
+                    )
+                } else {
+                    submissionBody = media_comment.url
+                }
+            }
+            return [submissionHeader, submissionBody]
+        }
+        default: {
+            return [
+                submissionHeader,
+                `Submission type '${submission.submission_type}' unsupported.`,
+            ]
         }
     }
-    return [submissionHeader, submissionBody]
 }
 
 function assembleFeedbackInfo(submission: Submission) {
     const feedbackHeader = convertToHeader('Feedback', 2)
     const feedbackBody = submission?.submission_comments?.length
         ? createList(
-              submission?.submission_comments.map((comment) => `${comment.author_name}: ${comment.comment}`),
+              submission?.submission_comments.map(
+                  (comment) => `${comment.author_name}: ${comment.comment}`
+              ),
               '-'
           )
         : 'No feedback'
