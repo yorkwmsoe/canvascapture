@@ -48,8 +48,7 @@ export const useGenerate = () => {
             filteredCourses,
             filteredAssignments,
             canvasAccessToken,
-            canvasDomain,
-            generationName
+            canvasDomain
         )
     }
 

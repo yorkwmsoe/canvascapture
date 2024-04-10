@@ -1,10 +1,11 @@
-import { useGenerate } from '@renderer/components/Generate/useGenerate'
+import { useGenerateNext } from '@renderer/components/Generate/useGenerateNext'
 import { MarkdownEditor } from '@renderer/components/MarkdownEditor'
 import { Navbar } from '@renderer/components/Navbar'
 import { STEPS } from '@renderer/components/SwitchStepper'
 import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
+import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { Button, Typography } from 'antd'
+import { Button, Flex, Spin, Typography } from 'antd'
 
 const md = `A paragraph with *emphasis* and **strong importance**.
 
@@ -22,9 +23,13 @@ A table:
 
 export function MarkdownEditorPage() {
     const navigate = useNavigate({ from: '/markdown-editor' })
-    const { runPreGenerate } = useGenerate()
+    const { runPreGenerate } = useGenerateNext()
+    const { isLoading, data } = useQuery({
+        queryKey: ['pre-generate'],
+        queryFn: runPreGenerate,
+    })
 
-    console.log(runPreGenerate())
+    console.log(data)
 
     const goBack = () => {
         navigate({ to: '/selection', search: { step: STEPS.length - 2 } })
@@ -45,7 +50,16 @@ export function MarkdownEditorPage() {
                 Markdown Editor
             </Typography.Title>
             <div style={{ marginInline: '1rem' }}>
-                <MarkdownEditor defaultValue={md} handleFinish={handleFinish} />
+                {!isLoading ? (
+                    <MarkdownEditor
+                        defaultValue={md}
+                        handleFinish={handleFinish}
+                    />
+                ) : (
+                    <Flex justify="center" align="center">
+                        <Spin />
+                    </Flex>
+                )}
             </div>
         </>
     )
