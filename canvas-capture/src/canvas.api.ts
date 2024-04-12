@@ -110,10 +110,12 @@ export const getSubmissions = async (args: GetSubmissionsRequest & Auth) => {
         )
             .then(intercept)
             .then(toJSON<Submission>)
-            .then((a) => {return [ a ]})
+            .then((a) => {
+                return [a]
+            })
     }
     return await fetch(
-        `${canvasDomain}/api/v1/courses/${args.courseId}/assignments/${args.assignmentId}/submissions${isStudent ? "/self" : ""}?include[]=rubric_assessment&include[]=submission_comments&per_page=1000`,
+        `${canvasDomain}/api/v1/courses/${args.courseId}/assignments/${args.assignmentId}/submissions${isStudent ? '/self' : ''}?include[]=rubric_assessment&include[]=submission_comments&per_page=1000`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
     )
         .then(intercept)
@@ -121,7 +123,7 @@ export const getSubmissions = async (args: GetSubmissionsRequest & Auth) => {
             if (isStudent) {
                 return toJSON<Submission[]>(data)
             } else {
-                return Promise.resolve([ (await toJSON<Submission>(data)) ])
+                return Promise.resolve([await toJSON<Submission>(data)])
             }
         })
 }

@@ -15,10 +15,11 @@ export function SettingsPage() {
         markdownEditor,
         isStudent,
     } = useSettingsStore()
-    const isSetup = useRouterState().location.pathname.includes("/setup");
+    const isSetup = useRouterState().location.pathname.includes('/setup')
     const navigate = useNavigate({ from: isSetup ? '/setup' : '/settings' })
-    
-    const [currentCanvasDomain, setCurrentCanvasDomain] = useState<string>(canvasDomain)
+
+    const [currentCanvasDomain, setCurrentCanvasDomain] =
+        useState<string>(canvasDomain)
 
     const goToHomePage = () => {
         navigate({ to: '/' })
@@ -38,7 +39,12 @@ export function SettingsPage() {
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             style={{ maxWidth: '90%' }}
-            initialValues={{ canvasDomain, canvasAccessToken, markdownEditor, isStudent }}
+            initialValues={{
+                canvasDomain,
+                canvasAccessToken,
+                markdownEditor,
+                isStudent,
+            }}
             onFinish={onFinish}
             autoComplete="off"
         >
@@ -61,7 +67,7 @@ export function SettingsPage() {
                         {'\u2B05'}Back
                     </Button>
                 )}
-                {isSetup && (<h1></h1>)}
+                {isSetup && <h1></h1>}
                 <h1
                     style={{
                         marginRight: 10,
@@ -82,7 +88,9 @@ export function SettingsPage() {
                 ]}
             >
                 <Input
-                    onChange={(e) => setCurrentCanvasDomain(e.currentTarget.value)}
+                    onChange={(e) =>
+                        setCurrentCanvasDomain(e.currentTarget.value)
+                    }
                 />
             </Form.Item>
             <Form.Item<Config>
@@ -95,7 +103,15 @@ export function SettingsPage() {
                     },
                 ]}
                 // eslint-disable-next-line react/jsx-no-target-blank
-                extra = {<a target="_blank" href={`${currentCanvasDomain}/profile/settings#access_tokens_holder`}>Click Here To Create A New Access Token (you may have to scroll down)</a>}
+                extra={
+                    <a
+                        target="_blank"
+                        href={`${currentCanvasDomain}/profile/settings#access_tokens_holder`}
+                    >
+                        Click Here To Create A New Access Token (you may have to
+                        scroll down)
+                    </a>
+                }
             >
                 <Input.Password />
             </Form.Item>
@@ -116,9 +132,7 @@ export function SettingsPage() {
                 valuePropName="checked"
                 wrapperCol={{ offset: 8, span: 16 }}
             >
-                <Checkbox>
-                    Student Mode (enable if you are a student)
-                </Checkbox>
+                <Checkbox>Student Mode (enable if you are a student)</Checkbox>
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
