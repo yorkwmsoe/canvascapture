@@ -1,60 +1,34 @@
-import { Input, Tabs } from 'antd'
+import { App, Input, Tabs } from 'antd'
 import { DirectoryTree } from '../DirectoryTree'
 import { SideBar } from './Sidebar'
 import { DirectoryTreeProps } from 'antd/es/tree'
-import { ChangeEventHandler, Key, useState } from 'react'
-import { popConfirm } from '@renderer/lib/model'
+import { ChangeEventHandler, Key, useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
 import { useTheme } from '@renderer/lib/useTheme'
 import remarkGfm from 'remark-gfm'
 import { ExternalLink } from '../ExternalLink'
-
-const treeData = [
-    {
-        title: 'parent 1-0',
-        key: '0-0-0',
-        selectable: false,
-        children: [
-            {
-                title: 'leaf',
-                key: '0-0-0-0',
-                isLeaf: true,
-            },
-            {
-                title: 'leaf',
-                key: '0-0-0-1',
-                isLeaf: true,
-            },
-        ],
-    },
-    {
-        title: 'parent 1-1',
-        key: '0-0-1',
-        selectable: false,
-        children: [
-            {
-                title: 'leaf',
-                key: '0-0-1-0',
-                isLeaf: true,
-            },
-        ],
-    },
-] satisfies DirectoryTreeProps['treeData']
+import { FileDataNode } from '../Generate/useGenerateNext'
 
 export type MarkdownEditorProps = {
-    defaultValue: string
+    treeData: DirectoryTreeProps['treeData']
+    selectedFile: FileDataNode | undefined
+    handleSelectFile: (key: string) => void
     handleFinish: () => void
 }
 
 export function MarkdownEditor({
-    defaultValue,
+    treeData,
+    selectedFile,
+    handleSelectFile,
     handleFinish,
 }: MarkdownEditorProps) {
+    const { modal } = App.useApp()
     const { token } = useTheme()
-    const [text, setText] = useState<string>(defaultValue)
-    const [selectedFile, setSelectedFile] = useState<string>(
-        treeData[0].children[0].key
-    )
+    const [text, setText] = useState<string>()
+
+    useEffect(() => {
+        setText(selectedFile?.content?.join('\n') ?? '')
+    }, [selectedFile])
 
     const [isDirty, setIsDirty] = useState(false)
 
@@ -65,15 +39,15 @@ export function MarkdownEditor({
 
     const handleChangeFile = (files: Key[]) => {
         if (!isDirty) {
-            setSelectedFile(files[0].toString())
+            handleSelectFile(files[0].toString())
         } else {
-            popConfirm({
+            modal.confirm({
                 title: 'Unsaved Changes',
                 content:
                     'You have unsaved changes. Are you sure you want to continue?',
 
                 onOk() {
-                    setSelectedFile(files[0].toString())
+                    handleSelectFile(files[0].toString())
                     setIsDirty(false)
                 },
             })
@@ -141,9 +115,9 @@ export function MarkdownEditor({
                 defaultExpandAll
                 treeData={treeData}
                 onSelect={handleChangeFile}
-                selectedKeys={[selectedFile]}
+                selectedKeys={selectedFile ? [selectedFile.key] : []}
             />
-            <div style={{ width: '600px' }}>
+            <div style={{ flex: 5 }}>
                 <Tabs defaultActiveKey="1" items={tabs} type="card" />
             </div>
             <SideBar onSave={handleSave} onFinish={handleFinish} />

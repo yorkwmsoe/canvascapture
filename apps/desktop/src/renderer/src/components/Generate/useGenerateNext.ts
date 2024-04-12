@@ -19,23 +19,23 @@ import { uniqBy, isNil, maxBy, minBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { median } from './generate'
 
-type DataNode = CourseDataNode | AssignmentDataNode | FileDataNode
+export type DataNode = CourseDataNode | AssignmentDataNode | FileDataNode
 
-type CourseDataNode = {
+export type CourseDataNode = {
     type: 'course'
     key: string
     course: Course
     children: AssignmentDataNode[]
 }
 
-type AssignmentDataNode = {
+export type AssignmentDataNode = {
     type: 'assignment'
     key: string
     assignment: Assignment
     children: FileDataNode[]
 }
 
-type FileDataNode = {
+export type FileDataNode = {
     type: 'file'
     key: string
     name: 'high' | 'low' | 'median'
@@ -196,9 +196,9 @@ async function preGenerate(
 ) {
     const copyNodes = [...nodes]
     for (const n of copyNodes) {
-        handleNode(n, canvasAccessToken, canvasDomain)
+        await handleNode(n, canvasAccessToken, canvasDomain)
         if (isAssignmentDataNode(n) || isCouseDataNode(n)) {
-            preGenerate(n.children, canvasAccessToken, canvasDomain)
+            await preGenerate(n.children, canvasAccessToken, canvasDomain)
         }
     }
     return copyNodes
