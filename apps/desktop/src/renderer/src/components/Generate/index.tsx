@@ -15,7 +15,7 @@ export function Generate() {
     const navigate = useNavigate({ from: '/generation' })
     const { selectedAssignments, getAssignmentById } = useAssignments()
     const { courses, selectedCourses } = useCourses()
-    const { canvasDomain, canvasAccessToken } = useSettingsStore()
+    const { canvasDomain, canvasAccessToken, isStudent } = useSettingsStore()
     const { generationName } = useGenerationStore()
     const documentsPath = getDocumentsPath()
 
@@ -39,6 +39,7 @@ export function Generate() {
                 filteredAssignments,
                 canvasAccessToken,
                 canvasDomain,
+                isStudent,
                 generationName,
                 documentsPath
             )

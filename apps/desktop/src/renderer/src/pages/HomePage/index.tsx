@@ -13,7 +13,7 @@ import { useGetFolders } from '@renderer/hooks/useGetFolders'
 import { FileMarkdownOutlined } from '@ant-design/icons'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { shell } from 'electron'
-import { getDocumentsPath } from '@renderer/utils/config'
+import { doesConfigExist, getDocumentsPath } from '@renderer/utils/config'
 import { useEffect } from 'react'
 import { useAssignments } from '@renderer/hooks/useAssignments'
 import { useCourses } from '@renderer/hooks/useCourses'
@@ -27,8 +27,11 @@ type GenerationNameForm = {
 }
 
 export function HomePage() {
-    const { setGenerationName } = useGenerationStore()
     const navigate = useNavigate({ from: '/' })
+    if (!doesConfigExist()) {
+        navigate({ to: '/setup' })
+    }
+    const { setGenerationName } = useGenerationStore()
     const { data: folder, refetch: refreshFolders } = useGetFolders()
     const { setSelectedAssignments } = useAssignments()
     const { setSelectedCourses } = useCourses()

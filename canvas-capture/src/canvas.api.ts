@@ -98,16 +98,32 @@ const getAssignmentsWithCourseId = async (
 export type GetSubmissionsRequest = {
     courseId: number
     assignmentId: number
+    isStudent: boolean
 }
 
 export const getSubmissions = async (args: GetSubmissionsRequest & Auth) => {
-    const { canvasAccessToken, canvasDomain } = args
+    const { canvasAccessToken, canvasDomain, isStudent } = args
+    if (isStudent) {
+        return await fetch(
+            `${canvasDomain}/api/v1/courses/${args.courseId}/assignments/${args.assignmentId}/submissions/self?include[]=rubric_assessment&include[]=submission_comments&per_page=1000`,
+            { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
+        )
+            .then(intercept)
+            .then(toJSON<Submission>)
+            .then((a) => {return [ a ]})
+    }
     return await fetch(
-        `${canvasDomain}/api/v1/courses/${args.courseId}/assignments/${args.assignmentId}/submissions?include[]=rubric_assessment&include[]=submission_comments&per_page=1000`,
+        `${canvasDomain}/api/v1/courses/${args.courseId}/assignments/${args.assignmentId}/submissions${isStudent ? "/self" : ""}?include[]=rubric_assessment&include[]=submission_comments&per_page=1000`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
     )
         .then(intercept)
-        .then(toJSON<Submission[]>)
+        .then(async (data) => {
+            if (isStudent) {
+                return toJSON<Submission[]>(data)
+            } else {
+                return Promise.resolve([ (await toJSON<Submission>(data)) ])
+            }
+        })
 }
 
 export type GetQuizRequest = {
@@ -150,6 +166,7 @@ export type CreateCanvasApiConfig =
           type: 'withAuth'
           accessToken: string
           domain: string
+          isStudent: boolean
       }
     | {
           type: 'withoutAuth'

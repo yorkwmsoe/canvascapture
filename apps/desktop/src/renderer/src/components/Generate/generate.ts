@@ -118,6 +118,7 @@ export async function generate(
     assignments: Assignment[],
     canvasAccessToken: string,
     canvasDomain: string,
+    isStudent: boolean,
     generationName: string,
     documentsPath: string
 ) {
@@ -136,6 +137,7 @@ export async function generate(
             const submissions = await canvasApi.getSubmissions({
                 canvasAccessToken,
                 canvasDomain,
+                isStudent,
                 courseId: course.id,
                 assignmentId: assignment.id,
             })

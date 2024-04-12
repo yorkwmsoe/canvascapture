@@ -15,12 +15,14 @@ export type Config = {
     canvasDomain: string
     canvasAccessToken: string
     markdownEditor: boolean
+    isStudent: boolean
 }
 
 export const defaultConfig: Config = {
     canvasDomain: 'https://msoe.instructure.com',
     canvasAccessToken: '',
     markdownEditor: false,
+    isStudent: false,
 }
 
 export const doesConfigExist = () => {
