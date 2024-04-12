@@ -102,8 +102,8 @@ export function SettingsPage() {
                         message: 'Canvas access token is missing',
                     },
                 ]}
-                // eslint-disable-next-line react/jsx-no-target-blank
                 extra={
+                    // eslint-disable-next-line react/jsx-no-target-blank
                     <a
                         target="_blank"
                         href={`${currentCanvasDomain}/profile/settings#access_tokens_holder`}
