@@ -96,7 +96,9 @@ export function HomePage() {
                     minWidth: 300,
                     justifyItems: 'center',
                     marginTop: 10,
-                    flex: 1,
+                    flexGrow: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
                 }}
             >
                 <Form
@@ -140,24 +142,14 @@ export function HomePage() {
                 <Flex
                     align={'center'}
                     justify={'center'}
-                    style={{
-                        paddingTop: 15,
-                        width: '100%',
-                        justifyContent: 'center',
-                    }}
+                    style={{ flexWrap: 'wrap', overflow: 'auto' }}
                 >
-                    <Flex
-                        align={'center'}
-                        justify={'center'}
-                        style={{ flexWrap: 'wrap', justifyContent: 'unset' }}
-                    >
-                        {folder?.map((folder) => (
-                            <FolderCard
-                                key={folder}
-                                folder={folder}
-                            ></FolderCard>
-                        ))}
-                    </Flex>
+                    {folder?.map((folder) => (
+                        <FolderCard
+                            key={folder}
+                            folder={folder}
+                        ></FolderCard>
+                    ))}
                 </Flex>
             </Content>
             <Footer
