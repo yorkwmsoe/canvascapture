@@ -145,10 +145,7 @@ export function HomePage() {
                     style={{ flexWrap: 'wrap', overflow: 'auto' }}
                 >
                     {folder?.map((folder) => (
-                        <FolderCard
-                            key={folder}
-                            folder={folder}
-                        ></FolderCard>
+                        <FolderCard key={folder} folder={folder}></FolderCard>
                     ))}
                 </Flex>
             </Content>
