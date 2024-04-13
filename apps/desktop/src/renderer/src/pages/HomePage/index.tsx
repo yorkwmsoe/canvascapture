@@ -56,7 +56,7 @@ export function HomePage() {
     }
 
     return (
-        <Layout style={{height: '100%'}}>
+        <Layout style={{ height: '100%' }}>
             <Header
                 style={{
                     backgroundColor: 'white',

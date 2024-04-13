@@ -62,7 +62,7 @@ export function SwitchStepper() {
                     marginTop: 16,
                     flex: '1 1 0',
                     display: 'flex',
-                    flexDirection: 'column'
+                    flexDirection: 'column',
                 }}
             >
                 {STEPS[current].content}

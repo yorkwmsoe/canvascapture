@@ -10,7 +10,7 @@ export function SelectionPage() {
     }
 
     return (
-        <Flex style={{ margin: 20, flex: 1}} vertical>
+        <Flex style={{ margin: 20, flex: 1 }} vertical>
             <Button
                 style={{
                     marginBottom: 20,

@@ -96,7 +96,7 @@ export function Assignments() {
                 onChange={filterAssignments}
                 options={options}
             />
-            <div style={{overflow: 'auto'}}>
+            <div style={{ overflow: 'auto' }}>
                 <Tree
                     checkable
                     onExpand={onExpand}
