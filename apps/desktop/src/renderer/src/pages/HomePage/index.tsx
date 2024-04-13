@@ -56,24 +56,27 @@ export function HomePage() {
     }
 
     return (
-        <Layout>
+        <Layout style={{height: '100%'}}>
             <Header
                 style={{
                     backgroundColor: 'white',
                     textAlign: 'left',
-                    paddingLeft: 5,
-                    fontSize: `clamp(${12}px, 2vw, ${40}px`,
+                    paddingLeft: 10,
+                    paddingRight: 10,
+                    paddingBottom: 10,
+                    height: 'unset',
                 }}
             >
                 <Flex justify={'space-between'} align={'center'}>
-                    <Typography.Text style={{ font: '12' }}>
+                    <Typography.Text style={{ fontSize: '2rem' }}>
                         <b>Canvas Capture</b>
                     </Typography.Text>
                     <Button
                         style={{
-                            fontSize: `clamp(${12}px, 2vw, ${40}px`,
+                            fontSize: '1rem',
                             height: 'auto',
                             textAlign: 'center',
+                            marginTop: 10,
                         }}
                         onClick={goToSettingsPage}
                     >
@@ -87,18 +90,20 @@ export function HomePage() {
                     margin: 'auto',
                     verticalAlign: 'middle',
                     alignItems: 'center',
-                    height: 'clamp(300px, 70vh, 700px)',
+                    //height: 'clamp(300px, 70vh, 700px)',
+                    //height: '85vh',
                     width: '80%',
                     minWidth: 300,
                     justifyItems: 'center',
                     marginTop: 10,
+                    flex: 1,
                 }}
             >
                 <Form
                     name="generationNameForm"
                     onFinish={generate}
                     autoComplete="off"
-                    style={{ width: '50%', margin: 'auto' }}
+                    style={{ width: '100%', maxWidth: '500px', margin: 'auto' }}
                 >
                     <Form.Item<GenerationNameForm>
                         name="generationName"
@@ -114,7 +119,7 @@ export function HomePage() {
                                 <Input
                                     placeholder="Report name"
                                     style={{
-                                        fontSize: 'clamp(15px, 2.5vh, 40px)',
+                                        fontSize: '2rem',
                                         height: 'auto',
                                     }}
                                 />
@@ -122,7 +127,7 @@ export function HomePage() {
                                     htmlType="submit"
                                     type="primary"
                                     style={{
-                                        fontSize: 'clamp(15px, 2.5h, 40px)',
+                                        fontSize: '1.25rem',
                                         height: 'auto',
                                     }}
                                 >

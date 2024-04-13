@@ -1,6 +1,6 @@
 import { SwitchStepper } from '@renderer/components/SwitchStepper'
 import { useNavigate } from '@tanstack/react-router'
-import { Button } from 'antd'
+import { Button, Flex } from 'antd'
 
 export function SelectionPage() {
     const navigate = useNavigate()
@@ -10,22 +10,20 @@ export function SelectionPage() {
     }
 
     return (
-        <div>
+        <Flex style={{ margin: 20, flex: 1}} vertical>
             <Button
                 style={{
-                    marginLeft: 20,
-                    marginTop: 20,
-                    fontSize: `clamp(${12}px, 1.5vw, ${40}px`,
+                    marginBottom: 20,
                     textAlign: 'center',
-                    height: 'auto',
+                    height: 'min-content',
+                    width: 'min-content',
+                    fontSize: '1.25rem',
                 }}
                 onClick={goToHomePage}
             >
                 {'\u2B05'}Back
             </Button>
-            <div style={{ padding: '10vw' }}>
-                <SwitchStepper />
-            </div>
-        </div>
+            <SwitchStepper />
+        </Flex>
     )
 }

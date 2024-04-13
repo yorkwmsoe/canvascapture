@@ -17,6 +17,7 @@ export function Courses() {
             options={options}
             defaultValue={selectedCourses}
             onChange={setSelectedCourses}
+            style={{overflow: 'auto'}}
         />
     )
 }
