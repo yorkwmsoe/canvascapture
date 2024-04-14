@@ -12,6 +12,7 @@ import {
     generateQuiz,
 } from '@canvas-capture/lib'
 import { canvasApi } from '../../apis/canvas.api'
+import { sanitizePath } from '@renderer/utils/sanitize-path'
 
 // https://stackoverflow.com/a/70806192
 export const median = (arr: number[]): number => {
@@ -34,7 +35,11 @@ const generateAssignmentOrQuiz = async (
     canvasAccessToken: string,
     canvasDomain: string
 ) => {
-    if (assignment.is_quiz_assignment && quiz !== undefined) {
+    if (
+        assignment.is_quiz_assignment &&
+        !assignment.locked_for_user &&
+        quiz !== undefined
+    ) {
         const quizSubmission = await canvasApi.getQuizSubmission({
             canvasAccessToken,
             canvasDomain,
@@ -117,10 +122,11 @@ export async function generate(
     assignments: Assignment[],
     canvasAccessToken: string,
     canvasDomain: string,
+    isStudent: boolean,
     generationName: string,
     documentsPath: string
 ) {
-    await rm(join(documentsPath, generationName), {
+    await rm(join(documentsPath, sanitizePath(generationName)), {
         recursive: true,
         force: true,
     })
@@ -135,6 +141,7 @@ export async function generate(
             const submissions = await canvasApi.getSubmissions({
                 canvasAccessToken,
                 canvasDomain,
+                isStudent,
                 courseId: course.id,
                 assignmentId: assignment.id,
             })
@@ -143,10 +150,8 @@ export async function generate(
                 (s) => s.score
             )
             if (uniqueSubmissions.length > 0) {
-                const assignmentsPath = join(
-                    generationName,
-                    course.name,
-                    assignment.name
+                const assignmentsPath = sanitizePath(
+                    join(generationName, course.name, assignment.name)
                 )
                 mkdirSync(join(documentsPath, assignmentsPath), {
                     recursive: true,
@@ -177,7 +182,7 @@ export async function generate(
         writeFile(join(documentsPath, x.filePath + '.md'), x.content)
     )
 
-    const md = markdownit({ linkify: true })
+    const md = markdownit({ linkify: true, html: true })
 
     const htmlData: FilePathContentPair[] = pairs.map((x) => {
         return {
