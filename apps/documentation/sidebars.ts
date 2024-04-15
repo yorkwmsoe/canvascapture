@@ -43,7 +43,7 @@ const sidebars: SidebarsConfig = {
         {
             type: 'category',
             label: 'CLI-Test',
-            items: ['Testing/CLI/AssignmentSelect', 'Testing/CLI/CourseSelect'],
+            items: ['Testing/CLI/CourseSelect', 'Testing/CLI/AssignmentSelect'],
         },
         {
             type: 'category',
