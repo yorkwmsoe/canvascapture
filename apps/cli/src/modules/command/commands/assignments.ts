@@ -30,6 +30,7 @@ export async function select_assignments() {
             const submissions = await canvasApi.getSubmissions({
                 canvasAccessToken: state.config.canvasApiToken,
                 canvasDomain: state.config.canvasDomain,
+                isStudent: false, // TODO: Add student option to CLI as well
                 courseId: course.id,
                 assignmentId: a.id,
             })
