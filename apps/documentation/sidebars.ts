@@ -16,44 +16,46 @@ const sidebars: SidebarsConfig = {
 
     // But you can create a sidebar manually
 
-  canvasDocSidebar: [
-    {
-      type: 'category',
-      label: 'Getting Started',
-      items: ['Getting Started/Overview', 'Getting Started/Quickstart'],
-    },
-    {
-      type: 'category',
-      label: 'CLI',
-      items: ['CLI/Overview', 'CLI/Quickstart', 'CLI/Deploy'],
-    },
-    {
-      type: 'category',
-      label: 'Desktop',
-      items: ['Desktop/Overview', 'Desktop/Quickstart', 'Desktop/Deploy'],
-    },
-    {
-      type: 'category',
-      label: 'Docs Site',
-      items: ['Docs/Overview', 'Docs/Quickstart', 'Docs/Deploy'],
-    },
-  ],
+    canvasDocSidebar: [
+        {
+            type: 'category',
+            label: 'Getting Started',
+            items: ['Getting Started/Overview', 'Getting Started/Quickstart'],
+        },
+        {
+            type: 'category',
+            label: 'CLI',
+            items: ['CLI/Overview', 'CLI/Quickstart', 'CLI/Deploy'],
+        },
+        {
+            type: 'category',
+            label: 'Desktop',
+            items: ['Desktop/Overview', 'Desktop/Quickstart', 'Desktop/Deploy'],
+        },
+        {
+            type: 'category',
+            label: 'Docs Site',
+            items: ['Docs/Overview', 'Docs/Quickstart', 'Docs/Deploy'],
+        },
+    ],
 
-  testingSidebar: [
-    {
-      type: 'category',
-      label: 'CLI-Test',
-      items: ['Testing/CLI/AssignmentSelect', 'Testing/CLI/CourseSelect'],
-    },
-    {
-      type: 'category',
-      label: 'Desktop-Test',
-      items: ['Testing/Desktop/Homepage', 'Testing/Desktop/Settingspage', 'Testing/Desktop/CourseSelect', 'Testing/Desktop/AssignmentSelect'],
-    },
-  ]
-
-
-
+    testingSidebar: [
+        {
+            type: 'category',
+            label: 'CLI-Test',
+            items: ['Testing/CLI/AssignmentSelect', 'Testing/CLI/CourseSelect'],
+        },
+        {
+            type: 'category',
+            label: 'Desktop-Test',
+            items: [
+                'Testing/Desktop/Homepage',
+                'Testing/Desktop/Settingspage',
+                'Testing/Desktop/CourseSelect',
+                'Testing/Desktop/AssignmentSelect',
+            ],
+        },
+    ],
 }
 
 export default sidebars

@@ -18,7 +18,7 @@ function HomepageHeader() {
                 </Heading>
                 <p className="hero__subtitle">{siteConfig.tagline}</p>
                 <div>
-                    <img src={logo} alt="logo" width="90" height="90"/>
+                    <img src={logo} alt="logo" width="90" height="90" />
                 </div>
             </div>
         </header>

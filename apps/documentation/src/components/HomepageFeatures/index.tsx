@@ -33,9 +33,7 @@ const FeatureList: FeatureItem[] = [
         title: 'Documentation Site',
         Svg: require('@site/static/img/docs.svg').default,
         description: (
-            <>
-                This site is the documentation for the Canvas Capture project.
-            </>
+            <>This site is the documentation for the Canvas Capture project.</>
         ),
     },
 ]
