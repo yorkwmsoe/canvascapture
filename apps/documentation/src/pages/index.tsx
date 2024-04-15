@@ -4,6 +4,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import Layout from '@theme/Layout'
 import HomepageFeatures from '@site/src/components/HomepageFeatures'
 import Heading from '@theme/Heading'
+import logo from '@site/src/pages/img.png'
 
 import styles from './index.module.css'
 
@@ -16,13 +17,8 @@ function HomepageHeader() {
                     {siteConfig.title}
                 </Heading>
                 <p className="hero__subtitle">{siteConfig.tagline}</p>
-                <div className={styles.buttons}>
-                    <Link
-                        className="button button--secondary button--lg"
-                        to="/docs/intro"
-                    >
-                        Docusaurus Tutorial - 5min ⏱️
-                    </Link>
+                <div>
+                    <img src={logo} alt="logo" width="90" height="90"/>
                 </div>
             </div>
         </header>
