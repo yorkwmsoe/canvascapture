@@ -9,7 +9,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <QueryProvider>
             <ThemeProvider>
-                <App>
+                <App style={{ height: '100%' }}>
                     <RouterProvider />
                 </App>
             </ThemeProvider>

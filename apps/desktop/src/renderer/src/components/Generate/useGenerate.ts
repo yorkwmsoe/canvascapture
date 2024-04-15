@@ -6,12 +6,12 @@ import { useSettingsStore } from '@renderer/stores/settings.store'
 import { parseHierarchyId } from '@renderer/utils/assignments'
 import { getDocumentsPath } from '@renderer/utils/config'
 import { ipcRenderer } from 'electron'
-import { generate, preGenerate } from './generate'
+import { generate } from './generate'
 
 export const useGenerate = () => {
     const { selectedAssignments, getAssignmentById } = useAssignments()
     const { courses, selectedCourses } = useCourses()
-    const { canvasDomain, canvasAccessToken } = useSettingsStore()
+    const { canvasDomain, canvasAccessToken, isStudent } = useSettingsStore()
     const { generationName } = useGenerationStore()
     const documentsPath = getDocumentsPath()
 
@@ -37,23 +37,14 @@ export const useGenerate = () => {
                 filteredAssignments,
                 canvasAccessToken,
                 canvasDomain,
+                isStudent,
                 generationName,
                 documentsPath
             )
         )
     }
 
-    const runPreGenerate = async () => {
-        return await preGenerate(
-            filteredCourses,
-            filteredAssignments,
-            canvasAccessToken,
-            canvasDomain
-        )
-    }
-
     return {
         runGenerate,
-        runPreGenerate,
     }
 }

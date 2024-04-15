@@ -2,7 +2,7 @@ import { Navbar } from '@renderer/components/Navbar'
 import { SwitchStepper } from '@renderer/components/SwitchStepper'
 import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
 import { useNavigate } from '@tanstack/react-router'
-import { Button } from 'antd'
+import { Button, Flex } from 'antd'
 
 export function SelectionPage() {
     const navigate = useNavigate()
@@ -12,15 +12,13 @@ export function SelectionPage() {
     }
 
     return (
-        <div>
+        <Flex style={{ margin: 20, flex: 1 }} vertical>
             <Navbar>
                 <Button onClick={goToHomePage} icon={<LeftArrowIcon />}>
                     Back
                 </Button>
             </Navbar>
-            <div style={{ padding: '1rem' }}>
-                <SwitchStepper />
-            </div>
-        </div>
+            <SwitchStepper />
+        </Flex>
     )
 }

@@ -81,6 +81,7 @@ export async function generate(courses: Course[], assignments: Assignment[], can
             const submissions = await canvasApi.getSubmissions({
                 courseId: course.id,
                 assignmentId: assignment.id,
+                isStudent: false, // TODO: Add student option to CLI as well
                 canvasAccessToken,
                 canvasDomain,
             })

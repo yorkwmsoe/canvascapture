@@ -154,13 +154,15 @@ async function getHML(
 async function handleNode(
     node: DataNode,
     canvasAccessToken: string,
-    canvasDomain: string
+    canvasDomain: string,
+    isStudent: boolean
 ) {
     if (isAssignmentDataNode(node)) {
         const { courseId, assignmentId } = parseHierarchyId(node.key)
         const submissions = await canvasApi.getSubmissions({
             canvasAccessToken,
             canvasDomain,
+            isStudent,
             courseId: courseId,
             assignmentId: assignmentId,
         })
@@ -168,6 +170,7 @@ async function handleNode(
             submissions.filter((s) => !isNil(s.score)),
             (s) => s.score
         )
+
         if (uniqueSubmissions.length > 0) {
             const quiz = node.assignment.is_quiz_assignment
                 ? await canvasApi.getQuiz({
@@ -192,20 +195,26 @@ async function handleNode(
 async function preGenerate(
     nodes: DataNode[],
     canvasAccessToken: string,
-    canvasDomain: string
+    canvasDomain: string,
+    isStudent: boolean
 ) {
     const copyNodes = [...nodes]
     for (const n of copyNodes) {
-        await handleNode(n, canvasAccessToken, canvasDomain)
+        await handleNode(n, canvasAccessToken, canvasDomain, isStudent)
         if (isAssignmentDataNode(n) || isCouseDataNode(n)) {
-            await preGenerate(n.children, canvasAccessToken, canvasDomain)
+            await preGenerate(
+                n.children,
+                canvasAccessToken,
+                canvasDomain,
+                isStudent
+            )
         }
     }
     return copyNodes
 }
 
 export const useGenerateNext = () => {
-    const { canvasAccessToken, canvasDomain } = useSettingsStore()
+    const { canvasAccessToken, canvasDomain, isStudent } = useSettingsStore()
     const { assignments, selectedAssignments } = useAssignments()
     const { getCourseById } = useCourses()
 
@@ -238,7 +247,12 @@ export const useGenerateNext = () => {
     }, [assignments, getCourseById])
 
     const runPreGenerate = useCallback(() => {
-        return preGenerate(dataNodes, canvasAccessToken, canvasDomain)
+        return preGenerate(
+            dataNodes,
+            canvasAccessToken,
+            canvasDomain,
+            isStudent
+        )
     }, [dataNodes])
 
     return {

@@ -13,6 +13,7 @@ import {
 } from '@canvas-capture/lib'
 import { canvasApi } from '../../apis/canvas.api'
 import { getCourseName } from '@renderer/utils/courses'
+import { sanitizePath } from '@renderer/utils/sanitize-path'
 
 // https://stackoverflow.com/a/70806192
 export const median = (arr: number[]): number => {
@@ -27,11 +28,6 @@ type FilePathContentPair = {
     content: string
 }
 
-type FilePreview = {
-    folderNames: string[]
-    content: string
-}
-
 // FIXME: I hate that I have to do this
 const generateAssignmentOrQuiz = async (
     assignment: Assignment,
@@ -40,7 +36,11 @@ const generateAssignmentOrQuiz = async (
     canvasAccessToken: string,
     canvasDomain: string
 ) => {
-    if (assignment.is_quiz_assignment && quiz !== undefined) {
+    if (
+        assignment.is_quiz_assignment &&
+        !assignment.locked_for_user &&
+        quiz !== undefined
+    ) {
         const quizSubmission = await canvasApi.getQuizSubmission({
             canvasAccessToken,
             canvasDomain,
@@ -118,74 +118,16 @@ export const generatePairs = async (
     }
 }
 
-export async function preGenerate(
-    courses: Course[],
-    assignments: Assignment[],
-    canvasAccessToken: string,
-    canvasDomain: string
-) {
-    const pairs: FilePreview[] = []
-    for (const course of courses) {
-        const filteredAssignments = assignments.filter(
-            (a) => a.course_id === course.id
-        )
-
-        for (const assignment of filteredAssignments) {
-            const submissions = await canvasApi.getSubmissions({
-                canvasAccessToken,
-                canvasDomain,
-                courseId: course.id,
-                assignmentId: assignment.id,
-            })
-            const uniqueSubmissions = _.uniqBy(
-                submissions.filter((s) => !_.isNil(s.score)),
-                (s) => s.score
-            )
-            if (uniqueSubmissions.length > 0) {
-                const assignmentsPath = join(
-                    getCourseName(course),
-                    assignment.name
-                )
-                const quiz = assignment.is_quiz_assignment
-                    ? await canvasApi.getQuiz({
-                          canvasAccessToken,
-                          canvasDomain,
-                          courseId: assignment.course_id,
-                          quizId: assignment.quiz_id,
-                      })
-                    : undefined
-                const pariData = [
-                    ...(await generatePairs(
-                        assignment,
-                        uniqueSubmissions,
-                        quiz,
-                        assignmentsPath,
-                        canvasAccessToken,
-                        canvasDomain
-                    )),
-                ]
-                const data = pariData.map<FilePreview>((x) => {
-                    return {
-                        folderNames: x.filePath.split('/'),
-                        content: x.content,
-                    }
-                })
-                pairs.push(...data)
-            }
-        }
-    }
-    return pairs
-}
-
 export async function generate(
     courses: Course[],
     assignments: Assignment[],
     canvasAccessToken: string,
     canvasDomain: string,
+    isStudent: boolean,
     generationName: string,
     documentsPath: string
 ) {
-    await rm(join(documentsPath, generationName), {
+    await rm(join(documentsPath, sanitizePath(generationName)), {
         recursive: true,
         force: true,
     })
@@ -200,6 +142,7 @@ export async function generate(
             const submissions = await canvasApi.getSubmissions({
                 canvasAccessToken,
                 canvasDomain,
+                isStudent,
                 courseId: course.id,
                 assignmentId: assignment.id,
             })
@@ -208,10 +151,8 @@ export async function generate(
                 (s) => s.score
             )
             if (uniqueSubmissions.length > 0) {
-                const assignmentsPath = join(
-                    generationName,
-                    getCourseName(course),
-                    assignment.name
+                const assignmentsPath = sanitizePath(
+                    join(generationName, getCourseName(course), assignment.name)
                 )
                 mkdirSync(join(documentsPath, assignmentsPath), {
                     recursive: true,
@@ -242,7 +183,7 @@ export async function generate(
         writeFile(join(documentsPath, x.filePath + '.md'), x.content)
     )
 
-    const md = markdownit({ linkify: true })
+    const md = markdownit({ linkify: true, html: true })
 
     const htmlData: FilePathContentPair[] = pairs.map((x) => {
         return {

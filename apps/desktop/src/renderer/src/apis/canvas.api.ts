@@ -25,7 +25,7 @@ export const getAssignments = async (
 
 // Hooks
 export const useGetSubmissions = () => {
-    const { canvasDomain, canvasAccessToken } = useSettingsStore()
+    const { canvasDomain, canvasAccessToken, isStudent } = useSettingsStore()
     const { assignments } = useGenerationStore()
     return useQueries({
         queries: assignments.map((courseAssignmentId) => {
@@ -37,6 +37,7 @@ export const useGetSubmissions = () => {
                     canvasApi.getSubmissions({
                         canvasAccessToken,
                         canvasDomain,
+                        isStudent,
                         courseId,
                         assignmentId,
                     }),

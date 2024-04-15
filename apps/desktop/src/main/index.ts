@@ -28,6 +28,7 @@ function createWindow(): void {
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show()
+        initPyodide()
     })
 
     mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -61,6 +62,11 @@ function createWindow(): void {
             })
         }
     )
+
+    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        shell.openExternal(url)
+        return { action: 'deny' }
+    })
 }
 
 // This method will be called when Electron has finished
@@ -136,8 +142,6 @@ const initPyodide = async () => {
     )
     globalThis.pyodide = pyodide
 }
-
-initPyodide()
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.

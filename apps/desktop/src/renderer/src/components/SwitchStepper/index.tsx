@@ -67,6 +67,9 @@ export function SwitchStepper() {
                     padding: 24,
                     border: `1px dashed ${token.colorBorder}`,
                     marginTop: 16,
+                    flex: '1 1 0',
+                    display: 'flex',
+                    flexDirection: 'column',
                 }}
             >
                 {STEPS[current].content}

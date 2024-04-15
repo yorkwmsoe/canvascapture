@@ -7,7 +7,11 @@ export function useGetFolders() {
         queryKey: ['folders'],
         queryFn: async () => {
             return new Promise<string[]>((resolve) => {
-                return resolve(readdirSync(getDocumentsPath()))
+                return resolve(
+                    readdirSync(getDocumentsPath(), { withFileTypes: true })
+                        .filter((dirent) => dirent.isDirectory())
+                        .map((dirent) => dirent.name)
+                )
             })
         },
     })

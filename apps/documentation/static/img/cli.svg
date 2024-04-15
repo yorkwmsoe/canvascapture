@@ -1,0 +1,40 @@
+<svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Window frame -->
+    <rect x="10" y="10" width="380" height="190" fill="#2C2C2C" stroke="#000000" stroke-width="2" rx="10" />
+
+    <!-- Title bar -->
+    <rect x="10" y="10" width="380" height="20" fill="#000000" stroke="#000000" stroke-width="2" />
+
+    <!-- Title text -->
+    <text x="20" y="28" font-family="Arial" font-size="20" fill="#FFFFFF">CLI</text>
+
+    <!-- Close button (X) -->
+    <text x="380" y="28" font-family="Arial" font-size="20" fill="#FFFFFF" text-anchor="end" cursor="pointer">&#10006;</text>
+
+    <!-- Background -->
+    <rect x="20" y="40" width="360" height="160" fill="#2C2C2C"/>
+
+    <!-- Command Line Box -->
+    <rect x="20" y="50" width="360" height="150" fill="#2C2C2C"/>
+
+    <!-- Text -->
+    <text x="25" y="90" font-family="Courier New" font-size="25" textLength="350">
+        <tspan fill="#0288D1">C</tspan>
+        <tspan fill="#0288D1">a</tspan>
+        <tspan fill="#0288D0">n</tspan>
+        <tspan fill="#0288D1">v</tspan>
+        <tspan fill="#0288D1">a</tspan>
+        <tspan fill="#0288D0">s</tspan>
+        <tspan fill="#ff8000"> </tspan>
+        <tspan fill="#E53933">C</tspan>
+        <tspan fill="#E53933">a</tspan>
+        <tspan fill="#E53935">p</tspan>
+        <tspan fill="#E53935">t</tspan>
+        <tspan fill="#E53935">u</tspan>
+        <tspan fill="#E53935">r</tspan>
+        <tspan fill="#E53935">e</tspan>
+    </text>
+
+    <!-- Prompt -->
+    <text x="30" y="190" fill="#ffffff" font-family="Courier New" font-size="16">Enter your command:</text>
+</svg>

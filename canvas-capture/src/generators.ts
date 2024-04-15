@@ -4,6 +4,7 @@ import { Quiz } from './types/canvas_api/quiz'
 import { QuizSubmission } from './types/canvas_api/quiz-submissions'
 import {
     convertToHeader,
+    createLinkNormal,
     createList,
     createTableHeader,
     createTableRows,
@@ -102,25 +103,71 @@ function assembleTitleAndGrade(
 function assembleDescriptionInfo(assignment: Assignment) {
     const descriptionHeader = convertToHeader('Description', 2)
     const description = assignment.description
-        ? assignment.description
+        ? '\n<code>\n' + assignment.description + '\n</code>\n'
         : 'No description'
     return [descriptionHeader, description]
 }
 
 function assembleSubmissionInfo(submission: Submission) {
     const submissionHeader = convertToHeader('Submission', 2)
-    let submissionBody = submission.body
-    if (submission.submission_type === 'online_quiz') {
-        submissionBody = 'No submission'
+    switch (submission.submission_type) {
+        case 'online_text_entry': {
+            const submissionBody =
+                '\n<code>\n' + submission.body + '\n</code>\n'
+            return [submissionHeader, submissionBody]
+        }
+        case 'online_quiz': {
+            return [submissionHeader, 'See quiz below']
+        }
+        case 'online_upload': {
+            const attachment = submission.attachments?.[0]
+            const submissionBody = attachment
+                ? createLinkNormal(attachment.display_name, attachment.url)
+                : 'No upload'
+            return [submissionHeader, submissionBody]
+        }
+        case 'online_url': {
+            return [submissionHeader, submission.url ?? 'No URL']
+        }
+        case 'student_annotation': {
+            return [
+                submissionHeader,
+                'This submission type is not currently handled.',
+            ]
+        }
+        case 'media_recording': {
+            let submissionBody
+            const media_comment = submission.media_comment
+            if (!media_comment) {
+                submissionBody = 'No media'
+            } else {
+                if (media_comment?.display_name) {
+                    submissionBody = createLinkNormal(
+                        media_comment.display_name ?? 'Link to media',
+                        media_comment.url
+                    )
+                } else {
+                    submissionBody = media_comment.url
+                }
+            }
+            return [submissionHeader, submissionBody]
+        }
+        default: {
+            return [
+                submissionHeader,
+                `Submission type '${submission.submission_type}' unsupported.`,
+            ]
+        }
     }
-    return [submissionHeader, submissionBody]
 }
 
 function assembleFeedbackInfo(submission: Submission) {
     const feedbackHeader = convertToHeader('Feedback', 2)
     const feedbackBody = submission?.submission_comments?.length
         ? createList(
-              submission?.submission_comments.map((comment) => comment.comment),
+              submission?.submission_comments.map(
+                  (comment) => `${comment.author_name}: ${comment.comment}`
+              ),
               '-'
           )
         : 'No feedback'

@@ -13,7 +13,7 @@ import { useGetFolders } from '@renderer/hooks/useGetFolders'
 import { FileMarkdownOutlined } from '@ant-design/icons'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { shell } from 'electron'
-import { getDocumentsPath } from '@renderer/utils/config'
+import { doesConfigExist, getDocumentsPath } from '@renderer/utils/config'
 import { useEffect } from 'react'
 import { useAssignments } from '@renderer/hooks/useAssignments'
 import { useCourses } from '@renderer/hooks/useCourses'
@@ -30,6 +30,9 @@ type GenerationNameForm = {
 export function HomePage() {
     const { setGenerationName, reset } = useGenerationStore()
     const navigate = useNavigate({ from: '/' })
+    if (!doesConfigExist()) {
+        navigate({ to: '/setup' })
+    }
     const { data: folder, refetch: refreshFolders } = useGetFolders()
     const { setSelectedAssignments } = useAssignments()
     const { setSelectedCourses } = useCourses()
@@ -55,30 +58,36 @@ export function HomePage() {
     }
 
     return (
-        <Layout>
+        <Layout
+            style={{
+                height: '100%',
+            }}
+        >
             <Navbar>
                 <Typography.Title level={4} style={{ margin: 0 }}>
                     Canvas Capture
                 </Typography.Title>
                 <Button onClick={goToSettingsPage}>Settings</Button>
             </Navbar>
-
             <Content
                 style={{
                     margin: 'auto',
                     verticalAlign: 'middle',
                     alignItems: 'center',
-                    height: 'clamp(300px, 70vh, 700px)',
                     width: '80%',
                     minWidth: 300,
                     justifyItems: 'center',
+                    marginTop: 10,
+                    flexGrow: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
                 }}
             >
                 <Form
                     name="generationNameForm"
                     onFinish={generate}
                     autoComplete="off"
-                    style={{ width: '50%', margin: 'auto' }}
+                    style={{ width: '100%', maxWidth: '500px', margin: 'auto' }}
                 >
                     <Form.Item<GenerationNameForm>
                         name="generationName"
@@ -94,7 +103,7 @@ export function HomePage() {
                                 <Input
                                     placeholder="Report name"
                                     style={{
-                                        fontSize: 'clamp(15px, 2.5vh, 40px)',
+                                        fontSize: '2rem',
                                         height: 'auto',
                                     }}
                                 />
@@ -102,7 +111,7 @@ export function HomePage() {
                                     htmlType="submit"
                                     type="primary"
                                     style={{
-                                        fontSize: 'clamp(15px, 2.5h, 40px)',
+                                        fontSize: '1.25rem',
                                         height: 'auto',
                                     }}
                                 >
@@ -115,24 +124,11 @@ export function HomePage() {
                 <Flex
                     align={'center'}
                     justify={'center'}
-                    style={{
-                        paddingTop: 15,
-                        width: '100%',
-                        justifyContent: 'center',
-                    }}
+                    style={{ flexWrap: 'wrap', overflow: 'auto' }}
                 >
-                    <Flex
-                        align={'center'}
-                        justify={'center'}
-                        style={{ flexWrap: 'wrap', justifyContent: 'unset' }}
-                    >
-                        {folder?.map((folder) => (
-                            <FolderCard
-                                key={folder}
-                                folder={folder}
-                            ></FolderCard>
-                        ))}
-                    </Flex>
+                    {folder?.map((folder) => (
+                        <FolderCard key={folder} folder={folder}></FolderCard>
+                    ))}
                 </Flex>
             </Content>
             <Footer

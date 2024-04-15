@@ -12,12 +12,12 @@ const options: {
     label: string
     value: SubmissionType
 }[] = [
-    { label: 'text entry', value: 'online_text_entry' },
-    { label: 'url', value: 'online_url' },
-    { label: 'file upload', value: 'online_upload' },
-    { label: 'quiz', value: 'online_quiz' },
-    { label: 'video recording', value: 'media_recording' },
-    { label: 'student annotation', value: 'student_annotation' },
+    { label: 'Text Entry', value: 'online_text_entry' },
+    { label: 'URL', value: 'online_url' },
+    { label: 'File Upload', value: 'online_upload' },
+    { label: 'Quiz', value: 'online_quiz' },
+    { label: 'Video Recording', value: 'media_recording' },
+    { label: 'Student Annotation', value: 'student_annotation' },
 ]
 
 export function Assignments() {
@@ -89,22 +89,24 @@ export function Assignments() {
     }
 
     return (
-        <div>
+        <>
             <Select
                 mode="tags"
-                style={{ width: '100%' }}
-                placeholder="FILTER"
+                style={{ width: '100%', marginBottom: 10 }}
+                placeholder="Filter"
                 onChange={filterAssignments}
                 options={options}
             />
-            <Tree
-                checkable
-                onExpand={onExpand}
-                expandedKeys={expandedKeys}
-                onCheck={onCheck}
-                checkedKeys={selectedAssignments}
-                treeData={treeData}
-            />
-        </div>
+            <div style={{ overflow: 'auto' }}>
+                <Tree
+                    checkable
+                    onExpand={onExpand}
+                    expandedKeys={expandedKeys}
+                    onCheck={onCheck}
+                    checkedKeys={selectedAssignments}
+                    treeData={treeData}
+                />
+            </div>
+        </>
     )
 }

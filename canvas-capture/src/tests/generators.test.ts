@@ -60,7 +60,7 @@ describe('generateAssignment', () => {
             testAssignments[0],
             testSubmissions[0]
         )
-        expect(result[9]).toBe('No submission')
+        expect(result[9]).toBe('See quiz below')
     })
 
     it('should generate a list', () => {
@@ -108,6 +108,6 @@ describe('generateAssignment', () => {
             testAssignments[0],
             testSubmissions[0]
         )
-        expect(result[5]).toBe('Test description')
+        expect(result[5]).toBe('\n<code>\nTest description\n</code>\n')
     })
 })
