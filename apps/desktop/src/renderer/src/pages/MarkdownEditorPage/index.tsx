@@ -89,6 +89,13 @@ export function MarkdownEditorPage() {
         navigate({ to: '/selection', search: { step: STEPS.length - 1 } })
     }
 
+    const handleSaveFile = (key: string, content: string) => {
+        const node = findDataNodeByKey(key, data ?? [])
+        if (node && isFileDataNode(node)) {
+            node.content = content.split('\n')
+        }
+    }
+
     return (
         <>
             <Navbar>
@@ -105,6 +112,7 @@ export function MarkdownEditorPage() {
                         treeData={treeData}
                         selectedFile={selectedFile}
                         handleSelectFile={selectFile}
+                        handleSaveFile={handleSaveFile}
                         handleFinish={handleFinish}
                     />
                 ) : (

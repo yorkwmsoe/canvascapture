@@ -1,4 +1,4 @@
-import { App, Input, Tabs } from 'antd'
+import { Alert, App, Input, Space, Tabs } from 'antd'
 import { DirectoryTree } from '../DirectoryTree'
 import { SideBar } from './Sidebar'
 import { DirectoryTreeProps } from 'antd/es/tree'
@@ -13,6 +13,7 @@ export type MarkdownEditorProps = {
     treeData: DirectoryTreeProps['treeData']
     selectedFile: FileDataNode | undefined
     handleSelectFile: (key: string) => void
+    handleSaveFile: (key: string, content: string) => void
     handleFinish: () => void
 }
 
@@ -20,9 +21,10 @@ export function MarkdownEditor({
     treeData,
     selectedFile,
     handleSelectFile,
+    handleSaveFile,
     handleFinish,
 }: MarkdownEditorProps) {
-    const { modal } = App.useApp()
+    const { modal, message } = App.useApp()
     const { token } = useTheme()
     const [text, setText] = useState<string>()
 
@@ -55,6 +57,10 @@ export function MarkdownEditor({
     }
 
     const handleSave = () => {
+        if (selectedFile && text) {
+            handleSaveFile(selectedFile.key, text)
+            message.success('Saved!')
+        }
         setIsDirty(false)
     }
 
@@ -75,29 +81,36 @@ export function MarkdownEditor({
             key: '2',
             label: 'View',
             children: (
-                <div
-                    style={{
-                        borderColor: token.colorBorder,
-                        borderRadius: token.borderRadius,
-                        borderWidth: token.lineWidth,
-                        borderStyle: 'solid',
-                        paddingInline: '0.5rem',
-                        overflow: 'auto',
-                    }}
-                >
-                    <Markdown
-                        remarkPlugins={[remarkGfm]}
-                        components={{
-                            a: ({ href, children }) => (
-                                <ExternalLink href={href}>
-                                    {children}
-                                </ExternalLink>
-                            ),
+                <Space direction="vertical">
+                    <Alert
+                        message="Markdown style might not reflect what you see in the pdf."
+                        type="warning"
+                        showIcon
+                    />
+                    <div
+                        style={{
+                            borderColor: token.colorBorder,
+                            borderRadius: token.borderRadius,
+                            borderWidth: token.lineWidth,
+                            borderStyle: 'solid',
+                            paddingInline: '0.5rem',
+                            overflow: 'auto',
                         }}
                     >
-                        {text}
-                    </Markdown>
-                </div>
+                        <Markdown
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                                a: ({ href, children }) => (
+                                    <ExternalLink href={href}>
+                                        {children}
+                                    </ExternalLink>
+                                ),
+                            }}
+                        >
+                            {text}
+                        </Markdown>
+                    </div>
+                </Space>
             ),
         },
     ]
