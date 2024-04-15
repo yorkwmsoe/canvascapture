@@ -1,7 +1,7 @@
 import { Config } from '@renderer/utils/config'
 import { useSettingsStore } from '@renderer/stores/settings.store'
 import { useNavigate } from '@tanstack/react-router'
-import { Button, Checkbox, Form, Input, Typography } from 'antd'
+import { Button, Checkbox, Flex, Form, Input, Typography } from 'antd'
 import { Navbar } from '@renderer/components/Navbar'
 import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
 
@@ -35,7 +35,7 @@ export function SettingsPage() {
                     Back
                 </Button>
             </Navbar>
-            <div>
+            <Flex justify="center" vertical>
                 <Typography.Title level={2} style={{ textAlign: 'center' }}>
                     Settings
                 </Typography.Title>
@@ -91,7 +91,7 @@ export function SettingsPage() {
                         </Button>
                     </Form.Item>
                 </Form>
-            </div>
+            </Flex>
         </div>
     )
 }
