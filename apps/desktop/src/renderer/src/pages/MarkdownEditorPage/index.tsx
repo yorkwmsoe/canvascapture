@@ -11,10 +11,10 @@ import { Navbar } from '@renderer/components/Navbar'
 import { STEPS } from '@renderer/components/SwitchStepper'
 import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
 import { getCourseName } from '@renderer/utils/courses'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { Button, Flex, Spin, TreeDataNode, Typography } from 'antd'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 function transformData(data: DataNode): TreeDataNode {
     if (isCouseDataNode(data)) {
@@ -59,10 +59,16 @@ function findDataNodeByKey(
 export function MarkdownEditorPage() {
     const navigate = useNavigate({ from: '/markdown-editor' })
     const queryClient = useQueryClient()
-    const { runPreGenerate } = useGenerateNext()
+    const { runPreGenerate, runGenerate } = useGenerateNext()
     const { isLoading, data } = useQuery({
         queryKey: ['pre-generate'],
         queryFn: runPreGenerate,
+    })
+    const { mutate: generate, isPending: isGenerating } = useMutation({
+        mutationFn: runGenerate,
+        onSuccess: () => {
+            // navigate({ to: '/' })
+        },
     })
 
     const treeData = useMemo(() => {
@@ -85,9 +91,9 @@ export function MarkdownEditorPage() {
         navigate({ to: '/selection', search: { step: STEPS.length - 2 } })
     }
 
-    const handleFinish = () => {
-        navigate({ to: '/selection', search: { step: STEPS.length - 1 } })
-    }
+    const handleFinish = useCallback(() => {
+        generate(data)
+    }, [data, generate])
 
     const handleSaveFile = (key: string, content: string) => {
         const node = findDataNodeByKey(key, data ?? [])
@@ -107,7 +113,7 @@ export function MarkdownEditorPage() {
                 Markdown Editor
             </Typography.Title>
             <div style={{ marginInline: '1rem' }}>
-                {!isLoading ? (
+                {!isLoading && !isGenerating ? (
                     <MarkdownEditor
                         treeData={treeData}
                         selectedFile={selectedFile}
@@ -117,7 +123,15 @@ export function MarkdownEditorPage() {
                     />
                 ) : (
                     <Flex justify="center" align="center">
-                        <Spin />
+                        <Spin tip={isGenerating ? 'Generating' : 'Loading'}>
+                            <div
+                                style={{
+                                    padding: '50px',
+                                    background: 'rgba(0, 0, 0, 0.05)',
+                                    borderRadius: '4px',
+                                }}
+                            />
+                        </Spin>
                     </Flex>
                 )}
             </div>

@@ -18,6 +18,10 @@ import {
 import { uniqBy, isNil, maxBy, minBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { median } from './generate'
+import { generateV2 } from './generate.v2'
+import { ipcRenderer } from 'electron'
+import { getDocumentsPath } from '@renderer/utils/config'
+import { useGenerationStore } from '@renderer/stores/generation.store'
 
 export type DataNode = CourseDataNode | AssignmentDataNode | FileDataNode
 
@@ -217,6 +221,8 @@ export const useGenerateNext = () => {
     const { canvasAccessToken, canvasDomain, isStudent } = useSettingsStore()
     const { assignments, selectedAssignments } = useAssignments()
     const { getCourseById } = useCourses()
+    const { generationName } = useGenerationStore()
+    const documentsPath = getDocumentsPath()
 
     const dataNodes = useMemo(() => {
         return assignments.map<CourseDataNode>((assignment) => {
@@ -255,7 +261,19 @@ export const useGenerateNext = () => {
         )
     }, [dataNodes])
 
+    const runGenerate = async (data?: DataNode[]) => {
+        ipcRenderer.send(
+            'generate',
+            await generateV2(
+                data ?? (await runPreGenerate()),
+                generationName,
+                documentsPath
+            )
+        )
+    }
+
     return {
         runPreGenerate,
+        runGenerate,
     }
 }

@@ -81,7 +81,7 @@ export function MarkdownEditor({
             key: '2',
             label: 'View',
             children: (
-                <Space direction="vertical">
+                <Space direction="vertical" style={{ width: '100%' }}>
                     <Alert
                         message="Markdown style might not reflect what you see in the pdf."
                         type="warning"
