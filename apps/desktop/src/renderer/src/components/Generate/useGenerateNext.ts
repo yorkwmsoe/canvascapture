@@ -262,9 +262,9 @@ export const useGenerateNext = () => {
     }, [dataNodes])
 
     const runGenerate = async (data?: DataNode[]) => {
-        ipcRenderer.send(
+        await ipcRenderer.invoke(
             'generate',
-            await generateV2(
+            generateV2(
                 data ?? (await runPreGenerate()),
                 generationName,
                 documentsPath

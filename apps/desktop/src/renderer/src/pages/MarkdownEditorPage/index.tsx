@@ -13,7 +13,7 @@ import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
 import { getCourseName } from '@renderer/utils/courses'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { Button, Flex, Spin, TreeDataNode, Typography } from 'antd'
+import { App, Button, Flex, Spin, TreeDataNode, Typography } from 'antd'
 import { useCallback, useMemo, useState } from 'react'
 
 function transformData(data: DataNode): TreeDataNode {
@@ -57,6 +57,7 @@ function findDataNodeByKey(
 }
 
 export function MarkdownEditorPage() {
+    const { notification } = App.useApp()
     const navigate = useNavigate({ from: '/markdown-editor' })
     const queryClient = useQueryClient()
     const { runPreGenerate, runGenerate } = useGenerateNext()
@@ -68,6 +69,12 @@ export function MarkdownEditorPage() {
         mutationFn: runGenerate,
         onSuccess: () => {
             // navigate({ to: '/' })
+        },
+        onError: () => {
+            notification.error({
+                message: 'Generation Failed',
+                description: 'Please try again',
+            })
         },
     })
 
