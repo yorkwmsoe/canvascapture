@@ -68,7 +68,7 @@ export function MarkdownEditorPage() {
     const { mutate: generate, isPending: isGenerating } = useMutation({
         mutationFn: runGenerate,
         onSuccess: () => {
-            // navigate({ to: '/' })
+            navigate({ to: '/' })
         },
         onError: () => {
             notification.error({
