@@ -4,7 +4,7 @@ import {
     submissionsRawJSON,
     courseRawJSON,
     quizRawJSON,
-    rawQuizSubmission
+    rawQuizSubmission,
 } from '../mocks/canvas.api.mocks.ts'
 
 import {
@@ -18,7 +18,6 @@ import {
     getQuiz,
     getQuizSubmission,
 } from '../canvas.api'
-
 
 describe('testToJSON', () => {
     const sampleRawJSON = '{"color1":"Blue","numColors":1, "hasColors": true}'
@@ -117,7 +116,6 @@ describe('Testing getCourses', () => {
             canvasDomain: 'http://sdlstudentvm06.msoe.edu',
         })
         expect(response).toEqual(courseJSONList)
-
     })
 })
 

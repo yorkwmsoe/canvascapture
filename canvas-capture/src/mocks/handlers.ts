@@ -1,5 +1,11 @@
 import { http, HttpResponse } from 'msw'
-import {assignmentsRawJSON, submissionsRawJSON, courseRawJSON, quizRawJSON, quizSubmissionJSON} from './canvas.api.mocks.ts'
+import {
+    assignmentsRawJSON,
+    submissionsRawJSON,
+    courseRawJSON,
+    quizRawJSON,
+    quizSubmissionJSON,
+} from './canvas.api.mocks.ts'
 
 const sampleOptions = { status: 200, statusText: 'OK' }
 
