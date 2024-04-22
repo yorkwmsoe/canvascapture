@@ -18,8 +18,9 @@ import { useEffect } from 'react'
 import { useAssignments } from '@renderer/hooks/useAssignments'
 import { useCourses } from '@renderer/hooks/useCourses'
 import { join } from 'path'
+import { Navbar } from '@renderer/components/Navbar'
 
-const { Header, Content, Footer } = Layout
+const { Content, Footer } = Layout
 const { Meta } = Card
 
 type GenerationNameForm = {
@@ -27,11 +28,11 @@ type GenerationNameForm = {
 }
 
 export function HomePage() {
+    const { setGenerationName, reset } = useGenerationStore()
     const navigate = useNavigate({ from: '/' })
     if (!doesConfigExist()) {
         navigate({ to: '/setup' })
     }
-    const { setGenerationName } = useGenerationStore()
     const { data: folder, refetch: refreshFolders } = useGetFolders()
     const { setSelectedAssignments } = useAssignments()
     const { setSelectedCourses } = useCourses()
@@ -43,6 +44,7 @@ export function HomePage() {
     }, [])
 
     const generate = (values: GenerationNameForm) => {
+        reset()
         setGenerationName(values.generationName)
         goToCoursesPage()
     }
@@ -56,42 +58,22 @@ export function HomePage() {
     }
 
     return (
-        <Layout style={{ height: '100%' }}>
-            <Header
-                style={{
-                    backgroundColor: 'white',
-                    textAlign: 'left',
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    paddingBottom: 10,
-                    height: 'unset',
-                }}
-            >
-                <Flex justify={'space-between'} align={'center'}>
-                    <Typography.Text style={{ fontSize: '2rem' }}>
-                        <b>Canvas Capture</b>
-                    </Typography.Text>
-                    <Button
-                        style={{
-                            fontSize: '1rem',
-                            height: 'auto',
-                            textAlign: 'center',
-                            marginTop: 10,
-                        }}
-                        onClick={goToSettingsPage}
-                    >
-                        Settings
-                    </Button>
-                </Flex>
-            </Header>
-
+        <Layout
+            style={{
+                height: '100%',
+            }}
+        >
+            <Navbar>
+                <Typography.Title level={4} style={{ margin: 0 }}>
+                    Canvas Capture
+                </Typography.Title>
+                <Button onClick={goToSettingsPage}>Settings</Button>
+            </Navbar>
             <Content
                 style={{
                     margin: 'auto',
                     verticalAlign: 'middle',
                     alignItems: 'center',
-                    //height: 'clamp(300px, 70vh, 700px)',
-                    //height: '85vh',
                     width: '80%',
                     minWidth: 300,
                     justifyItems: 'center',

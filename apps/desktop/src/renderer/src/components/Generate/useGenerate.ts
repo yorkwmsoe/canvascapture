@@ -1,6 +1,3 @@
-import { Flex, Spin, Typography } from 'antd'
-import { useEffect } from 'react'
-import { useNavigate } from '@tanstack/react-router'
 import { Course } from '@canvas-capture/lib'
 import { useAssignments } from '@renderer/hooks/useAssignments'
 import { useCourses } from '@renderer/hooks/useCourses'
@@ -11,8 +8,7 @@ import { getDocumentsPath } from '@renderer/utils/config'
 import { ipcRenderer } from 'electron'
 import { generate } from './generate'
 
-export function Generate() {
-    const navigate = useNavigate({ from: '/generation' })
+export const useGenerate = () => {
     const { selectedAssignments, getAssignmentById } = useAssignments()
     const { courses, selectedCourses } = useCourses()
     const { canvasDomain, canvasAccessToken, isStudent } = useSettingsStore()
@@ -22,10 +18,12 @@ export function Generate() {
     const selectedAssignmentsSplit = selectedAssignments.map((x) =>
         parseHierarchyId(x)
     )
+
     const filteredAssignments = selectedAssignmentsSplit.flatMap(
         ({ courseId, assignmentId }) =>
             getAssignmentById(courseId, assignmentId) ?? []
     )
+
     /* Cannot be undefined, as the UI prevents it */
     const filteredCourses = courses?.filter((x) =>
         selectedCourses.includes(x.id)
@@ -44,25 +42,9 @@ export function Generate() {
                 documentsPath
             )
         )
-        navigate({ to: '/' })
     }
 
-    useEffect(() => {
-        const run = async () => {
-            await runGenerate()
-            navigate({ to: '/' })
-        }
-        run()
-    }, [])
-
-    return (
-        <Flex
-            justify="center"
-            align="center"
-            style={{ height: '100%', flexDirection: 'column' }}
-        >
-            <Spin />
-            <Typography.Text>Generating</Typography.Text>
-        </Flex>
-    )
+    return {
+        runGenerate,
+    }
 }

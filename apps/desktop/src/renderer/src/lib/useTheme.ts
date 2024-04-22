@@ -1,3 +1,3 @@
 import { theme } from 'antd'
 
-export const useTheme = theme.useToken
+export const useTheme: typeof theme.useToken = theme.useToken

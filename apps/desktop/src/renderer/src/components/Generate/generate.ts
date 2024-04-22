@@ -12,6 +12,7 @@ import {
     generateQuiz,
 } from '@canvas-capture/lib'
 import { canvasApi } from '../../apis/canvas.api'
+import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
 
 // https://stackoverflow.com/a/70806192
@@ -151,7 +152,7 @@ export async function generate(
             )
             if (uniqueSubmissions.length > 0) {
                 const assignmentsPath = sanitizePath(
-                    join(generationName, course.name, assignment.name)
+                    join(generationName, getCourseName(course), assignment.name)
                 )
                 mkdirSync(join(documentsPath, assignmentsPath), {
                     recursive: true,

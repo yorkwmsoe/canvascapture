@@ -115,17 +115,11 @@ export const getSubmissions = async (args: GetSubmissionsRequest & Auth) => {
             })
     }
     return await fetch(
-        `${canvasDomain}/api/v1/courses/${args.courseId}/assignments/${args.assignmentId}/submissions${isStudent ? '/self' : ''}?include[]=rubric_assessment&include[]=submission_comments&per_page=1000`,
+        `${canvasDomain}/api/v1/courses/${args.courseId}/assignments/${args.assignmentId}/submissions?include[]=rubric_assessment&include[]=submission_comments&per_page=1000`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
     )
         .then(intercept)
-        .then(async (data) => {
-            if (isStudent) {
-                return toJSON<Submission[]>(data)
-            } else {
-                return Promise.resolve([await toJSON<Submission>(data)])
-            }
-        })
+        .then(toJSON<Submission[]>)
 }
 
 export type GetQuizRequest = {

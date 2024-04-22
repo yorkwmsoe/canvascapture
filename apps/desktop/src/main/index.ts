@@ -106,7 +106,7 @@ type FilePathContentPair = {
     content: string
 }
 
-ipcMain.on('generate', async (_event, htmlData: FilePathContentPair[]) => {
+ipcMain.handle('generate', async (_event, htmlData: FilePathContentPair[]) => {
     globalThis.htmlData = htmlData
     globalThis.pyodide.runPython(`
     import os
