@@ -6,6 +6,6 @@ describe('version', () => {
     it('should return the version', () => {
         const log = vi.spyOn(console, 'log').mockImplementation(() => {})
         version()
-        expect(log).toHaveBeenCalledWith(`v ${VERSION_TEXT}`)
+        expect(log).toHaveBeenCalledWith(`v${VERSION_TEXT}`)
     })
 })

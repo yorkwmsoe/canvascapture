@@ -139,7 +139,7 @@ export function HomePage() {
                     textAlign: 'left',
                 }}
             >
-                <Typography.Text>v0.01</Typography.Text>
+                <Typography.Text>v{__APP_VERSION__}</Typography.Text>
             </Footer>
         </Layout>
     )
