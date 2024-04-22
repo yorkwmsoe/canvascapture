@@ -1,5 +1,4 @@
-import { describe, test, expect, afterEach, beforeEach } from 'vitest'
-import { server } from '../mocks/server.ts'
+import { describe, test, expect } from 'vitest'
 
 import {
     handleDates,
@@ -12,16 +11,6 @@ import {
     getQuiz,
     getQuizSubmission,
 } from '../canvas.api'
-
-//global.fetch = vi.fn()
-
-afterEach(() => {
-    server.resetHandlers()
-})
-
-beforeEach(() => {
-    server.listen()
-})
 
 describe('testToJSON', () => {
     const sampleRawJSON = '{"color1":"Blue","numColors":1, "hasColors": true}'

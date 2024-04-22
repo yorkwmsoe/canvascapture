@@ -9,7 +9,7 @@ export const convertToHeader = (markdownContent: string, size: number) => {
     for (let i: number = 0; i < size; i++) {
         headerSize = headerSize + '#'
     }
-    return headerSize + ' ' + markdownContent + '\n'
+    return headerSize + ' ' + markdownContent
 }
 
 /**
