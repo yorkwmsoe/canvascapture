@@ -157,9 +157,9 @@ export const getQuizSubmission = async (
         `${canvasDomain}/api/v1/courses/${args.courseId}/quizzes/${args.quizId}/submissions`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
     )
-         .then(intercept)
-         .then(toJSON<{ quiz_submissions: QuizSubmission[] }>)
-         .then((data) => data.quiz_submissions)
+        .then(intercept)
+        .then(toJSON<{ quiz_submissions: QuizSubmission[] }>)
+        .then((data) => data.quiz_submissions)
     return results.find((sub) => sub.submission_id == args.submissionId)
 }
 
