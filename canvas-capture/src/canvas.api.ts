@@ -10,12 +10,12 @@ export type Auth = {
     canvasDomain: string
 }
 
-function toJSON<T>(response: Response): Promise<T> {
+export function toJSON<T>(response: Response): Promise<T> {
     return response.json()
 }
 
 // date handling from: https://stackoverflow.com/a/66238542
-function handleDates(body: unknown) {
+export function handleDates(body: unknown) {
     if (body === null || body === undefined || typeof body !== 'object') return
 
     for (const key of Object.keys(body)) {
@@ -30,16 +30,15 @@ function handleDates(body: unknown) {
             body[key] = parseISO(value)
         } else if (typeof value === 'object') handleDates(value)
     }
-
     return
 }
 
-async function intercept(response: Response) {
+export async function intercept(response: Response) {
     handleDates(response)
     return response
 }
 
-const getApiHeaders = (
+export const getApiHeaders = (
     args: {
         accessToken: string
     },
@@ -51,7 +50,7 @@ const getApiHeaders = (
     }
 }
 
-const getCourses = async (args: Auth) => {
+export const getCourses = async (args: Auth) => {
     const { canvasAccessToken, canvasDomain } = args
     return await fetch(
         `${canvasDomain}/api/v1/courses?exclude_blueprint_courses&per_page=1000`,
@@ -67,7 +66,7 @@ export type GetAssignmentsRequest = {
     courseId: number
 }
 
-const getAssignments = async (args: GetAssignmentsRequest & Auth) => {
+export const getAssignments = async (args: GetAssignmentsRequest & Auth) => {
     const { canvasAccessToken, canvasDomain } = args
     return await fetch(
         `${canvasDomain}/api/v1/courses/${args.courseId}/assignments?per_page=1000`,
@@ -81,7 +80,7 @@ const getAssignments = async (args: GetAssignmentsRequest & Auth) => {
         .then(toJSON<Assignment[]>)
 }
 
-const getAssignmentsWithCourseId = async (
+export const getAssignmentsWithCourseId = async (
     args: GetAssignmentsRequest & Auth
 ) => {
     const { canvasAccessToken, canvasDomain } = args
@@ -153,13 +152,14 @@ export const getQuizSubmission = async (
     args: GetQuizSubmissionRequest & Auth
 ) => {
     const { canvasAccessToken, canvasDomain } = args
+
     const results = await fetch(
         `${canvasDomain}/api/v1/courses/${args.courseId}/quizzes/${args.quizId}/submissions`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
     )
-        .then(intercept)
-        .then(toJSON<{ quiz_submissions: QuizSubmission[] }>)
-        .then((data) => data.quiz_submissions)
+         .then(intercept)
+         .then(toJSON<{ quiz_submissions: QuizSubmission[] }>)
+         .then((data) => data.quiz_submissions)
     return results.find((sub) => sub.submission_id == args.submissionId)
 }
 
