@@ -1,22 +1,26 @@
-import {Course} from "./types/canvas_api/course";
-import {Assignment} from "./types/canvas_api/assignment";
-import {Submission} from "./types/canvas_api/submission";
+import { Course } from './types/canvas_api/course'
+import { Assignment } from './types/canvas_api/assignment'
+import { Submission } from './types/canvas_api/submission'
 import {
     getQuizQuestionsNoParams,
     getQuizQuestionsParams,
     getQuizSubmission,
     getQuizSubmissionQuestions,
-    Auth
-} from "./canvas.api";
-import {QuestionData} from "./types/canvas_api/quiz-question";
-import {convertToHeader, createTableHeader, createTableRows} from "./markdown";
+    Auth,
+} from './canvas.api'
+import { QuestionData } from './types/canvas_api/quiz-question'
+import { convertToHeader, createTableHeader, createTableRows } from './markdown'
 
-
-async function assembleQuizQuestionsAndComments(auth: Auth, course: Course, assignment: Assignment, submission: Submission) {
+async function assembleQuizQuestionsAndComments(
+    auth: Auth,
+    course: Course,
+    assignment: Assignment,
+    submission: Submission
+) {
     //const user_id = submission.user_id
     const submission_id = submission.id
     const quiz_id_num = assignment.quiz_id
-    const quiz_id = quiz_id_num != undefined ? quiz_id_num : -1;
+    const quiz_id = quiz_id_num != undefined ? quiz_id_num : -1
     const quizSubmission = await getQuizSubmission({
         canvasDomain: auth.canvasDomain,
         canvasAccessToken: auth.canvasAccessToken,
@@ -24,39 +28,44 @@ async function assembleQuizQuestionsAndComments(auth: Auth, course: Course, assi
         quizId: quiz_id,
         submissionId: submission_id,
     })
-    const quiz_submission_num = quizSubmission != undefined ? quizSubmission.id : -1
-    const quizSubmissionId = quiz_submission_num != undefined ? quiz_submission_num : -1
+    const quiz_submission_num =
+        quizSubmission != undefined ? quizSubmission.id : -1
+    const quizSubmissionId =
+        quiz_submission_num != undefined ? quiz_submission_num : -1
     const quizSubmissionQuestions = await getQuizSubmissionQuestions({
         quizSubmissionId: quiz_submission_num,
         canvasDomain: auth.canvasDomain,
-        canvasAccessToken: auth.canvasDomain
+        canvasAccessToken: auth.canvasDomain,
     })
-    const quizSubAttempt = quizSubmission != undefined ? quizSubmission.attempt : -1
+    const quizSubAttempt =
+        quizSubmission != undefined ? quizSubmission.attempt : -1
     const quizQuestionsParams = await getQuizQuestionsParams({
         courseId: course.id,
         quizId: quiz_id,
         submissionId: quizSubmissionId,
         quizSubmissionAttempt: quizSubAttempt,
         canvasDomain: auth.canvasDomain,
-        canvasAccessToken: auth.canvasDomain
+        canvasAccessToken: auth.canvasDomain,
     })
     const quizQuestionsNoParams = await getQuizQuestionsNoParams({
         courseId: course.id,
         quizId: quiz_id,
         canvasDomain: auth.canvasDomain,
-        canvasAccessToken: auth.canvasDomain
+        canvasAccessToken: auth.canvasDomain,
     })
 
     quizSubmissionQuestions.sort((a, b) => a.position - b.position)
     quizQuestionsParams.sort((a, b) => a.position - b.position)
-    quizQuestionsNoParams.sort((a, b) => a.assessment_question_id - b.assessment_question_id)
+    quizQuestionsNoParams.sort(
+        (a, b) => a.assessment_question_id - b.assessment_question_id
+    )
 
     //The quizSubmissionQuestions has 2 more items, depending on the quiz than quizQuestionsParams/NoParams
     //This is because there is a spacer which is not a question, and there is a question that has
     //no grade associated with it.
 
     const questionsData: QuestionData[] = []
-    for(let i = 0; i < quizQuestionsParams.length; i++){
+    for (let i = 0; i < quizQuestionsParams.length; i++) {
         const questionData: QuestionData = {
             quiz_id: quizSubmissionQuestions[i].quiz_id,
             question_name: quizQuestionsNoParams[i].question_name,
@@ -75,7 +84,7 @@ async function assembleQuizQuestionsAndComments(auth: Auth, course: Course, assi
     return formatQuizQuestions(questionsData)
 }
 
-function formatQuizQuestions(quizQuestions: QuestionData[]): string[]{
+function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
     const formattedQuestions: string[] = []
     //const numQuestions = quizQuestions.length
     quizQuestions.map((question) => {
@@ -86,29 +95,48 @@ function formatQuizQuestions(quizQuestions: QuestionData[]): string[]{
         const qType = question.question_type
         const neutral_comments = question.neutral_comments
 
-        const questionHeader = convertToHeader("Question " + position, 2) + '\n'
-        const questionTableHeader1 = createTableHeader(["Question Name", "Points Possible", "Question Description", "Question Type"])
-        const questionTableBody1 = createTableRows([[question_name, points_possible, qDescription, qType]]) + '\n'
+        const questionHeader = convertToHeader('Question ' + position, 2) + '\n'
+        const questionTableHeader1 = createTableHeader([
+            'Question Name',
+            'Points Possible',
+            'Question Description',
+            'Question Type',
+        ])
+        const questionTableBody1 =
+            createTableRows([
+                [question_name, points_possible, qDescription, qType],
+            ]) + '\n'
 
-        let commentType = ""
-        let conditionalComments = ""
-        let score = ""
-        if(question.correct === true){
-            commentType = "Correct"
-            score = "Full"
+        let commentType = ''
+        let conditionalComments = ''
+        let score = ''
+        if (question.correct === true) {
+            commentType = 'Correct'
+            score = 'Full'
             conditionalComments = question.correct_comments
         } else {
-            commentType = "Incorrect"
+            commentType = 'Incorrect'
             conditionalComments = question.incorrect_comments
-            score = (question.correct === "partial") ? "partial" : "No Points";
+            score = question.correct === 'partial' ? 'partial' : 'No Points'
         }
 
-        const questionTableHeader2 = createTableHeader(["Student Score", commentType + " Comments", "Neutral Comments", "Additional Comments"])
-        const questionTableBody2 = createTableRows([[score, conditionalComments, neutral_comments, "ADD FROM SCRAPING"]])
-        const questionString = questionHeader + questionTableHeader1 +  questionTableBody1 + questionTableHeader2 + questionTableBody2
+        const questionTableHeader2 = createTableHeader([
+            'Student Score',
+            commentType + ' Comments',
+            'Neutral Comments',
+            'Additional Comments',
+        ])
+        const questionTableBody2 = createTableRows([
+            [score, conditionalComments, neutral_comments, 'ADD FROM SCRAPING'],
+        ])
+        const questionString =
+            questionHeader +
+            questionTableHeader1 +
+            questionTableBody1 +
+            questionTableHeader2 +
+            questionTableBody2
         formattedQuestions.push(questionString)
     })
-
 
     return formattedQuestions
 }

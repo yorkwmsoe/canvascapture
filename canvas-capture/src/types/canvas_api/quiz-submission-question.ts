@@ -1,4 +1,4 @@
-import {Formula, Match, Variable} from './quiz-question'
+import { Formula, Match, Variable } from './quiz-question'
 
 export type QuizSubmissionQuestion = {
     // Unique identifier for the question
@@ -32,7 +32,7 @@ export type QuizSubmissionQuestion = {
     // Indicates if the question is flagged
     flagged: boolean
     // Indicates if the question is correct
-    correct: boolean | "partial"
+    correct: boolean | 'partial'
 }
 
 export type Answer = {

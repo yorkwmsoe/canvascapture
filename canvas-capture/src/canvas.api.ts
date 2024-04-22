@@ -4,9 +4,8 @@ import { Course } from './types/canvas_api/course'
 import { Submission } from './types/canvas_api/submission'
 import { Quiz } from './types/canvas_api/quiz'
 import { QuizSubmission } from './types/canvas_api/quiz-submissions'
-import {QuizSubmissionQuestion} from "./types/canvas_api/quiz-submission-question";
-import {QuizQuestion} from "./types/canvas_api/quiz-question";
-
+import { QuizSubmissionQuestion } from './types/canvas_api/quiz-submission-question'
+import { QuizQuestion } from './types/canvas_api/quiz-question'
 
 export type Auth = {
     canvasAccessToken: string
@@ -164,43 +163,51 @@ export type GetLatestQuizVersionRequest = {
     courseId: number
     quizId: number
 }
-export const getLatestQuizVersion = async (args: GetLatestQuizVersionRequest & Auth): Promise<number> => {
+export const getLatestQuizVersion = async (
+    args: GetLatestQuizVersionRequest & Auth
+): Promise<number> => {
     const { canvasAccessToken, canvasDomain } = args
 
-    const quiz = await fetch(`${canvasDomain}/courses/${args.courseId}/quizzes/${args.quizId}`,
+    const quiz = await fetch(
+        `${canvasDomain}/courses/${args.courseId}/quizzes/${args.quizId}`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
-    ).then(intercept)
+    )
+        .then(intercept)
         .then(toJSON<Quiz>)
     return quiz.version_number
-};
+}
 
 export type GetMostCommonQuizVersionRequest = {
     courseId: number
     quizId: number
 }
 
-export const getMostCommonQuizVersion = async (args: GetMostCommonQuizVersionRequest & Auth): Promise<number> => {
+export const getMostCommonQuizVersion = async (
+    args: GetMostCommonQuizVersionRequest & Auth
+): Promise<number> => {
     const { canvasAccessToken, canvasDomain } = args
 
-    const quizSubmissions: QuizSubmission[] = await fetch(`${canvasDomain}/courses/${args.courseId}/quizzes/${args.quizId}/submissions`,
+    const quizSubmissions: QuizSubmission[] = await fetch(
+        `${canvasDomain}/courses/${args.courseId}/quizzes/${args.quizId}/submissions`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
-    ).then(toJSON<{ quiz_submissions: QuizSubmission[] }>)
+    )
+        .then(toJSON<{ quiz_submissions: QuizSubmission[] }>)
         .then((data) => data.quiz_submissions)
 
-    if(quizSubmissions != undefined) {
+    if (quizSubmissions != undefined) {
         const versionNumberOccurrences = new Map<number, number>()
         quizSubmissions.forEach((quiz) => {
             if (!versionNumberOccurrences.has(quiz.quiz_version)) {
                 versionNumberOccurrences.set(quiz.quiz_version, 1)
             } else {
                 const count = versionNumberOccurrences.get(quiz.quiz_version)
-                if(count != undefined){
+                if (count != undefined) {
                     versionNumberOccurrences.set(quiz.quiz_version, count + 1)
                 }
             }
         })
         let largestVal = -1
-        if(versionNumberOccurrences.size != 0) {
+        if (versionNumberOccurrences.size != 0) {
             versionNumberOccurrences.forEach((key, value) => {
                 if (value > largestVal) {
                     largestVal = value
@@ -219,11 +226,15 @@ export type GetQuizSubmissionQuestionsRequest = {
     quizSubmissionId: number
 }
 
-export const getQuizSubmissionQuestions = async (args: GetQuizSubmissionQuestionsRequest & Auth): Promise<QuizSubmissionQuestion[]> => {
+export const getQuizSubmissionQuestions = async (
+    args: GetQuizSubmissionQuestionsRequest & Auth
+): Promise<QuizSubmissionQuestion[]> => {
     const { canvasAccessToken, canvasDomain } = args
-    const quizSubmissionQuestions: QuizSubmissionQuestion[] = await fetch(`${canvasDomain}/quiz_submissions/${args.quizSubmissionId}/questions?include[]=quiz_question`,
+    const quizSubmissionQuestions: QuizSubmissionQuestion[] = await fetch(
+        `${canvasDomain}/quiz_submissions/${args.quizSubmissionId}/questions?include[]=quiz_question`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
-    ).then(intercept)
+    )
+        .then(intercept)
         .then(toJSON<{ quiz_submissions_questions: QuizSubmissionQuestion[] }>)
         .then((data) => data.quiz_submissions_questions)
 
@@ -231,31 +242,39 @@ export const getQuizSubmissionQuestions = async (args: GetQuizSubmissionQuestion
 }
 
 export type GetQuizQuestionsNoParamsRequest = {
-    courseId: number,
+    courseId: number
     quizId: number
 }
-export const getQuizQuestionsNoParams = async (args: GetQuizQuestionsNoParamsRequest & Auth):Promise<QuizQuestion[]> => {
+export const getQuizQuestionsNoParams = async (
+    args: GetQuizQuestionsNoParamsRequest & Auth
+): Promise<QuizQuestion[]> => {
     const { canvasAccessToken, canvasDomain } = args
-    const quizQuestions: QuizQuestion[] = await fetch(`${canvasDomain}/courses/${args.courseId}/quizzes/${args.quizId}/questions`,
+    const quizQuestions: QuizQuestion[] = await fetch(
+        `${canvasDomain}/courses/${args.courseId}/quizzes/${args.quizId}/questions`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
-    ).then(intercept)
+    )
+        .then(intercept)
         .then(toJSON<QuizQuestion[]>)
 
     return quizQuestions
 }
 
 export type GetQuizQuestionsParamsRequest = {
-    courseId: number,
-    quizId: number,
-    submissionId: number,
+    courseId: number
+    quizId: number
+    submissionId: number
     quizSubmissionAttempt: number
 }
 
-export const getQuizQuestionsParams = async (args: GetQuizQuestionsParamsRequest & Auth):Promise<QuizQuestion[]> => {
+export const getQuizQuestionsParams = async (
+    args: GetQuizQuestionsParamsRequest & Auth
+): Promise<QuizQuestion[]> => {
     const { canvasAccessToken, canvasDomain } = args
-    const quizQuestions: QuizQuestion[] = await fetch(`${canvasDomain}/courses/${args.courseId}/quizzes/${args.quizId}/questions?quiz_submission_id=${args.submissionId}&quiz_submission_attempt=${args.quizSubmissionAttempt}`,
+    const quizQuestions: QuizQuestion[] = await fetch(
+        `${canvasDomain}/courses/${args.courseId}/quizzes/${args.quizId}/questions?quiz_submission_id=${args.submissionId}&quiz_submission_attempt=${args.quizSubmissionAttempt}`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
-    ).then(intercept)
+    )
+        .then(intercept)
         .then(toJSON<QuizQuestion[]>)
 
     return quizQuestions

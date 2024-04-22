@@ -71,7 +71,7 @@ export type QuestionData = {
     neutral_comments: string
     incorrect_comments: string
     correct_answers: QuizSubmissionAnswer[]
-    correct: boolean | "partial"
+    correct: boolean | 'partial'
     question_type: string //should eventually make this explicit
 }
 
@@ -80,14 +80,13 @@ export type Variable = {
     min: number
     max: number
     scale: number
-};
+}
 
 export type Formula = {
-    formula: string;
-};
+    formula: string
+}
 
 export type Match = {
-    text: string;
-    match_id: number;
-};
-
+    text: string
+    match_id: number
+}
