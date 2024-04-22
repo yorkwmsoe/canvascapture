@@ -67,7 +67,11 @@ const generateAssignmentOrQuiz = async (
     canvasAccessToken: string,
     canvasDomain: string
 ) => {
-    if (assignment.is_quiz_assignment && quiz !== undefined) {
+    if (
+        assignment.is_quiz_assignment &&
+        !assignment.locked_for_user &&
+        quiz !== undefined
+    ) {
         const quizSubmission = await canvasApi.getQuizSubmission({
             canvasAccessToken,
             canvasDomain,
