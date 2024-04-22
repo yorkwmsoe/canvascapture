@@ -7,29 +7,6 @@ import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
 import { useState } from 'react'
 import { ExternalLink } from '@renderer/components/ExternalLink'
 
-// {!isSetup && (
-//     <Button
-//         style={{
-//             marginLeft: 10,
-//             fontSize: `clamp(${12}px, 1.5vw, ${40}px`,
-//             textAlign: 'center',
-//             height: 'auto',
-//         }}
-//         onClick={goToHomePage}
-//     >
-//         {'\u2B05'}Back
-//     </Button>
-// )}
-// {isSetup && <h1></h1>}
-// <h1
-//     style={{
-//         marginRight: 10,
-//         fontSize: `clamp(${12}px, 2vw, ${40}px`,
-//     }}
-// >
-//     {isSetup ? 'Setup' : 'Settings'}
-// </h1>
-
 export function SettingsPage() {
     const {
         setCanvasDomain,
