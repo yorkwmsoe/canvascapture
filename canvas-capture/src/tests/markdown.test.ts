@@ -18,7 +18,6 @@ type headerSizes = {
     output: string
 }
 describe('markdown convertToHeader', () => {
-    //Arrange
     const sampleHeader = 'SampleHeader'
     const listOfHeaderSizes: headerSizes[] = [
         { size: 1, output: '# SampleHeader' },
