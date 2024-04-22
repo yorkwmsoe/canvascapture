@@ -195,3 +195,6 @@ function assembleRubricInfo(assignment: Assignment, submission: Submission) {
 
     return [rubricHeader, rubricTable]
 }
+
+
+
