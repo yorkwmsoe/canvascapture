@@ -1,6 +1,8 @@
-html, body, #root {
+html, body, #root, .ant-app {
     height: 100%;
     margin: 0;
+    display: flex;
+    flex: 1;
 }
 
 .ant-checkbox-group {
