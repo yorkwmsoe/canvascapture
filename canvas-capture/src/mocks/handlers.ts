@@ -5,7 +5,7 @@ import {
     courseRawJSON,
     quizRawJSON,
     quizSubmissionJSON,
-} from './canvas.api.mocks.ts'
+} from './canvas.api.mocks'
 
 const sampleOptions = { status: 200, statusText: 'OK' }
 
