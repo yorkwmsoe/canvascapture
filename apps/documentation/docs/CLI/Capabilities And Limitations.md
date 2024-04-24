@@ -13,9 +13,5 @@
 ## Limitations
 
 ### Students 
-Can do everything that the CLI application can do, but with the following restrictions:
 - Cannot get all submissions
 - Data may differ from Professors
-
-### Professors
-Can do everything that the CLI application can do
