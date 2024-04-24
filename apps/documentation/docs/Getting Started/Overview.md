@@ -7,7 +7,7 @@ Languages:
 
 Package Managers:
 
--   [Pnpm](https://pnpm.io/) (npm install -g pnpm)
+-   [Pnpm](https://pnpm.io/)
 -   [Nodejs](https://nodejs.org/en/)
 
 Web Development:
