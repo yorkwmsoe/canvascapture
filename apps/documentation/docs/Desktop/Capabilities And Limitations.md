@@ -1,3 +1,6 @@
+PBIs
+- https://gitlab.com/msoe.edu/sdl/sdl/canvascapture/-/issues/102
+- https://gitlab.com/msoe.edu/sdl/sdl/canvascapture/-/issues/103
 
 ## Capabilities
 - Home - displays the home page with the version, settings, generation input and all previous generations

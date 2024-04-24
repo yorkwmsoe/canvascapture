@@ -1,3 +1,6 @@
+PBIs
+- https://gitlab.com/msoe.edu/sdl/sdl/canvascapture/-/issues/102
+- https://gitlab.com/msoe.edu/sdl/sdl/canvascapture/-/issues/103
 
 ## Capabilities
 - help - display help information

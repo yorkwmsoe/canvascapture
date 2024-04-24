@@ -1,4 +1,6 @@
- 
+PBIs
+- https://gitlab.com/msoe.edu/sdl/sdl/canvascapture/-/issues/104
+
 ### Pipline
 
 ![pipeline.png](pipeline.png)
