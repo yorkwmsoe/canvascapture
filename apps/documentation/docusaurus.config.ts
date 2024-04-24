@@ -82,6 +82,12 @@ const config: Config = {
                     label: 'Releases',
                     position: 'left',
                 },
+                {
+                    type: 'docSidebar',
+                    sidebarId: 'feedbackSidebar',
+                    label: 'Feedback',
+                    position: 'left',
+                },
             ],
         },
         footer: {
