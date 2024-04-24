@@ -7,5 +7,6 @@ export default defineConfig({
         },
         reporters: ['default', 'junit'],
         outputFile: 'junit.xml',
+        setupFiles: ['./src/tests/canvas.api.setup.ts'],
     },
 })
