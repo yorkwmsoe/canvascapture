@@ -1,4 +1,3 @@
-# Canvas Capture Library
 
 This package provides a library of common utilities shared between the various canvas capture apps.
 
