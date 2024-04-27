@@ -2,6 +2,25 @@
 
 This package provides a library of common utilities shared between the various canvas capture apps. There are 4 main modules that are utilized within this library: Markdown, CanvasAPI, Generators. There is one other module that is currently in development and not complete. This is the Scraper module and has some outgoing issues. These are capture in the **Unresolved Implementation** section.
 
+## Installation
+
+from the root directory not `canvas-capture`
+
+```bash
+pnpm install
+```
+
+## Developing
+
+```bash
+pnpm @canvas-capture package --watch
+```
+
+## Testing
+
+```bash
+pnpm @canvas-capture test
+```
 ## Markdown Module
 When this project was in the very early stages of development, there were some concerns about existing npm packages and their capabilities when outputting markdown. There was not a library that would perform all the desired capabilities of this project. Therefore, a custom markdown library was built. 
 
