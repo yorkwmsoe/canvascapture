@@ -23,5 +23,5 @@ Continuous Integration/Continuous Deployment (CI/CD):
 
 -   [Gitlab CI](https://docs.gitlab.com/ee/ci/)
 
-## Project Structure
+## Project Structure ([PBI](https://gitlab.com/msoe.edu/sdl/sdl/canvascapture/-/issues/109))
 ![project_structure.png](project_structure.png)
