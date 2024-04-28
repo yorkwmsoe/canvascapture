@@ -22,3 +22,6 @@ Containerization:
 Continuous Integration/Continuous Deployment (CI/CD):
 
 -   [Gitlab CI](https://docs.gitlab.com/ee/ci/)
+
+## Project Structure
+![project_structure.png](project_structure.png)
