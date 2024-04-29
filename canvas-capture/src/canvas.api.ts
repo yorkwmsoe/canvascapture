@@ -4,6 +4,7 @@ import { Course } from './types/canvas_api/course'
 import { Submission } from './types/canvas_api/submission'
 import { Quiz } from './types/canvas_api/quiz'
 import { QuizSubmission } from './types/canvas_api/quiz-submissions'
+import { QuizSubmissionQuestion } from './types/canvas_api/quiz-submission-question'
 import { QuizQuestion } from './types/canvas_api/quiz-question'
 
 export type Auth = {
