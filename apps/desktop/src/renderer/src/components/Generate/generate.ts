@@ -52,8 +52,8 @@ const generateAssignmentOrQuiz = async (
             submissionId: submission.id,
         })
         const auth: Auth = {
-            canvasDomain: canvasDomain,
             canvasAccessToken: canvasAccessToken,
+            canvasDomain: canvasDomain,
         }
         const quizQuestions = await assembleQuizQuestionsAndComments(
             auth,
@@ -61,9 +61,7 @@ const generateAssignmentOrQuiz = async (
             assignment,
             submission
         )
-        console.log('Hello')
-        console.log(quizQuestions)
-        return generateQuiz(assignment, submission, quiz, quizSubmission)
+        return generateQuiz(assignment, submission, quiz, quizSubmission, quizQuestions)
     } else {
         return generateAssignment(assignment, submission)
     }
