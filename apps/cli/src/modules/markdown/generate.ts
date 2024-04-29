@@ -1,16 +1,7 @@
 import markdownit from 'markdown-it'
 import _ from 'lodash'
 import { mkdirSync, rmSync, writeFileSync } from 'fs'
-import {
-    Assignment,
-    Submission,
-    Quiz,
-    generateQuiz,
-    generateAssignment,
-    Course,
-    Auth,
-    assembleQuizQuestionsAndComments
-} from '@canvas-capture/lib'
+import { Assignment, Submission, Quiz, generateQuiz, generateAssignment, Course, Auth, assembleQuizQuestionsAndComments } from '@canvas-capture/lib'
 import { canvasApi } from '@/lib/canvas.api'
 
 // https://stackoverflow.com/a/70806192
@@ -39,12 +30,7 @@ const generateAssignmentOrQuiz = async (course: Course, assignment: Assignment, 
             canvasAccessToken: canvasAccessToken,
             canvasDomain: canvasDomain,
         }
-        const quizQuestions = await assembleQuizQuestionsAndComments(
-            auth,
-            course,
-            assignment,
-            submission
-        )
+        const quizQuestions = await assembleQuizQuestionsAndComments(auth, course, assignment, submission)
         return generateQuiz(assignment, submission, quiz, quizSubmission, quizQuestions)
     } else {
         return generateAssignment(assignment, submission)

@@ -17,7 +17,6 @@ export async function assembleQuizQuestionsAndComments(
     assignment: Assignment,
     submission: Submission
 ) {
-
     //const user_id = submission.user_id
     const submission_id = submission.id
     const quiz_id_num = assignment.quiz_id
@@ -29,15 +28,18 @@ export async function assembleQuizQuestionsAndComments(
         quizId: quiz_id,
         submissionId: submission_id,
     })
-    const quiz_submission_num = quizSubmission != undefined ? quizSubmission.id : -1
-    const quizSubmissionId = quiz_submission_num != undefined ? quiz_submission_num : -1
+    const quiz_submission_num =
+        quizSubmission != undefined ? quizSubmission.id : -1
+    const quizSubmissionId =
+        quiz_submission_num != undefined ? quiz_submission_num : -1
     const quizSubmissionQuestions = await getQuizSubmissionQuestions({
         quizSubmissionId: quizSubmissionId,
         canvasDomain: auth.canvasDomain,
         canvasAccessToken: auth.canvasAccessToken,
     })
 
-    const quizSubAttempt = quizSubmission != undefined ? quizSubmission.attempt : -1
+    const quizSubAttempt =
+        quizSubmission != undefined ? quizSubmission.attempt : -1
     const quizQuestionsParams = await getQuizQuestionsParams({
         courseId: course.id,
         quizId: quiz_id,
@@ -90,7 +92,9 @@ function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
         const question_name = question.question_name
         const points_possible = question.points_possible.toString()
 
-        const qDescription = question.question_description.toString().replace(/(<([^>]+)>|\n|&nbsp;)/ig, '');
+        const qDescription = question.question_description
+            .toString()
+            .replace(/(<([^>]+)>|\n|&nbsp;)/gi, '')
         const qType = question.question_type
         const neutral_comments = question.neutral_comments
 

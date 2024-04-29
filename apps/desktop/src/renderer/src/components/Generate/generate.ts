@@ -61,7 +61,13 @@ const generateAssignmentOrQuiz = async (
             assignment,
             submission
         )
-        return generateQuiz(assignment, submission, quiz, quizSubmission, quizQuestions)
+        return generateQuiz(
+            assignment,
+            submission,
+            quiz,
+            quizSubmission,
+            quizQuestions
+        )
     } else {
         return generateAssignment(assignment, submission)
     }

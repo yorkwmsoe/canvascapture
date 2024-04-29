@@ -38,7 +38,7 @@ export function generateQuiz(
         ...assembleFeedbackInfo(submission),
         ...quizOverview(assignment, quiz),
         ...quizUserOverview(submission, quizSubmission),
-        ...quizQuestionInfo
+        ...quizQuestionInfo,
     ]
     console.log(items)
     return items.filter((item) => !!item)
