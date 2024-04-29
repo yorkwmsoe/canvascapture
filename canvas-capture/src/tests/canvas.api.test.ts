@@ -5,7 +5,7 @@ import {
     courseRawJSON,
     quizRawJSON,
     rawQuizSubmission,
-} from '../mocks/canvas.api.mocks.ts'
+} from '../mocks/canvas.api.mocks'
 
 import {
     handleDates,
@@ -147,7 +147,7 @@ describe('Testing getAssignments with courseid', async () => {
 })
 
 describe('Testing getSubmissions', async () => {
-    const submissionsJSONList = [JSON.parse(submissionsRawJSON)]
+    const submissionsJSONList = JSON.parse(submissionsRawJSON)
 
     test('Testing getSubmissions', async () => {
         const response = await getSubmissions({
