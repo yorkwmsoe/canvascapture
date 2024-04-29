@@ -10,6 +10,8 @@ import {
     Submission,
     generateAssignment,
     generateQuiz,
+    assembleQuizQuestionsAndComments,
+    Auth
 } from '@canvas-capture/lib'
 import { canvasApi } from '../../apis/canvas.api'
 import { getCourseName } from '@renderer/utils/courses'
@@ -30,6 +32,7 @@ type FilePathContentPair = {
 
 // FIXME: I hate that I have to do this
 const generateAssignmentOrQuiz = async (
+    course: Course,
     assignment: Assignment,
     submission: Submission,
     quiz: Quiz | undefined,
@@ -48,6 +51,13 @@ const generateAssignmentOrQuiz = async (
             quizId: quiz.id,
             submissionId: submission.id,
         })
+        const auth: Auth = {
+          canvasDomain: canvasDomain,
+          canvasAccessToken: canvasAccessToken
+        }
+        const quizQuestions = await assembleQuizQuestionsAndComments(auth, course, assignment, submission)
+        console.log("Hello")
+        console.log(quizQuestions)
         return generateQuiz(assignment, submission, quiz, quizSubmission)
     } else {
         return generateAssignment(assignment, submission)
@@ -55,6 +65,7 @@ const generateAssignmentOrQuiz = async (
 }
 
 export const generatePairs = async (
+    course: Course,
     assignment: Assignment,
     submissions: Submission[],
     quiz: Quiz | undefined,
@@ -68,6 +79,7 @@ export const generatePairs = async (
         filePath: join(assignmentsPath, 'high'),
         content: (
             await generateAssignmentOrQuiz(
+                course,
                 assignment,
                 highSubmission,
                 quiz,
@@ -85,6 +97,7 @@ export const generatePairs = async (
         filePath: join(assignmentsPath, 'median'),
         content: (
             await generateAssignmentOrQuiz(
+                course,
                 assignment,
                 medianSubmission,
                 quiz,
@@ -99,6 +112,7 @@ export const generatePairs = async (
         filePath: join(assignmentsPath, 'low'),
         content: (
             await generateAssignmentOrQuiz(
+                course,
                 assignment,
                 lowSubmission,
                 quiz,
@@ -167,6 +181,7 @@ export async function generate(
                     : undefined
                 pairs.push(
                     ...(await generatePairs(
+                        course,
                         assignment,
                         uniqueSubmissions,
                         quiz,

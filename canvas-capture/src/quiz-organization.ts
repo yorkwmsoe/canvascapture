@@ -11,7 +11,7 @@ import {
 import { QuestionData } from './types/canvas_api/quiz-question'
 import { convertToHeader, createTableHeader, createTableRows } from './markdown'
 
-async function assembleQuizQuestionsAndComments(
+export async function assembleQuizQuestionsAndComments(
     auth: Auth,
     course: Course,
     assignment: Assignment,

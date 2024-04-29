@@ -331,6 +331,36 @@ export const createCanvasApi = (
                     canvasDomain: config.domain,
                     ...args,
                 }),
+            getQuizQuestionsParams: (args: GetQuizQuestionsParamsRequest) =>
+                getQuizQuestionsParams({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                    ...args,
+                }),
+            getQuizQuestionsNoParams: (args: GetQuizQuestionsNoParamsRequest) =>
+                getQuizQuestionsNoParams({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                    ...args,
+                }),
+            getQuizSubmissionQuestions: (args: GetQuizSubmissionQuestionsRequest) =>
+                getQuizSubmissionQuestions({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                    ...args,
+                }),
+            getMostCommonQuizVersion: (args: GetMostCommonQuizVersionRequest) =>
+                getMostCommonQuizVersion({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                    ...args,
+                }),
+            getLatestQuizVersion: (args: GetLatestQuizVersionRequest) =>
+                getLatestQuizVersion({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                    ...args,
+                }),
         }
     }
 
