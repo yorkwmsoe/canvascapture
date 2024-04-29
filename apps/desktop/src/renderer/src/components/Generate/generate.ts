@@ -48,9 +48,9 @@ const generateAssignmentOrQuiz = async (
             quizId: quiz.id,
             submissionId: submission.id,
         })
-        return generateQuiz(assignment, submission, quiz, quizSubmission)
+        return generateQuiz(assignment, submission, quiz, quizSubmission, true)
     } else {
-        return generateAssignment(assignment, submission)
+        return generateAssignment(assignment, submission, true)
     }
 }
 
