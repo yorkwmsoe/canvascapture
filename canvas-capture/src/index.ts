@@ -29,8 +29,16 @@ import { Quiz } from './types/canvas_api/quiz'
 import { QuizSubmission } from './types/canvas_api/quiz-submissions'
 import { generateAssignment, generateQuiz } from './generators'
 import * as markdown from './markdown'
+import {
+    testCourses,
+    testAssignments,
+    testSubmissions,
+} from './mocks/canvas.api.mocks'
 
 export {
+    testCourses,
+    testAssignments,
+    testSubmissions,
     createCanvasApi,
     Assignment,
     Course,
