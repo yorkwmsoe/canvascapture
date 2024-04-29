@@ -11,7 +11,7 @@ import {
     generateAssignment,
     generateQuiz,
     assembleQuizQuestionsAndComments,
-    Auth
+    Auth,
 } from '@canvas-capture/lib'
 import { canvasApi } from '../../apis/canvas.api'
 import { getCourseName } from '@renderer/utils/courses'
@@ -52,11 +52,16 @@ const generateAssignmentOrQuiz = async (
             submissionId: submission.id,
         })
         const auth: Auth = {
-          canvasDomain: canvasDomain,
-          canvasAccessToken: canvasAccessToken
+            canvasDomain: canvasDomain,
+            canvasAccessToken: canvasAccessToken,
         }
-        const quizQuestions = await assembleQuizQuestionsAndComments(auth, course, assignment, submission)
-        console.log("Hello")
+        const quizQuestions = await assembleQuizQuestionsAndComments(
+            auth,
+            course,
+            assignment,
+            submission
+        )
+        console.log('Hello')
         console.log(quizQuestions)
         return generateQuiz(assignment, submission, quiz, quizSubmission)
     } else {

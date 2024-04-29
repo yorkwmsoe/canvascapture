@@ -60,5 +60,5 @@ export {
     WorkflowState,
     LatePolicyStatus,
     SubmissionType,
-    assembleQuizQuestionsAndComments
+    assembleQuizQuestionsAndComments,
 }

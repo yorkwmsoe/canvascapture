@@ -343,7 +343,9 @@ export const createCanvasApi = (
                     canvasDomain: config.domain,
                     ...args,
                 }),
-            getQuizSubmissionQuestions: (args: GetQuizSubmissionQuestionsRequest) =>
+            getQuizSubmissionQuestions: (
+                args: GetQuizSubmissionQuestionsRequest
+            ) =>
                 getQuizSubmissionQuestions({
                     canvasAccessToken: config.accessToken,
                     canvasDomain: config.domain,
