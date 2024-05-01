@@ -32,7 +32,7 @@ export function Generate() {
     ) as Course[]
 
     const runGenerate = async () => {
-        ipcRenderer.send(
+        ipcRenderer.invoke(
             'generate',
             await generate(
                 filteredCourses,

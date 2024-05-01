@@ -121,12 +121,8 @@ ipcMain.handle('generate', async (_event, htmlData: FilePathContentPair[]) => {
             const data = await win.webContents.printToPDF({
                 printBackground: true,
             })
-            writeFile(pdfPath, data, (error) => {
-                if (error) {
-                    console.log(`Failed to write PDF to ${pdfPath}: `, error)
-                } else {
-                    console.log(`Wrote PDF successfully to ${pdfPath}`)
-                }
+            writeFile(pdfPath, data, () => {
+                // TODO: handle error or success with notification
             })
         })
     }
