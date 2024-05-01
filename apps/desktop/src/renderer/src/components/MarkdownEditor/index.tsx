@@ -7,7 +7,7 @@ import Markdown from 'react-markdown'
 import { useTheme } from '@renderer/lib/useTheme'
 import remarkGfm from 'remark-gfm'
 import { ExternalLink } from '../ExternalLink'
-import { FileDataNode } from '../Generate/useGenerateNext'
+import { FileDataNode } from '@canvas-capture/lib'
 
 export type MarkdownEditorProps = {
     treeData: DirectoryTreeProps['treeData']

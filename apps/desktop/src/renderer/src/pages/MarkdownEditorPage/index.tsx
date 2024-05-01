@@ -1,11 +1,11 @@
 import {
     DataNode,
-    FileDataNode,
-    isAssignmentDataNode,
     isCouseDataNode,
+    isAssignmentDataNode,
+    FileDataNode,
     isFileDataNode,
-    useGenerateNext,
-} from '@renderer/components/Generate/useGenerateNext'
+} from '@canvas-capture/lib'
+import { useGenerateNext } from '@renderer/components/Generate/useGenerateNext'
 import { MarkdownEditor } from '@renderer/components/MarkdownEditor'
 import { Navbar } from '@renderer/components/Navbar'
 import { STEPS } from '@renderer/components/SwitchStepper'
