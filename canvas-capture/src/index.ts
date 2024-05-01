@@ -35,6 +35,8 @@ import {
     testSubmissions,
 } from './mocks/canvas.api.mocks'
 
+export * from './generation'
+
 export {
     testCourses,
     testAssignments,

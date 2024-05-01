@@ -1,11 +1,4 @@
-import {
-    Assignment,
-    Course,
-    Quiz,
-    Submission,
-    generateAssignment,
-    generateQuiz,
-} from '@canvas-capture/lib'
+import { Assignment, Quiz, Submission } from '@canvas-capture/lib'
 import { canvasApi } from '@renderer/apis/canvas.api'
 import { useAssignments } from '@renderer/hooks/useAssignments'
 import { useCourses } from '@renderer/hooks/useCourses'
@@ -17,73 +10,19 @@ import {
 } from '@renderer/utils/assignments'
 import { uniqBy, isNil, maxBy, minBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { median } from './generate'
 import { generateV2 } from './generate.v2'
 import { ipcRenderer } from 'electron'
 import { getDocumentsPath } from '@renderer/utils/config'
 import { useGenerationStore } from '@renderer/stores/generation.store'
-
-export type DataNode = CourseDataNode | AssignmentDataNode | FileDataNode
-
-export type CourseDataNode = {
-    type: 'course'
-    key: string
-    course: Course
-    children: AssignmentDataNode[]
-}
-
-export type AssignmentDataNode = {
-    type: 'assignment'
-    key: string
-    assignment: Assignment
-    children: FileDataNode[]
-}
-
-export type FileDataNode = {
-    type: 'file'
-    key: string
-    name: 'high' | 'low' | 'median'
-    content: string[]
-}
-
-export function isCouseDataNode(node: DataNode): node is CourseDataNode {
-    return node.type === 'course'
-}
-
-export function isAssignmentDataNode(
-    node: DataNode
-): node is AssignmentDataNode {
-    return node.type === 'assignment'
-}
-
-export function isFileDataNode(node: DataNode): node is FileDataNode {
-    return node.type === 'file'
-}
-
-const generateAssignmentOrQuiz = async (
-    assignment: Assignment,
-    submission: Submission,
-    quiz: Quiz | undefined,
-    canvasAccessToken: string,
-    canvasDomain: string
-) => {
-    if (
-        assignment.is_quiz_assignment &&
-        !assignment.locked_for_user &&
-        quiz !== undefined
-    ) {
-        const quizSubmission = await canvasApi.getQuizSubmission({
-            canvasAccessToken,
-            canvasDomain,
-            courseId: assignment.course_id,
-            quizId: quiz.id,
-            submissionId: submission.id,
-        })
-        return generateQuiz(assignment, submission, quiz, quizSubmission)
-    } else {
-        return generateAssignment(assignment, submission)
-    }
-}
+import {
+    FileDataNode,
+    DataNode,
+    isAssignmentDataNode,
+    isCouseDataNode,
+    CourseDataNode,
+    AssignmentDataNode,
+} from '@canvas-capture/lib'
+import { generateAssignmentOrQuiz, median } from './utils'
 
 async function getHML(
     assignment: Assignment,
