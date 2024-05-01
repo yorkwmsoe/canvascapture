@@ -1,7 +1,7 @@
 import markdownit from 'markdown-it'
 import _ from 'lodash'
 import { mkdirSync, rmSync, writeFileSync } from 'fs'
-import { Assignment, Submission, Quiz, generateQuiz, generateAssignment, Course, } from '@canvas-capture/lib'
+import { Assignment, Submission, Quiz, generateQuiz, generateAssignment, Course } from '@canvas-capture/lib'
 import { canvasApi } from '@/lib/canvas.api'
 
 // https://stackoverflow.com/a/70806192
