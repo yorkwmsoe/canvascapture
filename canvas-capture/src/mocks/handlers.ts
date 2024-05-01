@@ -5,15 +5,12 @@ import {
     courseRawJSON,
     quizRawJSON,
     quizSubmissionJSON,
+    quizFromQuizzesRawJSON,
+    quizSubmissionQuestionsRawJSON,
+    quizQuestionsNoParamsRawJSON, quizQuestionsParamsRawJSON,
 } from './canvas.api.mocks'
 
 const sampleOptions = { status: 200, statusText: 'OK' }
-
-const courseResponse = new Response(courseRawJSON, sampleOptions)
-const assignmentsResponse = new Response(assignmentsRawJSON, sampleOptions)
-const submissionsResponse = new Response(submissionsRawJSON, sampleOptions)
-const quizResponse = new Response(quizRawJSON, sampleOptions)
-const quizSubmissionResponse = new Response(quizSubmissionJSON, sampleOptions)
 
 export const handlers = [
     // Demo Handler
@@ -29,7 +26,7 @@ export const handlers = [
     http.get(
         'http://sdlstudentvm06.msoe.edu/api/v1/courses?exclude_blueprint_courses&per_page=1000',
         () => {
-            return courseResponse.clone()
+            return new Response(courseRawJSON, sampleOptions)
         }
     ),
 
@@ -37,7 +34,7 @@ export const handlers = [
     http.get(
         'http://sdlstudentvm06.msoe.edu/api/v1/courses/1/assignments?per_page=1000',
         () => {
-            return assignmentsResponse.clone()
+            return new Response(assignmentsRawJSON, sampleOptions)
         }
     ),
 
@@ -45,7 +42,7 @@ export const handlers = [
     http.get(
         'http://sdlstudentvm06.msoe.edu/api/v1/courses/1/assignments/4/submissions?include[]=rubric_assessment&include[]=submission_comments&per_page=1000',
         () => {
-            return submissionsResponse.clone()
+            return new Response(submissionsRawJSON, sampleOptions)
         }
     ),
 
@@ -53,7 +50,7 @@ export const handlers = [
     http.get(
         'http://sdlstudentvm06.msoe.edu/api/v1/courses/1/quizzes/4',
         () => {
-            return quizResponse.clone()
+            return new Response(quizRawJSON, sampleOptions)
         }
     ),
 
@@ -61,7 +58,39 @@ export const handlers = [
     http.get(
         'http://sdlstudentvm06.msoe.edu/api/v1/courses/1/quizzes/1/submissions',
         () => {
-            return quizSubmissionResponse.clone()
+            return new Response(quizSubmissionJSON, sampleOptions)
         }
     ),
+
+    http.get(
+        'http://sdlstudentvm06.msoe.edu/api/v1/courses/1/quizzes/1',
+        () => {
+            return new Response(quizFromQuizzesRawJSON, sampleOptions)
+        }
+    ),
+
+    http.get(
+        'http://sdlstudentvm06.msoe.edu/api/v1/courses/1/quizzes/1/submissions',
+        () => {
+            return new Response(quizSubmissionJSON, sampleOptions)
+        }
+    ),
+
+    http.get(
+        'http://sdlstudentvm06.msoe.edu/api/v1/quiz_submissions/14/questions?include[]=quiz_question',
+        () => {
+            return new Response(quizSubmissionQuestionsRawJSON, sampleOptions)
+        }
+    ),
+
+    http.get('http://sdlstudentvm06.msoe.edu/api/v1/courses/2/quizzes/3/questions', ({ request }) => {
+        const url = new URL(request.url)
+        const quizSubmissionId = url.searchParams.get('quiz_submission_id')
+        const quizSubmissionAttempt = url.searchParams.get('quiz_submission_attempt')
+        if (!quizSubmissionId || !quizSubmissionAttempt) {
+            return new Response(quizQuestionsNoParamsRawJSON, sampleOptions)
+        }
+        return new Response(quizQuestionsParamsRawJSON, sampleOptions)
+    }),
+
 ]
