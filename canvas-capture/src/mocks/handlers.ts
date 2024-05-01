@@ -7,7 +7,8 @@ import {
     quizSubmissionJSON,
     quizFromQuizzesRawJSON,
     quizSubmissionQuestionsRawJSON,
-    quizQuestionsNoParamsRawJSON, quizQuestionsParamsRawJSON,
+    quizQuestionsNoParamsRawJSON,
+    quizQuestionsParamsRawJSON,
 } from './canvas.api.mocks'
 
 const sampleOptions = { status: 200, statusText: 'OK' }
@@ -83,14 +84,18 @@ export const handlers = [
         }
     ),
 
-    http.get('http://sdlstudentvm06.msoe.edu/api/v1/courses/2/quizzes/3/questions', ({ request }) => {
-        const url = new URL(request.url)
-        const quizSubmissionId = url.searchParams.get('quiz_submission_id')
-        const quizSubmissionAttempt = url.searchParams.get('quiz_submission_attempt')
-        if (!quizSubmissionId || !quizSubmissionAttempt) {
-            return new Response(quizQuestionsNoParamsRawJSON, sampleOptions)
+    http.get(
+        'http://sdlstudentvm06.msoe.edu/api/v1/courses/2/quizzes/3/questions',
+        ({ request }) => {
+            const url = new URL(request.url)
+            const quizSubmissionId = url.searchParams.get('quiz_submission_id')
+            const quizSubmissionAttempt = url.searchParams.get(
+                'quiz_submission_attempt'
+            )
+            if (!quizSubmissionId || !quizSubmissionAttempt) {
+                return new Response(quizQuestionsNoParamsRawJSON, sampleOptions)
+            }
+            return new Response(quizQuestionsParamsRawJSON, sampleOptions)
         }
-        return new Response(quizQuestionsParamsRawJSON, sampleOptions)
-    }),
-
+    ),
 ]

@@ -8,7 +8,6 @@ import {
     quizSubmissionQuestionsRawJSON,
     quizQuestionsNoParamsRawJSON,
     quizQuestionsParamsRawJSON,
-
 } from '../mocks/canvas.api.mocks'
 
 import {
@@ -201,7 +200,6 @@ describe('Testing quizSubmissions', async () => {
 })
 
 describe('Testing getLatestQuizVersion', async () => {
-
     test('getQuiz Test', async () => {
         const response = await getLatestQuizVersion({
             canvasAccessToken: 'Fake Token',
@@ -215,7 +213,6 @@ describe('Testing getLatestQuizVersion', async () => {
 })
 
 describe('Testing MostCommonQuizVersion', async () => {
-
     test('quizSubmissions Test', async () => {
         const response = await getMostCommonQuizVersion({
             canvasAccessToken: 'Fake Token',
@@ -228,7 +225,9 @@ describe('Testing MostCommonQuizVersion', async () => {
 })
 
 describe('Testing getQuizSubmissionQuestions', async () => {
-    const quizSubmissionQuestionsJSONList = JSON.parse(quizSubmissionQuestionsRawJSON)
+    const quizSubmissionQuestionsJSONList = JSON.parse(
+        quizSubmissionQuestionsRawJSON
+    )
 
     test('quizSubmissions Test', async () => {
         const response = await getQuizSubmissionQuestions({
@@ -236,19 +235,23 @@ describe('Testing getQuizSubmissionQuestions', async () => {
             canvasDomain: 'http://sdlstudentvm06.msoe.edu',
             quizSubmissionId: 14,
         })
-        expect(response).toEqual(quizSubmissionQuestionsJSONList.quiz_submission_questions)
+        expect(response).toEqual(
+            quizSubmissionQuestionsJSONList.quiz_submission_questions
+        )
     })
 })
 
 describe('Testing getQuizQuestionsNoParams', async () => {
-    const quizQuestionsNoParamsJSONList = JSON.parse(quizQuestionsNoParamsRawJSON)
+    const quizQuestionsNoParamsJSONList = JSON.parse(
+        quizQuestionsNoParamsRawJSON
+    )
 
     test('quizSubmissions Test', async () => {
         const response = await getQuizQuestionsNoParams({
             canvasAccessToken: 'Fake Token',
             canvasDomain: 'http://sdlstudentvm06.msoe.edu',
             courseId: 2,
-            quizId: 3
+            quizId: 3,
         })
         expect(response).toEqual(quizQuestionsNoParamsJSONList)
     })
@@ -264,7 +267,7 @@ describe('Testing getQuizQuestionsParams', async () => {
             courseId: 2,
             quizId: 3,
             submissionId: 10,
-            quizSubmissionAttempt: 1
+            quizSubmissionAttempt: 1,
         })
         // console.log(response)
         // console.log("-----------------------------------------------------------")
@@ -272,35 +275,3 @@ describe('Testing getQuizQuestionsParams', async () => {
         expect(response).toEqual(quizQuestionsParamsJSONList)
     })
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
