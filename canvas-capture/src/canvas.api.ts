@@ -234,9 +234,7 @@ export const getQuizSubmissionQuestions = async (
         `${canvasDomain}/api/v1/quiz_submissions/${args.quizSubmissionId}/questions?include[]=quiz_question`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
     ).then((data) => data.json())
-
-    const quizSubmissionQuestions: QuizSubmissionQuestion[] =
-        quizSubmissionQuestionsResponse.quiz_submission_questions
+    const quizSubmissionQuestions: QuizSubmissionQuestion[] = quizSubmissionQuestionsResponse.quiz_submission_questions
     return quizSubmissionQuestions
 }
 

@@ -28,10 +28,12 @@ export async function assembleQuizQuestionsAndComments(
         quizId: quiz_id,
         submissionId: submission_id,
     })
+
     const quiz_submission_num =
         quizSubmission != undefined ? quizSubmission.id : -1
     const quizSubmissionId =
         quiz_submission_num != undefined ? quiz_submission_num : -1
+
     const quizSubmissionQuestions = await getQuizSubmissionQuestions({
         quizSubmissionId: quizSubmissionId,
         canvasDomain: auth.canvasDomain,
@@ -48,6 +50,7 @@ export async function assembleQuizQuestionsAndComments(
         canvasDomain: auth.canvasDomain,
         canvasAccessToken: auth.canvasAccessToken,
     })
+
     const quizQuestionsNoParams = await getQuizQuestionsNoParams({
         courseId: course.id,
         quizId: quiz_id,
@@ -84,7 +87,7 @@ export async function assembleQuizQuestionsAndComments(
     return formatQuizQuestions(questionsData)
 }
 
-function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
+export function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
     const formattedQuestions: string[] = []
     //const numQuestions = quizQuestions.length
     quizQuestions.map((question) => {

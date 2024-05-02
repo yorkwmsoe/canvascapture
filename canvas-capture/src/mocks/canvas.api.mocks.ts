@@ -1,8 +1,8 @@
-import { parse } from 'date-fns'
-import { Assignment } from '../types/canvas_api/assignment'
-import { Course } from '../types/canvas_api/course'
-import { Enrollment } from '../types/canvas_api/enrollment'
-import { Submission } from '../types/canvas_api/submission'
+import {parse} from 'date-fns'
+import {Assignment} from '../types/canvas_api/assignment'
+import {Course} from '../types/canvas_api/course'
+import {Enrollment} from '../types/canvas_api/enrollment'
+import {Submission} from '../types/canvas_api/submission'
 
 export const testAssignments: Assignment[] = [
     {
@@ -1473,7 +1473,7 @@ export const quizFromQuizzesRawJSON = JSON.stringify({
     hide_results: null,
     show_correct_answers_at: null,
     hide_correct_answers_at: null,
-    all_dates: [{ due_at: null, unlock_at: null, lock_at: null, base: true }],
+    all_dates: [{due_at: null, unlock_at: null, lock_at: null, base: true}],
     can_unpublish: false,
     can_update: true,
     require_lockdown_browser: false,
@@ -1530,8 +1530,8 @@ export const quizSubmissionQuestionsRawJSON = JSON.stringify({
             question_type: 'true_false_question',
             question_text: '\u003cp\u003eDrake????\u003c/p\u003e',
             answers: [
-                { text: 'True', id: 7141 },
-                { text: 'False', id: 7323 },
+                {text: 'True', id: 7141},
+                {text: 'False', id: 7323},
             ],
             variables: null,
             formulas: null,
@@ -1551,10 +1551,10 @@ export const quizSubmissionQuestionsRawJSON = JSON.stringify({
             question_type: 'multiple_choice_question',
             question_text: '\u003cp\u003eNice Spice???\u003c/p\u003e',
             answers: [
-                { id: 4923, text: 'right ans', html: '' },
-                { id: 4093, text: 'wron', html: '' },
-                { id: 3997, text: 'wron', html: '' },
-                { id: 1720, text: 'wrong', html: '' },
+                {id: 4923, text: 'right ans', html: ''},
+                {id: 4093, text: 'wron', html: ''},
+                {id: 3997, text: 'wron', html: ''},
+                {id: 1720, text: 'wrong', html: ''},
             ],
             variables: null,
             formulas: null,
@@ -1575,14 +1575,14 @@ export const quizSubmissionQuestionsRawJSON = JSON.stringify({
             question_text:
                 '\u003cp\u003eThis is a multiple answers question and is being used to test the presence, of correct, incorrent, neutral, and additional comments\u003c/p\u003e',
             answers: [
-                { id: '2115', text: 'yes1' },
-                { id: '976', text: 'inorrect1' },
+                {id: '2115', text: 'yes1'},
+                {id: '976', text: 'inorrect1'},
                 {
                     id: '1529',
                     text: '',
                     html: '\u003cp\u003einoreect2\u003c/p\u003e',
                 },
-                { id: '7010', text: 'oodewdb' },
+                {id: '7010', text: 'oodewdb'},
             ],
             variables: null,
             formulas: null,
@@ -1604,8 +1604,8 @@ export const quizSubmissionQuestionsRawJSON = JSON.stringify({
             question_type: 'true_false_question',
             question_text: '\u003cp\u003eDrake????\u003c/p\u003e',
             answers: [
-                { text: 'True', id: 7141 },
-                { text: 'False', id: 7323 },
+                {text: 'True', id: 7141},
+                {text: 'False', id: 7323},
             ],
             variables: null,
             formulas: null,
@@ -1623,10 +1623,10 @@ export const quizSubmissionQuestionsRawJSON = JSON.stringify({
             question_type: 'multiple_choice_question',
             question_text: '\u003cp\u003eNice Spice???\u003c/p\u003e',
             answers: [
-                { id: 4923, text: 'right ans', html: '' },
-                { id: 4093, text: 'wron', html: '' },
-                { id: 3997, text: 'wron', html: '' },
-                { id: 1720, text: 'wrong', html: '' },
+                {id: 4923, text: 'right ans', html: ''},
+                {id: 4093, text: 'wron', html: ''},
+                {id: 3997, text: 'wron', html: ''},
+                {id: 1720, text: 'wrong', html: ''},
             ],
             variables: null,
             formulas: null,
@@ -1645,14 +1645,14 @@ export const quizSubmissionQuestionsRawJSON = JSON.stringify({
             question_text:
                 '\u003cp\u003eThis is a multiple answers question and is being used to test the presence, of correct, incorrent, neutral, and additional comments\u003c/p\u003e',
             answers: [
-                { id: '2115', text: 'yes1' },
-                { id: '976', text: 'inorrect1' },
+                {id: '2115', text: 'yes1'},
+                {id: '976', text: 'inorrect1'},
                 {
                     id: '1529',
                     text: '',
                     html: '\u003cp\u003einoreect2\u003c/p\u003e',
                 },
-                { id: '7010', text: 'oodewdb' },
+                {id: '7010', text: 'oodewdb'},
             ],
             variables: null,
             formulas: null,
@@ -1661,7 +1661,7 @@ export const quizSubmissionQuestionsRawJSON = JSON.stringify({
             matches: null,
         },
     ],
-    meta: { primaryCollection: 'quiz_submission_questions' },
+    meta: {primaryCollection: 'quiz_submission_questions'},
 })
 
 export const quizQuestionsNoParamsRawJSON = JSON.stringify([
@@ -1998,10 +1998,10 @@ export const quizQuestionsNoParamsRawJSON = JSON.stringify([
         answer_tolerance: null,
         formula_decimal_places: null,
         matches: [
-            { text: '2', match_id: 5605 },
-            { text: '4', match_id: 1202 },
-            { text: '3', match_id: 685 },
-            { text: '5', match_id: 6463 },
+            {text: '2', match_id: 5605},
+            {text: '4', match_id: 1202},
+            {text: '3', match_id: 685},
+            {text: '5', match_id: 6463},
         ],
         matching_answer_incorrect_matches: '3\n5',
     },
@@ -2070,67 +2070,67 @@ export const quizQuestionsNoParamsRawJSON = JSON.stringify([
         answers: [
             {
                 weight: 100,
-                variables: [{ name: 'x', value: '2' }],
+                variables: [{name: 'x', value: '2'}],
                 answer: 12.0,
                 id: 6014,
             },
             {
                 weight: 100,
-                variables: [{ name: 'x', value: '6' }],
+                variables: [{name: 'x', value: '6'}],
                 answer: 16.0,
                 id: 2603,
             },
             {
                 weight: 100,
-                variables: [{ name: 'x', value: '6' }],
+                variables: [{name: 'x', value: '6'}],
                 answer: 16.0,
                 id: 2102,
             },
             {
                 weight: 100,
-                variables: [{ name: 'x', value: '3' }],
+                variables: [{name: 'x', value: '3'}],
                 answer: 13.0,
                 id: 328,
             },
             {
                 weight: 100,
-                variables: [{ name: 'x', value: '1' }],
+                variables: [{name: 'x', value: '1'}],
                 answer: 11.0,
                 id: 6178,
             },
             {
                 weight: 100,
-                variables: [{ name: 'x', value: '1' }],
+                variables: [{name: 'x', value: '1'}],
                 answer: 11.0,
                 id: 502,
             },
             {
                 weight: 100,
-                variables: [{ name: 'x', value: '7' }],
+                variables: [{name: 'x', value: '7'}],
                 answer: 17.0,
                 id: 3868,
             },
             {
                 weight: 100,
-                variables: [{ name: 'x', value: '1' }],
+                variables: [{name: 'x', value: '1'}],
                 answer: 11.0,
                 id: 4780,
             },
             {
                 weight: 100,
-                variables: [{ name: 'x', value: '2' }],
+                variables: [{name: 'x', value: '2'}],
                 answer: 12.0,
                 id: 2338,
             },
             {
                 weight: 100,
-                variables: [{ name: 'x', value: '7' }],
+                variables: [{name: 'x', value: '7'}],
                 answer: 17.0,
                 id: 595,
             },
         ],
-        variables: [{ name: 'x', min: 1.0, max: 10.0, scale: 0 }],
-        formulas: [{ formula: '5 + 5 + x' }],
+        variables: [{name: 'x', min: 1.0, max: 10.0, scale: 0}],
+        formulas: [{formula: '5 + 5 + x'}],
         answer_tolerance: '0',
         formula_decimal_places: 0,
         matches: null,
@@ -2496,10 +2496,10 @@ export const quizQuestionsParamsRawJSON = JSON.stringify([
         answer_tolerance: null,
         formula_decimal_places: null,
         matches: [
-            { text: '3', match_id: 685 },
-            { text: '5', match_id: 6463 },
-            { text: '2', match_id: 5605 },
-            { text: '4', match_id: 1202 },
+            {text: '3', match_id: 685},
+            {text: '5', match_id: 6463},
+            {text: '2', match_id: 5605},
+            {text: '4', match_id: 1202},
         ],
         matching_answer_incorrect_matches: '3\n5',
     },
@@ -2568,13 +2568,13 @@ export const quizQuestionsParamsRawJSON = JSON.stringify([
         answers: [
             {
                 weight: 100,
-                variables: [{ name: 'x', value: '1' }],
+                variables: [{name: 'x', value: '1'}],
                 answer: 11.0,
                 id: 6178,
             },
         ],
-        variables: [{ name: 'x', min: 1.0, max: 10.0, scale: 0 }],
-        formulas: [{ formula: '5 + 5 + x' }],
+        variables: [{name: 'x', min: 1.0, max: 10.0, scale: 0}],
+        formulas: [{formula: '5 + 5 + x'}],
         answer_tolerance: '0',
         formula_decimal_places: 0,
         matches: null,
@@ -2605,3 +2605,25 @@ export const quizQuestionsParamsRawJSON = JSON.stringify([
         matching_answer_incorrect_matches: null,
     },
 ])
+
+export const courseWithQuiz = JSON.stringify({
+    "id": 2, "name": "Test Course 2", "account_id": 2, "uuid": "vWzOKMFCiCgweeHqYHwGKcCiv2cEVhs4sJ1hROMn", "start_at": null, "grading_standard_id": null, "is_public": null, "created_at": "2023-09-25T13:47:29Z", "course_code": "TST2", "default_view": "modules", "root_account_id": 2, "enrollment_term_id": 3, "license": null, "grade_passback_setting": null, "end_at": null, "public_syllabus": false, "public_syllabus_to_auth": false, "storage_quota_mb": 500, "is_public_to_auth_users": false, "homeroom_course": false, "course_color": null, "friendly_name": null, "hide_final_grades": false, "apply_assignment_group_weights": false, "calendar": {"ics": "http://sdlstudentvm06.msoe.edu/feeds/calendars/course_vWzOKMFCiCgweeHqYHwGKcCiv2cEVhs4sJ1hROMn.ics"}, "time_zone": "America/Denver", "blueprint": false, "sis_course_id": null, "sis_import_id": null, "integration_id": null, "enrollments": [{"type": "teacher", "role": "TeacherEnrollment", "role_id": 20, "user_id": 1, "enrollment_state": "active", "limit_privileges_to_course_section": false}], "workflow_state": "available", "restrict_enrollments_to_course_dates": false
+})
+
+export const assignmentWhichIsQuiz = JSON.stringify({
+    "id": 7, "description": "\u003cp\u003eThis is quiz 2\u003c/p\u003e", "due_at": null, "unlock_at": null, "lock_at": null, "points_possible": 3.0, "grading_type": "points", "assignment_group_id": 2, "grading_standard_id": null, "created_at": "2024-02-09T06:05:53Z", "updated_at": "2024-03-07T00:29:59Z", "peer_reviews": false, "automatic_peer_reviews": false, "position": 2, "grade_group_students_individually": false, "anonymous_peer_reviews": false, "group_category_id": null, "post_to_sis": false, "moderated_grading": false, "omit_from_final_grade": false, "intra_group_peer_reviews": false, "anonymous_instructor_annotations": false, "anonymous_grading": false, "graders_anonymous_to_graders": false, "grader_count": 0, "grader_comments_visible_to_graders": true, "final_grader_id": null, "grader_names_visible_to_final_grader": true, "allowed_attempts": -1, "annotatable_attachment_id": null, "hide_in_gradebook": false, "secure_params": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsdGlfYXNzaWdubWVudF9pZCI6ImFkMzQ0MDgzLWYzNzUtNDdmZS1iOGFiLTM4MDQ0ODU0NzlmMSIsImx0aV9hc3NpZ25tZW50X2Rlc2NyaXB0aW9uIjoiXHUwMDNjcFx1MDAzZVRoaXMgaXMgcXVpeiAyXHUwMDNjL3BcdTAwM2UifQ.kSP280fbEIN9MA8QrnhgKL31iVDCBCedgrBePNluDPc", "lti_context_id": "ad344083-f375-47fe-b8ab-3804485479f1", "course_id": 2, "name": "Quiz two", "submission_types": ["online_quiz"], "has_submitted_submissions": true, "due_date_required": false, "max_name_length": 255, "in_closed_grading_period": false, "graded_submissions_exist": true, "is_quiz_assignment": true, "can_duplicate": false, "original_course_id": null, "original_assignment_id": null, "original_lti_resource_link_id": null, "original_assignment_name": null, "original_quiz_id": null, "workflow_state": "published", "important_dates": false, "muted": true, "html_url": "http://sdlstudentvm06.msoe.edu/courses/2/assignments/7", "has_overrides": false, "needs_grading_count": 0, "sis_assignment_id": null, "integration_id": null, "integration_data": {}, "quiz_id": 2, "anonymous_submissions": false, "published": true, "unpublishable": false, "only_visible_to_overrides": false, "locked_for_user": false, "submissions_download_url": "http://sdlstudentvm06.msoe.edu/courses/2/quizzes/2/submissions?zip=1", "post_manually": false, "anonymize_students": false, "require_lockdown_browser": false, "restrict_quantitative_data": false
+})
+
+export const submissionForQuiz = JSON.stringify({"id": 29, "body": "user: 7, quiz: 2, score: 2.0, time: 2024-03-17 20:21:16 +0000", "url": null, "grade": "2", "score": 2.0, "submitted_at": "2024-03-07T00:37:46Z", "assignment_id": 7, "user_id": 7, "submission_type": "online_quiz", "workflow_state": "graded", "grade_matches_current_submission": true, "graded_at": "2024-03-17T20:21:16Z", "grader_id": 1, "attempt": 2, "cached_due_date": null, "excused": false, "late_policy_status": "none", "points_deducted": null, "grading_period_id": null, "extra_attempts": null, "posted_at": "2024-03-07T00:29:59Z", "redo_request": false, "custom_grade_status_id": null, "sticker": null, "late": false, "missing": false, "seconds_late": 0, "entered_grade": "2", "entered_score": 2.0, "preview_url": "http://sdlstudentvm06.msoe.edu/courses/2/assignments/7/submissions/7?preview=1\u0026version=2", "submission_comments": [], "anonymous_id": "qdSQF"})
+export const quizSubmissionQuestionsOrganizationRawJSON = JSON.stringify({
+    "quiz_submission_questions": [{"id": 3, "quiz_id": 2, "quiz_group_id": null, "assessment_question_id": 3, "position": 1, "question_name": "Question 1", "question_type": "true_false_question", "question_text": "\u003cp\u003eDrake????\u003c/p\u003e", "answers": [{"text": "True", "id": 7141}, {"text": "False", "id": 7323}], "variables": null, "formulas": null, "answer_tolerance": null, "formula_decimal_places": null, "matches": null, "flagged": false, "correct": true}, {"id": 4, "quiz_id": 2, "quiz_group_id": null, "assessment_question_id": 4, "position": 2, "question_name": "Question 2", "question_type": "multiple_choice_question", "question_text": "\u003cp\u003eNice Spice???\u003c/p\u003e", "answers": [{"id": 4923, "text": "right ans", "html": ""}, {"id": 4093, "text": "wron", "html": ""}, {"id": 3997, "text": "wron", "html": ""}, {"id": 1720, "text": "wrong", "html": ""}], "variables": null, "formulas": null, "answer_tolerance": null, "formula_decimal_places": null, "matches": null, "flagged": false, "correct": true}, {"id": 19, "quiz_id": 2, "quiz_group_id": null, "assessment_question_id": 18, "position": 3, "question_name": "Question 3", "question_type": "multiple_answers_question", "question_text": "\u003cp\u003eThis is a multiple answers question and is being used to test the presence, of correct, incorrent, neutral, and additional comments\u003c/p\u003e", "answers": [{"id": "2115", "text": "yes1"}, {"id": "976", "text": "inorrect1"}, {"id": "1529", "text": "", "html": "\u003cp\u003einoreect2\u003c/p\u003e"}, {"id": "7010", "text": "oodewdb"}], "variables": null, "formulas": null, "answer_tolerance": null, "formula_decimal_places": null, "matches": null, "flagged": false, "correct": false}], "quiz_questions": [{"id": 3, "quiz_id": 2, "quiz_group_id": null, "assessment_question_id": 3, "position": 1, "question_name": "Question 1", "question_type": "true_false_question", "question_text": "\u003cp\u003eDrake????\u003c/p\u003e", "answers": [{"text": "True", "id": 7141}, {"text": "False", "id": 7323}], "variables": null, "formulas": null, "answer_tolerance": null, "formula_decimal_places": null, "matches": null}, {"id": 4, "quiz_id": 2, "quiz_group_id": null, "assessment_question_id": 4, "position": 2, "question_name": "Question 2", "question_type": "multiple_choice_question", "question_text": "\u003cp\u003eNice Spice???\u003c/p\u003e", "answers": [{"id": 4923, "text": "right ans", "html": ""}, {"id": 4093, "text": "wron", "html": ""}, {"id": 3997, "text": "wron", "html": ""}, {"id": 1720, "text": "wrong", "html": ""}], "variables": null, "formulas": null, "answer_tolerance": null, "formula_decimal_places": null, "matches": null}, {"id": 19, "quiz_id": 2, "quiz_group_id": null, "assessment_question_id": 18, "position": 3, "question_name": "Question 3", "question_type": "multiple_answers_question", "question_text": "\u003cp\u003eThis is a multiple answers question and is being used to test the presence, of correct, incorrent, neutral, and additional comments\u003c/p\u003e", "answers": [{"id": "2115", "text": "yes1"}, {"id": "976", "text": "inorrect1"}, {"id": "1529", "text": "", "html": "\u003cp\u003einoreect2\u003c/p\u003e"}, {"id": "7010", "text": "oodewdb"}], "variables": null, "formulas": null, "answer_tolerance": null, "formula_decimal_places": null, "matches": null}], "meta": {"primaryCollection": "quiz_submission_questions"}
+})
+export const quizSubmissionsFullResponseRawJSON = JSON.stringify({"quiz_submissions": [{"id": 14, "quiz_id": 2, "quiz_version": 5, "user_id": 7, "submission_id": 29, "score": 2.0, "kept_score": 2.0, "started_at": "2024-03-07T00:37:38Z", "end_at": null, "finished_at": "2024-03-07T00:37:46Z", "attempt": 2, "workflow_state": "complete", "fudge_points": 0.0, "quiz_points_possible": 3.0, "extra_attempts": 1, "extra_time": null, "manually_unlocked": null, "validation_token": "ea64b8d32ab9096ffb225e6ec523973b62ea107b3826756495fc659538467a7f", "score_before_regrade": null, "has_seen_results": false, "time_spent": 8, "attempts_left": 0, "overdue_and_needs_submission": false, "excused?": false, "html_url": "http://sdlstudentvm06.msoe.edu/courses/2/quizzes/2/submissions/14", "result_url": "http://sdlstudentvm06.msoe.edu/courses/2/quizzes/2/history?quiz_submission_id=14\u0026version=2"}]})
+
+export const quiz2QuestionsNoParamsRawJSON = JSON.stringify([{"id":3,"quiz_id":2,"quiz_group_id":null,"assessment_question_id":3,"position":null,"question_name":"Question","question_type":"true_false_question","question_text":"\u003cp\u003eDrake????\u003c/p\u003e","points_possible":1.0,"correct_comments":"","incorrect_comments":"","neutral_comments":"","correct_comments_html":"\u003cp\u003eWow you are so amazing you guessed this correct, these are the corrents\u003c/p\u003e","incorrect_comments_html":"\u003cp\u003eYou are a failure, these are the incorrect comments\u003c/p\u003e","neutral_comments_html":"\u003cp\u003eTo Drake or not to drake, these are neutral comment\u003c/p\u003e","answers":[{"comments":"","comments_html":"","text":"True","weight":100,"id":7141},{"comments":"","comments_html":"","text":"False","weight":0,"id":7323}],"variables":null,"formulas":null,"answer_tolerance":null,"formula_decimal_places":null,"matches":null,"matching_answer_incorrect_matches":null},{"id":4,"quiz_id":2,"quiz_group_id":null,"assessment_question_id":4,"position":null,"question_name":"Question","question_type":"multiple_choice_question","question_text":"\u003cp\u003eNice Spice???\u003c/p\u003e","points_possible":1.0,"correct_comments":"","incorrect_comments":"","neutral_comments":"","correct_comments_html":"","incorrect_comments_html":"","neutral_comments_html":"","answers":[{"id":4923,"text":"right ans","html":"","comments":"","comments_html":"","weight":100.0},{"id":4093,"text":"wron","html":"","comments":"","comments_html":"","weight":0.0},{"id":3997,"text":"wron","html":"","comments":"","comments_html":"","weight":0.0},{"id":1720,"text":"wrong","html":"","comments":"","comments_html":"","weight":0.0}],"variables":null,"formulas":null,"answer_tolerance":null,"formula_decimal_places":null,"matches":null,"matching_answer_incorrect_matches":null},{"id":19,"quiz_id":2,"quiz_group_id":null,"assessment_question_id":18,"position":null,"question_name":"Question","question_type":"multiple_answers_question","question_text":"\u003cp\u003eThis is a multiple answers question and is being used to test the presence, of correct, incorrent, neutral, and additional comments\u003c/p\u003e","points_possible":1.0,"correct_comments":"","incorrect_comments":"","neutral_comments":"","correct_comments_html":"\u003cp\u003eYou guessed correctly DRAKE, these are the correct comments\u003c/p\u003e","incorrect_comments_html":"\u003cp\u003eYou guessed incorrectly DRAKE, these are the incorrect comments\u003c/p\u003e","neutral_comments_html":"\u003cp\u003eThese are the Neutral comments Drake celly\u003c/p\u003e","answers":[{"id":"2115","text":"yes1","comments":"","comments_html":"","weight":100.0},{"id":"976","text":"inorrect1","comments":"","comments_html":"","weight":0.0},{"id":"1529","text":"","comments":"","comments_html":"","weight":0.0,"html":"\u003cp\u003einoreect2\u003c/p\u003e"},{"id":"7010","text":"oodewdb","comments":"","comments_html":"","weight":0.0}],"variables":null,"formulas":null,"answer_tolerance":null,"formula_decimal_places":null,"matches":null,"matching_answer_incorrect_matches":null}])
+
+export const quiz2QuestionsParamsRawJSON = JSON.stringify([{"id": 3, "quiz_id": 2, "quiz_group_id": null, "assessment_question_id": 3, "position": 1, "question_name": "Question 1", "question_type": "true_false_question", "question_text": "\u003cp\u003eDrake????\u003c/p\u003e", "points_possible": 1.0, "correct_comments": "", "incorrect_comments": "", "neutral_comments": "", "correct_comments_html": "\u003cp\u003eWow you are so amazing you guessed this correct, these are the corrents\u003c/p\u003e", "incorrect_comments_html": "\u003cp\u003eYou are a failure, these are the incorrect comments\u003c/p\u003e", "neutral_comments_html": "\u003cp\u003eTo Drake or not to drake, these are neutral comment\u003c/p\u003e", "answers": [{"comments": "", "comments_html": "", "text": "True", "weight": 100, "id": 7141}, {"comments": "", "comments_html": "", "text": "False", "weight": 0, "id": 7323}], "variables": null, "formulas": null, "answer_tolerance": null, "formula_decimal_places": null, "matches": null, "matching_answer_incorrect_matches": null}, {"id": 4, "quiz_id": 2, "quiz_group_id": null, "assessment_question_id": 4, "position": 2, "question_name": "Question 2", "question_type": "multiple_choice_question", "question_text": "\u003cp\u003eNice Spice???\u003c/p\u003e", "points_possible": 1.0, "correct_comments": "", "incorrect_comments": "", "neutral_comments": "", "correct_comments_html": "", "incorrect_comments_html": "", "neutral_comments_html": "", "answers": [{"id": 4923, "text": "right ans", "html": "", "comments": "", "comments_html": "", "weight": 100.0}, {"id": 4093, "text": "wron", "html": "", "comments": "", "comments_html": "", "weight": 0.0}, {"id": 3997, "text": "wron", "html": "", "comments": "", "comments_html": "", "weight": 0.0}, {"id": 1720, "text": "wrong", "html": "", "comments": "", "comments_html": "", "weight": 0.0}], "variables": null, "formulas": null, "answer_tolerance": null, "formula_decimal_places": null, "matches": null, "matching_answer_incorrect_matches": null}, {
+    "id": 19, "quiz_id": 2, "quiz_group_id": null, "assessment_question_id": 18, "position": 3, "question_name": "Question 3", "question_type": "multiple_answers_question", "question_text": "\u003cp\u003eThis is a multiple answers question and is being used to test the presence, of correct, incorrent, neutral, and additional comments\u003c/p\u003e", "points_possible": 1.0, "correct_comments": "", "incorrect_comments": "", "neutral_comments": "", "correct_comments_html": "\u003cp\u003eYou guessed correctly DRAKE, these are the correct comments\u003c/p\u003e", "incorrect_comments_html": "\u003cp\u003eYou guessed incorrectly DRAKE, these are the incorrect comments\u003c/p\u003e", "neutral_comments_html": "\u003cp\u003eThese are the Neutral comments Drake celly\u003c/p\u003e", "answers": [{"id": "2115", "text": "yes1", "comments": "", "comments_html": "", "weight": 100.0}, {"id": "976", "text": "inorrect1", "comments": "", "comments_html": "", "weight": 0.0}, {"id": "1529", "text": "", "comments": "", "comments_html": "", "weight": 0.0, "html": "\u003cp\u003einoreect2\u003c/p\u003e"}, {"id": "7010", "text": "oodewdb", "comments": "", "comments_html": "", "weight": 0.0}], "variables": null, "formulas": null, "answer_tolerance": null, "formula_decimal_places": null, "matches": null, "matching_answer_incorrect_matches": null
+}])
+
+
