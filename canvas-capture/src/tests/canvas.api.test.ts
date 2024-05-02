@@ -85,10 +85,8 @@ describe('Testing intercept', () => {
     //intercept(sampleRawJSON)
 
     test('intercept Test', async () => {
-        const expectedResponse = intercept(sampleResponse)
-        //expect(sampleResponse).toEqual(expectedResponse)
-        console.log(sampleResponse)
-        console.log(expectedResponse)
+        const expectedResponse = await intercept(sampleResponse)
+        expect(sampleResponse).toEqual(expectedResponse)
     })
 })
 
@@ -108,8 +106,6 @@ describe('Testing getApiHeaders', () => {
             { accessToken: sampleAccessToken },
             sampleHeaders
         )
-        console.log(recievedHeaders)
-        console.log(expectedHeaders)
         expect(recievedHeaders).toEqual(expectedHeaders)
     })
 })
@@ -269,9 +265,6 @@ describe('Testing getQuizQuestionsParams', async () => {
             submissionId: 10,
             quizSubmissionAttempt: 1,
         })
-        // console.log(response)
-        // console.log("-----------------------------------------------------------")
-        // console.log(quizQuestionsParamsJSONList)
         expect(response).toEqual(quizQuestionsParamsJSONList)
     })
 })
