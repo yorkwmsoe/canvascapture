@@ -106,6 +106,45 @@ export const testCourses: Course[] = [
         workflow_state: 'available',
         restrict_enrollments_to_course_dates: false,
     },
+    {
+        id: 1,
+        original_name: 'Noice Name',
+        name: 'Test Course 1',
+        account_id: 3,
+        uuid: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        created_at: parse(
+            '2023-09-20T14:29:51Z',
+            "yyyy-MM-dd'T'HH:mm:ss'Z'",
+            new Date()
+        ),
+        course_code: 'TST1',
+        default_view: 'syllabus',
+        root_account_id: 2,
+        enrollment_term_id: 3,
+        public_syllabus: false,
+        public_syllabus_to_auth: false,
+        storage_quota_mb: 500,
+        is_public_to_auth_users: false,
+        apply_assignment_group_weights: false,
+        calendar: {
+            ics: 'http://10.200.4.10/feeds/calendars/course_dZdmGkWRxU8pYyJaNnW60M2mYIQ1HmWAK4Wg06mc.ics',
+        },
+        time_zone: 'America/Denver',
+        blueprint: false,
+        enrollments: [
+            {
+                type: 'teacher',
+                role: 'TeacherEnrollment',
+                role_id: 20,
+                user_id: 1,
+                enrollment_state: 'active',
+                limit_privileges_to_course_section: false,
+            } as Enrollment,
+        ],
+        hide_final_grades: false,
+        workflow_state: 'available',
+        restrict_enrollments_to_course_dates: false,
+    },
 ]
 
 export const testSubmissions: Submission[] = [

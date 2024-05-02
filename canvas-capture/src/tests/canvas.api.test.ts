@@ -151,7 +151,7 @@ describe('Testing getAssignments with courseid', async () => {
 })
 
 describe('Testing getSubmissions', async () => {
-    const submissionsJSONList = [JSON.parse(submissionsRawJSON)]
+    const submissionsJSONList = JSON.parse(submissionsRawJSON)
 
     test('Testing getSubmissions', async () => {
         const response = await getSubmissions({

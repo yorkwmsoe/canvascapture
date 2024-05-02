@@ -110,7 +110,7 @@ export function MarkdownEditorPage() {
     }
 
     return (
-        <>
+        <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
             <Navbar>
                 <Button onClick={goBack} icon={<LeftArrowIcon />}>
                     Back
@@ -142,6 +142,6 @@ export function MarkdownEditorPage() {
                     </Flex>
                 )}
             </div>
-        </>
+        </div>
     )
 }
