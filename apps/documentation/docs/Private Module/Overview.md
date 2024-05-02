@@ -47,10 +47,17 @@ In order to grab information from Canvas, the [Canvas LMS API](https://canvas.in
 + (getSubmissions) Retrieve Submissions
 + (getQuiz) Retrieve a Quiz
 + (getQuizSubmission) Retrieve all Submissions on a Quiz
++ (getLatestQuizVersion) Gets latest quiz version
++ (getMostCommonQuizVersion) Gets most common quiz version
++ (getQuizSubmissionQuestions) Gets all questions associated with a quiz submission
++ (getQuizQuestionsNoParams) Gets quiz questions with no parameters in URL
++ (getQuizQuestionsParams) Gets all quiz questions with parameters in URL
 
 ## Generators
 This is the module responsible for outputting all the desired data into markdown format. It utilizes the methods from the markdown module and the input data provided to it in order to accomplish this. In the end, it will return list of strings. 
 
+## Quiz Organization
+This module groups much of the laborious quiz implementation. It is responsible for getting data on a quiz's individual question
 
 
 
