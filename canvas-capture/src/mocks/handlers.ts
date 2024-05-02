@@ -12,7 +12,7 @@ import {
     courseWithQuiz,
     assignmentWhichIsQuiz,
     submissionForQuiz,
-        quizSubmissionsFullResponseRawJSON,
+    quizSubmissionsFullResponseRawJSON,
     quizSubmissionQuestionsOrganizationRawJSON,
     quiz2QuestionsNoParamsRawJSON,
     quiz2QuestionsParamsRawJSON,
@@ -39,12 +39,9 @@ export const handlers = [
     ),
 
     //Get Specific Course
-    http.get(
-        'http://sdlstudentvm06.msoe.edu/api/v1/courses/1',
-        () => {
-            return new Response(courseWithQuiz, sampleOptions)
-        }
-    ),
+    http.get('http://sdlstudentvm06.msoe.edu/api/v1/courses/1', () => {
+        return new Response(courseWithQuiz, sampleOptions)
+    }),
 
     //Assignments Handler
     http.get(
@@ -94,7 +91,7 @@ export const handlers = [
         }
     ),
 
-        // For quiz 1 of course 1
+    // For quiz 1 of course 1
     http.get(
         'http://sdlstudentvm06.msoe.edu/api/v1/courses/1/quizzes/1',
         () => {
@@ -106,7 +103,10 @@ export const handlers = [
     http.get(
         'http://sdlstudentvm06.msoe.edu/api/v1/courses/2/quizzes/2/submissions',
         () => {
-            return new Response(quizSubmissionsFullResponseRawJSON, sampleOptions)
+            return new Response(
+                quizSubmissionsFullResponseRawJSON,
+                sampleOptions
+            )
         }
     ),
 
@@ -115,7 +115,10 @@ export const handlers = [
         'http://sdlstudentvm06.msoe.edu/api/v1/quiz_submissions/14/questions?include[]=quiz_question',
         () => {
             //
-            return new Response(quizSubmissionQuestionsOrganizationRawJSON, sampleOptions)
+            return new Response(
+                quizSubmissionQuestionsOrganizationRawJSON,
+                sampleOptions
+            )
         }
     ),
 
@@ -145,10 +148,12 @@ export const handlers = [
                 'quiz_submission_attempt'
             )
             if (!quizSubmissionId || !quizSubmissionAttempt) {
-                return new Response(quiz2QuestionsNoParamsRawJSON, sampleOptions)
+                return new Response(
+                    quiz2QuestionsNoParamsRawJSON,
+                    sampleOptions
+                )
             }
             return new Response(quiz2QuestionsParamsRawJSON, sampleOptions)
         }
     ),
-
 ]
