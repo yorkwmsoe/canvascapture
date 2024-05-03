@@ -1,6 +1,6 @@
 import {
     DataNode,
-    isCouseDataNode,
+    isCourseDataNode,
     isAssignmentDataNode,
     FileDataNode,
     isFileDataNode,
@@ -17,7 +17,7 @@ import { App, Button, Flex, Spin, TreeDataNode, Typography } from 'antd'
 import { useCallback, useMemo, useState } from 'react'
 
 function transformData(data: DataNode): TreeDataNode {
-    if (isCouseDataNode(data)) {
+    if (isCourseDataNode(data)) {
         return {
             title: getCourseName(data.course),
             key: data.key,
@@ -46,7 +46,7 @@ function findDataNodeByKey(
         if (node.key === key) {
             return node
         }
-        if (isCouseDataNode(node) || isAssignmentDataNode(node)) {
+        if (isCourseDataNode(node) || isAssignmentDataNode(node)) {
             const found = findDataNodeByKey(key, node.children)
             if (found) {
                 return found

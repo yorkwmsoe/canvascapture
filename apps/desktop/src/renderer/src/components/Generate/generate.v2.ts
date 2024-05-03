@@ -3,7 +3,7 @@ import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
 import markdownit from 'markdown-it'
 import { mkdirSync, rmSync, writeFileSync } from 'fs'
-import { DataNode, isCouseDataNode } from '@canvas-capture/lib'
+import { DataNode, isCourseDataNode } from '@canvas-capture/lib'
 import { FilePathContentPair } from './types'
 
 export function generateV2(
@@ -18,7 +18,7 @@ export function generateV2(
 
     const files: FilePathContentPair[] = []
     data.forEach((course) => {
-        if (isCouseDataNode(course)) {
+        if (isCourseDataNode(course)) {
             course.children.forEach((assignment) => {
                 const assignmentsPath = sanitizePath(
                     join(
