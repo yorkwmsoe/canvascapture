@@ -95,6 +95,7 @@ export function MarkdownEditor({
                             borderStyle: 'solid',
                             paddingInline: '0.5rem',
                             overflow: 'auto',
+                            minHeight: '2rem',
                         }}
                     >
                         <Markdown

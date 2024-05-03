@@ -5,7 +5,10 @@ import {
     courseRawJSON,
     quizRawJSON,
     rawQuizSubmission,
-} from '../mocks/canvas.api.mocks.ts'
+    quizSubmissionQuestionsRawJSON,
+    quizQuestionsNoParamsRawJSON,
+    quizQuestionsParamsRawJSON,
+} from '../mocks/canvas.api.mocks'
 
 import {
     handleDates,
@@ -17,6 +20,11 @@ import {
     getSubmissions,
     getQuiz,
     getQuizSubmission,
+    getLatestQuizVersion,
+    getMostCommonQuizVersion,
+    getQuizSubmissionQuestions,
+    getQuizQuestionsNoParams,
+    getQuizQuestionsParams,
 } from '../canvas.api'
 
 describe('testToJSON', () => {
@@ -77,10 +85,8 @@ describe('Testing intercept', () => {
     //intercept(sampleRawJSON)
 
     test('intercept Test', async () => {
-        const expectedResponse = intercept(sampleResponse)
-        //expect(sampleResponse).toEqual(expectedResponse)
-        console.log(sampleResponse)
-        console.log(expectedResponse)
+        const expectedResponse = await intercept(sampleResponse)
+        expect(sampleResponse).toEqual(expectedResponse)
     })
 })
 
@@ -100,8 +106,6 @@ describe('Testing getApiHeaders', () => {
             { accessToken: sampleAccessToken },
             sampleHeaders
         )
-        console.log(recievedHeaders)
-        console.log(expectedHeaders)
         expect(recievedHeaders).toEqual(expectedHeaders)
     })
 })
@@ -147,7 +151,7 @@ describe('Testing getAssignments with courseid', async () => {
 })
 
 describe('Testing getSubmissions', async () => {
-    const submissionsJSONList = [JSON.parse(submissionsRawJSON)]
+    const submissionsJSONList = JSON.parse(submissionsRawJSON)
 
     test('Testing getSubmissions', async () => {
         const response = await getSubmissions({
@@ -188,5 +192,79 @@ describe('Testing quizSubmissions', async () => {
             submissionId: 4,
         })
         expect(response).toEqual(quizSubmissionJSONList)
+    })
+})
+
+describe('Testing getLatestQuizVersion', async () => {
+    test('getQuiz Test', async () => {
+        const response = await getLatestQuizVersion({
+            canvasAccessToken: 'Fake Token',
+            canvasDomain: 'http://sdlstudentvm06.msoe.edu',
+            courseId: 1,
+            quizId: 1,
+        })
+        //6 is the version number
+        expect(response).toEqual(6)
+    })
+})
+
+describe('Testing MostCommonQuizVersion', async () => {
+    test('quizSubmissions Test', async () => {
+        const response = await getMostCommonQuizVersion({
+            canvasAccessToken: 'Fake Token',
+            canvasDomain: 'http://sdlstudentvm06.msoe.edu',
+            courseId: 1,
+            quizId: 1,
+        })
+        expect(response).toEqual(6)
+    })
+})
+
+describe('Testing getQuizSubmissionQuestions', async () => {
+    const quizSubmissionQuestionsJSONList = JSON.parse(
+        quizSubmissionQuestionsRawJSON
+    )
+
+    test('quizSubmissions Test', async () => {
+        const response = await getQuizSubmissionQuestions({
+            canvasAccessToken: 'Fake Token',
+            canvasDomain: 'http://sdlstudentvm06.msoe.edu',
+            quizSubmissionId: 14,
+        })
+        expect(response).toEqual(
+            quizSubmissionQuestionsJSONList.quiz_submission_questions
+        )
+    })
+})
+
+describe('Testing getQuizQuestionsNoParams', async () => {
+    const quizQuestionsNoParamsJSONList = JSON.parse(
+        quizQuestionsNoParamsRawJSON
+    )
+
+    test('quizSubmissions Test', async () => {
+        const response = await getQuizQuestionsNoParams({
+            canvasAccessToken: 'Fake Token',
+            canvasDomain: 'http://sdlstudentvm06.msoe.edu',
+            courseId: 2,
+            quizId: 3,
+        })
+        expect(response).toEqual(quizQuestionsNoParamsJSONList)
+    })
+})
+
+describe('Testing getQuizQuestionsParams', async () => {
+    const quizQuestionsParamsJSONList = JSON.parse(quizQuestionsParamsRawJSON)
+
+    test('quizSubmissions Test', async () => {
+        const response = await getQuizQuestionsParams({
+            canvasAccessToken: 'Fake Token',
+            canvasDomain: 'http://sdlstudentvm06.msoe.edu',
+            courseId: 2,
+            quizId: 3,
+            submissionId: 10,
+            quizSubmissionAttempt: 1,
+        })
+        expect(response).toEqual(quizQuestionsParamsJSONList)
     })
 })

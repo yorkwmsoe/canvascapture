@@ -31,6 +31,7 @@ export function generateQuiz(
     submission: Submission,
     quiz: Quiz,
     quizSubmission: QuizSubmission | undefined,
+    quizQuestionInfo: string[],
     fancy: boolean
 ) {
     const items = [
@@ -39,8 +40,8 @@ export function generateQuiz(
         ...assembleFeedbackInfo(submission),
         ...quizOverview(assignment, quiz),
         ...quizUserOverview(submission, quizSubmission),
+        ...quizQuestionInfo,
     ]
-
     return items.filter((item) => !!item)
 }
 
