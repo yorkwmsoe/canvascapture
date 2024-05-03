@@ -7,7 +7,7 @@ Languages:
 
 Package Managers:
 
--   [Pnpm](https://pnpm.io/) (npm install -g pnpm)
+-   [Pnpm](https://pnpm.io/)
 -   [Nodejs](https://nodejs.org/en/)
 
 Web Development:
@@ -22,3 +22,6 @@ Containerization:
 Continuous Integration/Continuous Deployment (CI/CD):
 
 -   [Gitlab CI](https://docs.gitlab.com/ee/ci/)
+
+## Project Structure ([PBI](https://gitlab.com/msoe.edu/sdl/sdl/canvascapture/-/issues/109))
+![project_structure.png](project_structure.png)
