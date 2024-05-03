@@ -24,7 +24,7 @@ export type FileDataNode = {
     content: string[]
 }
 
-export function isCouseDataNode(node: DataNode): node is CourseDataNode {
+export function isCourseDataNode(node: DataNode): node is CourseDataNode {
     return node.type === 'course'
 }
 

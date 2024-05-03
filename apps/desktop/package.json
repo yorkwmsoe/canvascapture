@@ -1,6 +1,6 @@
 {
     "name": "canvas-capture-desktop",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "A desktop app for generating Canvas course data",
     "main": "./out/main/index.js",
     "author": "Canvas Capture Team",

@@ -76,20 +76,23 @@ const config: Config = {
                     position: 'left',
                     label: 'Testing',
                 },
+                {
+                    type: 'docSidebar',
+                    sidebarId: 'releaseSidebar',
+                    label: 'Releases',
+                    position: 'left',
+                },
+                {
+                    type: 'docSidebar',
+                    sidebarId: 'feedbackSidebar',
+                    label: 'Feedback',
+                    position: 'left',
+                },
             ],
         },
         footer: {
             style: 'dark',
             links: [
-                {
-                    title: 'Docs',
-                    items: [
-                        {
-                            label: 'Docs',
-                            to: '/docs',
-                        },
-                    ],
-                },
                 {
                     title: 'More',
                     items: [

@@ -26,7 +26,8 @@ const generateAssignmentOrQuiz = async (assignment: Assignment, submission: Subm
             canvasAccessToken,
             canvasDomain,
         })
-        return generateQuiz(assignment, submission, quiz, quizSubmission)
+
+        return generateQuiz(assignment, submission, quiz, quizSubmission, [])
     } else {
         return generateAssignment(assignment, submission)
     }

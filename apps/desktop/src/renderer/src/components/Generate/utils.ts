@@ -4,6 +4,9 @@ import {
     Quiz,
     generateQuiz,
     generateAssignment,
+    Auth,
+    Course,
+    assembleQuizQuestionsAndComments,
 } from '@canvas-capture/lib'
 import { canvasApi } from '@renderer/apis/canvas.api'
 
@@ -16,6 +19,7 @@ export const median = (arr: number[]): number => {
 }
 
 export const generateAssignmentOrQuiz = async (
+    course: Course,
     assignment: Assignment,
     submission: Submission,
     quiz: Quiz | undefined,
@@ -34,7 +38,23 @@ export const generateAssignmentOrQuiz = async (
             quizId: quiz.id,
             submissionId: submission.id,
         })
-        return generateQuiz(assignment, submission, quiz, quizSubmission)
+        const auth: Auth = {
+            canvasAccessToken: canvasAccessToken,
+            canvasDomain: canvasDomain,
+        }
+        const quizQuestions = await assembleQuizQuestionsAndComments(
+            auth,
+            course,
+            assignment,
+            submission
+        )
+        return generateQuiz(
+            assignment,
+            submission,
+            quiz,
+            quizSubmission,
+            quizQuestions
+        )
     } else {
         return generateAssignment(assignment, submission)
     }

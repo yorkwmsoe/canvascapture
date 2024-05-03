@@ -1,5 +1,5 @@
 import {
-    isCouseDataNode,
+    isCourseDataNode,
     isAssignmentDataNode,
     isFileDataNode,
 } from './generation.types'
@@ -13,4 +13,4 @@ import type {
 
 export type { DataNode, CourseDataNode, AssignmentDataNode, FileDataNode }
 
-export { isCouseDataNode, isAssignmentDataNode, isFileDataNode }
+export { isCourseDataNode, isAssignmentDataNode, isFileDataNode }

@@ -29,7 +29,8 @@ export function generateQuiz(
     assignment: Assignment,
     submission: Submission,
     quiz: Quiz,
-    quizSubmission: QuizSubmission | undefined
+    quizSubmission: QuizSubmission | undefined,
+    quizQuestionInfo: string[]
 ) {
     const items = [
         ...assembleTitleAndGrade(assignment, submission, 'QUIZ: '),
@@ -37,8 +38,8 @@ export function generateQuiz(
         ...assembleFeedbackInfo(submission),
         ...quizOverview(assignment, quiz),
         ...quizUserOverview(submission, quizSubmission),
+        ...quizQuestionInfo,
     ]
-
     return items.filter((item) => !!item)
 }
 

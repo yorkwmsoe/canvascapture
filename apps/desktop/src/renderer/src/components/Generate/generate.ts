@@ -11,6 +11,7 @@ import { FilePathContentPair } from './types'
 import { generateAssignmentOrQuiz, median } from './utils'
 
 export const generatePairs = async (
+    course: Course,
     assignment: Assignment,
     submissions: Submission[],
     quiz: Quiz | undefined,
@@ -24,6 +25,7 @@ export const generatePairs = async (
         filePath: join(assignmentsPath, 'high'),
         content: (
             await generateAssignmentOrQuiz(
+                course,
                 assignment,
                 highSubmission,
                 quiz,
@@ -41,6 +43,7 @@ export const generatePairs = async (
         filePath: join(assignmentsPath, 'median'),
         content: (
             await generateAssignmentOrQuiz(
+                course,
                 assignment,
                 medianSubmission,
                 quiz,
@@ -55,6 +58,7 @@ export const generatePairs = async (
         filePath: join(assignmentsPath, 'low'),
         content: (
             await generateAssignmentOrQuiz(
+                course,
                 assignment,
                 lowSubmission,
                 quiz,
@@ -123,6 +127,7 @@ export async function generate(
                     : undefined
                 pairs.push(
                     ...(await generatePairs(
+                        course,
                         assignment,
                         uniqueSubmissions,
                         quiz,

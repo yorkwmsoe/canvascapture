@@ -1,0 +1,36 @@
+@startwbs Canvas Capture Structure
+* Canvas Capture
+** CLI
+*** Commands
+**** Assignments
+**** Courses
+**** Exit
+**** Generate
+**** Greet (test)
+**** Help
+**** Settings
+**** Setup
+**** Version
+** Desktop
+*** Pages
+**** Setup / Settings
+**** Home
+**** Selection (stepper)
+***** Courses
+***** Assignments
+***** Generate
+**** Markdown Editor
+** Private Module (canvas-capture)
+*** Markdown Functions
+*** Generation Functions
+*** Canvas API Functions
+** Documentation
+*** CLI
+*** Desktop
+*** Private Module
+*** Feedback
+*** Getting Started
+*** Releases
+*** Testing
+*** Docs
+@endwbs
