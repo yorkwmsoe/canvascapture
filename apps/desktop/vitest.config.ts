@@ -29,6 +29,8 @@ export default defineConfig({
                 '**/model.ts',
                 '**/types.ts',
                 '**/utils.ts',
+                '**/*.e2e.ts',
+                'wdio.conf.ts',
             ],
         },
         reporters: ['default', 'junit'],
