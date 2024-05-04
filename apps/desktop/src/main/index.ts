@@ -107,15 +107,17 @@ type FilePathContentPair = {
 ipcMain.handle('generate', async (_event, htmlData: FilePathContentPair[]) => {
     for (const pair of htmlData) {
         const win = new BrowserWindow({ show: false })
-        win.loadURL(`data:text/html;charset=utf-8,${pair.content}`)
+        win.loadURL(`data:text/html;base64;charset=utf-8,${Buffer.from(pair.content).toString('base64')}`)
 
         win.webContents.on('did-finish-load', async () => {
             await win.webContents.executeJavaScript(
                 `document.querySelectorAll('link[rel="stylesheet"], style').forEach(elem => elem.disabled = true);`
             )
             await win.webContents.insertCSS(
-                '@media print { -webkit-print-color-adjust: exact; }'
+                'th, td { padding: 5px; }\n' +
+                'table, th, td { border: 1px solid black; border-collapse: collapse; margin-bottom: 10px; }'
             )
+
             // Use default printing options
             const pdfPath = join(getDocumentsPath(), pair.filePath + '.pdf')
             const data = await win.webContents.printToPDF({
