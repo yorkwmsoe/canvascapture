@@ -6,6 +6,7 @@ import { Navbar } from '@renderer/components/Navbar'
 import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
 import { useState } from 'react'
 import { ExternalLink } from '@renderer/components/ExternalLink'
+import { getCurrentWindow } from '@electron/remote'
 
 export function SettingsPage() {
     const {
@@ -33,7 +34,11 @@ export function SettingsPage() {
         setCanvasAccessToken(values.canvasAccessToken)
         setMarkdownEditor(values.markdownEditor)
         setIsStudent(values.isStudent)
-        goToHomePage()
+        if (isSetup) {
+            getCurrentWindow().reload()
+        } else {
+            goToHomePage()
+        }
     }
 
     return (

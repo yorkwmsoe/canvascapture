@@ -106,6 +106,7 @@ export function HomePage() {
                                         fontSize: '2rem',
                                         height: 'auto',
                                     }}
+                                    id="generationNameInput"
                                 />
                                 <Button
                                     htmlType="submit"
@@ -114,6 +115,7 @@ export function HomePage() {
                                         fontSize: '1.25rem',
                                         height: 'auto',
                                     }}
+                                    id="generationNameButton"
                                 >
                                     Start
                                 </Button>

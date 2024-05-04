@@ -24,7 +24,8 @@
         "test": "vitest",
         "test:cli": "vitest run",
         "test:ui": "vitest --ui",
-        "coverage": "vitest run --coverage"
+        "coverage": "vitest run --coverage",
+        "wdio": "NODE_ENV=test wdio run ./wdio.conf.ts"
     },
     "dependencies": {
         "@ant-design/icons": "^5.3.6",
@@ -54,12 +55,19 @@
         "@electron-toolkit/eslint-config-ts": "^2.0.0",
         "@electron-toolkit/tsconfig": "^1.0.1",
         "@tanstack/eslint-plugin-query": "^5.28.11",
+        "@testing-library/webdriverio": "^3.2.1",
         "@types/node": "^20.12.7",
         "@types/react": "^18.2.79",
         "@types/react-dom": "^18.2.25",
         "@vitejs/plugin-react": "^4.2.1",
         "@vitest/coverage-v8": "^1.5.0",
         "@vitest/ui": "^1.5.0",
+        "@wdio/cli": "^8.36.1",
+        "@wdio/dot-reporter": "^8.36.1",
+        "@wdio/junit-reporter": "^8.36.1",
+        "@wdio/local-runner": "^8.36.1",
+        "@wdio/mocha-framework": "^8.36.1",
+        "@wdio/types": "^8.36.1",
         "electron": "30.0.1",
         "electron-builder": "^24.13.3",
         "electron-vite": "^2.1.0",
@@ -67,9 +75,13 @@
         "eslint-plugin-react": "^7.34.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "smart-buffer": "^4.2.0",
+        "ts-node": "^10.9.2",
         "typescript": "^5.4.5",
         "vite": "^5.2.10",
         "vite-plugin-electron-renderer": "^0.14.5",
-        "vitest": "^1.5.0"
+        "vitest": "^1.5.0",
+        "wdio-electron-service": "^6.5.0",
+        "wdio-wait-for": "^3.0.11"
     }
 }
