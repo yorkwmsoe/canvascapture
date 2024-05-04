@@ -29,8 +29,19 @@ import { Quiz } from './types/canvas_api/quiz'
 import { QuizSubmission } from './types/canvas_api/quiz-submissions'
 import { generateAssignment, generateQuiz } from './generators'
 import * as markdown from './markdown'
+import { assembleQuizQuestionsAndComments } from './quiz-organization'
+import {
+    testCourses,
+    testAssignments,
+    testSubmissions,
+} from './mocks/canvas.api.mocks'
+
+export * from './generation'
 
 export {
+    testCourses,
+    testAssignments,
+    testSubmissions,
     createCanvasApi,
     Assignment,
     Course,
@@ -59,4 +70,5 @@ export {
     WorkflowState,
     LatePolicyStatus,
     SubmissionType,
+    assembleQuizQuestionsAndComments,
 }

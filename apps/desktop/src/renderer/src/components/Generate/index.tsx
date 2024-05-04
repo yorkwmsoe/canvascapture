@@ -1,15 +1,15 @@
-import { Flex, Spin } from 'antd'
+import { Flex, Spin, Typography } from 'antd'
+import { useEffect } from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import { Course } from '@canvas-capture/lib'
 import { useAssignments } from '@renderer/hooks/useAssignments'
 import { useCourses } from '@renderer/hooks/useCourses'
-import { generate } from './generate'
-import { parseHierarchyId } from '@renderer/utils/assignments'
-import { useEffect } from 'react'
-import { useSettingsStore } from '@renderer/stores/settings.store'
-import { Course } from '@canvas-capture/lib'
 import { useGenerationStore } from '@renderer/stores/generation.store'
-import { useNavigate } from '@tanstack/react-router'
-import { ipcRenderer } from 'electron'
+import { useSettingsStore } from '@renderer/stores/settings.store'
+import { parseHierarchyId } from '@renderer/utils/assignments'
 import { getDocumentsPath } from '@renderer/utils/config'
+import { ipcRenderer } from 'electron'
+import { generate } from './generate'
 
 export function Generate() {
     const navigate = useNavigate({ from: '/generation' })
@@ -32,7 +32,7 @@ export function Generate() {
     ) as Course[]
 
     const runGenerate = async () => {
-        ipcRenderer.send(
+        ipcRenderer.invoke(
             'generate',
             await generate(
                 filteredCourses,
@@ -48,7 +48,11 @@ export function Generate() {
     }
 
     useEffect(() => {
-        runGenerate()
+        const run = async () => {
+            await runGenerate()
+            navigate({ to: '/' })
+        }
+        run()
     }, [])
 
     return (
@@ -58,8 +62,7 @@ export function Generate() {
             style={{ height: '100%', flexDirection: 'column' }}
         >
             <Spin />
-            <br />
-            Generating
+            <Typography.Text>Generating</Typography.Text>
         </Flex>
     )
 }

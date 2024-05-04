@@ -73,3 +73,7 @@ export default {
   ],
 };
 ```
+
+## Project Structure Diagram
+
+The project structure diagram is a [plantuml work breakdown structure](https://plantuml.com/wbs-diagram), and was created in VS Code with the official plantuml extension.

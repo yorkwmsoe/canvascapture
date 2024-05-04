@@ -1,12 +1,14 @@
 import { useGetCourses } from '@renderer/apis/canvas.api'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { useQueryClient } from '@tanstack/react-query'
-import { useCallback } from 'react'
+import { App } from 'antd'
+import { useCallback, useEffect } from 'react'
 
 export const useCourses = () => {
+    const { message } = App.useApp()
     const queryClient = useQueryClient()
     const { courses: selectedCourses, setCourses } = useGenerationStore()
-    const { data: courses } = useGetCourses()
+    const { data: courses, isError } = useGetCourses()
 
     const getCourseById = useCallback(
         (id: number) => {
@@ -27,6 +29,12 @@ export const useCourses = () => {
         },
         [selectedCourses, setCourses]
     )
+
+    useEffect(() => {
+        if (isError) {
+            message.error('Failed to fetch courses')
+        }
+    }, [isError, setCourses])
 
     return {
         selectedCourses,

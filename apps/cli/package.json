@@ -1,6 +1,6 @@
 {
     "name": "canvas-capture-cli",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "",
     "private": true,
     "scripts": {
@@ -9,15 +9,14 @@
         "test:ui": "vitest --ui",
         "coverage": "vitest run --coverage",
         "start": "bun run src/cli.ts",
-        "build": "bun build --target node src/cli.ts --outdir build",
+        "build": "bun build --target=node src/cli.ts --outdir build",
         "lint": "eslint . --max-warnings=0",
         "lint:fix": "eslint . --fix",
-        "package:win-x64": "bun build src/cli.ts --compile --outfile release/canvascapture-win-x64",
-        "package:win-arm64": "bun build src/cli.ts --compile --outfile release/canvascapture-win-arm64",
-        "package:linux-x64": "bun build src/cli.ts --compile --outfile release/canvascapture-linux-x64",
-        "package:linux-arm64": "bun build src/cli.ts --compile --outfile release/canvascapture-linux-arm64",
-        "package:macos-x64": "bun build src/cli.ts --compile --outfile release/canvascapture-macos-x64",
-        "package:macos-arm64": "bun build src/cli.ts --compile --outfile release/canvascapture-macos-arm64"
+        "package:win-x64": "bun build build/cli.js --compile --minify --target=bun-windows-x64 --outfile release/canvascapture-win-x64",
+        "package:linux-x64": "bun build build/cli.js --compile --minify --target=bun-linux-x64 --outfile release/canvascapture-linux-x64",
+        "package:linux-arm64": "bun build build/cli.js --compile --minify --target=bun-linux-arm64 --outfile release/canvascapture-linux-arm64",
+        "package:macos-x64": "bun build build/cli.js --compile --minify ---target=bun-darwin-x64 -outfile release/canvascapture-macos-x64",
+        "package:macos-arm64": "bun build build/cli.js --compile --minify --target=bun-darwin-arm64 --outfile release/canvascapture-macos-arm64"
     },
     "keywords": [],
     "author": "MSOE",

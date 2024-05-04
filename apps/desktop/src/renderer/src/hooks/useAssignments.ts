@@ -2,9 +2,11 @@ import { useGetAssignments } from '@renderer/apis/canvas.api'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { Assignment } from '@canvas-capture/lib'
 import { isObject } from 'lodash'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
+import { App } from 'antd'
 
 export const useAssignments = () => {
+    const { message } = App.useApp()
     const {
         assignments: selectedAssignments,
         setAssignments: setSelectedAssignments,
@@ -45,6 +47,12 @@ export const useAssignments = () => {
         },
         [getAssignmentById]
     )
+
+    useEffect(() => {
+        if (assignmentQueries.some((query) => query.isError)) {
+            message.error('Failed to fetch assignments')
+        }
+    }, [assignmentQueries])
 
     return {
         assignments,

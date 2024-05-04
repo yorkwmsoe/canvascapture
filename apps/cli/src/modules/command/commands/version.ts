@@ -9,5 +9,5 @@ export const versionCommand = {
 } satisfies Command
 
 export function version() {
-    console.log(`v ${VERSION_TEXT}`)
+    console.log(`v${VERSION_TEXT}`)
 }
