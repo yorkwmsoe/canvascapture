@@ -107,7 +107,9 @@ type FilePathContentPair = {
 ipcMain.handle('generate', async (_event, htmlData: FilePathContentPair[]) => {
     for (const pair of htmlData) {
         const win = new BrowserWindow({ show: false })
-        win.loadURL(`data:text/html;base64;charset=utf-8,${Buffer.from(pair.content).toString('base64')}`)
+        win.loadURL(
+            `data:text/html;base64;charset=utf-8,${Buffer.from(pair.content).toString('base64')}`
+        )
 
         win.webContents.on('did-finish-load', async () => {
             await win.webContents.executeJavaScript(
@@ -115,7 +117,7 @@ ipcMain.handle('generate', async (_event, htmlData: FilePathContentPair[]) => {
             )
             await win.webContents.insertCSS(
                 'th, td { padding: 5px; }\n' +
-                'table, th, td { border: 1px solid black; border-collapse: collapse; margin-bottom: 10px; }'
+                    'table, th, td { border: 1px solid black; border-collapse: collapse; margin-bottom: 10px; }'
             )
 
             // Use default printing options
