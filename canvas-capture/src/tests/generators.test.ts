@@ -6,7 +6,8 @@ describe('generateAssignment', () => {
     it('should generate a items for markdown', () => {
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0]
+            testSubmissions[0],
+            false
         )
         expect(result.length).toBeGreaterThan(0)
     })
@@ -14,7 +15,8 @@ describe('generateAssignment', () => {
     it('should generate all headers', () => {
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0]
+            testSubmissions[0],
+            false
         )
         expect(result[0]).toBeDefined()
         expect(result[2]).toBeDefined()
@@ -26,7 +28,8 @@ describe('generateAssignment', () => {
     it('should generate all bodies', () => {
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0]
+            testSubmissions[0],
+            false
         )
         expect(result[1]).toBeDefined()
         expect(result[3]).toBeDefined()
@@ -49,7 +52,8 @@ describe('generateAssignment', () => {
         ]
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0]
+            testSubmissions[0],
+            false
         )
         expect(result[7]).toContain('|')
     })
@@ -58,7 +62,8 @@ describe('generateAssignment', () => {
         testSubmissions[0].submission_type = 'online_quiz'
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0]
+            testSubmissions[0],
+            false
         )
         expect(result[9]).toBe('See quiz below')
     })
@@ -88,7 +93,8 @@ describe('generateAssignment', () => {
         ]
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0]
+            testSubmissions[0],
+            false
         )
         expect(result[7]).toContain('-')
     })
@@ -97,7 +103,8 @@ describe('generateAssignment', () => {
         testAssignments[0].description = ''
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0]
+            testSubmissions[0],
+            false
         )
         expect(result[5]).toBe('No description')
     })
@@ -106,7 +113,8 @@ describe('generateAssignment', () => {
         testAssignments[0].description = 'Test description'
         const result = generateAssignment(
             testAssignments[0],
-            testSubmissions[0]
+            testSubmissions[0],
+            false
         )
         expect(result[5]).toBe('\n<code>\nTest description\n</code>\n')
     })

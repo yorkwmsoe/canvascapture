@@ -12,14 +12,15 @@ import {
 
 export function generateAssignment(
     assignment: Assignment,
-    submission: Submission
+    submission: Submission,
+    fancy: boolean
 ) {
     const items = [
         ...assembleTitleAndGrade(assignment, submission, ''),
         ...assembleFeedbackInfo(submission),
-        ...assembleDescriptionInfo(assignment),
+        ...assembleDescriptionInfo(assignment, fancy),
         ...assembleRubricInfo(assignment, submission),
-        ...assembleSubmissionInfo(submission),
+        ...assembleSubmissionInfo(submission, fancy),
     ]
 
     return items.filter((item) => !!item)
@@ -30,17 +31,24 @@ export function generateQuiz(
     submission: Submission,
     quiz: Quiz,
     quizSubmission: QuizSubmission | undefined,
-    quizQuestionInfo: string[]
+    quizQuestionInfo: string[],
+    fancy: boolean
 ) {
     const items = [
         ...assembleTitleAndGrade(assignment, submission, 'QUIZ: '),
-        ...assembleDescriptionInfo(assignment),
+        ...assembleDescriptionInfo(assignment, fancy),
         ...assembleFeedbackInfo(submission),
         ...quizOverview(assignment, quiz),
         ...quizUserOverview(submission, quizSubmission),
         ...quizQuestionInfo,
     ]
     return items.filter((item) => !!item)
+}
+
+function wrapUserContent(userContent: string, fancy: boolean) {
+    return fancy
+        ? `\n<div style="border: solid lightgray; border-radius: 15px; padding: 5px;">\n${userContent}\n</div>\n`
+        : `\n<code>\n${userContent}\n</code>\n`
 }
 
 function quizOverview(assignment: Assignment, quiz: Quiz) {
@@ -101,20 +109,19 @@ function assembleTitleAndGrade(
     return [title, grade]
 }
 
-function assembleDescriptionInfo(assignment: Assignment) {
+function assembleDescriptionInfo(assignment: Assignment, fancy: boolean) {
     const descriptionHeader = convertToHeader('Description', 2)
     const description = assignment.description
-        ? '\n<code>\n' + assignment.description + '\n</code>\n'
+        ? wrapUserContent(assignment.description, fancy)
         : 'No description'
     return [descriptionHeader, description]
 }
 
-function assembleSubmissionInfo(submission: Submission) {
+function assembleSubmissionInfo(submission: Submission, fancy: boolean) {
     const submissionHeader = convertToHeader('Submission', 2)
     switch (submission.submission_type) {
         case 'online_text_entry': {
-            const submissionBody =
-                '\n<code>\n' + submission.body + '\n</code>\n'
+            const submissionBody = wrapUserContent(submission.body, fancy)
             return [submissionHeader, submissionBody]
         }
         case 'online_quiz': {

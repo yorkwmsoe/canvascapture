@@ -53,9 +53,10 @@ export const generateAssignmentOrQuiz = async (
             submission,
             quiz,
             quizSubmission,
-            quizQuestions
+            quizQuestions,
+            true
         )
     } else {
-        return generateAssignment(assignment, submission)
+        return generateAssignment(assignment, submission, true)
     }
 }

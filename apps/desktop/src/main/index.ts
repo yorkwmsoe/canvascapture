@@ -3,8 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import * as remote from '@electron/remote/main'
-import { loadPyodide } from 'pyodide'
-import { existsSync, mkdirSync } from 'fs'
+import { writeFile } from 'fs'
 
 remote.initialize()
 
@@ -28,7 +27,6 @@ function createWindow(): void {
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show()
-        initPyodide()
     })
 
     mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -107,41 +105,35 @@ type FilePathContentPair = {
 }
 
 ipcMain.handle('generate', async (_event, htmlData: FilePathContentPair[]) => {
-    globalThis.htmlData = htmlData
-    globalThis.pyodide.runPython(`
-    import os
-    from fpdf import FPDF
-    import js
-    
-    for item in js.htmlData:
-      pdf = FPDF()
-      pdf.add_page()
-      pdf.write_html(item.content)
-      pdf.output("/files/" + item.filePath + ".pdf")
-    `)
+    for (const pair of htmlData) {
+        const win = new BrowserWindow({ show: false })
+        win.loadURL(
+            `data:text/html;base64;charset=utf-8,${Buffer.from(pair.content).toString('base64')}`
+        )
+
+        win.webContents.on('did-finish-load', async () => {
+            await win.webContents.executeJavaScript(
+                `document.querySelectorAll('link[rel="stylesheet"], style').forEach(elem => elem.disabled = true);`
+            )
+            await win.webContents.insertCSS(
+                'th, td { padding: 5px; }\n' +
+                    'table, th, td { border: 1px solid black; border-collapse: collapse; margin-bottom: 10px; }'
+            )
+
+            // Use default printing options
+            const pdfPath = join(getDocumentsPath(), pair.filePath + '.pdf')
+            const data = await win.webContents.printToPDF({
+                printBackground: true,
+            })
+            writeFile(pdfPath, data, () => {
+                // TODO: handle error or success with notification
+            })
+        })
+    }
 })
 
 const getDocumentsPath = () =>
     join(app.getPath('documents'), 'canvas-capture-desktop')
-
-const initPyodide = async () => {
-    const pyodide = await loadPyodide({
-        packageCacheDir: join(app.getPath('temp'), 'canvas-capture-desktop'),
-    })
-    await pyodide.loadPackage('micropip')
-    const micropip = pyodide.pyimport('micropip')
-    await micropip.install('fpdf2')
-    await pyodide.FS.mkdir('/files')
-
-    const documentsPath = getDocumentsPath()
-    if (!existsSync(documentsPath)) mkdirSync(documentsPath)
-    await pyodide.FS.mount(
-        pyodide.FS.filesystems.NODEFS,
-        { root: getDocumentsPath() },
-        '/files'
-    )
-    globalThis.pyodide = pyodide
-}
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
