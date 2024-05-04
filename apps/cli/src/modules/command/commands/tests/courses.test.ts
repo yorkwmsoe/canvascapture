@@ -53,5 +53,4 @@ describe('courses', () => {
         // Check that all courses are selected
         expect(state.courses).toStrictEqual(testCourses)
     })
-
 })
