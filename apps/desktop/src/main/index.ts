@@ -5,6 +5,11 @@ import icon from '../../resources/icon.png?asset'
 import * as remote from '@electron/remote/main'
 import { writeFile } from 'fs'
 
+const isTest = process.env.NODE_ENV === 'test'
+if (isTest) {
+    require('wdio-electron-service/main')
+}
+
 remote.initialize()
 
 function createWindow(): void {

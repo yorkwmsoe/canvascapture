@@ -88,6 +88,7 @@ export function SwitchStepper() {
                         type="primary"
                         onClick={next}
                         disabled={isDisabled}
+                        id="nextButton"
                     >
                         {STEPS[current + 1].title === 'Generate'
                             ? 'Generate'
