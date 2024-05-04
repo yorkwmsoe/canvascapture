@@ -27,6 +27,8 @@ export default defineConfig({
                 '**/generate.ts',
                 '**/generate.v2.ts',
                 '**/model.ts',
+                '**/types.ts',
+                '**/utils.ts',
             ],
         },
         reporters: ['default', 'junit'],
