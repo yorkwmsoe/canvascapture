@@ -3,76 +3,12 @@ import markdownit from 'markdown-it'
 import _ from 'lodash'
 import { mkdirSync } from 'fs'
 import { join } from 'path'
-import {
-    Assignment,
-    Course,
-    Quiz,
-    Submission,
-    generateAssignment,
-    generateQuiz,
-    assembleQuizQuestionsAndComments,
-    Auth,
-} from '@canvas-capture/lib'
+import { Assignment, Course, Quiz, Submission } from '@canvas-capture/lib'
 import { canvasApi } from '../../apis/canvas.api'
 import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
-
-// https://stackoverflow.com/a/70806192
-export const median = (arr: number[]): number => {
-    const s = arr.toSorted((a, b) => a - b)
-    const mid = Math.floor(s.length / 2)
-    const res = s.length % 2 === 0 ? (s[mid - 1] + s[mid]) / 2 : s[mid]
-    return Math.ceil(res)
-}
-
-type FilePathContentPair = {
-    filePath: string
-    content: string
-}
-
-// FIXME: I hate that I have to do this
-const generateAssignmentOrQuiz = async (
-    course: Course,
-    assignment: Assignment,
-    submission: Submission,
-    quiz: Quiz | undefined,
-    canvasAccessToken: string,
-    canvasDomain: string
-) => {
-    if (
-        assignment.is_quiz_assignment &&
-        !assignment.locked_for_user &&
-        quiz !== undefined
-    ) {
-        const quizSubmission = await canvasApi.getQuizSubmission({
-            canvasAccessToken,
-            canvasDomain,
-            courseId: assignment.course_id,
-            quizId: quiz.id,
-            submissionId: submission.id,
-        })
-        const auth: Auth = {
-            canvasAccessToken: canvasAccessToken,
-            canvasDomain: canvasDomain,
-        }
-        const quizQuestions = await assembleQuizQuestionsAndComments(
-            auth,
-            course,
-            assignment,
-            submission
-        )
-        return generateQuiz(
-            assignment,
-            submission,
-            quiz,
-            quizSubmission,
-            quizQuestions,
-            true
-        )
-    } else {
-        return generateAssignment(assignment, submission, true)
-    }
-}
+import { FilePathContentPair } from './types'
+import { generateAssignmentOrQuiz, median } from './utils'
 
 export const generatePairs = async (
     course: Course,

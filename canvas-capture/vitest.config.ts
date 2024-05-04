@@ -4,7 +4,12 @@ export default defineConfig({
     test: {
         coverage: {
             provider: 'v8',
-            exclude: [...configDefaults.exclude, '**/types/**', '**/index.ts'],
+            exclude: [
+                ...configDefaults.exclude,
+                '**/types/**',
+                '**/index.ts',
+                '**/*.types.ts',
+            ],
         },
         reporters: ['default', 'junit'],
         outputFile: 'junit.xml',
