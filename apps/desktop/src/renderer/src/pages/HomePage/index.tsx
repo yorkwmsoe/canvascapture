@@ -83,6 +83,7 @@ export function HomePage() {
                     flexDirection: 'column',
                 }}
             >
+                <h1>Create a New Report</h1>
                 <Form
                     name="generationNameForm"
                     onFinish={generate}
@@ -123,6 +124,7 @@ export function HomePage() {
                         </Flex>
                     </Form.Item>
                 </Form>
+                <h2>Previously Generated Reports</h2>
                 <Flex
                     align={'center'}
                     justify={'center'}

@@ -109,6 +109,14 @@ export function SettingsPage() {
                             wrapperCol={{ offset: 8, span: 16 }}
                         >
                             <Checkbox>Show Markdown Editor</Checkbox>
+                            <span
+                                title={
+                                    'The Markdown Editor allows for editing the generated PDFs prior to saving.'
+                                }
+                                style={{ fontSize: 20, color: 'blue' }}
+                            >
+                                ⓘ
+                            </span>
                         </Form.Item>
                     )}
                     <Form.Item<Config>
@@ -119,6 +127,14 @@ export function SettingsPage() {
                         <Checkbox>
                             Student Mode (enable if you are a student)
                         </Checkbox>
+                        <span
+                            title={
+                                'If the Access Token is for a Student Account, check this box.'
+                            }
+                            style={{ fontSize: 20, color: 'blue' }}
+                        >
+                            ⓘ
+                        </span>
                     </Form.Item>
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                         <Button type="primary" htmlType="submit">
