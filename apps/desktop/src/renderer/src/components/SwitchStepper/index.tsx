@@ -17,7 +17,8 @@ export const STEPS = [
     {
         title: 'Assignments',
         content: <Assignments />,
-        description: 'Select the assignment(s) from which to generate the report',
+        description:
+            'Select the assignment(s) from which to generate the report',
     },
     {
         title: 'Generate',
@@ -63,9 +64,7 @@ export function SwitchStepper() {
         <>
             <Steps current={current} items={items} />
             {STEPS[current].title !== 'Generate' && (
-                <h4>
-                  {STEPS[current].description}
-                </h4>
+                <h4>{STEPS[current].description}</h4>
             )}
             <div
                 style={{
