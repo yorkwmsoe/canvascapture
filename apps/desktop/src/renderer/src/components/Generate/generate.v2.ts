@@ -62,6 +62,7 @@ export function generateV2(
     // Convert markdown to HTML
     const htmlContent = md.render(markdownContent);
 
+
     return {
       filePath: `${courseName}`,
       content: htmlContent,
