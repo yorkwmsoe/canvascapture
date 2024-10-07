@@ -5,6 +5,7 @@ import { parseHierarchyId } from '@renderer/utils/assignments'
 import {
     Assignment,
     Auth,
+    Course,
     createCanvasApi,
     GetAssignmentsRequest,
 } from '@canvas-capture/lib'
@@ -73,7 +74,16 @@ export const useGetCourses = () => {
                 canvasAccessToken,
                 canvasDomain,
             })
-            return courses
+            const availableCourses: Course[] = []
+            for (const course of courses) {
+                if (
+                    course.access_restricted_by_date == undefined ||
+                    course.access_restricted_by_date == false
+                ) {
+                    availableCourses.push(course)
+                }
+            }
+            return availableCourses
         },
     })
 }
