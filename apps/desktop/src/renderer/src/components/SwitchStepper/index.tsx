@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Button, Steps, theme } from 'antd'
+import { Statistics } from '../Statistics'
 import { Assignments } from '../Assignments'
 import { Courses } from '../Courses'
 import { useCourses } from '@renderer/hooks/useCourses'
@@ -19,6 +20,10 @@ export const STEPS = [
         content: <Assignments />,
         description:
             'Select the assignment(s) from which to generate the report',
+    },
+    {
+        title: 'Statistics',
+        content: <Statistics />,
     },
     {
         title: 'Generate',

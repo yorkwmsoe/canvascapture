@@ -9,6 +9,7 @@ import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
 import { FilePathContentPair } from './types'
 import { generateAssignmentOrQuiz, median } from './utils'
+import { oneYearExport } from '../Statistics'
 
 export const generatePairs = async (
     course: Course,
@@ -175,6 +176,12 @@ export async function generate(
             content: htmlContent,
         }
     })
+    
+    if (oneYearExport()) {
+        //pass
+        pairs[pairs.length - 1].content +=
+            '\n And this should be printed as well'
+    }
 
-    return htmlData // Return HTML content for PDF generation
+    return htmlData
 }
