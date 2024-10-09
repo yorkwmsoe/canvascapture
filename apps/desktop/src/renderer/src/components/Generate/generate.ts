@@ -102,10 +102,7 @@ export async function generate(
             (a) => a.course_id === course.id
         )
         let courseContent = `# ${getCourseName(course)}\n\n` // Start course-level markdown content with a title
-        const coursePath = sanitizePath(
-            join(generationName, getCourseName(course))
-        )
-        mkdirSync(join(documentsPath, coursePath), { recursive: true })
+        mkdirSync(join(documentsPath, generationName), { recursive: true })
 
         for (const assignment of filteredAssignments) {
             const submissions = await canvasApi.getSubmissions({
@@ -122,7 +119,6 @@ export async function generate(
             )
 
             if (uniqueSubmissions.length > 0) {
-                courseContent += `## ${assignment.name}\n\n` // Assignment title
                 const quiz = assignment.is_quiz_assignment
                     ? await canvasApi.getQuiz({
                           canvasAccessToken,
@@ -131,7 +127,8 @@ export async function generate(
                           quizId: assignment.quiz_id,
                       })
                     : undefined
-
+                console.log(generationName)
+                console.log(getCourseName(course))
                 const pairs = await generatePairs(
                     course,
                     assignment,
@@ -159,9 +156,7 @@ export async function generate(
         const markdownContent = courseMarkdownContent[courseName]
         const filePath = join(
             documentsPath,
-            generationName,
-            courseName,
-            `${courseName}.md`
+            sanitizePath(join(generationName, `${courseName}.md`))
         )
 
         // Write the markdown file for the course
@@ -171,7 +166,7 @@ export async function generate(
         const htmlContent = md.render(markdownContent)
 
         return {
-            filePath: `${courseName}`,
+            filePath: sanitizePath(join(generationName, `${courseName}.md`)),
             content: htmlContent,
         }
     })
