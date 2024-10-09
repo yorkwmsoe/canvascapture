@@ -9,7 +9,7 @@ import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
 import { FilePathContentPair } from './types'
 import { generateAssignmentOrQuiz, median } from './utils'
-import { oneYearExport } from '../Statistics'
+import { oneYearExport, avgCourseGradeExport } from '../Statistics'
 
 export const generatePairs = async (
     course: Course,
@@ -153,11 +153,21 @@ export async function generate(
         courseMarkdownContent[course.name] = courseContent
     }
 
+    let oneYearStat = ''
+    let avgCourseGrade = ''
+    if (oneYearExport()) {
+        oneYearStat = 'One Year Stat'
+    }
+    if (avgCourseGradeExport()) {
+        avgCourseGrade = 'Avg Course Grade'
+    }
+
     // Write markdown and generate HTML for each course
     const htmlData: FilePathContentPair[] = Object.keys(
         courseMarkdownContent
     ).map((courseName) => {
-        const markdownContent = courseMarkdownContent[courseName]
+        const markdownContent =
+            courseMarkdownContent[courseName] + oneYearStat + avgCourseGrade
         const filePath = join(
             documentsPath,
             generationName,
@@ -176,12 +186,6 @@ export async function generate(
             content: htmlContent,
         }
     })
-    
-    if (oneYearExport()) {
-        //pass
-        pairs[pairs.length - 1].content +=
-            '\n And this should be printed as well'
-    }
 
     return htmlData
 }

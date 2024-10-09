@@ -24,6 +24,7 @@ export const STEPS = [
     {
         title: 'Statistics',
         content: <Statistics />,
+        description: 'Statistics',
     },
     {
         title: 'Generate',
