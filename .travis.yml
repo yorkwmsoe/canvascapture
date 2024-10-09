@@ -1,0 +1,37 @@
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode10.2
+      language: node_js
+      node_js: "20"
+
+before_install:
+  - npm install -g pnpm
+
+install:
+  - cd apps/desktop
+  - pnpm install
+
+script:
+  pnpm build:mac
+
+before_deploy:
+  - export TRAVIS_TAG="1.0.$TRAVIS_BUILD_NUMBER"
+  - echo "$TRAVIS_TAG" "TRAVIS_COMMIT"
+  - git config --local user.name "yorkwmsoe"
+  - git config --local user.email "yorkw@msoe.edu"
+  - git tag "$TRAVIS_TAG" "$TRAVIS_COMMIT"
+
+deploy:
+  provider: releases
+  tag_name: $TRAVIS_TAG
+  target_commitish: $TRAVIS_COMMIT
+  name: $TRAVIS_TAG
+  overwrite: true
+  api_key:
+    secure: UyNN8RelU9QmmQafOAKcPZDKGswjHd1Jze4BdaLdPOf/4iQ+Lj/xN7KVjQV74dnETKVV1WYLiRxekwIUhGwMzUxk0zP4znGOmpCDmObBRM+2eodu8VNV6xkR5g+1hsHcRVy8qhOESST43wauuKudapAN7Ixm7FtQFlVLQy8ImGJwKRITFVHu8GSiuR+HHHujj0w8gNjwZrlIgjiLK6b1oPLqaIco7WISHzt8TPdhO+yAmdlbbxIbsZb9o42GHMQeWFsYecObCqjTSzZdNhtqn4uk52L+b/kEkMo0Tif73FIExIXc5XA61Yu8ykYAw4QNwjOXAxkD9A4m9/RChyTI8iNGpMQr4RfBX1LsLLqmZ34R5zAyCuV6gE0PYhLWhZYjwzapOGPp+3SLdOlTRME3rPhVEzZmW2vTcwv4RsnbuKRu6z7McbYnARW1vDQCJPMLm/PgCjt8eIPWHEeGIHomqCqJQgHPseEDi8k/v7AvT4xvrW3f2f+L29INCjXM5NjXvNP62etNLHovzAazPewQQrdL7zNibhsn3zVnEqRI0vCXW8Hvz73vxPBLw8h/uGOiK72sVUKh8bJl/0VsMkbkv+YYhst6/5B85EOttZp3oJkyO7myA/30mpaCaFeJgOW1HjuEsw3HgmX7cgJiXvN1mlqzC2CKhtwGnwngA8JbNRg=
+  file: "apps/desktop/dist/*.dmg"
+  cleanup: false
+  on:
+    tags: true
+    branch: main
