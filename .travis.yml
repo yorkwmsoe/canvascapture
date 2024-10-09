@@ -9,7 +9,10 @@ before_install:
   - npm install -g pnpm
 
 install:
-  - cd apps/desktop
+  - cd canvas-capture/
+  - pnpm install
+  - pnpm package
+  - cd ../apps/desktop
   - pnpm install
 
 script:
