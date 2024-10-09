@@ -29,7 +29,6 @@ export function generateV2(
 
             // Loop through assignments and combine their content
             course.children.forEach((assignment) => {
-
                 mkdirSync(join(documentsPath, generationName), {
                     recursive: true,
                 })
