@@ -5,6 +5,7 @@ import { DirectoryTreeProps } from 'antd/es/tree'
 import { ChangeEventHandler, Key, useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
 import { useTheme } from '@renderer/lib/useTheme'
+import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import { ExternalLink } from '../ExternalLink'
 import { FileDataNode } from '@canvas-capture/lib'
@@ -100,6 +101,7 @@ export function MarkdownEditor({
                     >
                         <Markdown
                             remarkPlugins={[remarkGfm]}
+                            rehypePlugins={[rehypeRaw]}
                             components={{
                                 a: ({ href, children }) => (
                                     <ExternalLink href={href}>
