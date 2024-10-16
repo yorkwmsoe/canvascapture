@@ -9,7 +9,7 @@ import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
 import { FilePathContentPair } from './types'
 import { generateAssignmentOrQuiz, median } from './utils'
-import { generateTOC } from "./generateTOC";
+import { generateTOC } from './generateTOC'
 
 export const generatePairs = async (
     course: Course,
@@ -174,5 +174,3 @@ export async function generate(
 
     return htmlData // Return HTML content for PDF generation
 }
-
-
