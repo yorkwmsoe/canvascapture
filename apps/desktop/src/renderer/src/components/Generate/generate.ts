@@ -9,6 +9,7 @@ import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
 import { FilePathContentPair } from './types'
 import { generateAssignmentOrQuiz, median } from './utils'
+import { generateTOC } from './generateTOC'
 
 export const generatePairs = async (
     course: Course,
@@ -102,10 +103,7 @@ export async function generate(
             (a) => a.course_id === course.id
         )
         let courseContent = `# ${getCourseName(course)}\n\n` // Start course-level markdown content with a title
-        const coursePath = sanitizePath(
-            join(generationName, getCourseName(course))
-        )
-        mkdirSync(join(documentsPath, coursePath), { recursive: true })
+        mkdirSync(join(documentsPath, generationName), { recursive: true })
 
         for (const assignment of filteredAssignments) {
             const submissions = await canvasApi.getSubmissions({
@@ -122,7 +120,6 @@ export async function generate(
             )
 
             if (uniqueSubmissions.length > 0) {
-                courseContent += `## ${assignment.name}\n\n` // Assignment title
                 const quiz = assignment.is_quiz_assignment
                     ? await canvasApi.getQuiz({
                           canvasAccessToken,
@@ -131,7 +128,6 @@ export async function generate(
                           quizId: assignment.quiz_id,
                       })
                     : undefined
-
                 const pairs = await generatePairs(
                     course,
                     assignment,
@@ -159,9 +155,7 @@ export async function generate(
         const markdownContent = courseMarkdownContent[courseName]
         const filePath = join(
             documentsPath,
-            generationName,
-            courseName,
-            `${courseName}.md`
+            join(generationName, `${courseName}`) + '.md'
         )
 
         // Write the markdown file for the course
@@ -169,10 +163,12 @@ export async function generate(
 
         // Convert markdown to HTML
         const htmlContent = md.render(markdownContent)
+        const tocContent = generateTOC(htmlContent)
+        const htmlContentWithTOC = tocContent + '\n\n\n' + htmlContent
 
         return {
-            filePath: `${courseName}`,
-            content: htmlContent,
+            filePath: join(generationName, `${courseName}`),
+            content: htmlContentWithTOC,
         }
     })
 

@@ -29,14 +29,9 @@ export function generateV2(
 
             // Loop through assignments and combine their content
             course.children.forEach((assignment) => {
-                const coursePath = sanitizePath(
-                    join(generationName, getCourseName(course.course))
-                )
-                mkdirSync(join(documentsPath, coursePath), {
+                mkdirSync(join(documentsPath, generationName), {
                     recursive: true,
                 })
-
-                courseContent += `## ${assignment.assignment.name}\n\n` // Assignment title
 
                 assignment.children.forEach((file) => {
                     courseContent += `${file.content.join('\n')}\n\n` // Append file content
@@ -55,9 +50,7 @@ export function generateV2(
         const markdownContent = courseMarkdownContent[courseName]
         const filePath = join(
             documentsPath,
-            generationName,
-            courseName,
-            `${courseName}.md`
+            join(generationName, `${courseName}`) + '.md'
         )
 
         // Write the markdown file for the course
@@ -67,7 +60,7 @@ export function generateV2(
         const htmlContent = md.render(markdownContent)
 
         return {
-            filePath: `${courseName}`,
+            filePath: join(generationName, `${courseName}`),
             content: htmlContent,
         }
     })
