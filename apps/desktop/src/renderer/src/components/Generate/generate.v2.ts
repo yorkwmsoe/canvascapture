@@ -50,7 +50,7 @@ export function generateV2(
         const markdownContent = courseMarkdownContent[courseName]
         const filePath = join(
             documentsPath,
-            sanitizePath(join(generationName, `${courseName}.md`))
+            join(generationName, `${courseName}`) + '.md'
         )
 
         // Write the markdown file for the course
@@ -60,7 +60,7 @@ export function generateV2(
         const htmlContent = md.render(markdownContent)
 
         return {
-            filePath: sanitizePath(join(generationName, `${courseName}.md`)),
+            filePath: join(generationName, `${courseName}`),
             content: htmlContent,
         }
     })

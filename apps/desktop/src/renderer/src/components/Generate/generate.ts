@@ -9,6 +9,7 @@ import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
 import { FilePathContentPair } from './types'
 import { generateAssignmentOrQuiz, median } from './utils'
+import { generateTOC } from "./generateTOC";
 
 export const generatePairs = async (
     course: Course,
@@ -127,8 +128,6 @@ export async function generate(
                           quizId: assignment.quiz_id,
                       })
                     : undefined
-                console.log(generationName)
-                console.log(getCourseName(course))
                 const pairs = await generatePairs(
                     course,
                     assignment,
@@ -156,7 +155,7 @@ export async function generate(
         const markdownContent = courseMarkdownContent[courseName]
         const filePath = join(
             documentsPath,
-            sanitizePath(join(generationName, `${courseName}.md`))
+            join(generationName, `${courseName}`) + '.md'
         )
 
         // Write the markdown file for the course
@@ -164,12 +163,16 @@ export async function generate(
 
         // Convert markdown to HTML
         const htmlContent = md.render(markdownContent)
+        const tocContent = generateTOC(htmlContent)
+        const htmlContentWithTOC = tocContent + '\n\n\n' + htmlContent
 
         return {
-            filePath: sanitizePath(join(generationName, `${courseName}.md`)),
-            content: htmlContent,
+            filePath: join(generationName, `${courseName}`),
+            content: htmlContentWithTOC,
         }
     })
 
     return htmlData // Return HTML content for PDF generation
 }
+
+
