@@ -114,10 +114,12 @@ export function MarkdownEditor({
     }
 
     const updateAllGUISectionText = () => {
-        for (let i = 0; i < 5; i++) {
-            updateGUISectionText(i)
+        if (selectedFile != undefined) {
+            for (let i = 0; i < 5; i++) {
+                updateGUISectionText(i)
+            }
+            updateGUIText()
         }
-        updateGUIText()
     }
 
     const generateGUIEditor = () => {
