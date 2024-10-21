@@ -19,11 +19,8 @@ script:
   - pnpm build:mac
 
 before_deploy:
-  - export TRAVIS_TAG="1.0.$TRAVIS_BUILD_NUMBER"
-  - echo "$TRAVIS_TAG" "TRAVIS_COMMIT"
   - git config --local user.name "yorkwmsoe"
   - git config --local user.email "yorkw@msoe.edu"
-  - git tag "$TRAVIS_TAG" "$TRAVIS_COMMIT"
   - cd ../../
 
 deploy:
