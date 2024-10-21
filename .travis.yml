@@ -16,7 +16,8 @@ install:
   - pnpm install
 
 script:
-  pnpm build:mac
+  - cd apps/desktop
+  - pnpm build:mac
 
 before_deploy:
   - export TRAVIS_TAG="1.0.$TRAVIS_BUILD_NUMBER"
