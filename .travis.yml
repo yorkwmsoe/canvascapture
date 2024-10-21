@@ -28,15 +28,17 @@ before_deploy:
 deploy:
   provider: releases
   edge:
-      branch: v2.0.3-beta.4
-  tag_name: $TRAVIS_TAG
-  target_commitish: $TRAVIS_COMMIT
-  name: $TRAVIS_TAG
+    branch: v2.0.3-beta.4
+  tag_name: "$TRAVIS_TAG"
+  target_commitish: "$TRAVIS_COMMIT"
+  name: "$TRAVIS_TAG"
   overwrite: true
-  api_key:
-    secure: UyNN8RelU9QmmQafOAKcPZDKGswjHd1Jze4BdaLdPOf/4iQ+Lj/xN7KVjQV74dnETKVV1WYLiRxekwIUhGwMzUxk0zP4znGOmpCDmObBRM+2eodu8VNV6xkR5g+1hsHcRVy8qhOESST43wauuKudapAN7Ixm7FtQFlVLQy8ImGJwKRITFVHu8GSiuR+HHHujj0w8gNjwZrlIgjiLK6b1oPLqaIco7WISHzt8TPdhO+yAmdlbbxIbsZb9o42GHMQeWFsYecObCqjTSzZdNhtqn4uk52L+b/kEkMo0Tif73FIExIXc5XA61Yu8ykYAw4QNwjOXAxkD9A4m9/RChyTI8iNGpMQr4RfBX1LsLLqmZ34R5zAyCuV6gE0PYhLWhZYjwzapOGPp+3SLdOlTRME3rPhVEzZmW2vTcwv4RsnbuKRu6z7McbYnARW1vDQCJPMLm/PgCjt8eIPWHEeGIHomqCqJQgHPseEDi8k/v7AvT4xvrW3f2f+L29INCjXM5NjXvNP62etNLHovzAazPewQQrdL7zNibhsn3zVnEqRI0vCXW8Hvz73vxPBLw8h/uGOiK72sVUKh8bJl/0VsMkbkv+YYhst6/5B85EOttZp3oJkyO7myA/30mpaCaFeJgOW1HjuEsw3HgmX7cgJiXvN1mlqzC2CKhtwGnwngA8JbNRg=
-  file: "apps/desktop/dist/*.dmg"
+  api_key: $GITHUB_TOKEN
+  file: apps/desktop/dist/*.dmg
   cleanup: false
   on:
     tags: true
     branch: main
+env:
+  global:
+    secure: FadUu58UC6COmGZQ45LDN/9Vxslq+8mXcuMl/XqsPfuSyucCJdQQvixnIeyOo/iaTCdroxlpyD64CA5mlKNTr8d2diEZ0ThpixS86V2NxX5RPgqOlBq9lTQiR73h2iNE+bqV5YnGWJOMCF08l5QebJtq3LrUrlwtP3B9nQ/IoDZ2V1+NkyD2VxV2Ur4dqlGFihdNVKbhIkGbwNiUICpiOXcLg4UAtkc6+sb8htyXkktEGBx/bowyHve4NsM0n9bHTtTefgRuwDDxQ0q+R3laVsYVWKdavliqtoaSnaRcWQlAz0Og2Z1qlpg0SFozKzobKp2DXIhdre8OjQoLfLvdqzMnwJY86uuEx7Dn7BGGavtFmlrxupiLkPlrqGb2UKaHVssw8uK+Iq23n+yYhgHlQqB/KocxBi8Dc03lhuL+x0n46i6PBfNHnbGcH47ntoRUAYEIWE1f1Ob0BnM+6MFig4l8AhEjziafvb3Cfi7P5D0uY4a7DabHXD7xnaAO6eqsRxbGxGCU052zz7JClgiNl34JftvR8ddJsmKEiqEKpWQV910CQP7hofik8hDSQ1VqGRB8gYi+2mIoI6dmnHHLplsBJnhgnNQOy+f8O8VXLcMpQ0UILjKysvSloN9SLskAIcKg5PLrcwELDCWqg9ad8kZwZHFIRoIqJDRMaztRyFM=
