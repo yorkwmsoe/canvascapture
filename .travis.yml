@@ -16,7 +16,6 @@ install:
   - pnpm install
 
 script:
-  - cd apps/desktop
   - pnpm build:mac
 
 before_deploy:
