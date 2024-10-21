@@ -24,6 +24,7 @@ before_deploy:
   - git config --local user.name "yorkwmsoe"
   - git config --local user.email "yorkw@msoe.edu"
   - git tag "$TRAVIS_TAG" "$TRAVIS_COMMIT"
+  - cd ../../
 
 deploy:
   provider: releases
