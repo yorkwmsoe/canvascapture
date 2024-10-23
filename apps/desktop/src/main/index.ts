@@ -27,7 +27,6 @@ function createWindow(): void {
             preload: join(__dirname, '../preload/index.js'),
             sandbox: false,
             webSecurity: false,
-            
         },
     })
     remote.enable(mainWindow.webContents)
@@ -64,7 +63,6 @@ function createWindow(): void {
                     'Access-Control-Allow-Origin': ['*'],
                     //'Content-Security-Policy': ["img-src 'self' data:;"], // Allowing data: URIs for images
                     ...details.responseHeaders,
-                    
                 },
             })
         }
