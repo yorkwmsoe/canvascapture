@@ -147,7 +147,10 @@ function assembleSubmissionInfo(submission: Submission, fancy: boolean) {
                 return []
             }
 
-            const submissionBody = createLinkNormal(attachment.display_name, attachment.url)
+            const submissionBody = createLinkNormal(
+                attachment.display_name,
+                attachment.url
+            )
             return [submissionHeader, submissionBody]
         }
         case 'online_url': {
@@ -212,7 +215,11 @@ function assembleRubricInfo(assignment: Assignment, submission: Submission) {
         // If there's no rubric, return an empty array (exclude rubric section)
         return []
     }
-    const rubricTableHeader = createTableHeader(['Criteria', 'Score', 'Comments'])
+    const rubricTableHeader = createTableHeader([
+        'Criteria',
+        'Score',
+        'Comments',
+    ])
 
     const assessment = submission.rubric_assessment
     const rows = rubric?.map((criterion) => {
