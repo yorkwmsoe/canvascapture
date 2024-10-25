@@ -110,17 +110,29 @@ function assembleTitleAndGrade(
 }
 
 function assembleDescriptionInfo(assignment: Assignment, fancy: boolean) {
+    if (!assignment.description || assignment.description.trim() === '') {
+        // If there's no description, return an empty array (i.e., nothing will be added)
+        return []
+    }
     const descriptionHeader = convertToHeader('Description', 2)
-    const description = assignment.description
-        ? wrapUserContent(assignment.description, fancy)
-        : 'No description'
+    const description = wrapUserContent(assignment.description, fancy)
     return [descriptionHeader, description]
 }
 
 function assembleSubmissionInfo(submission: Submission, fancy: boolean) {
+    if (!submission.submission_type) {
+        // If there's no submission type, return an empty array (exclude submission section)
+        return []
+    }
+
     const submissionHeader = convertToHeader('Submission', 2)
+
     switch (submission.submission_type) {
         case 'online_text_entry': {
+            if (!submission.body) {
+                // If there's no body, return an empty array
+                return []
+            }
             const submissionBody = wrapUserContent(submission.body, fancy)
             return [submissionHeader, submissionBody]
         }
@@ -129,13 +141,21 @@ function assembleSubmissionInfo(submission: Submission, fancy: boolean) {
         }
         case 'online_upload': {
             const attachment = submission.attachments?.[0]
-            const submissionBody = attachment
-                ? createLinkNormal(attachment.display_name, attachment.url)
-                : 'No upload'
+
+            if (!attachment) {
+                // If no attachment is found, return an empty array
+                return []
+            }
+
+            const submissionBody = createLinkNormal(attachment.display_name, attachment.url)
             return [submissionHeader, submissionBody]
         }
         case 'online_url': {
-            return [submissionHeader, submission.url ?? 'No URL']
+            if (!submission.url) {
+                // If there's no URL, return an empty array
+                return []
+            }
+            return [submissionHeader, submission.url]
         }
         case 'student_annotation': {
             return [
@@ -146,8 +166,8 @@ function assembleSubmissionInfo(submission: Submission, fancy: boolean) {
         case 'media_recording': {
             let submissionBody
             const media_comment = submission.media_comment
-            if (!media_comment) {
-                submissionBody = 'No media'
+            if (!media_comment || !media_comment.url) {
+                return []
             } else {
                 if (media_comment?.display_name) {
                     submissionBody = createLinkNormal(
@@ -170,24 +190,30 @@ function assembleSubmissionInfo(submission: Submission, fancy: boolean) {
 }
 
 function assembleFeedbackInfo(submission: Submission) {
+    const feedbackComments = submission?.submission_comments?.map(
+        (comment) => `${comment.author_name}: ${comment.comment}`
+    )
+
+    if (!feedbackComments || feedbackComments.length === 0) {
+        // If there are no feedback comments, return an empty array (exclude feedback section)
+        return []
+    }
+
     const feedbackHeader = convertToHeader('Feedback', 2)
-    const feedbackBody = submission?.submission_comments?.length
-        ? createList(
-              submission?.submission_comments.map(
-                  (comment) => `${comment.author_name}: ${comment.comment}`
-              ),
-              '-'
-          )
-        : 'No feedback'
+    const feedbackBody = createList(feedbackComments, '-')
+
     return [feedbackHeader, feedbackBody]
 }
 
 function assembleRubricInfo(assignment: Assignment, submission: Submission) {
     const rubricHeader = convertToHeader('Rubric', 2)
     const rubric = assignment.rubric
-    const rubricTableHeader = rubric
-        ? createTableHeader(['Criteria', 'Score', 'Comments'])
-        : null
+    if (!rubric || rubric.length === 0) {
+        // If there's no rubric, return an empty array (exclude rubric section)
+        return []
+    }
+    const rubricTableHeader = createTableHeader(['Criteria', 'Score', 'Comments'])
+
     const assessment = submission.rubric_assessment
     const rows = rubric?.map((criterion) => {
         const description = criterion.description
@@ -196,10 +222,8 @@ function assembleRubricInfo(assignment: Assignment, submission: Submission) {
         const score = assessment ? assessment[criterion.id]?.points : ''
         return [description, `${score}/${points}`, comments]
     })
-    const rubricTableBody = rows ? createTableRows(rows) : ''
-    const rubricTable = !rubricTableHeader
-        ? 'No rubric'
-        : rubricTableHeader + rubricTableBody
+    const rubricTableBody = createTableRows(rows)
+    const rubricTable = rubricTableHeader + rubricTableBody
 
     return [rubricHeader, rubricTable]
 }
