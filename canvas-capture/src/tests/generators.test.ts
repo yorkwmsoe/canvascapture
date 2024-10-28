@@ -13,7 +13,7 @@ describe('generateAssignment', () => {
     })
 
     // TODO: Fix this test
-/*    it('should generate all headers', () => {
+    /*    it('should generate all headers', () => {
         const result = generateAssignment(
             testAssignments[0],
             testSubmissions[0],
@@ -27,7 +27,7 @@ describe('generateAssignment', () => {
     })*/
 
     // TODO: Fix this test
-  /*  it('should generate all bodies', () => {
+    /*  it('should generate all bodies', () => {
         const result = generateAssignment(
             testAssignments[0],
             testSubmissions[0],
@@ -41,7 +41,7 @@ describe('generateAssignment', () => {
     })*/
 
     // TODO: Fix this test
-/*    it('should generate a table', () => {
+    /*    it('should generate a table', () => {
         testAssignments[0].rubric = [
             {
                 id: '1',
@@ -62,7 +62,7 @@ describe('generateAssignment', () => {
     })*/
 
     // TODO: Fix this test
-/*    it('should handle online_quiz', () => {
+    /*    it('should handle online_quiz', () => {
         testSubmissions[0].submission_type = 'online_quiz'
         const result = generateAssignment(
             testAssignments[0],
@@ -105,7 +105,7 @@ describe('generateAssignment', () => {
     })*/
 
     // TODO: Fix this test
- /*   it('should have no description', () => {
+    /*   it('should have no description', () => {
         testAssignments[0].description = ''
         const result = generateAssignment(
             testAssignments[0],
@@ -116,7 +116,7 @@ describe('generateAssignment', () => {
     })*/
 
     // TODO: Fix this test
-/*    it('should have a decsription', () => {
+    /*    it('should have a decsription', () => {
         testAssignments[0].description = 'Test description'
         const result = generateAssignment(
             testAssignments[0],
