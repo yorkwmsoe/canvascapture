@@ -11,14 +11,22 @@ export function generateTOC(htmlContent: string) {
         const anchorId = `toc-${index}`
         heading.id = anchorId
 
-        const tocEntry = `<li class="toc-${level}"><a href="#${anchorId}">${text}</a></li>`
+        let tocEntry = ''
+        if (
+            ['Submission', 'Rubric', 'Feedback', 'Description'].includes(text)
+        ) {
+            tocEntry = `<li class="toc-${level}" style="list-style-type: '-';"><a href="#${anchorId}">${text}</a></li>`
+        } else {
+            tocEntry = `<li class="toc-${level}" style="padding-top: 5px;"><a href="#${anchorId}">${text}</a></li>`
+        }
+
         tocEntries.push(tocEntry)
     })
 
     const tocHTML = `
-    <div class="toc">
+    <div class="toc" style="text-align: center;">
       <h2>Table of Contents</h2>
-      <ul>
+      <ul style="list-style-position: inside; list-style-type: none; padding-left: 0;">
         ${tocEntries.join('')}
       </ul>
     </div>
