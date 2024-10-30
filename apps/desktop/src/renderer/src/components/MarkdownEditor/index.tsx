@@ -115,8 +115,33 @@ export function MarkdownEditor({
 
     const updateAllGUISectionText = () => {
         if (selectedFile != undefined) {
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < guiGeneratedText.length; i++) {
                 updateGUISectionText(i)
+            }
+            updateGUIText()
+        }
+    }
+
+    const addNewSection = (e: React.MouseEvent<HTMLElement>) => {
+        if (selectedFile != undefined) {
+            const id = parseInt(e.currentTarget.id.substring(16))
+            const temporaryTitleText: string[] = []
+            const temporaryBodyText: string[] = []
+            for (let i = id + 1; i < guiGeneratedText.length; i++) {
+                temporaryTitleText[i - (id + 1)] = titleText[i]
+                temporaryBodyText[i - (id + 1)] = bodyText[i]
+            }
+            if (!bodyText[id].endsWith('\n')) {
+                bodyText[id] = bodyText[id] + '\n'
+            }
+            updateGUISectionText(id)
+            titleText[id + 1] = ''
+            bodyText[id + 1] = '\n'
+            updateGUISectionText(id + 1)
+            for (let i = 0; i < temporaryTitleText.length; i++) {
+                titleText[id + 2 + i] = temporaryTitleText[i]
+                bodyText[id + 2 + i] = temporaryBodyText[i]
+                updateGUISectionText(id + 2 + i)
             }
             updateGUIText()
         }
@@ -167,6 +192,12 @@ export function MarkdownEditor({
                             />
                         </Form.Item>
                     </Form>
+                    <Button
+                        id={'newSectionButton' + sectionID}
+                        onClick={addNewSection}
+                    >
+                        Add New Section Below
+                    </Button>
                     <hr />
                 </div>
             )
