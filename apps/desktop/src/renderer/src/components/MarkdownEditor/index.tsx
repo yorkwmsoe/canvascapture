@@ -8,7 +8,7 @@ import { useTheme } from '@renderer/lib/useTheme'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import { ExternalLink } from '../ExternalLink'
-import { FileDataNode } from '@canvas-capture/lib'
+import { markdown, FileDataNode } from '@canvas-capture/lib'
 
 export type MarkdownEditorProps = {
     treeData: DirectoryTreeProps['treeData']
@@ -147,6 +147,80 @@ export function MarkdownEditor({
         }
     }
 
+    const handleTableCellChange = (e: React.BaseSyntheticEvent) => {
+        const id = e.target.className.substring(15)
+        const tableText = e.target.innerText
+        const rowText = tableText.split('\n')
+        const tableHeader: string = markdown.createTableHeader(
+            rowText[0].split('\t')
+        )
+        const tableRows: string[][] = []
+        for (let i = 1; i < rowText.length; i++) {
+            const row = rowText[i]
+            if (row != '' && row != '\t') {
+                const rowCells: string[] = []
+                const cellText = row.split('\t')
+                for (const cell of cellText) {
+                    rowCells.push(cell)
+                }
+                tableRows.push(rowCells)
+            }
+        }
+        const tableBody: string = markdown.createTableRows(tableRows)
+        bodyText[id] = tableHeader + tableBody + '\n'
+    }
+
+    const handleTableUpdate = (e: React.BaseSyntheticEvent) => {
+        updateGUISectionText(e.target.className.substring(15))
+        updateGUIText()
+    }
+
+    const generateTable = (tableText: string, id: number) => {
+        tableText = tableText.trim()
+        const rowText = tableText.split('\n')
+        const tableChildren: ReactNode[] = []
+        for (let i = 0; i < rowText.length; i++) {
+            let row = rowText[i]
+            if (!row.includes('---')) {
+                row = row.substring(1, row.length - 1)
+                const cells = row.split('|')
+                const rowChildren: ReactNode[] = []
+                for (let j = 0; j < cells.length; j++) {
+                    const cellText = cells[j].trim()
+                    rowChildren.push(
+                        i == 0 ? (
+                            <th
+                                style={{ border: '1px solid black' }}
+                                className={'tableForSection' + id}
+                            >
+                                {cellText}
+                            </th>
+                        ) : (
+                            <td
+                                style={{ border: '1px solid black' }}
+                                className={'tableForSection' + id}
+                            >
+                                {cellText}
+                            </td>
+                        )
+                    )
+                }
+                tableChildren.push(<tr>{rowChildren}</tr>)
+            }
+        }
+        return (
+            <table
+                style={{ border: '1px solid black' }}
+                contentEditable={true}
+                onInput={handleTableCellChange}
+                onMouseLeave={handleTableUpdate}
+                className={'tableForSection' + id}
+            >
+                {tableChildren}
+            </table>
+        )
+    }
+
     const generateGUIEditor = () => {
         const sections = guiText != undefined ? guiText.split('## ') : []
         const guiChildren: ReactNode[] = []
@@ -183,13 +257,17 @@ export function MarkdownEditor({
                             />
                         </Form.Item>
                         <Form.Item label="Section body">
-                            <Input.TextArea
-                                value={sectionBody}
-                                onChange={handleSectionBodyChange}
-                                id={'guiSectionBody' + sectionID}
-                                onClick={updateAllGUISectionText}
-                                autoSize={{ maxRows: 15 }}
-                            />
+                            {sectionBody.includes('| --- |') ? (
+                                generateTable(sectionBody, sectionID)
+                            ) : (
+                                <Input.TextArea
+                                    value={sectionBody}
+                                    onChange={handleSectionBodyChange}
+                                    id={'guiSectionBody' + sectionID}
+                                    onClick={updateAllGUISectionText}
+                                    autoSize={{ maxRows: 15 }}
+                                />
+                            )}
                         </Form.Item>
                     </Form>
                     <Button
