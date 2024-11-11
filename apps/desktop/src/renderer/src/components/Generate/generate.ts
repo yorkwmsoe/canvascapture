@@ -1,6 +1,6 @@
 import { rm, writeFile } from 'fs/promises'
 import markdownit from 'markdown-it'
-import _ from 'lodash'
+import _, { isArray, xorBy } from 'lodash'
 import { mkdirSync } from 'fs'
 import { join } from 'path'
 import { Assignment, Course, Quiz, Submission } from '@canvas-capture/lib'
@@ -9,7 +9,7 @@ import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
 import { FilePathContentPair } from './types'
 import { generateAssignmentOrQuiz, median } from './utils'
-import { oneYearExport, avgCourseGradeExport } from '../Statistics'
+import { oneYearExport, AverageAssignmentGradeExport } from '../Statistics'
 import {
     Chart,
     LinearScale,
@@ -22,6 +22,10 @@ import {
     Legend,
 } from 'chart.js'
 
+
+const allSubmissions = new Array();
+const allAssignments = new Array();
+let testForBad = 0;
 Chart.register(
     LinearScale, // for the y-axis scale
     CategoryScale, // for the x-axis scale
@@ -129,8 +133,10 @@ export async function generate(
             join(generationName, getCourseName(course))
         )
         mkdirSync(join(documentsPath, coursePath), { recursive: true })
+        
 
         for (const assignment of filteredAssignments) {
+            allAssignments.push(assignment)
             const submissions = await canvasApi.getSubmissions({
                 canvasAccessToken,
                 canvasDomain,
@@ -138,6 +144,9 @@ export async function generate(
                 courseId: course.id,
                 assignmentId: assignment.id,
             })
+            for(let ivar = 0; ivar< submissions.length; ivar++){
+                allSubmissions.push(submissions[ivar])
+            }
 
             const uniqueSubmissions = _.uniqBy(
                 submissions.filter((s) => !_.isNil(s.score)),
@@ -178,14 +187,16 @@ export async function generate(
     meta.httpEquiv = 'Content-Security-Policy'
     meta.content = "img-src 'self' data:;"
 
-    let oneYearStat
-    let avgCourseGrade = ''
+    let oneYearStat  
+    let avgAssignGrade
     if (oneYearExport()) {
         oneYearStat = await generateChart()
     }
-    if (avgCourseGradeExport()) {
-        avgCourseGrade = 'Avg Course Grade'
+    if(AverageAssignmentGradeExport()){
+        avgAssignGrade = await generateAvgGradeChart()
+
     }
+    
 
     // Write markdown and generate HTML for each course
     const htmlData: FilePathContentPair[] = Object.keys(
@@ -204,13 +215,16 @@ export async function generate(
 
         // Convert markdown to HTML
         const htmlContent = md.render(markdownContent)
-        console.log(htmlContent)
+        
 
         let htmlContentEditable = htmlContent
 
-        console.log('New HTML\n' + htmlContentEditable)
+        
         if (oneYearStat != undefined) {
             htmlContentEditable += oneYearStat
+        }
+        if(avgAssignGrade!=undefined){
+            htmlContentEditable+=avgAssignGrade
         }
 
         return {
@@ -222,43 +236,71 @@ export async function generate(
     return htmlData
 }
 
-function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 async function generateChart() {
+    testForBad++;
+    
     let oneYearStat2
     const ctx = document.createElement('canvas')
     ctx.width = 200
     ctx.height = 200
+    const allUniqueSubmissions = new Array();
+    const addedIds = new Set();
+    const submittedAt = new Array();
+    const gradedAt = new Array();
+    for(let ivar=0;ivar<allSubmissions.length;ivar++){
+        const isFound = allUniqueSubmissions.find(x=>x.id==allSubmissions[ivar].id)
+        
+        if(!isFound){
+            
+            allUniqueSubmissions.push(allSubmissions[ivar])
+            
+        }
+    }
+    
 
-    // Append the canvas to the body (or another DOM element) temporarily
+
+    for(let ivar=0; ivar<allUniqueSubmissions.length;ivar++){
+        submittedAt.push(allUniqueSubmissions[ivar].submitted_at)
+        gradedAt.push(allUniqueSubmissions[ivar].graded_at)
+    }
+
+    const timeToGrade = new Array();
+    const assignmentCount = new Array();
+    let passed = 0;
+    for(let ivar = 0; ivar<submittedAt.length;ivar++){
+        if(gradedAt[ivar]!=null&&submittedAt[ivar]!=null){
+            passed++;
+            const months = parseInt(gradedAt[ivar].substring(5,7))-
+            parseInt(submittedAt[ivar].substring(5,7));
+            let days;
+            if(months==0){
+                days = parseInt(gradedAt[ivar].substring(8,10))-
+                parseInt(submittedAt[ivar].substring(8,10));
+            }else{
+                days = parseInt(gradedAt[ivar].substring(8,10)) + (months*30-parseInt(submittedAt[ivar].substring(8,10)));
+            }
+            
+        
+            
+
+            timeToGrade.push(days);//graded at - submitted at.
+            assignmentCount.push(passed);
+        }
+    }
+
+
+    // Append the canvas to the body temporarily
     document.body.appendChild(ctx)
-
+    
     return new Promise((resolve) => {
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: [
-                    '1',
-                    '2',
-                    '3',
-                    '4',
-                    '5',
-                    '6',
-                    '7',
-                    '8',
-                    '9',
-                    '10',
-                    '11',
-                    '12',
-                    '13',
-                    '14',
-                ],
+                labels: assignmentCount,
                 datasets: [
                     {
                         label: 'Days to Grade',
-                        data: [3, 2, 5, 1, 2, 7, 10, 12, 5, 3, 2, 3, 1, 3],
+                        data: timeToGrade,
                         borderWidth: 1,
                         pointBackgroundColor: 'cyan',
                         borderColor: '#008b8b',
@@ -278,22 +320,139 @@ async function generateChart() {
 
                         const wrap = document.createElement('div')
                         const img = document.createElement('img')
-                        img.src = imgData // Set the base64 image as the source of the img element
+                        img.src = imgData // Set the image as the source of the img element
                         img.width = 800
                         img.height = 800
-                        console.log('toDataUrl = ' + imgData)
-                        console.log(
-                            'height: ' + ctx.height + ' Width: ' + ctx.width
-                        )
+                        
                         wrap.appendChild(img)
 
                         oneYearStat2 = wrap.innerHTML
-                        console.log('OneYearStat:\n' + oneYearStat2)
+                        
 
-                        // Remove the canvas from the DOM after capturing the image
+                        // Remove the canvas from the DOM
                         document.body.removeChild(ctx)
 
                         resolve(oneYearStat2) // Resolve the promise with the image HTML
+                    },
+                },
+            },
+        })
+    })
+    
+}
+
+
+async function generateAvgGradeChart(){
+    let avgAssignGrade2
+    const ctx = document.createElement('canvas')
+    ctx.width = 200
+    ctx.height = 200
+
+
+    
+    const assignmentCount = new Array();//TODO: delete
+    
+    
+
+    const gradesByAssignent = new Array();
+    let gbalength = 0;
+    for(let ivar = 0; ivar < allAssignments.length;ivar++){//Adds ONE OF EACH assignemnt to GBA
+        let isInGBA = gradesByAssignent.find(x=>x[0]==allAssignments[ivar].id);
+        if(!isInGBA){
+            gradesByAssignent.push(new Array())
+            gradesByAssignent[gbalength].push(allAssignments[ivar].id)
+            gbalength++;
+        }
+    }
+    
+    
+    for(let ivar = 0; ivar<allSubmissions.length;ivar++){
+
+        for(let xvar = 0; xvar<gradesByAssignent.length;xvar++){
+            
+            
+            if(allSubmissions[ivar].assignment_id==gradesByAssignent[xvar][0]){
+                
+                gradesByAssignent[xvar].push(allSubmissions[ivar].score)
+                
+            }
+        }
+    }
+    
+    
+    for(let ivar=0;ivar<gradesByAssignent.length;ivar++){
+        
+        if(gradesByAssignent[ivar][1]===undefined){
+            
+            gradesByAssignent.splice(ivar,1)
+            ivar--;
+        }
+    }
+    
+    const temparr = new Array();  
+
+    for(let ivar=0; ivar<gradesByAssignent.length;ivar++){
+        assignmentCount.push(ivar+1);
+        let sum = 0;
+        const pp=allAssignments.find(as=>as.id==gradesByAssignent[ivar][0]).points_possible;
+        
+        for(let xvar = 1; xvar<gradesByAssignent[ivar].length;xvar++){
+            sum+=gradesByAssignent[ivar][xvar]*
+            (100/pp);
+        }
+        if(gradesByAssignent[ivar].length>1){//if statement in case no-one turns it in
+            sum /=(gradesByAssignent[ivar].length-1);
+        }
+        
+        temparr.push(sum);
+    }
+    
+
+
+    // Append the canvas to the body temporarily
+    document.body.appendChild(ctx)
+    
+    return new Promise((resolve) => {
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: assignmentCount,
+                datasets: [
+                    {
+                        label: 'Avg Assignment Grade',
+                        data: temparr,
+                        borderWidth: 1,
+                        pointBackgroundColor: 'cyan',
+                        borderColor: '#008b8b',
+                    },
+                ],
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+                animation: {
+                    onComplete: function () {
+                        // Now that the chart is rendered, capture the canvas as an image
+                        const imgData = ctx.toDataURL()
+                        
+                        const wrap = document.createElement('div')
+                        const img = document.createElement('img')
+                        img.src = imgData // Set the image as the source of the img element
+                        img.width = 800
+                        img.height = 800
+                        
+                        wrap.appendChild(img)
+
+                        avgAssignGrade2 = wrap.innerHTML
+                        
+
+                        // Remove the canvas from the DOM
+                        document.body.removeChild(ctx)
+
+                        resolve(avgAssignGrade2) // Resolve the promise with the image HTML
                     },
                 },
             },
