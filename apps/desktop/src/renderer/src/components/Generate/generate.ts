@@ -24,7 +24,7 @@ import {
 
 const allSubmissions = new Array()
 const allAssignments = new Array()
-let testForBad = 0
+
 Chart.register(
     LinearScale, // for the y-axis scale
     CategoryScale, // for the x-axis scale
@@ -231,7 +231,7 @@ export async function generate(
 }
 
 async function generateChart() {
-    testForBad++
+    
 
     let oneYearStat2
     const ctx = document.createElement('canvas')
