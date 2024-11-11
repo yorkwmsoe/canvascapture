@@ -8,7 +8,6 @@ export function Statistics() {
     const [oneYearChecked, setOneYearChecked] = useState(oneYearStat)
     const [avgAssignChecked, setAvgAssignChecked] = useState(avgAssignGrade)
 
-
     const OneYearChange = () => {
         const newState = !oneYearChecked
         setOneYearChecked(newState)
