@@ -231,8 +231,6 @@ export async function generate(
 }
 
 async function generateChart() {
-    
-
     let oneYearStat2
     const ctx = document.createElement('canvas')
     ctx.width = 200
