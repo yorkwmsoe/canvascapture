@@ -3,18 +3,11 @@ import React, { useState } from 'react'
 
 let oneYearStat = false
 let avgAssignGrade = false
-let avgCourseGrade = false
 
 export function Statistics() {
     const [oneYearChecked, setOneYearChecked] = useState(oneYearStat)
     const [avgAssignChecked, setAvgAssignChecked] = useState(avgAssignGrade)
-    const [avgCourseChecked, setAvgCourseChecked] = useState(avgCourseGrade)
 
-    const avgCourseChange = () => {
-        const newState = !avgCourseChecked
-        setAvgCourseChecked(newState)
-        avgCourseGrade = newState
-    }
 
     const OneYearChange = () => {
         const newState = !oneYearChecked
