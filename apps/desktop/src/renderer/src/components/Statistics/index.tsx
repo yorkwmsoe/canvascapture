@@ -14,21 +14,18 @@ export function Statistics() {
         const newState = !avgCourseChecked
         setAvgCourseChecked(newState)
         avgCourseGrade = newState
-        
     }
 
     const OneYearChange = () => {
         const newState = !oneYearChecked
         setOneYearChecked(newState)
         oneYearStat = newState
-        
     }
 
     const avgAssignChange = () => {
         const newState = !avgAssignChecked
         setAvgAssignChecked(newState)
         avgAssignGrade = newState
-        
     }
 
     return (
@@ -52,12 +49,10 @@ export function Statistics() {
 }
 
 export function oneYearExport() {
-    
     return oneYearStat
 }
 
 export function AverageAssignmentGradeExport() {
-    
     return avgAssignGrade
 }
 
