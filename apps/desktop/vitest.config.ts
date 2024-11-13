@@ -1,5 +1,5 @@
 import { configDefaults, defineConfig } from 'vitest/config'
-import { resolve } from 'C:\\Users\\evonichr\\WebstormProjects\\canvascapture\\canvas-capture'
+
 
 export default defineConfig({
     test: {
