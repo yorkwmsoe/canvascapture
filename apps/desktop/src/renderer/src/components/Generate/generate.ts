@@ -23,8 +23,8 @@ import {
     Legend,
 } from 'chart.js'
 
-const allSubmissions = new Array()
-const allAssignments = new Array()
+const allSubmissions: Submission[] = []
+const allAssignments: Assignment[] = []
 
 Chart.register(
     LinearScale, // for the y-axis scale
@@ -226,9 +226,9 @@ async function generateChart() {
     const ctx = document.createElement('canvas')
     ctx.width = 200
     ctx.height = 200
-    const allUniqueSubmissions = new Array()
-    const submittedAt = new Array()
-    const gradedAt = new Array()
+    const allUniqueSubmissions: Submission[] = []
+    const submittedAt: Date[] = []
+    const gradedAt: Date[] = []
     for (let ivar = 0; ivar < allSubmissions.length; ivar++) {
         const isFound = allUniqueSubmissions.find(
             (x) => x.id == allSubmissions[ivar].id
@@ -244,24 +244,24 @@ async function generateChart() {
         gradedAt.push(allUniqueSubmissions[ivar].graded_at)
     }
 
-    const timeToGrade = new Array()
-    const assignmentCount = new Array()
+    const timeToGrade: number[] = []
+    const assignmentCount: number[] = []
     let passed = 0
     for (let ivar = 0; ivar < submittedAt.length; ivar++) {
         if (gradedAt[ivar] != null && submittedAt[ivar] != null) {
             passed++
             const months =
-                parseInt(gradedAt[ivar].substring(5, 7)) -
-                parseInt(submittedAt[ivar].substring(5, 7))
+                parseInt((gradedAt[ivar]+"").substring(5, 7)) -
+                parseInt((submittedAt[ivar]+"").substring(5, 7))
             let days
             if (months == 0) {
                 days =
-                    parseInt(gradedAt[ivar].substring(8, 10)) -
-                    parseInt(submittedAt[ivar].substring(8, 10))
+                    parseInt((gradedAt[ivar]+"").substring(8, 10)) -
+                    parseInt((submittedAt[ivar]+"").substring(8, 10))
             } else {
                 days =
-                    parseInt(gradedAt[ivar].substring(8, 10)) +
-                    (months * 30 - parseInt(submittedAt[ivar].substring(8, 10)))
+                    parseInt((gradedAt[ivar]+"").substring(8, 10)) +
+                    (months * 30 - parseInt((submittedAt[ivar]+"").substring(8, 10)))
             }
 
             timeToGrade.push(days) //graded at - submitted at.
@@ -325,17 +325,17 @@ async function generateAvgGradeChart() {
     ctx.width = 200
     ctx.height = 200
 
-    const assignmentCount = new Array() //TODO: delete
+    const assignmentCount: number[] = [] //TODO: delete
 
-    const gradesByAssignent = new Array()
+    const gradesByAssignent: number[][] = []
     let gbalength = 0
     for (let ivar = 0; ivar < allAssignments.length; ivar++) {
         //Adds ONE OF EACH assignemnt to GBA
-        let isInGBA = gradesByAssignent.find(
+        const isInGBA = gradesByAssignent.find(
             (x) => x[0] == allAssignments[ivar].id
         )
         if (!isInGBA) {
-            gradesByAssignent.push(new Array())
+            gradesByAssignent.push([])
             gradesByAssignent[gbalength].push(allAssignments[ivar].id)
             gbalength++
         }
@@ -358,17 +358,22 @@ async function generateAvgGradeChart() {
         }
     }
 
-    const temparr = new Array()
+    const temparr: number[] = []
 
     for (let ivar = 0; ivar < gradesByAssignent.length; ivar++) {
         assignmentCount.push(ivar + 1)
         let sum = 0
         const pp = allAssignments.find(
             (as) => as.id == gradesByAssignent[ivar][0]
-        ).points_possible
+        )?.points_possible
 
         for (let xvar = 1; xvar < gradesByAssignent[ivar].length; xvar++) {
-            sum += gradesByAssignent[ivar][xvar] * (100 / pp)
+             
+            if(pp!=undefined){
+                sum += gradesByAssignent[ivar][xvar] * (100 / pp)
+            }else{
+                sum += gradesByAssignent[ivar][xvar]
+            }
         }
         if (gradesByAssignent[ivar].length > 1) {
             //if statement in case no-one turns it in

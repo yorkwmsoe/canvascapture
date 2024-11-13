@@ -1,5 +1,5 @@
 import { Checkbox } from 'antd'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 let oneYearStat = false
 let avgAssignGrade = false
