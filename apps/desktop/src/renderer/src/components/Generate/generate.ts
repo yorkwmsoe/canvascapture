@@ -181,9 +181,7 @@ export async function generate(
         // Store the combined content for this course
         courseMarkdownContent[course.name] = courseContent
     }
-    const meta = document.createElement('meta')
-    meta.httpEquiv = 'Content-Security-Policy'
-    meta.content = "img-src 'self' data:;"
+    
 
     let oneYearStat
     let avgAssignGrade
