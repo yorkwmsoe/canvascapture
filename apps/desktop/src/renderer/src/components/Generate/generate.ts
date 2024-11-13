@@ -1,6 +1,6 @@
 import { rm, writeFile } from 'fs/promises'
 import markdownit from 'markdown-it'
-import _, { isArray, xorBy } from 'lodash'
+import _ from 'lodash'
 import { mkdirSync } from 'fs'
 import { join } from 'path'
 import { Assignment, Course, Quiz, Submission } from '@canvas-capture/lib'
@@ -227,7 +227,6 @@ async function generateChart() {
     ctx.width = 200
     ctx.height = 200
     const allUniqueSubmissions = new Array()
-    const addedIds = new Set()
     const submittedAt = new Array()
     const gradedAt = new Array()
     for (let ivar = 0; ivar < allSubmissions.length; ivar++) {
