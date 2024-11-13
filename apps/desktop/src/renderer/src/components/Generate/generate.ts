@@ -217,7 +217,6 @@ export async function generate(
             content: htmlContentEditable,
         }
     })
-    
 
     return htmlData
 }
