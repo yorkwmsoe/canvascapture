@@ -181,7 +181,6 @@ export async function generate(
         // Store the combined content for this course
         courseMarkdownContent[course.name] = courseContent
     }
-    
 
     let oneYearStat
     let avgAssignGrade

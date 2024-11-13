@@ -20,8 +20,7 @@
   "devDependencies": {
     "husky": "^9.0.11",
     "prettier": "^3.2.5",
-    "typescript": "^5.4.3",
-    "pyodide@0.25.0": "patches/pyodide@0.25.0.patch"
+    "typescript": "^5.4.3"
   },
   "pnpm": {
     "patchedDependencies": {
