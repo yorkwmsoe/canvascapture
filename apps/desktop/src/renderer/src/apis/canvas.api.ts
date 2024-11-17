@@ -73,6 +73,7 @@ export const useGetCourses = () => {
             const courses = await canvasApi.getCourses({
                 canvasAccessToken,
                 canvasDomain,
+                enrollmentType: 'teacher',
             })
             const availableCourses: Course[] = []
             for (const course of courses) {

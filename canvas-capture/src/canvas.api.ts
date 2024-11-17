@@ -52,10 +52,13 @@ export const getApiHeaders = (
     }
 }
 
-export const getCourses = async (args: Auth) => {
-    const { canvasAccessToken, canvasDomain } = args
+export const getCourses = async (args: Auth & { enrollmentType?: string }) => {
+    const { canvasAccessToken, canvasDomain, enrollmentType } = args
+    const enrollmentTypeParam = enrollmentType
+        ? `&enrollment_type=${enrollmentType}`
+        : ''
     return await fetch(
-        `${canvasDomain}/api/v1/courses?exclude_blueprint_courses&per_page=1000`,
+        `${canvasDomain}/api/v1/courses?exclude_blueprint_courses&per_page=1000${enrollmentTypeParam}`,
         {
             headers: getApiHeaders({ accessToken: canvasAccessToken }),
         }
@@ -298,6 +301,7 @@ export const createCanvasApi = (
                 getCourses({
                     canvasAccessToken: config.accessToken,
                     canvasDomain: config.domain,
+                    enrollmentType: 'teacher',
                 }),
             getAssignments: (args: GetAssignmentsRequest) =>
                 getAssignments({
