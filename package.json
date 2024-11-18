@@ -26,5 +26,8 @@
     "patchedDependencies": {
       "pyodide@0.25.0": "patches/pyodide@0.25.0.patch"
     }
+  },
+  "dependencies": {
+    "pyodide": "0.25.0"
   }
 }

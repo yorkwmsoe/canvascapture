@@ -9,7 +9,7 @@ import { useSettingsStore } from '@renderer/stores/settings.store'
 import { parseHierarchyId } from '@renderer/utils/assignments'
 import { getDocumentsPath } from '@renderer/utils/config'
 import { ipcRenderer } from 'electron'
-import { generate } from './generate'
+import { generate } from '@renderer/components/Generate/generate'
 
 export function Generate() {
     const navigate = useNavigate({ from: '/generation' })

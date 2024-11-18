@@ -40,6 +40,7 @@
         "@types/lodash": "^4.17.0",
         "antd": "^5.16.4",
         "axios": "^1.6.8",
+        "chart.js": "^4.4.4",
         "cross-env": "^7.0.3",
         "date-fns": "^3.6.0",
         "electron-updater": "^6.1.8",
