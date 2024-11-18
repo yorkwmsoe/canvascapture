@@ -251,17 +251,18 @@ async function generateChart() {
         if (gradedAt[ivar] != null && submittedAt[ivar] != null) {
             passed++
             const months =
-                parseInt((gradedAt[ivar]+"").substring(5, 7)) -
-                parseInt((submittedAt[ivar]+"").substring(5, 7))
+                parseInt((gradedAt[ivar] + '').substring(5, 7)) -
+                parseInt((submittedAt[ivar] + '').substring(5, 7))
             let days
             if (months == 0) {
                 days =
-                    parseInt((gradedAt[ivar]+"").substring(8, 10)) -
-                    parseInt((submittedAt[ivar]+"").substring(8, 10))
+                    parseInt((gradedAt[ivar] + '').substring(8, 10)) -
+                    parseInt((submittedAt[ivar] + '').substring(8, 10))
             } else {
                 days =
-                    parseInt((gradedAt[ivar]+"").substring(8, 10)) +
-                    (months * 30 - parseInt((submittedAt[ivar]+"").substring(8, 10)))
+                    parseInt((gradedAt[ivar] + '').substring(8, 10)) +
+                    (months * 30 -
+                        parseInt((submittedAt[ivar] + '').substring(8, 10)))
             }
 
             timeToGrade.push(days) //graded at - submitted at.
@@ -368,10 +369,9 @@ async function generateAvgGradeChart() {
         )?.points_possible
 
         for (let xvar = 1; xvar < gradesByAssignent[ivar].length; xvar++) {
-             
-            if(pp!=undefined){
+            if (pp != undefined) {
                 sum += gradesByAssignent[ivar][xvar] * (100 / pp)
-            }else{
+            } else {
                 sum += gradesByAssignent[ivar][xvar]
             }
         }
