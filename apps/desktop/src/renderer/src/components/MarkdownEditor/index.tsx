@@ -33,6 +33,8 @@ export function MarkdownEditor({
     const guiGeneratedText: string[] = []
     const titleText: string[] = []
     const bodyText: string[] = []
+    const [excludedSections, setExcludedSections] = useState<boolean[]>([])
+    let forceInclude: boolean = false
 
     useEffect(() => {
         setText(selectedFile?.content?.join('\n') ?? '')
@@ -77,17 +79,28 @@ export function MarkdownEditor({
         setGUIText(originalText)
     }
 
-    const updateGUIText = () => {
+    const handleUpdateGUIText = (changedSection: number, changed: boolean) => {
         let combinedGUIText: string = ''
         let combinedText: string = ''
-        for (const section of guiGeneratedText) {
+        for (let i = 0; i < guiGeneratedText.length; i++) {
+            const section = guiGeneratedText[i]
             combinedGUIText += section
-            if (!section.startsWith('# \n') && !section.startsWith('## \n')) {
+            if (
+                (changedSection == i && changed
+                    ? excludedSections[i]
+                    : !excludedSections[i]) &&
+                !section.startsWith('# \n') &&
+                !section.startsWith('## \n')
+            ) {
                 combinedText += section
             }
         }
         setGUIText(combinedGUIText)
         setText(combinedText)
+    }
+
+    const updateGUIText = () => {
+        handleUpdateGUIText(-1, false)
     }
 
     const updateGUISectionText = (id: number) => {
@@ -100,8 +113,9 @@ export function MarkdownEditor({
     ) => {
         const id = parseInt(e.target.id.substring(15))
         titleText[id] = e.target.value
+        forceInclude = true
+        document.getElementById('includeExcludeSectionButton' + id)?.click()
         updateGUISectionText(id)
-        updateGUIText()
     }
 
     const handleSectionBodyChange = (
@@ -109,8 +123,9 @@ export function MarkdownEditor({
     ) => {
         const id = parseInt(e.target.id.substring(14))
         bodyText[id] = e.target.value
+        forceInclude = true
+        document.getElementById('includeExcludeSectionButton' + id)?.click()
         updateGUISectionText(id)
-        updateGUIText()
     }
 
     const updateAllGUISectionText = () => {
@@ -147,6 +162,66 @@ export function MarkdownEditor({
         }
     }
 
+    const deleteSection = (e: React.MouseEvent<HTMLElement>) => {
+        if (selectedFile != undefined) {
+            const id = parseInt(e.currentTarget.id.substring(19))
+            titleText[id] = ''
+            bodyText[id] = ''
+            guiGeneratedText[id] = ''
+            updateGUIText()
+        }
+    }
+
+    const includeExcludeSection = (e: React.BaseSyntheticEvent) => {
+        if (selectedFile != undefined) {
+            const id = parseInt(e.currentTarget.id.substring(27))
+            let changed = false
+            if (guiGeneratedText.length != excludedSections.length) {
+                const temporaryExcludedSections: boolean[] = []
+                for (let i = 0; i < guiGeneratedText.length; i++) {
+                    if (i == id) {
+                        if (forceInclude) {
+                            e.target.innerText = 'Exclude Section'
+                            forceInclude = false
+                            temporaryExcludedSections[i] = false
+                        } else {
+                            temporaryExcludedSections[i] = true
+                            changed = true
+                            e.target.innerText = 'Include Section'
+                        }
+                    } else {
+                        temporaryExcludedSections[i] = false
+                    }
+                }
+                setExcludedSections(temporaryExcludedSections)
+            } else {
+                setExcludedSections(
+                    excludedSections.map((entry, index) => {
+                        if (index == id) {
+                            if (forceInclude) {
+                                e.target.innerText = 'Exclude Section'
+                                if (entry) {
+                                    changed = true
+                                }
+                                forceInclude = false
+                                return false
+                            } else {
+                                e.target.innerText = !entry
+                                    ? 'Include Section'
+                                    : 'Exclude Section'
+                                changed = true
+                                return !entry
+                            }
+                        } else {
+                            return entry
+                        }
+                    })
+                )
+            }
+            handleUpdateGUIText(id, changed)
+        }
+    }
+
     const handleTableCellChange = (e: React.BaseSyntheticEvent) => {
         const id = e.target.className.substring(15)
         const tableText = e.target.innerText
@@ -168,6 +243,8 @@ export function MarkdownEditor({
         }
         const tableBody: string = markdown.createTableRows(tableRows)
         bodyText[id] = tableHeader + tableBody + '\n'
+        forceInclude = true
+        document.getElementById('includeExcludeSectionButton' + id)?.click()
     }
 
     const handleTableUpdate = (e: React.BaseSyntheticEvent) => {
@@ -276,6 +353,18 @@ export function MarkdownEditor({
                     >
                         Add New Section Below
                     </Button>
+                    <Button
+                        id={'deleteSectionButton' + sectionID}
+                        onClick={deleteSection}
+                    >
+                        Delete Section
+                    </Button>
+                    <Button
+                        id={'includeExcludeSectionButton' + sectionID}
+                        onClick={includeExcludeSection}
+                    >
+                        Exclude Section
+                    </Button>
                     <hr />
                 </div>
             )
@@ -290,7 +379,7 @@ export function MarkdownEditor({
     const editorTabs = [
         {
             key: '1',
-            label: 'Standard editor',
+            label: 'Standard Editor',
             children: (
                 <div style={{ flex: 4 }}>
                     <Alert
