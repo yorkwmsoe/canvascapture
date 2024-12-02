@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react'
-import { Button, Form, Input } from 'antd'
+import { Button, ConfigProvider, Form, Input } from 'antd'
 import { FileDataNode, markdown } from '@canvas-capture/lib'
 
 export type GUIEditorProps = {
@@ -302,12 +302,14 @@ export function GUIEditor({
                     >
                         Delete Section
                     </Button>
-                    <Button
-                        id={'includeExcludeSectionButton' + sectionID}
-                        onClick={includeExcludeSection}
-                    >
-                        Exclude Section
-                    </Button>
+                    <ConfigProvider wave={{ disabled: true }}>
+                        <Button
+                            id={'includeExcludeSectionButton' + sectionID}
+                            onClick={includeExcludeSection}
+                        >
+                            Exclude Section
+                        </Button>
+                    </ConfigProvider>
                     <hr />
                 </div>
             )
