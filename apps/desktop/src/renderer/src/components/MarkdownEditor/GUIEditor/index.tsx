@@ -1,6 +1,7 @@
 import { ReactNode, useState } from 'react'
 import { Button, ConfigProvider, Form, Input } from 'antd'
-import { FileDataNode, markdown } from '@canvas-capture/lib'
+import { FileDataNode } from '@canvas-capture/lib'
+import { EditableTable } from './EditableTable'
 
 export type GUIEditorProps = {
     setGUIText: (text: string) => void
@@ -164,81 +165,12 @@ export function GUIEditor({
         }
     }
 
-    const handleTableCellChange = (e: React.BaseSyntheticEvent) => {
-        const id = e.target.className.substring(15)
-        const tableText = e.target.innerText
-        const rowText = tableText.split('\n')
-        const tableHeader: string = markdown.createTableHeader(
-            rowText[0].split('\t')
-        )
-        const tableRows: string[][] = []
-        for (let i = 1; i < rowText.length; i++) {
-            const row = rowText[i]
-            if (row != '' && row != '\t') {
-                const rowCells: string[] = []
-                const cellText = row.split('\t')
-                for (const cell of cellText) {
-                    rowCells.push(cell)
-                }
-                tableRows.push(rowCells)
-            }
-        }
-        const tableBody: string = markdown.createTableRows(tableRows)
-        bodyText[id] = tableHeader + tableBody + '\n'
+    const updateBodyText = (id: number, text: string) => {
+        bodyText[id] = text
     }
 
-    const handleTableUpdate = (e: React.BaseSyntheticEvent) => {
-        const id = e.target.className.substring(15)
-        updateGUISectionText(id)
-        updateGUIText()
-        forceInclude = true
-        document.getElementById('includeExcludeSectionButton' + id)?.click()
-    }
-
-    const generateTable = (tableText: string, id: number) => {
-        tableText = tableText.trim()
-        const rowText = tableText.split('\n')
-        const tableChildren: ReactNode[] = []
-        for (let i = 0; i < rowText.length; i++) {
-            let row = rowText[i]
-            if (!row.includes('---')) {
-                row = row.substring(1, row.length - 1)
-                const cells = row.split('|')
-                const rowChildren: ReactNode[] = []
-                for (let j = 0; j < cells.length; j++) {
-                    const cellText = cells[j].trim()
-                    rowChildren.push(
-                        i == 0 ? (
-                            <th
-                                style={{ border: '1px solid black' }}
-                                className={'tableForSection' + id}
-                            >
-                                {cellText}
-                            </th>
-                        ) : (
-                            <td
-                                style={{ border: '1px solid black' }}
-                                className={'tableForSection' + id}
-                            >
-                                {cellText}
-                            </td>
-                        )
-                    )
-                }
-                tableChildren.push(<tr>{rowChildren}</tr>)
-            }
-        }
-        return (
-            <table
-                style={{ border: '1px solid black' }}
-                contentEditable={true}
-                onInput={handleTableCellChange}
-                onMouseLeave={handleTableUpdate}
-                className={'tableForSection' + id}
-            >
-                {tableChildren}
-            </table>
-        )
+    const updateForceInclude = (value: boolean) => {
+        forceInclude = value
     }
 
     const generateGUIEditor = () => {
@@ -278,7 +210,14 @@ export function GUIEditor({
                         </Form.Item>
                         <Form.Item label="Section body">
                             {sectionBody.includes('| --- |') ? (
-                                generateTable(sectionBody, sectionID)
+                                <EditableTable
+                                    tableText={sectionBody}
+                                    id={sectionID}
+                                    updateBodyText={updateBodyText}
+                                    updateGUISectionText={updateGUISectionText}
+                                    updateGUIText={updateGUIText}
+                                    updateForceInclude={updateForceInclude}
+                                />
                             ) : (
                                 <Input.TextArea
                                     value={sectionBody}
