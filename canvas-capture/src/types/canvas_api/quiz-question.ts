@@ -1,3 +1,5 @@
+import { SubmissionComment } from "./submission"
+
 // from endpoint http://sdlstudentvm06.msoe.edu/api/v1/courses/2/quizzes/3/questions?&quiz_submission_id=9&quiz_submission_attempt=1
 export type QuizQuestion = {
     // Unique identifier for the question
@@ -44,6 +46,7 @@ export type QuizQuestion = {
     matches: Match[]
     // Matching answer incorrect matches
     matching_answer_incorrect_matches: null | string
+    
 }
 
 export type QuizSubmissionAnswer = {
@@ -73,6 +76,8 @@ export type QuestionData = {
     correct_answers: QuizSubmissionAnswer[]
     correct: boolean | 'partial'
     question_type: string //should eventually make this explicit
+    //Instructor comments on answer
+    additional_comments: SubmissionComment
 }
 
 export type Variable = {

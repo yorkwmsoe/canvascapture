@@ -2,6 +2,7 @@ import { rm, writeFile } from 'fs/promises'
 import markdownit from 'markdown-it'
 import _ from 'lodash'
 import { mkdirSync } from 'fs'
+
 import { join } from 'path'
 import { Assignment, Course, Quiz, Submission } from '@canvas-capture/lib'
 import { canvasApi } from '../../apis/canvas.api'
@@ -25,6 +26,8 @@ import {
 
 const allSubmissions: Submission[] = []
 const allAssignments: Assignment[] = []
+
+
 
 Chart.register(
     LinearScale, // for the y-axis scale

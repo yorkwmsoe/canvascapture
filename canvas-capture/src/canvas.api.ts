@@ -107,6 +107,7 @@ export const getSubmissions = async (args: GetSubmissionsRequest & Auth) => {
     if (isStudent) {
         return await fetch(
             `${canvasDomain}/api/v1/courses/${args.courseId}/assignments/${args.assignmentId}/submissions/self?include[]=rubric_assessment&include[]=submission_comments&per_page=1000`,
+            
             { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
         )
             .then(intercept)
@@ -182,11 +183,12 @@ export type GetMostCommonQuizVersionRequest = {
     quizId: number
 }
 
+
+
 export const getMostCommonQuizVersion = async (
     args: GetMostCommonQuizVersionRequest & Auth
 ): Promise<number> => {
     const { canvasAccessToken, canvasDomain } = args
-
     const quizSubmissions: QuizSubmission[] = await fetch(
         `${canvasDomain}/api/v1/courses/${args.courseId}/quizzes/${args.quizId}/submissions`,
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
@@ -288,7 +290,11 @@ export type CreateCanvasApiConfig =
     | {
           type: 'withoutAuth'
       }
-
+/**
+ * Creates the canvas api, returns the functions used elsewhere in the program
+ * These functions are the methods above, the API calls to canvas.
+ * If adding an API call, ensure to return it so it can be used elsewhere.
+ */
 export const createCanvasApi = (
     config: CreateCanvasApiConfig = { type: 'withoutAuth' }
 ) => {
