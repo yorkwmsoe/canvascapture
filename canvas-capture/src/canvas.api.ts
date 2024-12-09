@@ -107,7 +107,7 @@ export const getSubmissions = async (args: GetSubmissionsRequest & Auth) => {
     if (isStudent) {
         return await fetch(
             `${canvasDomain}/api/v1/courses/${args.courseId}/assignments/${args.assignmentId}/submissions/self?include[]=rubric_assessment&include[]=submission_comments&per_page=1000`,
-            
+
             { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
         )
             .then(intercept)
@@ -182,8 +182,6 @@ export type GetMostCommonQuizVersionRequest = {
     courseId: number
     quizId: number
 }
-
-
 
 export const getMostCommonQuizVersion = async (
     args: GetMostCommonQuizVersionRequest & Auth

@@ -27,8 +27,6 @@ import {
 const allSubmissions: Submission[] = []
 const allAssignments: Assignment[] = []
 
-
-
 Chart.register(
     LinearScale, // for the y-axis scale
     CategoryScale, // for the x-axis scale

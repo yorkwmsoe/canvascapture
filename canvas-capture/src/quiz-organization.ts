@@ -35,10 +35,12 @@ export async function assembleQuizQuestionsAndComments(
         canvasAccessToken: auth.canvasAccessToken,
         courseId: course.id,
         assignmentId: assignment.id,
-        isStudent: false
+        isStudent: false,
     })
-    
-    console.log("This is a comment: "+assignmentSubmissions[0].submission_comments)
+
+    console.log(
+        'This is a comment: ' + assignmentSubmissions[0].submission_comments
+    )
 
     const quiz_submission_num =
         quizSubmission != undefined ? quizSubmission.id : -1
@@ -80,11 +82,17 @@ export async function assembleQuizQuestionsAndComments(
 
     const questionsData: QuestionData[] = []
     for (let i = 0; i < quizQuestionsParams.length; i++) {
-
         //Get submission
-        let thisSubmission;
-        for(let x = 0;x<assignmentSubmissions.length&&!thisSubmission;x++){
-            if(assignmentSubmissions[x].assignment_id==quizSubmissionQuestions[i].quiz_id){
+        let thisSubmission
+        for (
+            let x = 0;
+            x < assignmentSubmissions.length && !thisSubmission;
+            x++
+        ) {
+            if (
+                assignmentSubmissions[x].assignment_id ==
+                quizSubmissionQuestions[i].quiz_id
+            ) {
                 thisSubmission = assignmentSubmissions[x]
             }
         }
@@ -102,8 +110,10 @@ export async function assembleQuizQuestionsAndComments(
             correct: quizSubmissionQuestions[i].correct,
             question_type: quizSubmissionQuestions[i].question_type,
             //put submission from above in here
-            additional_comments: thisSubmission?.submission_comments?.[quizSubmissionQuestions[i].assessment_question_id]
-            
+            additional_comments:
+                thisSubmission?.submission_comments?.[
+                    quizSubmissionQuestions[i].assessment_question_id
+                ],
         } as QuestionData
         questionsData.push(questionData)
     }
@@ -111,7 +121,6 @@ export async function assembleQuizQuestionsAndComments(
 }
 
 export function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
-    
     const formattedQuestions: string[] = []
     //const numQuestions = quizQuestions.length
     quizQuestions.map((question) => {
@@ -149,8 +158,6 @@ export function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
             conditionalComments = question.incorrect_comments
             score = question.correct === 'partial' ? 'partial' : 'No Points'
         }
-        
-        
 
         const questionTableHeader2 = createTableHeader([
             'Student Score',
@@ -160,7 +167,12 @@ export function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
         ])
         const questionTableBody2 = createTableRows([
             //[score, conditionalComments, neutral_comments, 'ADD FROM SCRAPING'],
-            [score, conditionalComments, neutral_comments, question.additional_comments.comment],
+            [
+                score,
+                conditionalComments,
+                neutral_comments,
+                question.additional_comments.comment,
+            ],
         ])
         const questionString =
             questionHeader +

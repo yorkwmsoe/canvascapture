@@ -1,4 +1,4 @@
-import { SubmissionComment } from "./submission"
+import { SubmissionComment } from './submission'
 
 // from endpoint http://sdlstudentvm06.msoe.edu/api/v1/courses/2/quizzes/3/questions?&quiz_submission_id=9&quiz_submission_attempt=1
 export type QuizQuestion = {
@@ -46,7 +46,6 @@ export type QuizQuestion = {
     matches: Match[]
     // Matching answer incorrect matches
     matching_answer_incorrect_matches: null | string
-    
 }
 
 export type QuizSubmissionAnswer = {
