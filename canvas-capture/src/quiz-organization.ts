@@ -10,6 +10,8 @@ import {
 } from './canvas.api'
 import { QuestionData } from './types/canvas_api/quiz-question'
 import { convertToHeader, createTableHeader, createTableRows } from './markdown'
+import { getComments } from './types/canvas_api/QuizCommentsScrape'
+
 
 export async function assembleQuizQuestionsAndComments(
     auth: Auth,
@@ -28,6 +30,12 @@ export async function assembleQuizQuestionsAndComments(
         quizId: quiz_id,
         submissionId: submission_id,
     })
+    
+    
+        let comments = await getComments("http://sdlstudentvm09.msoe.edu/",course.id,quiz_id,1,"canvas-student1","studentofcanvas1")
+        
+    
+    
 
     const quiz_submission_num =
         quizSubmission != undefined ? quizSubmission.id : -1
@@ -66,7 +74,7 @@ export async function assembleQuizQuestionsAndComments(
     //The quizSubmissionQuestions has 2 more items, depending on the quiz than quizQuestionsParams/NoParams
     //This is because there is a spacer which is not a question, and there is a question that has
     //no grade associated with it.
-
+    
     const questionsData: QuestionData[] = []
     for (let i = 0; i < quizQuestionsParams.length; i++) {
         const questionData: QuestionData = {
@@ -81,8 +89,10 @@ export async function assembleQuizQuestionsAndComments(
             correct_answers: [], //need further implementation
             correct: quizSubmissionQuestions[i].correct,
             question_type: quizSubmissionQuestions[i].question_type,
+            additional_comments: comments,
         } as QuestionData
         questionsData.push(questionData)
+        console.log("POSITION: "+questionData.position)
     }
     return formatQuizQuestions(questionsData)
 }
@@ -90,6 +100,7 @@ export async function assembleQuizQuestionsAndComments(
 export function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
     const formattedQuestions: string[] = []
     //const numQuestions = quizQuestions.length
+    
     quizQuestions.map((question) => {
         const position = question.position.toString()
         const question_name = question.question_name
@@ -133,7 +144,7 @@ export function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
             'Additional Comments',
         ])
         const questionTableBody2 = createTableRows([
-            [score, conditionalComments, neutral_comments, 'ADD FROM SCRAPING'],
+            [score, conditionalComments, neutral_comments, question.additional_comments[question.position-1]],
         ])
         const questionString =
             questionHeader +
