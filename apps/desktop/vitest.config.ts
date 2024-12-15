@@ -1,4 +1,5 @@
 import { configDefaults, defineConfig } from 'vitest/config'
+import path from 'path'
 
 export default defineConfig({
     test: {
@@ -15,7 +16,6 @@ export default defineConfig({
                 '**/command/categories.ts',
                 '**/.eslintrc.js',
                 '**/index.ts',
-                '**/*.tsx',
                 '**/*.config.ts',
                 '**/use*.ts',
                 '**/*.route.ts',
@@ -26,14 +26,30 @@ export default defineConfig({
                 '**/utils/guards.ts',
                 '**/generate.ts',
                 '**/generate.v2.ts',
+                '**/generateTOC.ts',
                 '**/model.ts',
                 '**/types.ts',
                 '**/utils.ts',
                 '**/*.e2e.ts',
                 'wdio.conf.ts',
+                '**/components/CreditCardDemo',
+                '**/components/ErrorBoundary',
+                '**/components/Generate',
+                '**/components/icons',
+                '**/components/MarkdownEditor/GUIEditor/EditableTable',
+                '**/main.tsx',
+                '**/pages/**',
+                '**/providers/**',
             ],
         },
         reporters: ['default', 'junit'],
         outputFile: 'junit.xml',
+        globals: true,
+        environment: 'jsdom',
+    },
+    resolve: {
+        alias: {
+            '@renderer': path.resolve(__dirname, 'src/renderer/src'),
+        },
     },
 })

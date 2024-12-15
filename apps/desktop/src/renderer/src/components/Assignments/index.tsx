@@ -96,6 +96,7 @@ export function Assignments() {
                 placeholder="Filter"
                 onChange={filterAssignments}
                 options={options}
+                data-testid="filter-select"
             />
             <div style={{ overflow: 'auto' }}>
                 <Tree

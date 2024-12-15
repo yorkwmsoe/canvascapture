@@ -1,0 +1,13 @@
+{
+    "terminal.integrated.automationProfile.linux": {
+        
+        "terminal.integrated.shellArgs.windows": ["-ExecutionPolicy", "Bypass"]
+    },
+    "terminal.integrated.automationProfile.windows": {
+
+    },
+    "terminal.integrated.automationProfile.osx": {
+        
+    }
+    
+}

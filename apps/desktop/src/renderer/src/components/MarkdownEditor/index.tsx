@@ -1,14 +1,15 @@
-import { Alert, App, Button, Form, Input, Space, Tabs } from 'antd'
+import { Alert, App, Button, Input, Space, Tabs } from 'antd'
 import { DirectoryTree } from '../DirectoryTree'
 import { SideBar } from './Sidebar'
 import { DirectoryTreeProps } from 'antd/es/tree'
-import { ChangeEventHandler, Key, ReactNode, useEffect, useState } from 'react'
+import { ChangeEventHandler, Key, useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
 import { useTheme } from '@renderer/lib/useTheme'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import { ExternalLink } from '../ExternalLink'
 import { FileDataNode } from '@canvas-capture/lib'
+import { GUIEditor } from './GUIEditor'
 
 export type MarkdownEditorProps = {
     treeData: DirectoryTreeProps['treeData']
@@ -30,9 +31,6 @@ export function MarkdownEditor({
     const [text, setText] = useState<string>()
     const [originalText, setOriginalText] = useState<string>()
     const [guiText, setGUIText] = useState<string>()
-    const guiGeneratedText: string[] = []
-    const titleText: string[] = []
-    const bodyText: string[] = []
 
     useEffect(() => {
         setText(selectedFile?.content?.join('\n') ?? '')
@@ -77,111 +75,10 @@ export function MarkdownEditor({
         setGUIText(originalText)
     }
 
-    const updateGUIText = () => {
-        let combinedGUIText: string = ''
-        let combinedText: string = ''
-        for (const section of guiGeneratedText) {
-            combinedGUIText += section
-            if (!section.startsWith('# \n') && !section.startsWith('## \n')) {
-                combinedText += section
-            }
-        }
-        setGUIText(combinedGUIText)
-        setText(combinedText)
-    }
-
-    const updateGUISectionText = (id: number) => {
-        guiGeneratedText[id] =
-            (id == 0 ? '# ' : '## ') + titleText[id] + '\n' + bodyText[id]
-    }
-
-    const handleSectionTitleChange = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const id = parseInt(e.target.id.substring(15))
-        titleText[id] = e.target.value
-        updateGUISectionText(id)
-        updateGUIText()
-    }
-
-    const handleSectionBodyChange = (
-        e: React.ChangeEvent<HTMLTextAreaElement>
-    ) => {
-        const id = parseInt(e.target.id.substring(14))
-        bodyText[id] = e.target.value
-        updateGUISectionText(id)
-        updateGUIText()
-    }
-
-    const updateAllGUISectionText = () => {
-        if (selectedFile != undefined) {
-            for (let i = 0; i < 5; i++) {
-                updateGUISectionText(i)
-            }
-            updateGUIText()
-        }
-    }
-
-    const generateGUIEditor = () => {
-        const sections = guiText != undefined ? guiText.split('## ') : []
-        const guiChildren: ReactNode[] = []
-        let sectionID = 0
-        for (const section of sections) {
-            const sectionText = section.split('\n')
-            let sectionTitle = sectionText[0]
-            let sectionBody = ''
-            for (let i = 1; i < sectionText.length; i++) {
-                sectionBody += sectionText[i]
-                if (i != sectionText.length - 1) {
-                    sectionBody += '\n'
-                }
-            }
-            let sectionTitleDescription = 'Section title: '
-            if (sectionTitle.startsWith('# ')) {
-                sectionTitle = sectionTitle.substring(2)
-                sectionTitleDescription = 'PDF title: '
-            }
-
-            titleText[sectionID] = sectionTitle
-            bodyText[sectionID] = sectionBody
-
-            guiChildren.push(
-                <div>
-                    <Form>
-                        <Form.Item label={sectionTitleDescription}>
-                            <Input
-                                value={sectionTitle}
-                                onChange={handleSectionTitleChange}
-                                id={'guiSectionTitle' + sectionID}
-                                onClick={updateAllGUISectionText}
-                                placeholder="Section will be omitted"
-                            />
-                        </Form.Item>
-                        <Form.Item label="Section body">
-                            <Input.TextArea
-                                value={sectionBody}
-                                onChange={handleSectionBodyChange}
-                                id={'guiSectionBody' + sectionID}
-                                onClick={updateAllGUISectionText}
-                                autoSize={{ maxRows: 15 }}
-                            />
-                        </Form.Item>
-                    </Form>
-                    <hr />
-                </div>
-            )
-
-            updateGUISectionText(sectionID)
-
-            sectionID++
-        }
-        return guiChildren
-    }
-
     const editorTabs = [
         {
             key: '1',
-            label: 'Standard editor',
+            label: 'Standard Editor',
             children: (
                 <div style={{ flex: 4 }}>
                     <Alert
@@ -190,7 +87,12 @@ export function MarkdownEditor({
                         showIcon
                     />
                     <br />
-                    {generateGUIEditor()}
+                    <GUIEditor
+                        setGUIText={setGUIText}
+                        setText={setText}
+                        selectedFile={selectedFile}
+                        guiText={guiText}
+                    />
                 </div>
             ),
         },
