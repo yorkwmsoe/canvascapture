@@ -66,14 +66,14 @@ export const useGetAssignments = () => {
 }
 
 export const useGetCourses = () => {
-    const { canvasDomain, canvasAccessToken } = useSettingsStore()
+    const { canvasDomain, canvasAccessToken, isStudent } = useSettingsStore()
     return useQuery({
-        queryKey: ['courses'],
+        queryKey: ['courses', isStudent],
         queryFn: async () => {
             const courses = await canvasApi.getCourses({
                 canvasAccessToken,
                 canvasDomain,
-                enrollmentType: 'teacher',
+                isStudent,
             })
             const availableCourses: Course[] = []
             for (const course of courses) {
@@ -86,5 +86,6 @@ export const useGetCourses = () => {
             }
             return availableCourses
         },
+        enabled: true,
     })
 }
