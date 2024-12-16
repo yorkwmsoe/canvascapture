@@ -32,6 +32,7 @@ export const useCourses = () => {
 
     useEffect(() => {
         if (isError) {
+            message.destroy()
             message.error('Failed to fetch courses')
         }
     }, [isError, setCourses])

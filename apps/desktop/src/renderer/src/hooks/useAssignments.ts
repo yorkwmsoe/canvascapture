@@ -50,6 +50,7 @@ export const useAssignments = () => {
 
     useEffect(() => {
         if (assignmentQueries.some((query) => query.isError)) {
+            message.destroy()
             message.error('Failed to fetch assignments')
         }
     }, [assignmentQueries])

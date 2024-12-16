@@ -5,6 +5,7 @@ import { parseHierarchyId } from '@renderer/utils/assignments'
 import {
     Assignment,
     Auth,
+    Course,
     createCanvasApi,
     GetAssignmentsRequest,
 } from '@canvas-capture/lib'
@@ -65,15 +66,26 @@ export const useGetAssignments = () => {
 }
 
 export const useGetCourses = () => {
-    const { canvasDomain, canvasAccessToken } = useSettingsStore()
+    const { canvasDomain, canvasAccessToken, isStudent } = useSettingsStore()
     return useQuery({
-        queryKey: ['courses'],
+        queryKey: ['courses', isStudent],
         queryFn: async () => {
             const courses = await canvasApi.getCourses({
                 canvasAccessToken,
                 canvasDomain,
+                isStudent,
             })
-            return courses
+            const availableCourses: Course[] = []
+            for (const course of courses) {
+                if (
+                    course.access_restricted_by_date == undefined ||
+                    course.access_restricted_by_date == false
+                ) {
+                    availableCourses.push(course)
+                }
+            }
+            return availableCourses
         },
+        enabled: true,
     })
 }

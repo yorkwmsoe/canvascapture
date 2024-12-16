@@ -1,0 +1,42 @@
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode14.2
+      language: node_js
+      node_js: "22"
+
+before_install:
+  - npm install -g pnpm
+
+install:
+  - cd canvas-capture/
+  - pnpm install
+  - pnpm package
+  - cd ../apps/desktop
+  - pnpm install
+
+script:
+  - pnpm build:mac
+
+before_deploy:
+  - git config --local user.name "yorkwmsoe"
+  - git config --local user.email "yorkw@msoe.edu"
+  - cd ../../
+
+deploy:
+  provider: releases
+  edge:
+    branch: v2.0.3-beta.4
+  tag_name: "$TRAVIS_TAG"
+  target_commitish: "$TRAVIS_COMMIT"
+  name: "$TRAVIS_TAG"
+  overwrite: true
+  api_key: $GITHUB_TOKEN
+  file: apps/desktop/dist/*.dmg
+  cleanup: false
+  on:
+    tags: true
+    branch: main
+env:
+  global:
+    secure: FadUu58UC6COmGZQ45LDN/9Vxslq+8mXcuMl/XqsPfuSyucCJdQQvixnIeyOo/iaTCdroxlpyD64CA5mlKNTr8d2diEZ0ThpixS86V2NxX5RPgqOlBq9lTQiR73h2iNE+bqV5YnGWJOMCF08l5QebJtq3LrUrlwtP3B9nQ/IoDZ2V1+NkyD2VxV2Ur4dqlGFihdNVKbhIkGbwNiUICpiOXcLg4UAtkc6+sb8htyXkktEGBx/bowyHve4NsM0n9bHTtTefgRuwDDxQ0q+R3laVsYVWKdavliqtoaSnaRcWQlAz0Og2Z1qlpg0SFozKzobKp2DXIhdre8OjQoLfLvdqzMnwJY86uuEx7Dn7BGGavtFmlrxupiLkPlrqGb2UKaHVssw8uK+Iq23n+yYhgHlQqB/KocxBi8Dc03lhuL+x0n46i6PBfNHnbGcH47ntoRUAYEIWE1f1Ob0BnM+6MFig4l8AhEjziafvb3Cfi7P5D0uY4a7DabHXD7xnaAO6eqsRxbGxGCU052zz7JClgiNl34JftvR8ddJsmKEiqEKpWQV910CQP7hofik8hDSQ1VqGRB8gYi+2mIoI6dmnHHLplsBJnhgnNQOy+f8O8VXLcMpQ0UILjKysvSloN9SLskAIcKg5PLrcwELDCWqg9ad8kZwZHFIRoIqJDRMaztRyFM=

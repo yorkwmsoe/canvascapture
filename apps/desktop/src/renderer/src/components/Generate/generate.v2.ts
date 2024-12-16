@@ -11,47 +11,60 @@ export function generateV2(
     generationName: string,
     documentsPath: string
 ) {
+    // Remove existing directory to start fresh
     rmSync(join(documentsPath, sanitizePath(generationName)), {
         recursive: true,
         force: true,
     })
 
-    const files: FilePathContentPair[] = []
-    data.forEach((course) => {
-        if (isCourseDataNode(course)) {
-            course.children.forEach((assignment) => {
-                const assignmentsPath = sanitizePath(
-                    join(
-                        generationName,
-                        getCourseName(course.course),
-                        assignment.assignment.name
-                    )
-                )
-                mkdirSync(join(documentsPath, assignmentsPath), {
-                    recursive: true,
-                })
-                assignment.children.forEach((file) => {
-                    files.push({
-                        filePath: join(assignmentsPath, file.name),
-                        content: file.content.join('\n'),
-                    })
-                })
-            })
-        }
-    })
-
-    files.forEach((x) => {
-        writeFileSync(join(documentsPath, x.filePath + '.md'), x.content)
-    })
-
     const md = markdownit({ linkify: true, html: true })
 
-    const htmlData: FilePathContentPair[] = files.map((x) => {
-        return {
-            filePath: x.filePath,
-            content: md.render(x.content),
+    // Object to hold combined markdown content for each course
+    const courseMarkdownContent: { [courseName: string]: string } = {}
+
+    // Iterate through courses and their assignments
+    data.forEach((course) => {
+        if (isCourseDataNode(course)) {
+            let courseContent = `# ${getCourseName(course.course)}\n\n` // Start course-level markdown content with a title
+
+            // Loop through assignments and combine their content
+            course.children.forEach((assignment) => {
+                mkdirSync(join(documentsPath, generationName), {
+                    recursive: true,
+                })
+
+                assignment.children.forEach((file) => {
+                    courseContent += `${file.content.join('\n')}\n\n` // Append file content
+                })
+            })
+
+            // Store the combined content for this course
+            courseMarkdownContent[course.course.name] = courseContent
         }
     })
 
+    // Write markdown and generate HTML for each course
+    const htmlData: FilePathContentPair[] = Object.keys(
+        courseMarkdownContent
+    ).map((courseName) => {
+        const markdownContent = courseMarkdownContent[courseName]
+        const filePath = join(
+            documentsPath,
+            join(generationName, `${courseName}`) + '.md'
+        )
+
+        // Write the markdown file for the course
+        writeFileSync(filePath, markdownContent)
+
+        // Convert markdown to HTML
+        const htmlContent = md.render(markdownContent)
+
+        return {
+            filePath: join(generationName, `${courseName}`),
+            content: htmlContent,
+        }
+    })
+
+    // Return the array of file paths and their HTML content
     return htmlData
 }

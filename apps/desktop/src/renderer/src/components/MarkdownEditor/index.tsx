@@ -1,13 +1,15 @@
-import { Alert, App, Input, Space, Tabs } from 'antd'
+import { Alert, App, Button, Input, Space, Tabs } from 'antd'
 import { DirectoryTree } from '../DirectoryTree'
 import { SideBar } from './Sidebar'
 import { DirectoryTreeProps } from 'antd/es/tree'
 import { ChangeEventHandler, Key, useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
 import { useTheme } from '@renderer/lib/useTheme'
+import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import { ExternalLink } from '../ExternalLink'
 import { FileDataNode } from '@canvas-capture/lib'
+import { GUIEditor } from './GUIEditor'
 
 export type MarkdownEditorProps = {
     treeData: DirectoryTreeProps['treeData']
@@ -27,9 +29,13 @@ export function MarkdownEditor({
     const { modal, message } = App.useApp()
     const { token } = useTheme()
     const [text, setText] = useState<string>()
+    const [originalText, setOriginalText] = useState<string>()
+    const [guiText, setGUIText] = useState<string>()
 
     useEffect(() => {
         setText(selectedFile?.content?.join('\n') ?? '')
+        setOriginalText(selectedFile?.content?.join('\n') ?? '')
+        setGUIText(selectedFile?.content?.join('\n') ?? '')
     }, [selectedFile])
 
     const [isDirty, setIsDirty] = useState(false)
@@ -64,17 +70,63 @@ export function MarkdownEditor({
         setIsDirty(false)
     }
 
+    const revertToOriginal = () => {
+        setText(originalText)
+        setGUIText(originalText)
+    }
+
+    const editorTabs = [
+        {
+            key: '1',
+            label: 'Standard Editor',
+            children: (
+                <div style={{ flex: 4 }}>
+                    <Alert
+                        message="Leaving a Section title blank will omit that section from the generated report."
+                        type="info"
+                        showIcon
+                    />
+                    <br />
+                    <GUIEditor
+                        setGUIText={setGUIText}
+                        setText={setText}
+                        selectedFile={selectedFile}
+                        guiText={guiText}
+                    />
+                </div>
+            ),
+        },
+        {
+            key: '2',
+            label: 'Markdown Editor',
+            children: (
+                <div>
+                    <Alert
+                        message="Changes made in the Markdown Editor will be overwritten by any subsequent changes made in the Standard Editor."
+                        type="warning"
+                        showIcon
+                    />
+                    <br />
+                    <Input.TextArea
+                        autoSize={{ maxRows: 15 }}
+                        onChange={handleTextChange}
+                        value={text}
+                        style={{ flex: 4 }}
+                    />
+                </div>
+            ),
+        },
+    ]
+
     const tabs = [
         {
             key: '1',
             label: 'Edit',
             children: (
-                <Input.TextArea
-                    autoSize={{ maxRows: 15 }}
-                    onChange={handleTextChange}
-                    value={text}
-                    style={{ flex: 4 }}
-                />
+                <div>
+                    <Tabs defaultActiveKey="1" items={editorTabs} type="card" />
+                    <Button onClick={revertToOriginal}>Revert changes</Button>
+                </div>
             ),
         },
         {
@@ -100,6 +152,7 @@ export function MarkdownEditor({
                     >
                         <Markdown
                             remarkPlugins={[remarkGfm]}
+                            rehypePlugins={[rehypeRaw]}
                             components={{
                                 a: ({ href, children }) => (
                                     <ExternalLink href={href}>

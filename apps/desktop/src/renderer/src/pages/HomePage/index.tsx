@@ -19,6 +19,7 @@ import { useAssignments } from '@renderer/hooks/useAssignments'
 import { useCourses } from '@renderer/hooks/useCourses'
 import { join } from 'path'
 import { Navbar } from '@renderer/components/Navbar'
+import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
 
 const { Content, Footer } = Layout
 const { Meta } = Card
@@ -58,92 +59,103 @@ export function HomePage() {
     }
 
     return (
-        <Layout
-            style={{
-                height: '100%',
-            }}
-        >
-            <Navbar>
-                <Typography.Title level={4} style={{ margin: 0 }}>
-                    Canvas Capture
-                </Typography.Title>
-                <Button onClick={goToSettingsPage}>Settings</Button>
-            </Navbar>
-            <Content
+        <ErrorBoundary>
+            <Layout
                 style={{
-                    margin: 'auto',
-                    verticalAlign: 'middle',
-                    alignItems: 'center',
-                    width: '80%',
-                    minWidth: 300,
-                    justifyItems: 'center',
-                    marginTop: 10,
-                    flexGrow: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
+                    height: '100%',
                 }}
             >
-                <Form
-                    name="generationNameForm"
-                    onFinish={generate}
-                    autoComplete="off"
-                    style={{ width: '100%', maxWidth: '500px', margin: 'auto' }}
+                <Navbar>
+                    <Typography.Title level={4} style={{ margin: 0 }}>
+                        Canvas Capture
+                    </Typography.Title>
+                    <Button onClick={goToSettingsPage}>Settings</Button>
+                </Navbar>
+                <Content
+                    style={{
+                        margin: 'auto',
+                        verticalAlign: 'middle',
+                        alignItems: 'center',
+                        width: '80%',
+                        minWidth: 300,
+                        justifyItems: 'center',
+                        marginTop: 10,
+                        flexGrow: 0,
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}
                 >
-                    <Form.Item<GenerationNameForm>
-                        name="generationName"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Report name is required',
-                            },
-                        ]}
+                    <h1>Create a New Report</h1>
+                    <Form
+                        name="generationNameForm"
+                        onFinish={generate}
+                        autoComplete="off"
+                        style={{
+                            width: '100%',
+                            maxWidth: '500px',
+                            margin: 'auto',
+                        }}
                     >
-                        <Flex align={'center'} justify={'center'}>
-                            <Space.Compact style={{ width: '100%' }}>
-                                <Input
-                                    placeholder="Report name"
-                                    style={{
-                                        fontSize: '2rem',
-                                        height: 'auto',
-                                    }}
-                                    id="generationNameInput"
-                                />
-                                <Button
-                                    htmlType="submit"
-                                    type="primary"
-                                    style={{
-                                        fontSize: '1.25rem',
-                                        height: 'auto',
-                                    }}
-                                    id="generationNameButton"
-                                >
-                                    Start
-                                </Button>
-                            </Space.Compact>
-                        </Flex>
-                    </Form.Item>
-                </Form>
-                <Flex
-                    align={'center'}
-                    justify={'center'}
-                    style={{ flexWrap: 'wrap', overflow: 'auto' }}
+                        <Form.Item<GenerationNameForm>
+                            name="generationName"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Report name is required',
+                                },
+                            ]}
+                        >
+                            <Flex align={'center'} justify={'center'}>
+                                <Space.Compact style={{ width: '100%' }}>
+                                    <Input
+                                        placeholder="Report name"
+                                        style={{
+                                            fontSize: '2rem',
+                                            height: 'auto',
+                                        }}
+                                        id="generationNameInput"
+                                    />
+                                    <Button
+                                        htmlType="submit"
+                                        type="primary"
+                                        style={{
+                                            fontSize: '1.25rem',
+                                            height: 'auto',
+                                        }}
+                                        id="generationNameButton"
+                                    >
+                                        Start
+                                    </Button>
+                                </Space.Compact>
+                            </Flex>
+                        </Form.Item>
+                    </Form>
+                    <h2>Previously Generated Reports</h2>
+                    <Flex
+                        align={'center'}
+                        justify={'center'}
+                        style={{ flexWrap: 'wrap', overflow: 'auto' }}
+                    >
+                        {folder?.map((folder) => (
+                            <FolderCard
+                                key={folder}
+                                folder={folder}
+                            ></FolderCard>
+                        ))}
+                    </Flex>
+                </Content>
+                <Footer
+                    style={{
+                        backgroundColor: 'white',
+                        color: 'gray',
+                        paddingLeft: 5,
+                        textAlign: 'left',
+                    }}
                 >
-                    {folder?.map((folder) => (
-                        <FolderCard key={folder} folder={folder}></FolderCard>
-                    ))}
-                </Flex>
-            </Content>
-            <Footer
-                style={{
-                    backgroundColor: 'white',
-                    color: 'gray',
-                    paddingLeft: 5,
-                    textAlign: 'left',
-                }}
-            >
-                <Typography.Text>v{__APP_VERSION__}</Typography.Text>
-            </Footer>
-        </Layout>
+                    <Typography.Text>v{__APP_VERSION__}</Typography.Text>
+                </Footer>
+            </Layout>
+        </ErrorBoundary>
     )
 }
 

@@ -18,13 +18,23 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.0.1",
     "husky": "^9.0.11",
     "prettier": "^3.2.5",
-    "typescript": "^5.4.3"
+    "typescript": "^5.4.3",
+    "vitest": "^2.1.5"
   },
   "pnpm": {
     "patchedDependencies": {
       "pyodide@0.25.0": "patches/pyodide@0.25.0.patch"
     }
+  },
+  "dependencies": {
+    "jsdom": "^25.0.1",
+    "pyodide": "0.25.0"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.61.0"
   }
 }

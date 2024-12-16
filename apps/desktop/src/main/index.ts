@@ -23,6 +23,7 @@ function createWindow(): void {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
+            allowRunningInsecureContent: true,
             preload: join(__dirname, '../preload/index.js'),
             sandbox: false,
             webSecurity: false,
@@ -60,6 +61,7 @@ function createWindow(): void {
             callback({
                 responseHeaders: {
                     'Access-Control-Allow-Origin': ['*'],
+                    //'Content-Security-Policy': ["img-src 'self' data:;"], // Allowing data: URIs for images
                     ...details.responseHeaders,
                 },
             })
@@ -140,5 +142,5 @@ ipcMain.handle('generate', async (_event, htmlData: FilePathContentPair[]) => {
 const getDocumentsPath = () =>
     join(app.getPath('documents'), 'canvas-capture-desktop')
 
-// In this file you can include the rest of your app"s specific main process
+// In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

@@ -1,3 +1,4 @@
+import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
 import { Navbar } from '@renderer/components/Navbar'
 import { SwitchStepper } from '@renderer/components/SwitchStepper'
 import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
@@ -12,13 +13,15 @@ export function SelectionPage() {
     }
 
     return (
-        <Flex style={{ margin: 20, flex: 1 }} vertical>
-            <Navbar>
-                <Button onClick={goToHomePage} icon={<LeftArrowIcon />}>
-                    Back
-                </Button>
-            </Navbar>
-            <SwitchStepper />
-        </Flex>
+        <ErrorBoundary>
+            <Flex style={{ margin: 20, flex: 1 }} vertical>
+                <Navbar>
+                    <Button onClick={goToHomePage} icon={<LeftArrowIcon />}>
+                        Back
+                    </Button>
+                </Navbar>
+                <SwitchStepper />
+            </Flex>
+        </ErrorBoundary>
     )
 }

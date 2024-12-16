@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Button, Steps, theme } from 'antd'
+import { Statistics } from '../Statistics'
 import { Assignments } from '../Assignments'
 import { Courses } from '../Courses'
 import { useCourses } from '@renderer/hooks/useCourses'
@@ -12,14 +13,23 @@ export const STEPS = [
     {
         title: 'Courses',
         content: <Courses />,
+        description: 'Select the course(s) from which to generate the report',
     },
     {
         title: 'Assignments',
         content: <Assignments />,
+        description:
+            'Select the assignment(s) from which to generate the report',
+    },
+    {
+        title: 'Statistics',
+        content: <Statistics />,
+        description: 'Statistics',
     },
     {
         title: 'Generate',
         content: <Generate />,
+        description: '',
     },
 ] as const
 
@@ -59,6 +69,9 @@ export function SwitchStepper() {
     return (
         <>
             <Steps current={current} items={items} />
+            {STEPS[current].title !== 'Generate' && (
+                <h4>{STEPS[current].description}</h4>
+            )}
             <div
                 style={{
                     minHeight: 200,

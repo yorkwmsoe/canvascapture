@@ -15,6 +15,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { App, Button, Flex, Spin, TreeDataNode, Typography } from 'antd'
 import { useCallback, useMemo, useState } from 'react'
+import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
 
 function transformData(data: DataNode): TreeDataNode {
     if (isCourseDataNode(data)) {
@@ -71,6 +72,7 @@ export function MarkdownEditorPage() {
             navigate({ to: '/' })
         },
         onError: () => {
+            notification.destroy()
             notification.error({
                 message: 'Generation Failed',
                 description: 'Please try again',
@@ -110,38 +112,40 @@ export function MarkdownEditorPage() {
     }
 
     return (
-        <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
-            <Navbar>
-                <Button onClick={goBack} icon={<LeftArrowIcon />}>
-                    Back
-                </Button>
-            </Navbar>
-            <Typography.Title level={2} style={{ textAlign: 'center' }}>
-                Markdown Editor
-            </Typography.Title>
-            <div style={{ marginInline: '1rem' }}>
-                {!isLoading && !isGenerating ? (
-                    <MarkdownEditor
-                        treeData={treeData}
-                        selectedFile={selectedFile}
-                        handleSelectFile={selectFile}
-                        handleSaveFile={handleSaveFile}
-                        handleFinish={handleFinish}
-                    />
-                ) : (
-                    <Flex justify="center" align="center">
-                        <Spin tip={isGenerating ? 'Generating' : 'Loading'}>
-                            <div
-                                style={{
-                                    padding: '50px',
-                                    background: 'rgba(0, 0, 0, 0.05)',
-                                    borderRadius: '4px',
-                                }}
-                            />
-                        </Spin>
-                    </Flex>
-                )}
+        <ErrorBoundary>
+            <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
+                <Navbar>
+                    <Button onClick={goBack} icon={<LeftArrowIcon />}>
+                        Back
+                    </Button>
+                </Navbar>
+                <Typography.Title level={2} style={{ textAlign: 'center' }}>
+                    Markdown Editor
+                </Typography.Title>
+                <div style={{ marginInline: '1rem' }}>
+                    {!isLoading && !isGenerating ? (
+                        <MarkdownEditor
+                            treeData={treeData}
+                            selectedFile={selectedFile}
+                            handleSelectFile={selectFile}
+                            handleSaveFile={handleSaveFile}
+                            handleFinish={handleFinish}
+                        />
+                    ) : (
+                        <Flex justify="center" align="center">
+                            <Spin tip={isGenerating ? 'Generating' : 'Loading'}>
+                                <div
+                                    style={{
+                                        padding: '50px',
+                                        background: 'rgba(0, 0, 0, 0.05)',
+                                        borderRadius: '4px',
+                                    }}
+                                />
+                            </Spin>
+                        </Flex>
+                    )}
+                </div>
             </div>
-        </div>
+        </ErrorBoundary>
     )
 }
