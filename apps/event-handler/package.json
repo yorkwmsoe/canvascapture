@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@canvas-capture/lib": "workspace:*",
-    "@types/lodash": "^4.17.13",
+    "@types/lodash": "^4.17.0",
     "db-migrate-pg": "^1.5.2",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
