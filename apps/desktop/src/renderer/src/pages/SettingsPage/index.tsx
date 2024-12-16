@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { ExternalLink } from '@renderer/components/ExternalLink'
 import { getCurrentWindow } from '@electron/remote'
 import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
+import { useQueryClient } from '@tanstack/react-query'
 
 export function SettingsPage() {
     const {
@@ -20,6 +21,7 @@ export function SettingsPage() {
         markdownEditor,
         isStudent,
     } = useSettingsStore()
+    const queryClient = useQueryClient()
     const isSetup = useRouterState().location.pathname.includes('/setup')
     const navigate = useNavigate({ from: isSetup ? '/setup' : '/settings' })
 
@@ -35,6 +37,7 @@ export function SettingsPage() {
         setCanvasAccessToken(values.canvasAccessToken)
         setMarkdownEditor(values.markdownEditor)
         setIsStudent(values.isStudent)
+        queryClient.invalidateQueries({ queryKey: ['courses'] })
         if (isSetup) {
             getCurrentWindow().reload()
         } else {
