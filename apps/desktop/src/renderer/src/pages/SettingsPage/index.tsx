@@ -10,7 +10,6 @@ import { getCurrentWindow } from '@electron/remote'
 import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
 import { useQueryClient } from '@tanstack/react-query'
 
-
 export function SettingsPage() {
     const {
         setCanvasDomain,
@@ -22,7 +21,7 @@ export function SettingsPage() {
         markdownEditor,
         isStudent,
     } = useSettingsStore()
-    const queryClient = useQueryClient();
+    const queryClient = useQueryClient()
     const isSetup = useRouterState().location.pathname.includes('/setup')
     const navigate = useNavigate({ from: isSetup ? '/setup' : '/settings' })
 
