@@ -32,7 +32,6 @@ export default defineConfig({
                 '**/utils.ts',
                 '**/*.e2e.ts',
                 'wdio.conf.ts',
-                '**/components/CreditCardDemo',
                 '**/components/ErrorBoundary',
                 '**/components/Generate',
                 '**/components/icons',
