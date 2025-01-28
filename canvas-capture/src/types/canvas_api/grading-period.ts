@@ -1,3 +1,7 @@
+/**
+ * Defines a type matching the grading period-related
+ * portion of the Canvas API
+ */
 export type GradingPeriod = {
     // The unique identifier for the grading period.
     id: number

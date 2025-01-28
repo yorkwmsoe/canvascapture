@@ -1,3 +1,9 @@
+/**
+ * Various methods and related types and helper functions
+ * for interacting with the Canvas API
+ *
+ * See individual definitions below for more details
+ */
 import { parseISO } from 'date-fns'
 import { Assignment } from './types/canvas_api/assignment'
 import { Course } from './types/canvas_api/course'

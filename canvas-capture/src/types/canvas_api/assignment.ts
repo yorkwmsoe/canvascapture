@@ -1,3 +1,7 @@
+/**
+ * Defines types matching assignment-related portions
+ * of the Canvas API
+ */
 import { DiscussionTopic } from './discussion-topic'
 import { Submission } from './submission'
 

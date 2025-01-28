@@ -1,3 +1,7 @@
+/**
+ * Defines types matching enrollment-related
+ * portions of the Canvas API
+ */
 import { User } from './user'
 
 export type Enrollment = {

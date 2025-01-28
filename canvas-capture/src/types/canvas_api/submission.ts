@@ -1,3 +1,7 @@
+/**
+ * Defines types matching submission-related
+ * portions of the Canvas API
+ */
 import { Assignment } from './assignment'
 import { Course } from './course'
 import { ReadState } from './read-state'

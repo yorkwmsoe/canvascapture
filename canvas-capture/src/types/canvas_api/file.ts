@@ -1,3 +1,7 @@
+/**
+ * Defines types matching file-related
+ * portions of the Canvas API
+ */
 import { LockInfo } from './assignment'
 
 export type File = {

@@ -1,3 +1,7 @@
+/**
+ * Defines types matching discussion topic-related
+ * portions of the Canvas API
+ */
 import { File } from './file'
 import { ReadState } from './read-state'
 

@@ -1,3 +1,8 @@
+/**
+ * Defines methods for organizing quiz data
+ *
+ * See individual definitions for more details
+ */
 import { Course } from './types/canvas_api/course'
 import { Assignment } from './types/canvas_api/assignment'
 import { Submission } from './types/canvas_api/submission'

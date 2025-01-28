@@ -1,3 +1,7 @@
+/**
+ * Defines types matching course-related portions
+ * of the Canvas API
+ */
 import { Enrollment } from './enrollment'
 import { GradingPeriod } from './grading-period'
 

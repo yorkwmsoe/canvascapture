@@ -1,3 +1,6 @@
+/**
+ * Exports various methods and types defined in other files
+ */
 import {
     createCanvasApi,
     Auth,
