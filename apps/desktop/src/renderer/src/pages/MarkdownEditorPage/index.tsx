@@ -1,3 +1,8 @@
+/**
+ * Defines the MarkdownEditorPage and related helper function
+ *
+ * See the individual definitions below for more details
+ */
 import {
     DataNode,
     isCourseDataNode,

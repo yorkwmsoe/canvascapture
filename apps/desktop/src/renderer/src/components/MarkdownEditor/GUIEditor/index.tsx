@@ -1,3 +1,8 @@
+/**
+ * Defines the GUIEditor react component
+ *
+ * See the definition below for more details
+ */
 import { ReactNode, useState } from 'react'
 import { Button, ConfigProvider, Form, Input } from 'antd'
 import { FileDataNode } from '@canvas-capture/lib'

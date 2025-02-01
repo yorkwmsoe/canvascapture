@@ -1,3 +1,8 @@
+/**
+ * Defines a method for generating reports
+ *
+ * See the method definition below for more details
+ */
 import { join } from 'path'
 import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'

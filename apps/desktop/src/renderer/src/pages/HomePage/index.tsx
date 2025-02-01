@@ -1,3 +1,8 @@
+/**
+ * Defines the HomePage and the related FolderCard
+ *
+ * See the individual definitions for more details
+ */
 import {
     Input,
     Layout,

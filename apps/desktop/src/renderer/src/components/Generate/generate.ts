@@ -1,3 +1,16 @@
+/**
+ * Defines methods for generating reports
+ *
+ * generatePairs() is used to find and return a high, medium, and low submission
+ * as desired the parameters passed to it.
+ * See the method definition below for more details.
+ *
+ * generate() is used to facilitate the actual generation of the pdf
+ * See the method definition below for more details.
+ *
+ * generateChart() and generateAvgGradeChart are used to generate statistics charts
+ * See the method definitions below for more details
+ */
 import { rm, writeFile } from 'fs/promises'
 import markdownit from 'markdown-it'
 import _ from 'lodash'

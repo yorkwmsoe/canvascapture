@@ -1,3 +1,8 @@
+/**
+ * Defines the getCourseName method
+ *
+ * See the definition below for more details
+ */
 import { Course } from '@canvas-capture/lib'
 
 export function getCourseName(course?: Course) {

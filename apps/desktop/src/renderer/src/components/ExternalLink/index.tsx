@@ -1,3 +1,8 @@
+/**
+ * Defines the ExternalLink react component
+ *
+ * See below for more details
+ */
 import { Typography } from 'antd'
 import { shell } from 'electron'
 

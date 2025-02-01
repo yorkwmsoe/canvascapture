@@ -1,3 +1,6 @@
+/**
+ * Defines various constants for use in the application
+ */
 export const TITLE_TEXT = 'Canvas Capture'
 
 export const VERSION_TEXT = '0.0.1'

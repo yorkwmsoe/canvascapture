@@ -1,3 +1,8 @@
+/**
+ * Defines the selectionRoute and a related helper function
+ *
+ * See the individual definitions below for more details
+ */
 import { SelectionPage } from '@renderer/pages/SelectionPage'
 import { createRoute } from '@tanstack/react-router'
 import { rootRoute } from './root.route'

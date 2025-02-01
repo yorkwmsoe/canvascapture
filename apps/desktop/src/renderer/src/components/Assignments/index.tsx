@@ -1,3 +1,8 @@
+/**
+ * Defines the Assignments react component
+ *
+ * See below for more details
+ */
 import { useAssignments } from '@renderer/hooks/useAssignments'
 import { useCourses } from '@renderer/hooks/useCourses'
 import { generateHierarchyId } from '@renderer/utils/assignments'

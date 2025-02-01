@@ -1,3 +1,8 @@
+/**
+ * Defines the SettingsPage
+ *
+ * See the definition below for more details
+ */
 import { Config } from '@renderer/utils/config'
 import { useSettingsStore } from '@renderer/stores/settings.store'
 import { useNavigate, useRouterState } from '@tanstack/react-router'

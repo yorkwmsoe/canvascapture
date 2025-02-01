@@ -1,3 +1,8 @@
+/**
+ * Defines the rootRoute and the routeTree
+ *
+ * See the individual definitions below for more details
+ */
 import { createRootRoute } from '@tanstack/react-router'
 import { homeRoute } from './home.route'
 import { setupRoute } from './setup.route'

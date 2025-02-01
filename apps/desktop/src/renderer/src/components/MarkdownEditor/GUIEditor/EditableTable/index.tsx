@@ -1,3 +1,8 @@
+/**
+ * Defines the EditableTable react component used for the Markdown Editor
+ *
+ * See the definition below for more details
+ */
 import { markdown } from '@canvas-capture/lib'
 import { ReactNode } from 'react'
 

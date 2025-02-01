@@ -1,3 +1,9 @@
+/**
+ * Defines the ErrorBoundary react component
+ * Used to catch and hide errors
+ *
+ * See below for more details
+ */
 import { Component } from 'react'
 import { message } from 'antd'
 

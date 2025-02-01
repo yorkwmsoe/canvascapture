@@ -1,3 +1,8 @@
+/**
+ * Defines the QueryProvider
+ *
+ * See the definition below for more details
+ */
 import { queryClient } from '@renderer/config/query.config'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'

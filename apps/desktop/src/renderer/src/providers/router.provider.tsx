@@ -1,3 +1,8 @@
+/**
+ * Defines the RouterProvider and related helper functions
+ *
+ * See the individual definitions below for more details
+ */
 import { routeTree } from '@renderer/routes/root.route'
 import {
     RouterProvider as TanstackRouterProvider,

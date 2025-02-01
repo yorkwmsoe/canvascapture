@@ -1,3 +1,8 @@
+/**
+ * Defines the markdownEditorRoute
+ *
+ * See the definition below for more details
+ */
 import { MarkdownEditorPage } from '@renderer/pages/MarkdownEditorPage'
 import { createRoute } from '@tanstack/react-router'
 import { rootRoute } from './root.route'
