@@ -1,3 +1,9 @@
+/**
+ * Defines the Statistics react component
+ * and additional methods to get the values of its checkboxes
+ *
+ * See the individual definitions below for more details
+ */
 import { Checkbox } from 'antd'
 import { useState } from 'react'
 

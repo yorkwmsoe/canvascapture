@@ -1,3 +1,8 @@
+/**
+ * Defines the Navbar react component
+ *
+ * See the definition below for more details
+ */
 import { Flex } from 'antd'
 
 export type NavbarProps = {

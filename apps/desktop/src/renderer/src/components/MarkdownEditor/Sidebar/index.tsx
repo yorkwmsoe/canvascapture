@@ -1,3 +1,8 @@
+/**
+ * Defines the Sidebar react component used in the Markdown Editor
+ *
+ * See the definition below for more details
+ */
 import { Button, Popconfirm } from 'antd'
 
 export type SideBarProps = {

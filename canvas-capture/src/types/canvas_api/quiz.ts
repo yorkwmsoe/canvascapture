@@ -1,3 +1,7 @@
+/**
+ * Defines a type matching the quiz-related
+ * portion of the Canvas API
+ */
 export type Quiz = {
     // The unique identifier for the quiz.
     id: number

@@ -10,16 +10,6 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
     {
-        title: 'Command Line Interface',
-        Svg: require('@site/static/img/cli.svg').default,
-        description: (
-            <>
-                With the Command Line Interface (CLI) you can retrieve work from
-                Canvas.
-            </>
-        ),
-    },
-    {
         title: 'Desktop Application',
         Svg: require('@site/static/img/desktop.svg').default,
         description: (

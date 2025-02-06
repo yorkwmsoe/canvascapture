@@ -1,3 +1,8 @@
+/**
+ * Defines util methods related to assignments
+ *
+ * See the individual definitions below for more details
+ */
 export function generateHierarchyId(courseId: number, assignmentId: number) {
     return `${courseId}:${assignmentId}`
 }

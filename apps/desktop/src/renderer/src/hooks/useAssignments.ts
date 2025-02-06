@@ -1,3 +1,8 @@
+/**
+ * Defines the useAssignments react hook
+ *
+ * See the definition below for more details
+ */
 import { useGetAssignments } from '@renderer/apis/canvas.api'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { Assignment } from '@canvas-capture/lib'

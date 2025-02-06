@@ -1,3 +1,8 @@
+/**
+ * Defines the LeftArrow react component
+ *
+ * See definition below for more details
+ */
 import Icon from '@ant-design/icons'
 import { CustomIconComponentProps } from '@ant-design/icons/lib/components/Icon'
 

@@ -1,3 +1,9 @@
+/**
+ * Defines methods for generating assignments and quizzes, as
+ * well as related helper functions
+ *
+ * See individual definitions below for more details
+ */
 import { Assignment } from './types/canvas_api/assignment'
 import { Submission } from './types/canvas_api/submission'
 import { Quiz } from './types/canvas_api/quiz'

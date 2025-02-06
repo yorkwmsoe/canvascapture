@@ -1,3 +1,8 @@
+/**
+ * Defines the Courses react component
+ *
+ * See below for more details
+ */
 import { Checkbox } from 'antd'
 import { useMemo } from 'react'
 import { useCourses } from '@renderer/hooks/useCourses'

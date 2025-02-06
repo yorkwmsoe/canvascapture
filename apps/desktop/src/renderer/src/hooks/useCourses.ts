@@ -1,3 +1,8 @@
+/**
+ * Defines the useCourses react hook
+ *
+ * See the definition below for more details
+ */
 import { useGetCourses } from '@renderer/apis/canvas.api'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { useQueryClient } from '@tanstack/react-query'

@@ -1,3 +1,8 @@
+/**
+ * Defines the SelectionPage
+ *
+ * See the definition below for more details
+ */
 import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
 import { Navbar } from '@renderer/components/Navbar'
 import { SwitchStepper } from '@renderer/components/SwitchStepper'

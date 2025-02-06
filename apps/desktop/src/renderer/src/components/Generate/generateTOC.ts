@@ -1,3 +1,8 @@
+/**
+ * Defines a method to generate the table of contents for a report
+ *
+ * See the method definition below for more details
+ */
 export function generateTOC(htmlContent: string) {
     const parser = new DOMParser()
     const doc = parser.parseFromString(htmlContent, 'text/html')

@@ -1,3 +1,8 @@
+/**
+ * Defines the MarkdownEditor react component
+ *
+ * See the definition below for more details
+ */
 import { Alert, App, Button, Input, Space, Tabs } from 'antd'
 import { DirectoryTree } from '../DirectoryTree'
 import { SideBar } from './Sidebar'

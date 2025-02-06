@@ -1,3 +1,9 @@
+/**
+ * Defines methods to make API calls using the private module
+ * and formats the results for use by the desktop application
+ *
+ * See individual definitions for more details
+ */
 import { useSettingsStore } from '@renderer/stores/settings.store'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { useGenerationStore } from '@renderer/stores/generation.store'

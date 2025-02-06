@@ -8,7 +8,6 @@ stages:
 
 variables:
     HUSKY: 0
-    CLI_BASE_PATH: apps/cli
     DESKTOP_BASE_PATH: apps/desktop
     DOCUMENTATION_BASE_PATH: apps/documentation
     CI_REGISTRY_IMAGE_PATH: $CI_REGISTRY_IMAGE
@@ -19,7 +18,6 @@ variables:
 
 include:
     - local: .docker-ci.yml
-    - local: apps/cli/.gitlab-ci.yml
     - local: apps/desktop/.gitlab-ci.yml
     - local: canvas-capture/.gitlab-ci.yml
 

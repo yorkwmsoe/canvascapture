@@ -1,3 +1,6 @@
+/**
+ * Exports the types and methods from generation.types.ts
+ */
 import {
     isCourseDataNode,
     isAssignmentDataNode,

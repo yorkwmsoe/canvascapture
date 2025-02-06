@@ -1,3 +1,8 @@
+/**
+ * Defines the SwitchStepper react component
+ *
+ * See the definition below for more details
+ */
 import { useCallback, useMemo, useState } from 'react'
 import { Button, Steps, theme } from 'antd'
 import { Statistics } from '../Statistics'
