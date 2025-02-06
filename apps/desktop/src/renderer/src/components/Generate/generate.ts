@@ -280,7 +280,7 @@ async function generateChart() {
             assignmentCount.push(passed)
         }
     }
-    
+
     // Append the canvas to the body temporarily
     document.body.appendChild(ctx)
     Chart.defaults.font.size = 32
