@@ -22,4 +22,7 @@ mutate-canvas-capture:
         reports:
             stryker:
                 - canvas-capture/reports/mutation/mutation.html
-    if: $CI_COMMIT_TAG
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: always
+        - when: never
