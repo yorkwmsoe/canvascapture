@@ -27,7 +27,7 @@ release-desktop-windows:
     artifacts:
         paths:
             - $DESKTOP_BASE_PATH/dist
-    when: manual
+    if: $CI_COMMIT_TAG
 
 release-desktop-mac:
     image: $DESKTOP_IMAGE
@@ -50,4 +50,16 @@ release-desktop-linux:
     artifacts:
         paths:
             - $DESKTOP_BASE_PATH/dist
-    when: manual
+    if: $CI_COMMIT_TAG
+
+mutate-desktop:
+    image: $DESKTOP_IMAGE
+    stage: 🧬 mutant-test
+    needs: ['install-packages', 'test-desktop', 'typecheck-desktop']
+    script:
+        - pnpm desktop test:mutate
+    artifacts:
+        when: always
+        paths:
+            - $DESKTOP_BASE_PATH/reports/mutation/mutation.html
+    if: $CI_COMMIT_TAG

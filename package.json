@@ -32,9 +32,7 @@
   },
   "dependencies": {
     "jsdom": "^25.0.1",
-    "pyodide": "0.25.0"
-  },
-  "dependencies": {
+    "pyodide": "0.25.0",
     "@tanstack/react-query": "^5.61.0"
   }
 }
