@@ -65,7 +65,6 @@ mutate-desktop:
     script:
         - pnpm desktop test:mutate
     artifacts:
-        when: always
         paths:
             - $DESKTOP_BASE_PATH/reports/mutation/mutation.html
     rules:
