@@ -20,11 +20,9 @@ export function SettingsPage() {
         setCanvasDomain,
         setCanvasAccessToken,
         setMarkdownEditor,
-        setIsStudent,
         canvasDomain,
         canvasAccessToken,
         markdownEditor,
-        isStudent,
     } = useSettingsStore()
     const queryClient = useQueryClient()
     const isSetup = useRouterState().location.pathname.includes('/setup')
@@ -41,7 +39,6 @@ export function SettingsPage() {
         setCanvasDomain(values.canvasDomain)
         setCanvasAccessToken(values.canvasAccessToken)
         setMarkdownEditor(values.markdownEditor)
-        setIsStudent(values.isStudent)
         queryClient.invalidateQueries({ queryKey: ['courses'] })
         if (isSetup) {
             getCurrentWindow().reload()
@@ -71,7 +68,6 @@ export function SettingsPage() {
                             canvasDomain,
                             canvasAccessToken,
                             markdownEditor,
-                            isStudent,
                         }}
                         onFinish={onFinish}
                         autoComplete="off"
@@ -135,27 +131,6 @@ export function SettingsPage() {
                                 <Checkbox>Show Markdown Editor</Checkbox>
                             </Form.Item>
                         )}
-                        <Form.Item<Config>
-                            name="isStudent"
-                            valuePropName="checked"
-                            wrapperCol={{ offset: 8, span: 16 }}
-                            label={
-                                <span
-                                    title={
-                                        'If the Access Token is for a Student Account, check this box.'
-                                    }
-                                    style={{ fontSize: 20, color: 'blue' }}
-                                >
-                                    ⓘ
-                                </span>
-                            }
-                            labelCol={{ style: { order: 2 } }}
-                            colon={false}
-                        >
-                            <Checkbox>
-                                Student Mode (enable if you are a student)
-                            </Checkbox>
-                        </Form.Item>
                         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                             <Button type="primary" htmlType="submit">
                                 Save
