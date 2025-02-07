@@ -19,6 +19,6 @@ export const routeTree = rootRoute.addChildren([
     settingsRoute,
     selectionRoute,
     markdownEditorRoute,
-    generationRoute
+    generationRoute,
     // Add your routes here
 ])
