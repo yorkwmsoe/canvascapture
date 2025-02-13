@@ -84,7 +84,7 @@ export function HomePage() {
                         width: '80%',
                         minWidth: 300,
                         justifyItems: 'center',
-                        marginTop: 10,
+                        marginTop: 'auto',
                         flexGrow: 0,
                         display: 'flex',
                         flexDirection: 'column',
@@ -135,19 +135,25 @@ export function HomePage() {
                             </Flex>
                         </Form.Item>
                     </Form>
-                    <h2>Previously Generated Reports</h2>
-                    <Flex
-                        align={'center'}
-                        justify={'center'}
-                        style={{ flexWrap: 'wrap', overflow: 'auto' }}
-                    >
-                        {folder?.map((folder) => (
-                            <FolderCard
-                                key={folder}
-                                folder={folder}
-                            ></FolderCard>
-                        ))}
-                    </Flex>
+                    {folder !== undefined && folder.length > 0 ? ( // If there are no previously generated reports, don't display this section.
+                        <>
+                            <h2>Previously Generated Reports</h2>
+                            <Flex
+                                align={'center'}
+                                justify={'center'}
+                                style={{ flexWrap: 'wrap', overflow: 'auto' }}
+                            >
+                                {folder?.map((folder) => (
+                                    <FolderCard
+                                        key={folder}
+                                        folder={folder}
+                                    ></FolderCard>
+                                ))}
+                            </Flex>
+                        </>
+                    ) : (
+                        <></>
+                    )}
                 </Content>
                 <Footer
                     style={{
