@@ -1,3 +1,9 @@
+/**
+ * Defines the settings store
+ * Used to set and store data from settings
+ *
+ * See the definition below for more details
+ */
 import { getConfig, setConfig } from '@renderer/utils/config'
 import { create } from 'zustand'
 

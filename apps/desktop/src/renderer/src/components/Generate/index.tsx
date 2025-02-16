@@ -1,3 +1,9 @@
+/**
+ * Defines the Generate react component which shows a loading screen,
+ * while performing the generation behind the scenes
+ *
+ * See the definition below for more details
+ */
 import { Flex, Spin, Typography } from 'antd'
 import { useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'

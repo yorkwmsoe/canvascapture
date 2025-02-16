@@ -27,3 +27,6 @@ output
 sample.md
 coverage
 junit.xml
+# stryker temp files
+stryker-tmp/*
+reports/*

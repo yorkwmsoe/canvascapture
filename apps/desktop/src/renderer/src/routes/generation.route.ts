@@ -1,14 +1,14 @@
 /**
- * Defines the markdownEditorRoute
+ * Defines the generationRoute
  *
  * See the definition below for more details
  */
-import { MarkdownEditorPage } from '@renderer/pages/MarkdownEditorPage'
 import { createRoute } from '@tanstack/react-router'
 import { rootRoute } from './root.route'
+import { MarkdownEditorPage } from '@renderer/pages/MarkdownEditorPage'
 
-export const markdownEditorRoute = createRoute({
+export const generationRoute = createRoute({
     getParentRoute: () => rootRoute,
-    path: '/markdown-editor',
+    path: '/generation',
     component: MarkdownEditorPage,
 })

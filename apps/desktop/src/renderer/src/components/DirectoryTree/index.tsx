@@ -1,3 +1,8 @@
+/**
+ * Defines the DirectoryTree react component
+ *
+ * See below for more details
+ */
 import { Tree } from 'antd'
 import type { GetProps } from 'antd'
 

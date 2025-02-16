@@ -1,3 +1,8 @@
+/**
+ * Defines the ThemeProvider
+ *
+ * See the definition below for more details
+ */
 import { themeConfig } from '@renderer/config/theme.config'
 import { ConfigProvider } from 'antd'
 

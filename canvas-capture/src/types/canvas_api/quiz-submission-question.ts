@@ -1,3 +1,7 @@
+/**
+ * Defines types matching quiz submission question-related
+ * portions of the Canvas API
+ */
 import { Formula, Match, Variable } from './quiz-question'
 
 export type QuizSubmissionQuestion = {

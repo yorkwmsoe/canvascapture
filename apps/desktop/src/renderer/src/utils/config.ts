@@ -1,3 +1,8 @@
+/**
+ * Defines util methods related to reading and writing to the user's config file
+ *
+ * See the individual definitions below for more details
+ */
 import { CONFIG_FILE_NAME } from '@renderer/utils/base-info'
 import { app } from '@electron/remote'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'

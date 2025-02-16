@@ -1,3 +1,9 @@
+/**
+ * Defines methods to make API calls using the private module
+ * and formats the results for use by the desktop application
+ *
+ * See individual definitions for more details
+ */
 import { useSettingsStore } from '@renderer/stores/settings.store'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { useGenerationStore } from '@renderer/stores/generation.store'
@@ -66,22 +72,36 @@ export const useGetAssignments = () => {
 }
 
 export const useGetCourses = () => {
-    const { canvasDomain, canvasAccessToken, isStudent } = useSettingsStore()
+    const { canvasDomain, canvasAccessToken, setIsStudent } = useSettingsStore()
     return useQuery({
-        queryKey: ['courses', isStudent],
+        queryKey: ['courses'],
         queryFn: async () => {
             const courses = await canvasApi.getCourses({
                 canvasAccessToken,
                 canvasDomain,
-                isStudent,
             })
             const availableCourses: Course[] = []
+            let numTeacher = 0
+            let numStudent = 0
             for (const course of courses) {
                 if (
                     course.access_restricted_by_date == undefined ||
                     course.access_restricted_by_date == false
                 ) {
                     availableCourses.push(course)
+                }
+                if (course.enrollments != undefined) {
+                    const enrollmentType: string = course.enrollments[0].type
+                    if (enrollmentType == 'student') {
+                        numStudent++
+                    } else if (enrollmentType == 'teacher') {
+                        numTeacher++
+                    }
+                }
+                if (numTeacher > 0) {
+                    setIsStudent(false)
+                } else if (numStudent > 0 && numTeacher == 0) {
+                    setIsStudent(true)
                 }
             }
             return availableCourses

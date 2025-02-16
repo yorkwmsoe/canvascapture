@@ -1,3 +1,9 @@
+/**
+ * Various methods and related types and helper functions
+ * for interacting with the Canvas API
+ *
+ * See individual definitions below for more details
+ */
 import { parseISO } from 'date-fns'
 import { Assignment } from './types/canvas_api/assignment'
 import { Course } from './types/canvas_api/course'
@@ -52,18 +58,10 @@ export const getApiHeaders = (
     }
 }
 
-export type GetCoursesRequest = {
-    isStudent: boolean
-}
-
-export const getCourses = async (args: GetCoursesRequest & Auth) => {
-    const { canvasAccessToken, canvasDomain, isStudent } = args
-    const enrollmentTypeParam =
-        isStudent !== undefined
-            ? `&enrollment_type=${isStudent ? 'student' : 'teacher'}`
-            : ''
+export const getCourses = async (args: Auth) => {
+    const { canvasAccessToken, canvasDomain } = args
     return await fetch(
-        `${canvasDomain}/api/v1/courses?exclude_blueprint_courses&per_page=1000${enrollmentTypeParam}`,
+        `${canvasDomain}/api/v1/courses?exclude_blueprint_courses&per_page=1000`,
         {
             headers: getApiHeaders({ accessToken: canvasAccessToken }),
         }
@@ -302,11 +300,10 @@ export const createCanvasApi = (
 ) => {
     if (config.type === 'withAuth') {
         return {
-            getCourses: (args: GetCoursesRequest) =>
+            getCourses: () =>
                 getCourses({
                     canvasAccessToken: config.accessToken,
                     canvasDomain: config.domain,
-                    ...args,
                 }),
             getAssignments: (args: GetAssignmentsRequest) =>
                 getAssignments({

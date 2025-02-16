@@ -1,3 +1,9 @@
+/**
+ * Defines the generation store
+ * Used to set and store data from generation
+ *
+ * See the individual definitions below for more details
+ */
 import { create } from 'zustand'
 
 type State = {

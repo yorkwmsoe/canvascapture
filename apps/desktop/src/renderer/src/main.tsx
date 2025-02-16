@@ -1,3 +1,8 @@
+/**
+ * Defines the basic structure of the app
+ *
+ * See the definition below for more details
+ */
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { ThemeProvider } from './providers/theme.provider'

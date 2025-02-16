@@ -1,3 +1,16 @@
+/**
+ * Defines methods for generating reports
+ *
+ * generatePairs() is used to find and return a high, medium, and low submission
+ * as desired the parameters passed to it.
+ * See the method definition below for more details.
+ *
+ * generate() is used to facilitate the actual generation of the pdf
+ * See the method definition below for more details.
+ *
+ * generateChart() and generateAvgGradeChart are used to generate statistics charts
+ * See the method definitions below for more details
+ */
 import { rm, writeFile } from 'fs/promises'
 import markdownit from 'markdown-it'
 import _ from 'lodash'
@@ -21,7 +34,18 @@ import {
     Title,
     Tooltip,
     Legend,
+    Filler,
 } from 'chart.js'
+
+Chart.register(
+    LineController,
+    LineElement,
+    PointElement,
+    LinearScale,
+    Title,
+    CategoryScale,
+    Filler
+)
 
 const allSubmissions: Submission[] = []
 const allAssignments: Assignment[] = []
@@ -220,12 +244,12 @@ export async function generate(
 
     return htmlData
 }
-
+const bgc: string = '#e8e8e8' //`#d6d6d6`
 async function generateChart() {
     let oneYearStat2
     const ctx = document.createElement('canvas')
-    ctx.width = 200
-    ctx.height = 200
+    ctx.width = 800
+    ctx.height = 800
     const allUniqueSubmissions: Submission[] = []
     const submittedAt: Date[] = []
     const gradedAt: Date[] = []
@@ -272,7 +296,7 @@ async function generateChart() {
 
     // Append the canvas to the body temporarily
     document.body.appendChild(ctx)
-
+    Chart.defaults.font.size = 32
     return new Promise((resolve) => {
         new Chart(ctx, {
             type: 'line',
@@ -282,16 +306,29 @@ async function generateChart() {
                     {
                         label: 'Days to Grade',
                         data: timeToGrade,
-                        borderWidth: 1,
+                        borderWidth: 5,
                         pointBackgroundColor: 'cyan',
                         borderColor: '#008b8b',
+                        fill: 'origin',
+                        backgroundColor: bgc,
                     },
                 ],
             },
             options: {
                 scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Assignments',
+                        },
+                    },
                     y: {
                         beginAtZero: true,
+
+                        title: {
+                            display: true,
+                            text: 'Days since submitted',
+                        },
                     },
                 },
                 animation: {
@@ -302,8 +339,8 @@ async function generateChart() {
                         const wrap = document.createElement('div')
                         const img = document.createElement('img')
                         img.src = imgData // Set the image as the source of the img element
-                        img.width = 800
-                        img.height = 800
+                        img.width = 400
+                        img.height = 400
 
                         wrap.appendChild(img)
 
@@ -385,7 +422,8 @@ async function generateAvgGradeChart() {
 
     // Append the canvas to the body temporarily
     document.body.appendChild(ctx)
-
+    const minValue: number = Math.min(...temparr)
+    const chartMin: number = minValue * 0.9
     return new Promise((resolve) => {
         new Chart(ctx, {
             type: 'line',
@@ -395,16 +433,28 @@ async function generateAvgGradeChart() {
                     {
                         label: 'Avg Assignment Grade',
                         data: temparr,
-                        borderWidth: 1,
+                        borderWidth: 5,
                         pointBackgroundColor: 'cyan',
                         borderColor: '#008b8b',
+                        fill: true,
+                        backgroundColor: bgc,
                     },
                 ],
             },
             options: {
                 scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Assignments',
+                        },
+                    },
                     y: {
-                        beginAtZero: true,
+                        min: chartMin,
+                        title: {
+                            display: true,
+                            text: 'Average Percent Grade',
+                        },
                     },
                 },
                 animation: {
@@ -415,8 +465,8 @@ async function generateAvgGradeChart() {
                         const wrap = document.createElement('div')
                         const img = document.createElement('img')
                         img.src = imgData // Set the image as the source of the img element
-                        img.width = 800
-                        img.height = 800
+                        img.width = 400
+                        img.height = 400
 
                         wrap.appendChild(img)
 

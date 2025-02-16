@@ -1,3 +1,12 @@
+/**
+ * Defines types for Course, Assignment, and File data:
+ * CourseDataNode, AssignmentDataNode, and FileDataNode
+ * Also defines methods to check if a DataNode (the parent type of
+ * each of the other types) is one of the types (ex: isCourseDataNode()
+ * checks if the DataNode passed in is a CourseDataNode.
+ *
+ * See individual type and method definitions below for more details
+ */
 import { Assignment } from '../types/canvas_api/assignment'
 import { Course } from '../types/canvas_api/course'
 

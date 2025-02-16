@@ -1,3 +1,8 @@
+/**
+ * Defines a method (and related helper methods) to facilitate generation
+ *
+ * See individual method definitions below for more details
+ */
 import { Assignment, Quiz, Submission } from '@canvas-capture/lib'
 import { canvasApi } from '@renderer/apis/canvas.api'
 import { useAssignments } from '@renderer/hooks/useAssignments'

@@ -1,3 +1,8 @@
+/**
+ * Defines the QueryClient
+ *
+ * See the definition below for more details
+ */
 import { QueryClient } from '@tanstack/react-query'
 
 export const queryClient = new QueryClient({

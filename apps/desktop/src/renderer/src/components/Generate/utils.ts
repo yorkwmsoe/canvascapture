@@ -1,3 +1,8 @@
+/**
+ * Defines util methods to assist with generation
+ *
+ * See individual method definitions below for more details
+ */
 import {
     Assignment,
     Submission,
