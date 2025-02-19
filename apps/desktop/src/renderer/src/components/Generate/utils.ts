@@ -8,10 +8,15 @@ import {
     Submission,
     Quiz,
     generateQuiz,
+    generateQuizDescription,
+    generateQuizSubmission,
     generateAssignment,
+    generateAssignmentDescription,
+    generateAssignmentSubmission,
     Auth,
     Course,
     assembleQuizQuestionsAndComments,
+    assembleQuizQuestionsAndAnswers,
 } from '@canvas-capture/lib'
 import { canvasApi } from '@renderer/apis/canvas.api'
 
@@ -63,5 +68,73 @@ export const generateAssignmentOrQuiz = async (
         )
     } else {
         return generateAssignment(assignment, submission, true)
+    }
+}
+
+export const generateAssignmentOrQuizDescription = async (
+    course: Course,
+    assignment: Assignment,
+    quiz: Quiz | undefined,
+    canvasAccessToken: string,
+    canvasDomain: string
+) => {
+    if (
+        assignment.is_quiz_assignment &&
+        !assignment.locked_for_user &&
+        quiz !== undefined
+    ) {
+        const auth: Auth = {
+            canvasAccessToken: canvasAccessToken,
+            canvasDomain: canvasDomain,
+        }
+        const quizQuestions = await assembleQuizQuestionsAndAnswers(
+            auth,
+            course,
+            assignment
+        )
+        return generateQuizDescription(assignment, quiz, quizQuestions, true)
+    } else {
+        return generateAssignmentDescription(assignment, true)
+    }
+}
+
+export const generateAssignmentOrQuizSubmission = async (
+    course: Course,
+    assignment: Assignment,
+    submission: Submission,
+    quiz: Quiz | undefined,
+    canvasAccessToken: string,
+    canvasDomain: string
+) => {
+    if (
+        assignment.is_quiz_assignment &&
+        !assignment.locked_for_user &&
+        quiz !== undefined
+    ) {
+        const quizSubmission = await canvasApi.getQuizSubmission({
+            canvasAccessToken,
+            canvasDomain,
+            courseId: assignment.course_id,
+            quizId: quiz.id,
+            submissionId: submission.id,
+        })
+        const auth: Auth = {
+            canvasAccessToken: canvasAccessToken,
+            canvasDomain: canvasDomain,
+        }
+        const quizQuestions = await assembleQuizQuestionsAndComments(
+            auth,
+            course,
+            assignment,
+            submission
+        )
+        return generateQuizSubmission(
+            assignment,
+            submission,
+            quizSubmission,
+            quizQuestions
+        )
+    } else {
+        return generateAssignmentSubmission(assignment, submission, true)
     }
 }
