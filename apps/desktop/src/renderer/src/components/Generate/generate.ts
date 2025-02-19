@@ -21,7 +21,11 @@ import { canvasApi } from '../../apis/canvas.api'
 import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
 import { FilePathContentPair } from './types'
-import { generateAssignmentOrQuiz, median } from './utils'
+import {
+    generateAssignmentOrQuizDescription,
+    generateAssignmentOrQuizSubmission,
+    median,
+} from './utils'
 import { generateTOC } from './generateTOC'
 import { oneYearExport, AverageAssignmentGradeExport } from '../Statistics'
 import {
@@ -69,12 +73,25 @@ export const generatePairs = async (
     canvasAccessToken: string,
     canvasDomain: string
 ): Promise<FilePathContentPair[]> => {
+    const descriptionPair = {
+        filePath: join(assignmentsPath, 'description'),
+        content: (
+            await generateAssignmentOrQuizDescription(
+                course,
+                assignment,
+                quiz,
+                canvasAccessToken,
+                canvasDomain
+            )
+        ).join('\n'),
+    }
+
     const highSubmission =
         _.maxBy(submissions, (s) => s.score) ?? submissions[0]
     const highPair = {
         filePath: join(assignmentsPath, 'high'),
         content: (
-            await generateAssignmentOrQuiz(
+            await generateAssignmentOrQuizSubmission(
                 course,
                 assignment,
                 highSubmission,
@@ -92,7 +109,7 @@ export const generatePairs = async (
     const medianPair = {
         filePath: join(assignmentsPath, 'median'),
         content: (
-            await generateAssignmentOrQuiz(
+            await generateAssignmentOrQuizSubmission(
                 course,
                 assignment,
                 medianSubmission,
@@ -107,7 +124,7 @@ export const generatePairs = async (
     const lowPair = {
         filePath: join(assignmentsPath, 'low'),
         content: (
-            await generateAssignmentOrQuiz(
+            await generateAssignmentOrQuizSubmission(
                 course,
                 assignment,
                 lowSubmission,
@@ -120,11 +137,11 @@ export const generatePairs = async (
 
     switch (submissions.length) {
         case 1:
-            return [highPair]
+            return [descriptionPair, highPair]
         case 2:
-            return [highPair, lowPair]
+            return [descriptionPair, highPair, lowPair]
         default:
-            return [highPair, medianPair, lowPair]
+            return [descriptionPair, highPair, medianPair, lowPair]
     }
 }
 
