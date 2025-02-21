@@ -6,18 +6,17 @@
 import { Config } from '@renderer/utils/config'
 import { useSettingsStore } from '@renderer/stores/settings.store'
 import { useNavigate, useRouterState } from '@tanstack/react-router'
-import { Button, Checkbox, Flex, Form, Input, Typography } from 'antd'
+import { Button, Checkbox, Flex, Form, Input, Layout, Typography } from 'antd'
 import { Navbar } from '@renderer/components/Navbar'
-import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
-import { useState } from 'react'
+import { HomeIcon } from '@renderer/components/icons/Home'
 import { ExternalLink } from '@renderer/components/ExternalLink'
 import { getCurrentWindow } from '@electron/remote'
 import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
 import { useQueryClient } from '@tanstack/react-query'
+import { SaveIcon } from '@renderer/components/icons/Save'
 
 export function SettingsPage() {
     const {
-        setCanvasDomain,
         setCanvasAccessToken,
         setMarkdownEditor,
         canvasDomain,
@@ -28,15 +27,11 @@ export function SettingsPage() {
     const isSetup = useRouterState().location.pathname.includes('/setup')
     const navigate = useNavigate({ from: isSetup ? '/setup' : '/settings' })
 
-    const [currentCanvasDomain, setCurrentCanvasDomain] =
-        useState<string>(canvasDomain)
-
     const goToHomePage = () => {
         navigate({ to: '/' })
     }
 
     const onFinish = (values: Config) => {
-        setCanvasDomain(values.canvasDomain)
         setCanvasAccessToken(values.canvasAccessToken)
         setMarkdownEditor(values.markdownEditor)
         queryClient.invalidateQueries({ queryKey: ['courses'] })
@@ -49,10 +44,14 @@ export function SettingsPage() {
 
     return (
         <ErrorBoundary>
-            <div>
+            <Layout
+                style={{
+                    height: '100%',
+                }}
+            >
                 <Navbar>
-                    <Button onClick={goToHomePage} icon={<LeftArrowIcon />}>
-                        Back
+                    <Button onClick={goToHomePage} icon={<HomeIcon />}>
+                        Home
                     </Button>
                 </Navbar>
                 <Flex justify="center" vertical>
@@ -65,31 +64,12 @@ export function SettingsPage() {
                         wrapperCol={{ span: 16 }}
                         style={{ maxWidth: '90%' }}
                         initialValues={{
-                            canvasDomain,
                             canvasAccessToken,
                             markdownEditor,
                         }}
                         onFinish={onFinish}
                         autoComplete="off"
                     >
-                        <Form.Item<Config>
-                            label="Canvas Domain"
-                            name="canvasDomain"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Canvas domain is missing',
-                                },
-                            ]}
-                        >
-                            <Input
-                                onChange={(e) =>
-                                    setCurrentCanvasDomain(
-                                        e.currentTarget.value
-                                    )
-                                }
-                            />
-                        </Form.Item>
                         <Form.Item<Config>
                             label="Canvas Access Token"
                             name="canvasAccessToken"
@@ -101,7 +81,7 @@ export function SettingsPage() {
                             ]}
                             extra={
                                 <ExternalLink
-                                    href={`${currentCanvasDomain}/profile/settings#access_tokens_holder`}
+                                    href={`${canvasDomain}/profile/settings#access_tokens_holder`}
                                 >
                                     Click Here To Create A New Access Token (you
                                     may have to scroll down)
@@ -132,13 +112,17 @@ export function SettingsPage() {
                             </Form.Item>
                         )}
                         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                            <Button type="primary" htmlType="submit">
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                icon={<SaveIcon />}
+                            >
                                 Save
                             </Button>
                         </Form.Item>
                     </Form>
                 </Flex>
-            </div>
+            </Layout>
         </ErrorBoundary>
     )
 }

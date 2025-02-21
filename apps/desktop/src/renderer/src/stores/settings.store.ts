@@ -6,29 +6,23 @@
  */
 import { getConfig, setConfig } from '@renderer/utils/config'
 import { create } from 'zustand'
+import { CANVAS_DOMAIN } from '@renderer/utils/base-info'
 
 export type SettingsStore = {
     canvasDomain: string
     canvasAccessToken: string
     markdownEditor: boolean
     isStudent: boolean
-    setCanvasDomain: (domain: string) => void
     setCanvasAccessToken: (token: string) => void
     setMarkdownEditor: (enabled: boolean) => void
     setIsStudent: (enabled: boolean) => void
 }
 
 export const useSettingsStore = create<SettingsStore>()((set) => ({
-    canvasDomain: getConfig().canvasDomain,
+    canvasDomain: CANVAS_DOMAIN,
     canvasAccessToken: getConfig().canvasAccessToken,
     markdownEditor: getConfig().markdownEditor,
     isStudent: getConfig().isStudent,
-    setCanvasDomain: (domain) => {
-        set((state) => {
-            setConfig({ ...state, canvasDomain: domain })
-            return { canvasDomain: domain }
-        })
-    },
     setCanvasAccessToken: (token) => {
         set((state) => {
             setConfig({ ...state, canvasAccessToken: token })

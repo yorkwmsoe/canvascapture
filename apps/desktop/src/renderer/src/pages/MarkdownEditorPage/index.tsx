@@ -12,15 +12,23 @@ import {
 } from '@canvas-capture/lib'
 import { useGenerateNext } from '@renderer/components/Generate/useGenerateNext'
 import { MarkdownEditor } from '@renderer/components/MarkdownEditor'
-import { Navbar } from '@renderer/components/Navbar'
 import { STEPS } from '@renderer/components/SwitchStepper'
 import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
 import { getCourseName } from '@renderer/utils/courses'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { App, Button, Flex, Spin, TreeDataNode, Typography } from 'antd'
+import {
+    App,
+    Button,
+    Flex,
+    Popconfirm,
+    Spin,
+    TreeDataNode,
+    Typography,
+} from 'antd'
 import { useCallback, useMemo, useState } from 'react'
 import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
+import { CheckIcon } from '@renderer/components/icons/Check'
 
 function transformData(data: DataNode): TreeDataNode {
     if (isCourseDataNode(data)) {
@@ -119,11 +127,6 @@ export function MarkdownEditorPage() {
     return (
         <ErrorBoundary>
             <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
-                <Navbar>
-                    <Button onClick={goBack} icon={<LeftArrowIcon />}>
-                        Back
-                    </Button>
-                </Navbar>
                 <Typography.Title level={2} style={{ textAlign: 'center' }}>
                     Markdown Editor
                 </Typography.Title>
@@ -134,7 +137,6 @@ export function MarkdownEditorPage() {
                             selectedFile={selectedFile}
                             handleSelectFile={selectFile}
                             handleSaveFile={handleSaveFile}
-                            handleFinish={handleFinish}
                         />
                     ) : (
                         <Flex justify="center" align="center">
@@ -149,6 +151,40 @@ export function MarkdownEditorPage() {
                             </Spin>
                         </Flex>
                     )}
+                </div>
+                <div
+                    style={{
+                        bottom: 20,
+                        position: 'fixed',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginTop: 24,
+                        width: '100%',
+                    }}
+                >
+                    <Button
+                        onClick={goBack}
+                        icon={<LeftArrowIcon />}
+                        style={{ left: 20 }}
+                    >
+                        Previous
+                    </Button>
+                    <Popconfirm
+                        title="Finish editing"
+                        description="Are you sure your done editing? Make sure to save your changes."
+                        okText="Yes"
+                        cancelText="No"
+                        onConfirm={handleFinish}
+                    >
+                        <Button
+                            type="primary"
+                            block
+                            icon={<CheckIcon />}
+                            style={{ right: 20, width: 'fit-content' }}
+                        >
+                            Generate
+                        </Button>
+                    </Popconfirm>
                 </div>
             </div>
         </ErrorBoundary>

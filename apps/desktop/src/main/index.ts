@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -133,7 +133,13 @@ ipcMain.handle('generate', async (_event, htmlData: FilePathContentPair[]) => {
                 printBackground: true,
             })
             writeFile(pdfPath, data, () => {
-                // TODO: handle error or success with notification
+                dialog.showMessageBox(win, {
+                    type: 'info',
+                    icon: icon,
+                    buttons: ['OK'],
+                    title: 'Canvas Capture',
+                    message: 'Report Successfully Generated!',
+                })
             })
         })
     }

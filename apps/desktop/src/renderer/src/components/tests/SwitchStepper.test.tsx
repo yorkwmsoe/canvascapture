@@ -124,7 +124,7 @@ describe('SwitchStepper', () => {
         mockUseSettingsStore.mockImplementation(() => ({
             markdownEditor: true,
         }))
-        mockUseSearch.mockImplementation(() => ({ step: 1 }))
+        mockUseSearch.mockImplementation(() => ({ step: 2 }))
         render(<SwitchStepper />)
 
         const nextButton = screen.getByText('Next')

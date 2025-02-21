@@ -15,13 +15,14 @@ import remarkGfm from 'remark-gfm'
 import { ExternalLink } from '../ExternalLink'
 import { FileDataNode } from '@canvas-capture/lib'
 import { GUIEditor } from './GUIEditor'
+import { RevertIcon } from '@renderer/components/icons/Revert'
+import { FileOutlined } from '@ant-design/icons'
 
 export type MarkdownEditorProps = {
     treeData: DirectoryTreeProps['treeData']
     selectedFile: FileDataNode | undefined
     handleSelectFile: (key: string) => void
     handleSaveFile: (key: string, content: string) => void
-    handleFinish: () => void
 }
 
 export function MarkdownEditor({
@@ -29,7 +30,6 @@ export function MarkdownEditor({
     selectedFile,
     handleSelectFile,
     handleSaveFile,
-    handleFinish,
 }: MarkdownEditorProps) {
     const { modal, message } = App.useApp()
     const { token } = useTheme()
@@ -97,6 +97,7 @@ export function MarkdownEditor({
                         setText={setText}
                         selectedFile={selectedFile}
                         guiText={guiText}
+                        setIsDirty={setIsDirty}
                     />
                 </div>
             ),
@@ -130,7 +131,9 @@ export function MarkdownEditor({
             children: (
                 <div>
                     <Tabs defaultActiveKey="1" items={editorTabs} type="card" />
-                    <Button onClick={revertToOriginal}>Revert changes</Button>
+                    <Button onClick={revertToOriginal} icon={<RevertIcon />}>
+                        Revert changes
+                    </Button>
                 </div>
             ),
         },
@@ -181,18 +184,32 @@ export function MarkdownEditor({
                 gap: '2rem',
             }}
         >
-            <DirectoryTree
-                style={{ flex: 1 }}
-                multiple
-                defaultExpandAll
-                treeData={treeData}
-                onSelect={handleChangeFile}
-                selectedKeys={selectedFile ? [selectedFile.key] : []}
-            />
+            <div>
+                <h2 style={{ marginBottom: 0 }}>Select a File Below to Edit</h2>
+                <p style={{ marginTop: 0 }}>
+                    Files are indicated by: <FileOutlined />
+                </p>
+                <DirectoryTree
+                    style={{
+                        flex: 1,
+                        border: `1px dashed ${token.colorBorder}`,
+                        borderRadius: token.borderRadiusLG,
+                        marginBottom: '10px',
+                        overflowY: 'scroll',
+                        maxHeight: '65vh',
+                        maxWidth: '400px',
+                    }}
+                    multiple
+                    defaultExpandAll
+                    treeData={treeData}
+                    onSelect={handleChangeFile}
+                    selectedKeys={selectedFile ? [selectedFile.key] : []}
+                />
+            </div>
             <div style={{ flex: 5 }}>
                 <Tabs defaultActiveKey="1" items={tabs} type="card" />
             </div>
-            <SideBar onSave={handleSave} onFinish={handleFinish} />
+            <SideBar onSave={handleSave} />
         </div>
     )
 }

@@ -13,6 +13,9 @@ import { useAssignments } from '@renderer/hooks/useAssignments'
 import { Generate } from '../Generate'
 import { useSettingsStore } from '@renderer/stores/settings.store'
 import { useNavigate, useSearch } from '@tanstack/react-router'
+import { RightArrowIcon } from '@renderer/components/icons/RightArrow'
+import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
+import { CheckIcon } from '@renderer/components/icons/Check'
 
 export const STEPS = [
     {
@@ -48,7 +51,7 @@ export function SwitchStepper() {
     const navigate = useNavigate({ from: '/selection' })
 
     const next = useCallback(() => {
-        if (STEPS[current].title === 'Assignments' && markdownEditor) {
+        if (STEPS[current].title === 'Statistics' && markdownEditor) {
             navigate({ to: '/markdown-editor' })
         } else if (current !== STEPS.length - 1) {
             setCurrent((prev) => prev + 1)
@@ -58,6 +61,8 @@ export function SwitchStepper() {
     const prev = useCallback(() => {
         if (current !== 0) {
             setCurrent((prev) => prev - 1)
+        } else {
+            navigate({ to: '/' })
         }
     }, [current])
 
@@ -99,7 +104,9 @@ export function SwitchStepper() {
                     justifyContent: 'space-between',
                 }}
             >
-                {current > 0 && <Button onClick={prev}>Previous</Button>}
+                <Button onClick={prev} icon={<LeftArrowIcon />}>
+                    Previous
+                </Button>
                 {current < STEPS.length - 1 && (
                     <Button
                         style={{ marginLeft: 'auto' }}
@@ -107,8 +114,17 @@ export function SwitchStepper() {
                         onClick={next}
                         disabled={isDisabled}
                         id="nextButton"
+                        icon={
+                            STEPS[current + 1].title === 'Generate' &&
+                            !markdownEditor ? (
+                                <CheckIcon />
+                            ) : (
+                                <RightArrowIcon />
+                            )
+                        }
                     >
-                        {STEPS[current + 1].title === 'Generate'
+                        {STEPS[current + 1].title === 'Generate' &&
+                        !markdownEditor
                             ? 'Generate'
                             : 'Next'}
                     </Button>
