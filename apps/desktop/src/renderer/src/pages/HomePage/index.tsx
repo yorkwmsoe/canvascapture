@@ -12,10 +12,12 @@ import {
     Flex,
     Form,
     Typography,
+    Image,
+    Collapse,
 } from 'antd'
 import { useNavigate } from '@tanstack/react-router'
 import { useGetFolders } from '@renderer/hooks/useGetFolders'
-import { FileMarkdownOutlined } from '@ant-design/icons'
+import { FilePdfOutlined } from '@ant-design/icons'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import { shell } from 'electron'
 import { doesConfigExist, getDocumentsPath } from '@renderer/utils/config'
@@ -25,6 +27,8 @@ import { useCourses } from '@renderer/hooks/useCourses'
 import { join } from 'path'
 import { Navbar } from '@renderer/components/Navbar'
 import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
+import { GearIcon } from '@renderer/components/icons/Gear'
+import icon from '@renderer/resources/icon.png'
 
 const { Content, Footer } = Layout
 const { Meta } = Card
@@ -71,10 +75,28 @@ export function HomePage() {
                 }}
             >
                 <Navbar>
-                    <Typography.Title level={4} style={{ margin: 0 }}>
+                    <Typography.Title
+                        level={4}
+                        style={{
+                            margin: 0,
+                            height: 20,
+                            justifyContent: 'center',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Image
+                            src={icon}
+                            height={'100%'}
+                            preview={false}
+                            style={{ paddingRight: 5 }}
+                        ></Image>
                         Canvas Capture
                     </Typography.Title>
-                    <Button onClick={goToSettingsPage}>Settings</Button>
+                    <Button onClick={goToSettingsPage} icon={<GearIcon />}>
+                        Settings
+                    </Button>
                 </Navbar>
                 <Content
                     style={{
@@ -136,21 +158,28 @@ export function HomePage() {
                         </Form.Item>
                     </Form>
                     {folder !== undefined && folder.length > 0 ? ( // If there are no previously generated reports, don't display this section.
-                        <>
-                            <h2>Previously Generated Reports</h2>
-                            <Flex
-                                align={'center'}
-                                justify={'center'}
-                                style={{ flexWrap: 'wrap', overflow: 'auto' }}
+                        <Collapse>
+                            <Collapse.Panel
+                                header="Previously Generated Reports"
+                                key="1"
                             >
-                                {folder?.map((folder) => (
-                                    <FolderCard
-                                        key={folder}
-                                        folder={folder}
-                                    ></FolderCard>
-                                ))}
-                            </Flex>
-                        </>
+                                <Flex
+                                    align={'center'}
+                                    justify={'center'}
+                                    style={{
+                                        flexWrap: 'wrap',
+                                        overflow: 'auto',
+                                    }}
+                                >
+                                    {folder?.map((folder) => (
+                                        <FolderCard
+                                            key={folder}
+                                            folder={folder}
+                                        ></FolderCard>
+                                    ))}
+                                </Flex>
+                            </Collapse.Panel>
+                        </Collapse>
                     ) : (
                         <></>
                     )}
@@ -183,10 +212,12 @@ function FolderCard({ folder }: FolderCardProps) {
                 maxWidth: 175,
                 width: 175,
                 textAlign: 'center',
+                border: 'black 1px solid',
+                margin: '2px',
             }}
             onClick={() => shell.openPath(join(getDocumentsPath(), folder))}
         >
-            <FileMarkdownOutlined />
+            <FilePdfOutlined />
             <Meta title={folder} />
         </Card>
     )
