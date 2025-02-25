@@ -30,9 +30,19 @@ import {
 import { User } from './types/canvas_api/user'
 import { Quiz } from './types/canvas_api/quiz'
 import { QuizSubmission } from './types/canvas_api/quiz-submissions'
-import { generateAssignment, generateQuiz } from './generators'
+import {
+    generateAssignment,
+    generateAssignmentDescription,
+    generateAssignmentSubmission,
+    generateQuiz,
+    generateQuizDescription,
+    generateQuizSubmission,
+} from './generators'
 import * as markdown from './markdown'
-import { assembleQuizQuestionsAndComments } from './quiz-organization'
+import {
+    assembleQuizQuestionsAndComments,
+    assembleQuizQuestionsAndAnswers,
+} from './quiz-organization'
 import {
     testCourses,
     testAssignments,
@@ -58,7 +68,11 @@ export {
     Quiz,
     QuizSubmission,
     generateAssignment,
+    generateAssignmentDescription,
+    generateAssignmentSubmission,
     generateQuiz,
+    generateQuizDescription,
+    generateQuizSubmission,
     markdown,
     Auth,
     GetAssignmentsRequest,
@@ -74,4 +88,5 @@ export {
     LatePolicyStatus,
     SubmissionType,
     assembleQuizQuestionsAndComments,
+    assembleQuizQuestionsAndAnswers,
 }

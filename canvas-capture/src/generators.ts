@@ -32,6 +32,32 @@ export function generateAssignment(
     return items.filter((item) => !!item)
 }
 
+export function generateAssignmentDescription(
+    assignment: Assignment,
+    fancy: boolean
+) {
+    const title = convertToHeader('ASSIGNMENT: ' + assignment.name, 1)
+
+    const items = [title, ...assembleDescriptionInfo(assignment, fancy)]
+
+    return items.filter((item) => !!item)
+}
+
+export function generateAssignmentSubmission(
+    assignment: Assignment,
+    submission: Submission,
+    fancy: boolean
+) {
+    const items = [
+        ...assembleTitleAndGrade(assignment, submission, 'SUBMISSION: '),
+        ...assembleFeedbackInfo(submission),
+        ...assembleRubricInfo(assignment, submission),
+        ...assembleSubmissionInfo(submission, fancy),
+    ]
+
+    return items.filter((item) => !!item)
+}
+
 export function generateQuiz(
     assignment: Assignment,
     submission: Submission,
@@ -45,6 +71,37 @@ export function generateQuiz(
         ...assembleDescriptionInfo(assignment, fancy),
         ...assembleFeedbackInfo(submission),
         ...quizOverview(assignment, quiz),
+        ...quizUserOverview(submission, quizSubmission),
+        ...quizQuestionInfo,
+    ]
+    return items.filter((item) => !!item)
+}
+
+export function generateQuizDescription(
+    assignment: Assignment,
+    quiz: Quiz,
+    quizQuestionInfo: string[],
+    fancy: boolean
+) {
+    const title = convertToHeader('QUIZ: ' + assignment.name, 1)
+    const items = [
+        title,
+        ...assembleDescriptionInfo(assignment, fancy),
+        ...quizOverview(assignment, quiz),
+        ...quizQuestionInfo,
+    ]
+    return items.filter((item) => !!item)
+}
+
+export function generateQuizSubmission(
+    assignment: Assignment,
+    submission: Submission,
+    quizSubmission: QuizSubmission | undefined,
+    quizQuestionInfo: string[]
+) {
+    const items = [
+        ...assembleTitleAndGrade(assignment, submission, 'SUBMISSION: '),
+        ...assembleFeedbackInfo(submission),
         ...quizUserOverview(submission, quizSubmission),
         ...quizQuestionInfo,
     ]

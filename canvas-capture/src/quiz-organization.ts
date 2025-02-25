@@ -92,6 +92,69 @@ export async function assembleQuizQuestionsAndComments(
     return formatQuizQuestions(questionsData)
 }
 
+export async function assembleQuizQuestionsAndAnswers(
+    auth: Auth,
+    course: Course,
+    assignment: Assignment
+) {
+    // obtain quiz questions
+    const quiz_id_num = assignment.quiz_id
+    const quiz_id = quiz_id_num != undefined ? quiz_id_num : -1
+    const quizQuestions = await getQuizQuestionsNoParams({
+        courseId: course.id,
+        quizId: quiz_id,
+        canvasDomain: auth.canvasDomain,
+        canvasAccessToken: auth.canvasAccessToken,
+    })
+
+    // format quiz questions
+    const formattedQuestionsAndAnswers = quizQuestions.map(
+        (question, index) => {
+            const position = (index + 1).toString()
+            const question_name = question.question_name
+            const points_possible = question.points_possible.toString()
+            const qDescription = question.question_text
+                .toString()
+                .replace(/(<([^>]+)>|\n|&nbsp;)/gi, '')
+            const qType = question.question_type
+
+            // generate question table
+            const questionHeader =
+                convertToHeader('Question #' + position, 2) + '\n'
+            const questionTableHeader = createTableHeader([
+                'Question Name',
+                'Points Possible',
+                'Question Description',
+                'Question Type',
+            ])
+            const questionTableBody =
+                createTableRows([
+                    [question_name, points_possible, qDescription, qType],
+                ]) + '\n'
+
+            // generate answers table
+            const answerTableHeader = createTableHeader(['Answer', 'Weight'])
+            const answerTableBody = createTableRows([
+                ...question.answers.map((answer) => {
+                    return [answer.text, answer.weight.toString()]
+                }),
+            ])
+
+            // put it all together
+            const formattedString =
+                questionHeader +
+                questionTableHeader +
+                questionTableBody +
+                answerTableHeader +
+                answerTableBody
+
+            return formattedString
+        }
+    )
+
+    return formattedQuestionsAndAnswers
+}
+
 export function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
     const formattedQuestions: string[] = []
     //const numQuestions = quizQuestions.length
