@@ -22,9 +22,10 @@ import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
 import { FilePathContentPair } from './types'
 import {
+    median,
     generateAssignmentOrQuizDescription,
     generateAssignmentOrQuizSubmission,
-    median,
+    getHighMedianLowSubmissions,
 } from './utils'
 import { generateTOC } from './generateTOC'
 import { oneYearExport, AverageAssignmentGradeExport } from '../Statistics'
@@ -142,6 +143,77 @@ export const generatePairs = async (
             return [descriptionPair, highPair, lowPair]
         default:
             return [descriptionPair, highPair, medianPair, lowPair]
+    }
+}
+
+export async function generateAssignmentAndSubmissionContent(
+    course: Course,
+    assignment: Assignment,
+    submissions: Submission[],
+    quiz: Quiz | undefined,
+    canvasAccessToken: string,
+    canvasDomain: string
+) {
+    const { highSubmission, medianSubmission, lowSubmission } =
+        getHighMedianLowSubmissions(submissions)
+
+    const descriptionContent = (
+        await generateAssignmentOrQuizDescription(
+            course,
+            assignment,
+            quiz,
+            canvasAccessToken,
+            canvasDomain
+        )
+    ).join('\n')
+
+    const highSubmissionContent =
+        highSubmission === undefined
+            ? undefined
+            : (
+                  await generateAssignmentOrQuizSubmission(
+                      course,
+                      assignment,
+                      highSubmission,
+                      quiz,
+                      canvasAccessToken,
+                      canvasDomain
+                  )
+              ).join('\n')
+
+    const medianSubmissionContent =
+        medianSubmission === undefined
+            ? undefined
+            : (
+                  await generateAssignmentOrQuizSubmission(
+                      course,
+                      assignment,
+                      medianSubmission,
+                      quiz,
+                      canvasAccessToken,
+                      canvasDomain
+                  )
+              ).join('\n')
+
+    const lowSubmissionContent =
+        lowSubmission === undefined
+            ? undefined
+            : (
+                  await generateAssignmentOrQuizSubmission(
+                      course,
+                      assignment,
+                      lowSubmission,
+                      quiz,
+                      canvasAccessToken,
+                      canvasDomain
+                  )
+              ).join('\n')
+
+    return {
+        descriptionContent: descriptionContent,
+        highSubmissionContent: highSubmissionContent,
+        medianSubmissionContent: medianSubmissionContent,
+        lowSubmissionContent: lowSubmissionContent,
     }
 }
 
