@@ -16,6 +16,8 @@ import { useNavigate, useSearch } from '@tanstack/react-router'
 import { RightArrowIcon } from '@renderer/components/icons/RightArrow'
 import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
 import { CheckIcon } from '@renderer/components/icons/Check'
+import { Navbar } from '@renderer/components/Navbar'
+import { HelpIcon } from '@renderer/components/icons/Help'
 
 export const STEPS = [
     {
@@ -67,7 +69,14 @@ export function SwitchStepper() {
     }, [current])
 
     const items = useMemo(
-        () => STEPS.map((item) => ({ key: item.title, title: item.title })),
+        () =>
+            STEPS.map((item) => ({
+                key: item.title,
+                title:
+                    markdownEditor && item.title == 'Generate'
+                        ? 'Editor'
+                        : item.title,
+            })),
         [STEPS]
     )
 
@@ -76,8 +85,29 @@ export function SwitchStepper() {
         (STEPS[current].title === 'Assignments' &&
             selectedAssignments.length === 0)
 
+    const goToHelpPage = () => {
+        navigate({
+            to: '/help',
+            search: {
+                previousPage: '/selection',
+                section: 'process',
+                step: current,
+            },
+        })
+    }
+
     return (
         <>
+            <Navbar>
+                <div></div>
+                <Button
+                    style={{ marginTop: -20 }}
+                    onClick={goToHelpPage}
+                    icon={<HelpIcon />}
+                >
+                    Help
+                </Button>
+            </Navbar>
             <Steps current={current} items={items} />
             {STEPS[current].title !== 'Generate' && (
                 <h4>{STEPS[current].description}</h4>

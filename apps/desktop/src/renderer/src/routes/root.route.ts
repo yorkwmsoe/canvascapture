@@ -10,6 +10,7 @@ import { settingsRoute } from './settings.route'
 import { selectionRoute } from './selection.route'
 import { markdownEditorRoute } from './markdown-editor.route'
 import { generationRoute } from '@renderer/routes/generation.route'
+import { helpRoute } from '@renderer/routes/help.route'
 
 export const rootRoute = createRootRoute()
 
@@ -20,5 +21,6 @@ export const routeTree = rootRoute.addChildren([
     selectionRoute,
     markdownEditorRoute,
     generationRoute,
+    helpRoute,
     // Add your routes here
 ])

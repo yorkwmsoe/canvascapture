@@ -100,7 +100,7 @@ describe('MarkdownEditor', () => {
                 fireEvent.change(textbox, {
                     target: { value: 'Updated content' },
                 })
-                fireEvent.click(screen.getByText('Revert changes'))
+                fireEvent.click(screen.getByText('Revert Changes'))
                 expect(textbox.innerHTML).toBe('Initial content')
             }
         }
