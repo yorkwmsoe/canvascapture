@@ -270,19 +270,20 @@ export async function generate(
                           quizId: assignment.quiz_id,
                       })
                     : undefined
-                const pairs = await generatePairs(
-                    course,
-                    assignment,
-                    uniqueSubmissions,
-                    quiz,
-                    sanitizePath(join(generationName, getCourseName(course))),
-                    canvasAccessToken,
-                    canvasDomain
-                )
 
-                pairs.forEach((pair) => {
-                    courseContent += `${pair.content}\n\n` // Append assignment content
-                })
+                const assignmentContent = await generateAssignmentAndSubmissionContent(
+                        course,
+                        assignment,
+                        uniqueSubmissions,
+                        quiz,
+                        canvasAccessToken,
+                        canvasDomain
+                    )
+
+                for (const content of Object.values(assignmentContent)) {
+                    if (content === undefined) continue
+                    courseContent += `${content}\n\n`
+                }
             }
         }
 
