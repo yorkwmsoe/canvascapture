@@ -18,6 +18,7 @@ import {
     generateAssignmentDescription,
     generateAssignmentSubmission,
 } from '@canvas-capture/lib'
+import { maxBy, minBy } from 'lodash'
 import { canvasApi } from '@renderer/apis/canvas.api'
 
 // https://stackoverflow.com/a/70806192
@@ -136,5 +137,39 @@ export const generateAssignmentOrQuizSubmission = async (
         )
     } else {
         return generateAssignmentSubmission(assignment, submission, true)
+    }
+}
+
+export function getHighMedianLowSubmissions(submissions: Submission[]): {
+    highSubmission: Submission | undefined
+    medianSubmission: Submission | undefined
+    lowSubmission: Submission | undefined
+} {
+    const highSubmission = maxBy(submissions, (s) => s.score) ?? submissions[0]
+    const medianSubmission =
+        submissions.filter(
+            (s) => s.score === median(submissions.map((x) => x.score))
+        )[0] ?? submissions[0]
+    const lowSubmission = minBy(submissions, (s) => s.score) ?? submissions[0]
+
+    switch (submissions.length) {
+        case 1:
+            return {
+                highSubmission: highSubmission,
+                medianSubmission: undefined,
+                lowSubmission: undefined,
+            }
+        case 2:
+            return {
+                highSubmission: highSubmission,
+                medianSubmission: undefined,
+                lowSubmission: lowSubmission,
+            }
+        default:
+            return {
+                highSubmission: highSubmission,
+                medianSubmission: medianSubmission,
+                lowSubmission: lowSubmission,
+            }
     }
 }
