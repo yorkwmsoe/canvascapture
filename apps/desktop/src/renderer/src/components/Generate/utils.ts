@@ -5,18 +5,18 @@
  */
 import {
     Assignment,
-    Submission,
+    Auth,
+    Course,
     Quiz,
+    Submission,
+    assembleQuizQuestionsAndComments,
+    assembleQuizQuestionsAndAnswers,
     generateQuiz,
     generateQuizDescription,
     generateQuizSubmission,
     generateAssignment,
     generateAssignmentDescription,
     generateAssignmentSubmission,
-    Auth,
-    Course,
-    assembleQuizQuestionsAndComments,
-    assembleQuizQuestionsAndAnswers,
 } from '@canvas-capture/lib'
 import { canvasApi } from '@renderer/apis/canvas.api'
 
