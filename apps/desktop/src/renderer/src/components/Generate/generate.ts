@@ -210,10 +210,10 @@ export async function generateAssignmentAndSubmissionContent(
               ).join('\n')
 
     return {
-        descriptionContent: descriptionContent,
-        highSubmissionContent: highSubmissionContent,
-        medianSubmissionContent: medianSubmissionContent,
-        lowSubmissionContent: lowSubmissionContent,
+        description: descriptionContent,
+        highSubmission: highSubmissionContent,
+        medianSubmission: medianSubmissionContent,
+        lowSubmission: lowSubmissionContent,
     }
 }
 
