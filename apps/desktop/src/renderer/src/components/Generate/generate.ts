@@ -65,6 +65,8 @@ Chart.register(
     Tooltip, // for tooltips
     Legend // for the chart legend
 )
+
+// TODO: deprecate.
 export const generatePairs = async (
     course: Course,
     assignment: Assignment,
@@ -271,7 +273,8 @@ export async function generate(
                       })
                     : undefined
 
-                const assignmentContent = await generateAssignmentAndSubmissionContent(
+                const assignmentContent =
+                    await generateAssignmentAndSubmissionContent(
                         course,
                         assignment,
                         uniqueSubmissions,
