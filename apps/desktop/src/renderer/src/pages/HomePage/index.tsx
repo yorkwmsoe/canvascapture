@@ -29,6 +29,7 @@ import { Navbar } from '@renderer/components/Navbar'
 import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
 import { GearIcon } from '@renderer/components/icons/Gear'
 import icon from '@renderer/resources/icon.png'
+import { HelpIcon } from '@renderer/components/icons/Help'
 
 const { Content, Footer } = Layout
 const { Meta } = Card
@@ -67,6 +68,13 @@ export function HomePage() {
         navigate({ to: '/settings' })
     }
 
+    const goToHelpPage = () => {
+        navigate({
+            to: '/help',
+            search: { previousPage: '/', section: 'process' },
+        })
+    }
+
     return (
         <ErrorBoundary>
             <Layout
@@ -94,9 +102,18 @@ export function HomePage() {
                         ></Image>
                         Canvas Capture
                     </Typography.Title>
-                    <Button onClick={goToSettingsPage} icon={<GearIcon />}>
-                        Settings
-                    </Button>
+                    <div>
+                        <Button
+                            style={{ marginRight: 10 }}
+                            onClick={goToSettingsPage}
+                            icon={<GearIcon />}
+                        >
+                            Settings
+                        </Button>
+                        <Button onClick={goToHelpPage} icon={<HelpIcon />}>
+                            Help
+                        </Button>
+                    </div>
                 </Navbar>
                 <Content
                     style={{

@@ -14,6 +14,7 @@ import { getCurrentWindow } from '@electron/remote'
 import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
 import { useQueryClient } from '@tanstack/react-query'
 import { SaveIcon } from '@renderer/components/icons/Save'
+import { HelpIcon } from '@renderer/components/icons/Help'
 
 export function SettingsPage() {
     const {
@@ -29,6 +30,16 @@ export function SettingsPage() {
 
     const goToHomePage = () => {
         navigate({ to: '/' })
+    }
+
+    const goToHelpPage = () => {
+        navigate({
+            to: '/help',
+            search: {
+                previousPage: isSetup ? '/setup' : '/settings',
+                section: 'settings',
+            },
+        })
     }
 
     const onFinish = (values: Config) => {
@@ -52,6 +63,9 @@ export function SettingsPage() {
                 <Navbar>
                     <Button onClick={goToHomePage} icon={<HomeIcon />}>
                         Home
+                    </Button>
+                    <Button onClick={goToHelpPage} icon={<HelpIcon />}>
+                        Help
                     </Button>
                 </Navbar>
                 <Flex justify="center" vertical>
@@ -98,7 +112,7 @@ export function SettingsPage() {
                                 label={
                                     <span
                                         title={
-                                            'The Markdown Editor allows for editing the generated PDFs prior to saving.'
+                                            'The editor allows for editing the generated PDFs prior to saving.'
                                         }
                                         style={{ fontSize: 20, color: 'blue' }}
                                     >
@@ -108,7 +122,7 @@ export function SettingsPage() {
                                 labelCol={{ style: { order: 2 } }}
                                 colon={false}
                             >
-                                <Checkbox>Show Markdown Editor</Checkbox>
+                                <Checkbox>Show Editor</Checkbox>
                             </Form.Item>
                         )}
                         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

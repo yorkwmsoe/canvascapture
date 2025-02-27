@@ -132,7 +132,7 @@ export function MarkdownEditor({
                 <div>
                     <Tabs defaultActiveKey="1" items={editorTabs} type="card" />
                     <Button onClick={revertToOriginal} icon={<RevertIcon />}>
-                        Revert changes
+                        Revert Changes
                     </Button>
                 </div>
             ),
@@ -194,9 +194,7 @@ export function MarkdownEditor({
                         flex: 1,
                         border: `1px dashed ${token.colorBorder}`,
                         borderRadius: token.borderRadiusLG,
-                        marginBottom: '10px',
-                        overflowY: 'scroll',
-                        maxHeight: '65vh',
+                        marginBottom: '100px',
                         maxWidth: '400px',
                     }}
                     multiple
@@ -206,7 +204,7 @@ export function MarkdownEditor({
                     selectedKeys={selectedFile ? [selectedFile.key] : []}
                 />
             </div>
-            <div style={{ flex: 5 }}>
+            <div style={{ flex: 5, marginBottom: '100px' }}>
                 <Tabs defaultActiveKey="1" items={tabs} type="card" />
             </div>
             <SideBar onSave={handleSave} />

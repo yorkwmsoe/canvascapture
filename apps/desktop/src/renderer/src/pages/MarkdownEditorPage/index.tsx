@@ -29,6 +29,8 @@ import {
 import { useCallback, useMemo, useState } from 'react'
 import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
 import { CheckIcon } from '@renderer/components/icons/Check'
+import { Navbar } from '@renderer/components/Navbar'
+import { HelpIcon } from '@renderer/components/icons/Help'
 
 function transformData(data: DataNode): TreeDataNode {
     if (isCourseDataNode(data)) {
@@ -113,6 +115,13 @@ export function MarkdownEditorPage() {
         navigate({ to: '/selection', search: { step: STEPS.length - 2 } })
     }
 
+    const goToHelpPage = () => {
+        navigate({
+            to: '/help',
+            search: { previousPage: '/markdown-editor', section: 'editor' },
+        })
+    }
+
     const handleFinish = useCallback(() => {
         generate(data)
     }, [data, generate])
@@ -127,9 +136,21 @@ export function MarkdownEditorPage() {
     return (
         <ErrorBoundary>
             <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
-                <Typography.Title level={2} style={{ textAlign: 'center' }}>
-                    Markdown Editor
-                </Typography.Title>
+                <Navbar>
+                    <div></div>
+                    <Typography.Title level={2} style={{ textAlign: 'center' }}>
+                        Editor
+                    </Typography.Title>
+                    <Popconfirm
+                        title="Potential Unsaved Changes"
+                        description="Have you saved your changes? Any unsaved changes will be lost."
+                        okText="Yes"
+                        cancelText="No"
+                        onConfirm={goToHelpPage}
+                    >
+                        <Button icon={<HelpIcon />}>Help</Button>
+                    </Popconfirm>
+                </Navbar>
                 <div style={{ marginInline: '1rem' }}>
                     {!isLoading && !isGenerating ? (
                         <MarkdownEditor
@@ -154,12 +175,15 @@ export function MarkdownEditorPage() {
                 </div>
                 <div
                     style={{
-                        bottom: 20,
+                        bottom: 0,
                         position: 'fixed',
                         display: 'flex',
                         justifyContent: 'space-between',
-                        marginTop: 24,
                         width: '100%',
+                        backgroundColor: 'white',
+                        zIndex: '10',
+                        paddingTop: '20px',
+                        paddingBottom: '20px',
                     }}
                 >
                     <Button

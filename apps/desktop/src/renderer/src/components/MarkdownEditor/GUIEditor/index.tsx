@@ -200,7 +200,7 @@ export function GUIEditor({
             let sectionTitleDescription = 'Section title: '
             if (sectionTitle.startsWith('# ')) {
                 sectionTitle = sectionTitle.substring(2)
-                sectionTitleDescription = 'PDF title: '
+                sectionTitleDescription = 'Assignment title: '
             }
 
             titleText[sectionID] = sectionTitle
