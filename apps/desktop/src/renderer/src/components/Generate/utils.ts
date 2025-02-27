@@ -153,6 +153,13 @@ export function getHighMedianLowSubmissions(submissions: Submission[]): {
     const lowSubmission = minBy(submissions, (s) => s.score) ?? submissions[0]
 
     switch (submissions.length) {
+        case 0:
+            return {
+                highSubmission: undefined,
+                medianSubmission: undefined,
+                lowSubmission: undefined,
+            }
+
         case 1:
             return {
                 highSubmission: highSubmission,
