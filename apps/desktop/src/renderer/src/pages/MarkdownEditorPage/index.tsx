@@ -114,7 +114,7 @@ export function MarkdownEditorPage() {
     }
 
     const handleFinish = useCallback(() => {
-        generate(data) // TODO: implement this similarly for default.
+        generate(data)
     }, [data, generate])
 
     const handleSaveFile = (key: string, content: string) => {
