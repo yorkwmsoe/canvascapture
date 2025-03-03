@@ -29,7 +29,7 @@ export type AssignmentDataNode = {
 export type FileDataNode = {
     type: 'file'
     key: string
-    name: 'high' | 'low' | 'median'
+    name: 'description' | 'high' | 'low' | 'median'
     content: string[]
 }
 

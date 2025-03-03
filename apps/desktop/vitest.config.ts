@@ -25,7 +25,6 @@ export default defineConfig({
                 '**/utils/config.ts',
                 '**/utils/guards.ts',
                 '**/generate.ts',
-                '**/generate.v2.ts',
                 '**/generateTOC.ts',
                 '**/model.ts',
                 '**/types.ts',

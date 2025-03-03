@@ -31,7 +31,6 @@ import { User } from './types/canvas_api/user'
 import { Quiz } from './types/canvas_api/quiz'
 import { QuizSubmission } from './types/canvas_api/quiz-submissions'
 import {
-    generateAssignment,
     generateAssignmentDescription,
     generateAssignmentSubmission,
     generateQuiz,
@@ -67,7 +66,6 @@ export {
     User,
     Quiz,
     QuizSubmission,
-    generateAssignment,
     generateAssignmentDescription,
     generateAssignmentSubmission,
     generateQuiz,

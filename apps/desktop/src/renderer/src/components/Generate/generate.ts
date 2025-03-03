@@ -1,8 +1,8 @@
 /**
  * Defines methods for generating reports
  *
- * generatePairs() is used to find and return a high, medium, and low submission
- * as desired the parameters passed to it.
+ * generateAssignmentAndSubmissionContent() returns the contents of an assignment
+ * description and the high, median, and low submissions.
  * See the method definition below for more details.
  *
  * generate() is used to facilitate the actual generation of the pdf
@@ -11,24 +11,24 @@
  * generateChart() and generateAvgGradeChart are used to generate statistics charts
  * See the method definitions below for more details
  */
-import { rm, writeFile } from 'fs/promises'
-import markdownit from 'markdown-it'
-import _ from 'lodash'
-import { mkdirSync } from 'fs'
+
 import { join } from 'path'
-import { Assignment, Course, Quiz, Submission } from '@canvas-capture/lib'
-import { canvasApi } from '../../apis/canvas.api'
 import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
+import markdownit from 'markdown-it'
+import { mkdirSync, rmSync, writeFileSync } from 'fs'
+import { Assignment, Course, Quiz, Submission, DataNode, isCourseDataNode } from '@canvas-capture/lib'
 import { FilePathContentPair } from './types'
+import { generateTOC } from '@renderer/components/Generate/generateTOC'
+import { AverageAssignmentGradeExport, oneYearExport } from '@renderer/components/Statistics'
+import { canvasApi } from '@renderer/apis/canvas.api'
+
 import {
-    median,
     generateAssignmentOrQuizDescription,
     generateAssignmentOrQuizSubmission,
     getHighMedianLowSubmissions,
 } from './utils'
-import { generateTOC } from './generateTOC'
-import { oneYearExport, AverageAssignmentGradeExport } from '../Statistics'
+
 import {
     Chart,
     LinearScale,
@@ -43,19 +43,6 @@ import {
 } from 'chart.js'
 
 Chart.register(
-    LineController,
-    LineElement,
-    PointElement,
-    LinearScale,
-    Title,
-    CategoryScale,
-    Filler
-)
-
-const allSubmissions: Submission[] = []
-const allAssignments: Assignment[] = []
-
-Chart.register(
     LinearScale, // for the y-axis scale
     CategoryScale, // for the x-axis scale
     LineController, // for creating line charts
@@ -63,89 +50,114 @@ Chart.register(
     PointElement, // for point elements in the chart
     Title, // for chart titles
     Tooltip, // for tooltips
-    Legend // for the chart legend
+    Legend, // for the chart legend
+    Filler
 )
 
-// TODO: deprecate.
-export const generatePairs = async (
-    course: Course,
-    assignment: Assignment,
-    submissions: Submission[],
-    quiz: Quiz | undefined,
-    assignmentsPath: string,
+export async function generate(
+    data: DataNode[],
+    generationName: string,
+    documentsPath: string,
     canvasAccessToken: string,
-    canvasDomain: string
-): Promise<FilePathContentPair[]> => {
-    const descriptionPair = {
-        filePath: join(assignmentsPath, 'description'),
-        content: (
-            await generateAssignmentOrQuizDescription(
-                course,
-                assignment,
-                quiz,
-                canvasAccessToken,
-                canvasDomain
-            )
-        ).join('\n'),
+    canvasDomain: string,
+    isStudent: boolean,
+) {
+
+    // Find all assignments and submissions. Utilized for chart/graph creation.
+    const allAssignments: Assignment[] = []
+    const allSubmissions: Submission[] = []
+    for (const course of data) {
+        if (isCourseDataNode(course)) {
+            for (const assignment of course.children) {
+                if (assignment.assignment) {
+                    allAssignments.push(assignment.assignment)
+                    const submissions = await canvasApi.getSubmissions({
+                        canvasAccessToken,
+                        canvasDomain,
+                        isStudent,
+                        courseId: course.course.id,
+                        assignmentId: assignment.assignment.id,
+                    });
+
+                    // Add all submissions to allSubmissions
+                    for (let ivar = 0; ivar < submissions.length; ivar++) {
+                        allSubmissions.push(submissions[ivar]);
+                    }
+                }
+            }
+        }
     }
 
-    const highSubmission =
-        _.maxBy(submissions, (s) => s.score) ?? submissions[0]
-    const highPair = {
-        filePath: join(assignmentsPath, 'high'),
-        content: (
-            await generateAssignmentOrQuizSubmission(
-                course,
-                assignment,
-                highSubmission,
-                quiz,
-                canvasAccessToken,
-                canvasDomain
-            )
-        ).join('\n'),
-    }
+    // Remove existing directory to start fresh
+    rmSync(join(documentsPath, sanitizePath(generationName)), {
+        recursive: true,
+        force: true,
+    })
 
-    const medianSubmission =
-        submissions.filter(
-            (s) => s.score === median(submissions.map((x) => x.score))
-        )[0] ?? submissions[0]
-    const medianPair = {
-        filePath: join(assignmentsPath, 'median'),
-        content: (
-            await generateAssignmentOrQuizSubmission(
-                course,
-                assignment,
-                medianSubmission,
-                quiz,
-                canvasAccessToken,
-                canvasDomain
-            )
-        ).join('\n'),
-    }
+    const md = markdownit({ linkify: true, html: true })
 
-    const lowSubmission = _.minBy(submissions, (s) => s.score) ?? submissions[0]
-    const lowPair = {
-        filePath: join(assignmentsPath, 'low'),
-        content: (
-            await generateAssignmentOrQuizSubmission(
-                course,
-                assignment,
-                lowSubmission,
-                quiz,
-                canvasAccessToken,
-                canvasDomain
-            )
-        ).join('\n'),
-    }
+    // Object to hold combined markdown content for each course
+    const courseMarkdownContent: { [courseName: string]: string } = {}
 
-    switch (submissions.length) {
-        case 1:
-            return [descriptionPair, highPair]
-        case 2:
-            return [descriptionPair, highPair, lowPair]
-        default:
-            return [descriptionPair, highPair, medianPair, lowPair]
-    }
+    // Iterate through courses and their assignments
+    data.forEach((course) => {
+        if (isCourseDataNode(course)) {
+            let courseContent = `# ${getCourseName(course.course)}\n\n` // Start course-level markdown content with a title
+
+            // Loop through assignments and combine their content
+            course.children.forEach((assignment) => {
+                mkdirSync(join(documentsPath, generationName), {
+                    recursive: true,
+                })
+
+                assignment.children.forEach((file) => {
+                    courseContent += `${file.content.join('\n')}\n\n` // Append file content
+                })
+            })
+
+            // Store the combined content for this course
+            courseMarkdownContent[course.course.name] = courseContent
+        }
+    })
+
+    // If any graphs are to be generated, generate them.
+    const oneYearStatGraph = oneYearExport()
+        ? await generateChart(allSubmissions) : undefined
+    const avgAssignGradeGraph = AverageAssignmentGradeExport()
+        ? await generateAvgGradeChart(allSubmissions, allAssignments) : undefined
+
+
+    // Write markdown and generate HTML for each course
+    const htmlData: FilePathContentPair[] = Object.keys(
+        courseMarkdownContent
+    ).map((courseName) => {
+        const markdownContent = courseMarkdownContent[courseName]
+        const filePath = join(
+            documentsPath,
+            join(generationName, `${courseName}`) + '.md'
+        )
+
+        // Write the markdown file for the course
+        writeFileSync(filePath, markdownContent)
+
+        // Convert markdown to HTML
+        const htmlContent = md.render(markdownContent)
+
+        // Add table of contents and charts
+        const htmlContentWithTocAndCharts =
+            generateTOC(htmlContent) + '\n\n\n'
+            + htmlContent
+            + (oneYearStatGraph !== undefined ? oneYearStatGraph : "")
+            + (avgAssignGradeGraph !== undefined ? avgAssignGradeGraph : "")
+
+        return {
+            filePath: join(generationName, `${courseName}`),
+            content: htmlContentWithTocAndCharts,
+        }
+    })
+
+    // Return the array of file paths and their HTML content
+    return htmlData
 }
 
 export async function generateAssignmentAndSubmissionContent(
@@ -167,7 +179,7 @@ export async function generateAssignmentAndSubmissionContent(
             canvasAccessToken,
             canvasDomain
         )
-    ).join('\n')
+    )
 
     const highSubmissionContent =
         highSubmission === undefined
@@ -181,7 +193,7 @@ export async function generateAssignmentAndSubmissionContent(
                       canvasAccessToken,
                       canvasDomain
                   )
-              ).join('\n')
+              )
 
     const medianSubmissionContent =
         medianSubmission === undefined
@@ -195,7 +207,7 @@ export async function generateAssignmentAndSubmissionContent(
                       canvasAccessToken,
                       canvasDomain
                   )
-              ).join('\n')
+              )
 
     const lowSubmissionContent =
         lowSubmission === undefined
@@ -209,136 +221,18 @@ export async function generateAssignmentAndSubmissionContent(
                       canvasAccessToken,
                       canvasDomain
                   )
-              ).join('\n')
+              )
 
     return {
-        description: descriptionContent,
-        highSubmission: highSubmissionContent,
-        medianSubmission: medianSubmissionContent,
-        lowSubmission: lowSubmissionContent,
+        descriptionContent: descriptionContent,
+        highSubmissionContent: highSubmissionContent,
+        medianSubmissionContent: medianSubmissionContent,
+        lowSubmissionContent: lowSubmissionContent,
     }
 }
 
-export async function generate(
-    courses: Course[],
-    assignments: Assignment[],
-    canvasAccessToken: string,
-    canvasDomain: string,
-    isStudent: boolean,
-    generationName: string,
-    documentsPath: string
-) {
-    await rm(join(documentsPath, sanitizePath(generationName)), {
-        recursive: true,
-        force: true,
-    })
-
-    const md = markdownit({ linkify: true, html: true })
-
-    // Object to hold combined markdown content for each course
-    const courseMarkdownContent: { [courseId: string]: string } = {}
-
-    for (const course of courses) {
-        const filteredAssignments = assignments.filter(
-            (a) => a.course_id === course.id
-        )
-        let courseContent = `# ${getCourseName(course)}\n\n` // Start course-level markdown content with a title
-        mkdirSync(join(documentsPath, generationName), { recursive: true })
-
-        for (const assignment of filteredAssignments) {
-            allAssignments.push(assignment)
-            const submissions = await canvasApi.getSubmissions({
-                canvasAccessToken,
-                canvasDomain,
-                isStudent,
-                courseId: course.id,
-                assignmentId: assignment.id,
-            })
-            for (let ivar = 0; ivar < submissions.length; ivar++) {
-                allSubmissions.push(submissions[ivar])
-            }
-
-            const uniqueSubmissions = _.uniqBy(
-                submissions.filter((s) => !_.isNil(s.score)),
-                (s) => s.score
-            )
-
-            if (uniqueSubmissions.length > 0) {
-                const quiz = assignment.is_quiz_assignment
-                    ? await canvasApi.getQuiz({
-                          canvasAccessToken,
-                          canvasDomain,
-                          courseId: assignment.course_id,
-                          quizId: assignment.quiz_id,
-                      })
-                    : undefined
-
-                const assignmentContent =
-                    await generateAssignmentAndSubmissionContent(
-                        course,
-                        assignment,
-                        uniqueSubmissions,
-                        quiz,
-                        canvasAccessToken,
-                        canvasDomain
-                    )
-
-                for (const content of Object.values(assignmentContent)) {
-                    if (content === undefined) continue
-                    courseContent += `${content}\n\n`
-                }
-            }
-        }
-
-        // Store the combined content for this course
-        courseMarkdownContent[course.name] = courseContent
-    }
-
-    let oneYearStat
-    let avgAssignGrade
-    if (oneYearExport()) {
-        oneYearStat = await generateChart()
-    }
-    if (AverageAssignmentGradeExport()) {
-        avgAssignGrade = await generateAvgGradeChart()
-    }
-
-    // Write markdown and generate HTML for each course
-    const htmlData: FilePathContentPair[] = Object.keys(
-        courseMarkdownContent
-    ).map((courseName) => {
-        const markdownContent = courseMarkdownContent[courseName]
-        const filePath = join(
-            documentsPath,
-            join(generationName, `${courseName}`) + '.md'
-        )
-
-        // Write the markdown file for the course
-        writeFile(filePath, markdownContent)
-
-        // Convert markdown to HTML
-        const htmlContent = md.render(markdownContent)
-
-        const tocContent = generateTOC(htmlContent)
-        const htmlContentWithTOC = tocContent + '\n\n\n' + htmlContent
-        let htmlContentEditable = htmlContentWithTOC
-
-        if (oneYearStat != undefined) {
-            htmlContentEditable += oneYearStat
-        }
-        if (avgAssignGrade != undefined) {
-            htmlContentEditable += avgAssignGrade
-        }
-        return {
-            filePath: join(generationName, `${courseName}`),
-            content: htmlContentEditable,
-        }
-    })
-
-    return htmlData
-}
 const bgc: string = '#e8e8e8' //`#d6d6d6`
-async function generateChart() {
+export async function generateChart(allSubmissions: Submission[]) {
     let oneYearStat2
     const ctx = document.createElement('canvas')
     ctx.width = 800
@@ -450,7 +344,7 @@ async function generateChart() {
     })
 }
 
-async function generateAvgGradeChart() {
+export async function generateAvgGradeChart(allSubmissions: Submission[], allAssignments: Assignment[]) {
     let avgAssignGrade2
     const ctx = document.createElement('canvas')
     ctx.width = 200

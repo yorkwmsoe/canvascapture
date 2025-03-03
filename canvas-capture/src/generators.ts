@@ -16,22 +16,6 @@ import {
     createTableRows,
 } from './markdown'
 
-export function generateAssignment(
-    assignment: Assignment,
-    submission: Submission,
-    fancy: boolean
-) {
-    const items = [
-        ...assembleTitleAndGrade(assignment, submission, ''),
-        ...assembleFeedbackInfo(submission),
-        ...assembleDescriptionInfo(assignment, fancy),
-        ...assembleRubricInfo(assignment, submission),
-        ...assembleSubmissionInfo(submission, fancy),
-    ]
-
-    return items.filter((item) => !!item)
-}
-
 export function generateAssignmentDescription(
     assignment: Assignment,
     fancy: boolean
