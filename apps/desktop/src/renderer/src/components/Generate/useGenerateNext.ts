@@ -39,8 +39,6 @@ export const useGenerateNext = () => {
     const { generationName } = useGenerationStore()
     const documentsPath = getDocumentsPath()
 
-
-
     const dataNodes = useMemo(() => {
         return assignments.map<CourseDataNode>((assignment) => {
             const course = getCourseById(assignment.courseId)
@@ -69,8 +67,6 @@ export const useGenerateNext = () => {
         })
     }, [assignments, getCourseById])
 
-
-
     const runPreGenerate = useCallback(() => {
         return preGenerate(
             getCourseById,
@@ -90,7 +86,7 @@ export const useGenerateNext = () => {
                 documentsPath,
                 canvasAccessToken,
                 canvasDomain,
-                isStudent,
+                isStudent
             )
         )
     }
@@ -246,11 +242,11 @@ async function handleNode(
         if (course) {
             const quiz = node.assignment.is_quiz_assignment
                 ? await canvasApi.getQuiz({
-                    canvasAccessToken,
-                    canvasDomain,
-                    courseId: node.assignment.course_id,
-                    quizId: node.assignment.quiz_id,
-                })
+                      canvasAccessToken,
+                      canvasDomain,
+                      courseId: node.assignment.course_id,
+                      quizId: node.assignment.quiz_id,
+                  })
                 : undefined
             node.children = await generateContentPairs(
                 course,

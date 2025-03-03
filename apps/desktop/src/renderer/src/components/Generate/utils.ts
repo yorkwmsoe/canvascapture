@@ -128,7 +128,7 @@ export function getHighMedianLowSubmissions(submissions: Submission[]): {
     }
 }
 
-function median (arr: number[]) {
+function median(arr: number[]) {
     const s = arr.toSorted((a, b) => a - b)
     const mid = Math.floor(s.length / 2)
     const res = s.length % 2 === 0 ? (s[mid - 1] + s[mid]) / 2 : s[mid]

@@ -17,10 +17,20 @@ import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
 import markdownit from 'markdown-it'
 import { mkdirSync, rmSync, writeFileSync } from 'fs'
-import { Assignment, Course, Quiz, Submission, DataNode, isCourseDataNode } from '@canvas-capture/lib'
+import {
+    Assignment,
+    Course,
+    Quiz,
+    Submission,
+    DataNode,
+    isCourseDataNode,
+} from '@canvas-capture/lib'
 import { FilePathContentPair } from './types'
 import { generateTOC } from '@renderer/components/Generate/generateTOC'
-import { AverageAssignmentGradeExport, oneYearExport } from '@renderer/components/Statistics'
+import {
+    AverageAssignmentGradeExport,
+    oneYearExport,
+} from '@renderer/components/Statistics'
 import { canvasApi } from '@renderer/apis/canvas.api'
 
 import {
@@ -60,9 +70,8 @@ export async function generate(
     documentsPath: string,
     canvasAccessToken: string,
     canvasDomain: string,
-    isStudent: boolean,
+    isStudent: boolean
 ) {
-
     // Find all assignments and submissions. Utilized for chart/graph creation.
     const allAssignments: Assignment[] = []
     const allSubmissions: Submission[] = []
@@ -77,11 +86,11 @@ export async function generate(
                         isStudent,
                         courseId: course.course.id,
                         assignmentId: assignment.assignment.id,
-                    });
+                    })
 
                     // Add all submissions to allSubmissions
                     for (let ivar = 0; ivar < submissions.length; ivar++) {
-                        allSubmissions.push(submissions[ivar]);
+                        allSubmissions.push(submissions[ivar])
                     }
                 }
             }
@@ -122,10 +131,11 @@ export async function generate(
 
     // If any graphs are to be generated, generate them.
     const oneYearStatGraph = oneYearExport()
-        ? await generateChart(allSubmissions) : undefined
+        ? await generateChart(allSubmissions)
+        : undefined
     const avgAssignGradeGraph = AverageAssignmentGradeExport()
-        ? await generateAvgGradeChart(allSubmissions, allAssignments) : undefined
-
+        ? await generateAvgGradeChart(allSubmissions, allAssignments)
+        : undefined
 
     // Write markdown and generate HTML for each course
     const htmlData: FilePathContentPair[] = Object.keys(
@@ -145,10 +155,11 @@ export async function generate(
 
         // Add table of contents and charts
         const htmlContentWithTocAndCharts =
-            generateTOC(htmlContent) + '\n\n\n'
-            + htmlContent
-            + (oneYearStatGraph !== undefined ? oneYearStatGraph : "")
-            + (avgAssignGradeGraph !== undefined ? avgAssignGradeGraph : "")
+            generateTOC(htmlContent) +
+            '\n\n\n' +
+            htmlContent +
+            (oneYearStatGraph !== undefined ? oneYearStatGraph : '') +
+            (avgAssignGradeGraph !== undefined ? avgAssignGradeGraph : '')
 
         return {
             filePath: join(generationName, `${courseName}`),
@@ -171,56 +182,48 @@ export async function generateAssignmentAndSubmissionContent(
     const { highSubmission, medianSubmission, lowSubmission } =
         getHighMedianLowSubmissions(submissions)
 
-    const descriptionContent = (
-        await generateAssignmentOrQuizDescription(
-            course,
-            assignment,
-            quiz,
-            canvasAccessToken,
-            canvasDomain
-        )
+    const descriptionContent = await generateAssignmentOrQuizDescription(
+        course,
+        assignment,
+        quiz,
+        canvasAccessToken,
+        canvasDomain
     )
 
     const highSubmissionContent =
         highSubmission === undefined
             ? undefined
-            : (
-                  await generateAssignmentOrQuizSubmission(
-                      course,
-                      assignment,
-                      highSubmission,
-                      quiz,
-                      canvasAccessToken,
-                      canvasDomain
-                  )
+            : await generateAssignmentOrQuizSubmission(
+                  course,
+                  assignment,
+                  highSubmission,
+                  quiz,
+                  canvasAccessToken,
+                  canvasDomain
               )
 
     const medianSubmissionContent =
         medianSubmission === undefined
             ? undefined
-            : (
-                  await generateAssignmentOrQuizSubmission(
-                      course,
-                      assignment,
-                      medianSubmission,
-                      quiz,
-                      canvasAccessToken,
-                      canvasDomain
-                  )
+            : await generateAssignmentOrQuizSubmission(
+                  course,
+                  assignment,
+                  medianSubmission,
+                  quiz,
+                  canvasAccessToken,
+                  canvasDomain
               )
 
     const lowSubmissionContent =
         lowSubmission === undefined
             ? undefined
-            : (
-                  await generateAssignmentOrQuizSubmission(
-                      course,
-                      assignment,
-                      lowSubmission,
-                      quiz,
-                      canvasAccessToken,
-                      canvasDomain
-                  )
+            : await generateAssignmentOrQuizSubmission(
+                  course,
+                  assignment,
+                  lowSubmission,
+                  quiz,
+                  canvasAccessToken,
+                  canvasDomain
               )
 
     return {
@@ -344,7 +347,10 @@ export async function generateChart(allSubmissions: Submission[]) {
     })
 }
 
-export async function generateAvgGradeChart(allSubmissions: Submission[], allAssignments: Assignment[]) {
+export async function generateAvgGradeChart(
+    allSubmissions: Submission[],
+    allAssignments: Assignment[]
+) {
     let avgAssignGrade2
     const ctx = document.createElement('canvas')
     ctx.width = 200

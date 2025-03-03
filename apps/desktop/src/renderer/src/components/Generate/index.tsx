@@ -25,7 +25,8 @@ export function Generate() {
             // If successful, navigate back to the home page
             navigate({ to: '/' })
         } catch (error: unknown) {
-            let errorMessage = 'Something went wrong during generation. Please try again.'
+            let errorMessage =
+                'Something went wrong during generation. Please try again.'
 
             if (error instanceof Error) {
                 errorMessage = error.message // Safely access the error message
