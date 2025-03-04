@@ -32,6 +32,17 @@ import { ipcRenderer } from 'electron'
 import { getDocumentsPath } from '@renderer/utils/config'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 
+
+/**
+ * The hook provides methods for:
+ * - Pre-generating content nodes (`runPreGenerate`) to scaffold the data structure for report generation.
+ * - Generating reports (`runGenerate`) based on prepared content nodes or external data.
+ *
+ * Return:
+ * - `runPreGenerate`: A callback that generates data nodes to structure the data.
+ * - `runGenerate`: A function that generates the pdf for the report using the
+ *   pre-generated nodes or provided data.
+ */
 export const useGenerateNext = () => {
     const { canvasAccessToken, canvasDomain, isStudent } = useSettingsStore()
     const { assignments, selectedAssignments } = useAssignments()
