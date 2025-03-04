@@ -32,7 +32,6 @@ import { ipcRenderer } from 'electron'
 import { getDocumentsPath } from '@renderer/utils/config'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 
-
 /**
  * The hook provides methods for:
  * - Pre-generating content nodes (`runPreGenerate`) to scaffold the data structure for report generation.
