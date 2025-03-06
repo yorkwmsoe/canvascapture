@@ -19,25 +19,18 @@ import markdownit from 'markdown-it'
 import { mkdirSync, rmSync, writeFileSync } from 'fs'
 import {
     Assignment,
-    Course,
-    Quiz,
     Submission,
     DataNode,
     isCourseDataNode,
 } from '@canvas-capture/lib'
 import { FilePathContentPair } from './types'
-import { generateTOC } from '@renderer/components/Generate/generateTOC'
+import { generateTOC } from './generateUtils'
 import {
     AverageAssignmentGradeExport,
     oneYearExport,
 } from '@renderer/components/Statistics'
 import { canvasApi } from '@renderer/apis/canvas.api'
 
-import {
-    generateAssignmentOrQuizDescription,
-    generateAssignmentOrQuizSubmission,
-    getHighMedianLowSubmissions,
-} from './utils'
 import {
     generateAvgGradeChart,
     generateChart,
@@ -148,67 +141,4 @@ export async function generate(
 
     // Return the array of file paths and their HTML content
     return htmlData
-}
-
-export async function generateAssignmentAndSubmissionContent(
-    course: Course,
-    assignment: Assignment,
-    submissions: Submission[],
-    quiz: Quiz | undefined,
-    canvasAccessToken: string,
-    canvasDomain: string
-) {
-    const { highSubmission, medianSubmission, lowSubmission } =
-        getHighMedianLowSubmissions(submissions)
-
-    const descriptionContent = await generateAssignmentOrQuizDescription(
-        course,
-        assignment,
-        quiz,
-        canvasAccessToken,
-        canvasDomain
-    )
-
-    const highSubmissionContent =
-        highSubmission === undefined
-            ? undefined
-            : await generateAssignmentOrQuizSubmission(
-                  course,
-                  assignment,
-                  highSubmission,
-                  quiz,
-                  canvasAccessToken,
-                  canvasDomain
-              )
-
-    const medianSubmissionContent =
-        medianSubmission === undefined
-            ? undefined
-            : await generateAssignmentOrQuizSubmission(
-                  course,
-                  assignment,
-                  medianSubmission,
-                  quiz,
-                  canvasAccessToken,
-                  canvasDomain
-              )
-
-    const lowSubmissionContent =
-        lowSubmission === undefined
-            ? undefined
-            : await generateAssignmentOrQuizSubmission(
-                  course,
-                  assignment,
-                  lowSubmission,
-                  quiz,
-                  canvasAccessToken,
-                  canvasDomain
-              )
-
-    return {
-        descriptionContent: descriptionContent,
-        highSubmissionContent: highSubmissionContent,
-        medianSubmissionContent: medianSubmissionContent,
-        lowSubmissionContent: lowSubmissionContent,
-    }
 }

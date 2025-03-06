@@ -26,7 +26,7 @@ import {
 } from '@renderer/utils/assignments'
 import { isNil, uniqBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { generateAssignmentAndSubmissionContent } from './generate'
+import { generateAssignmentAndSubmissionContent } from './generateUtils'
 import { generate } from './generate'
 import { ipcRenderer } from 'electron'
 import { getDocumentsPath } from '@renderer/utils/config'
