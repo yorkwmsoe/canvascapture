@@ -10,7 +10,6 @@
  *   Generates content for the provided assignment or quiz, including its description (and related info), and submissions categorized by high, median, and low scores.
  */
 
-
 import {
     Assignment,
     Auth,
@@ -26,7 +25,6 @@ import {
 } from '@canvas-capture/lib'
 import { maxBy, minBy } from 'lodash'
 import { canvasApi } from '@renderer/apis/canvas.api'
-
 
 /**
  * Generates a Table of Contents (TOC) for a given HTML content string.
@@ -75,7 +73,6 @@ export function generateTOC(htmlContent: string) {
     return tocHTML
 }
 
-
 /**
  * Generates content for an assignment or quiz, as well as associated submissions
  * (high, median, and low score submissions).
@@ -113,37 +110,37 @@ export async function generateAssignmentAndSubmissionContent(
         highSubmission === undefined
             ? undefined
             : await generateAssignmentOrQuizSubmission(
-                course,
-                assignment,
-                highSubmission,
-                quiz,
-                canvasAccessToken,
-                canvasDomain
-            )
+                  course,
+                  assignment,
+                  highSubmission,
+                  quiz,
+                  canvasAccessToken,
+                  canvasDomain
+              )
 
     const medianSubmissionContent =
         medianSubmission === undefined
             ? undefined
             : await generateAssignmentOrQuizSubmission(
-                course,
-                assignment,
-                medianSubmission,
-                quiz,
-                canvasAccessToken,
-                canvasDomain
-            )
+                  course,
+                  assignment,
+                  medianSubmission,
+                  quiz,
+                  canvasAccessToken,
+                  canvasDomain
+              )
 
     const lowSubmissionContent =
         lowSubmission === undefined
             ? undefined
             : await generateAssignmentOrQuizSubmission(
-                course,
-                assignment,
-                lowSubmission,
-                quiz,
-                canvasAccessToken,
-                canvasDomain
-            )
+                  course,
+                  assignment,
+                  lowSubmission,
+                  quiz,
+                  canvasAccessToken,
+                  canvasDomain
+              )
 
     return {
         descriptionContent: descriptionContent,
