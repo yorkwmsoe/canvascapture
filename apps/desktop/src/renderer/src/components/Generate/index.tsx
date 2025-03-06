@@ -4,63 +4,51 @@
  *
  * See the definition below for more details
  */
-import { Flex, Spin, Typography } from 'antd'
+import { App, Flex, Spin, Typography } from 'antd'
 import { useEffect } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { Course } from '@canvas-capture/lib'
-import { useAssignments } from '@renderer/hooks/useAssignments'
-import { useCourses } from '@renderer/hooks/useCourses'
-import { useGenerationStore } from '@renderer/stores/generation.store'
-import { useSettingsStore } from '@renderer/stores/settings.store'
-import { parseHierarchyId } from '@renderer/utils/assignments'
-import { getDocumentsPath } from '@renderer/utils/config'
-import { ipcRenderer } from 'electron'
-import { generate } from '@renderer/components/Generate/generate'
+import { useGenerateNext } from '@renderer/components/Generate/useGenerateNext'
 
 export function Generate() {
+    const { notification } = App.useApp()
     const navigate = useNavigate({ from: '/generation' })
-    const { selectedAssignments, getAssignmentById } = useAssignments()
-    const { courses, selectedCourses } = useCourses()
-    const { canvasDomain, canvasAccessToken, isStudent } = useSettingsStore()
-    const { generationName } = useGenerationStore()
-    const documentsPath = getDocumentsPath()
+    const { runPreGenerate, runGenerate } = useGenerateNext()
 
-    const selectedAssignmentsSplit = selectedAssignments.map((x) =>
-        parseHierarchyId(x)
-    )
-    const filteredAssignments = selectedAssignmentsSplit.flatMap(
-        ({ courseId, assignmentId }) =>
-            getAssignmentById(courseId, assignmentId) ?? []
-    )
-    /* Cannot be undefined, as the UI prevents it */
-    const filteredCourses = courses?.filter((x) =>
-        selectedCourses.includes(x.id)
-    ) as Course[]
+    const runGenerateProcess = async () => {
+        try {
+            // Call the pre-generation step (fetches and generates report content).
+            await runPreGenerate()
 
-    const runGenerate = async () => {
-        ipcRenderer.invoke(
-            'generate',
-            await generate(
-                filteredCourses,
-                filteredAssignments,
-                canvasAccessToken,
-                canvasDomain,
-                isStudent,
-                generationName,
-                documentsPath
-            )
-        )
-        navigate({ to: '/' })
+            // Call the generation step (creates and saves actual report).
+            await runGenerate()
+
+            // If successful, navigate back to the home page
+            navigate({ to: '/' })
+        } catch (error: unknown) {
+            let errorMessage =
+                'Something went wrong during generation. Please try again.'
+
+            if (error instanceof Error) {
+                errorMessage = error.message // Safely access the error message
+            }
+
+            notification.destroy()
+            notification.error({
+                message: 'Generation Failed',
+                description: errorMessage,
+            })
+        }
     }
 
+    // Trigger the generation process
     useEffect(() => {
         const run = async () => {
-            await runGenerate()
-            navigate({ to: '/' })
+            await runGenerateProcess()
         }
         run()
     }, [])
 
+    // Spinner while the process is running
     return (
         <Flex
             justify="center"

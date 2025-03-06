@@ -44,7 +44,6 @@ const defaultProps: MarkdownEditorProps = {
     },
     handleSelectFile: vi.fn(),
     handleSaveFile: vi.fn(),
-    handleFinish: vi.fn(),
 }
 
 describe('MarkdownEditor', () => {
@@ -83,7 +82,7 @@ describe('MarkdownEditor', () => {
                 fireEvent.change(textbox, {
                     target: { value: 'Updated content' },
                 })
-                fireEvent.click(screen.getByText('Save'))
+                fireEvent.click(screen.getByText('Save Changes'))
                 expect(defaultProps.handleSaveFile).toHaveBeenCalledWith(
                     'file1',
                     'Updated content'
@@ -101,7 +100,7 @@ describe('MarkdownEditor', () => {
                 fireEvent.change(textbox, {
                     target: { value: 'Updated content' },
                 })
-                fireEvent.click(screen.getByText('Revert changes'))
+                fireEvent.click(screen.getByText('Revert Changes'))
                 expect(textbox.innerHTML).toBe('Initial content')
             }
         }

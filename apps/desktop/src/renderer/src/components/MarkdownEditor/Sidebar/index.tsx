@@ -3,14 +3,14 @@
  *
  * See the definition below for more details
  */
-import { Button, Popconfirm } from 'antd'
+import { Button } from 'antd'
+import { SaveIcon } from '@renderer/components/icons/Save'
 
 export type SideBarProps = {
     onSave?: () => void
-    onFinish?: () => void
 }
 
-export function SideBar({ onSave, onFinish }: SideBarProps) {
+export function SideBar({ onSave }: SideBarProps) {
     return (
         <div
             style={{
@@ -20,19 +20,8 @@ export function SideBar({ onSave, onFinish }: SideBarProps) {
                 flex: 1,
             }}
         >
-            <Popconfirm
-                title="Finish editing"
-                description="Are you sure your done editing?"
-                okText="Yes"
-                cancelText="No"
-                onConfirm={onFinish}
-            >
-                <Button type="primary" block>
-                    Finish
-                </Button>
-            </Popconfirm>
-            <Button onClick={onSave} block>
-                Save
+            <Button onClick={onSave} block icon={<SaveIcon />}>
+                Save Changes
             </Button>
         </div>
     )

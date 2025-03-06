@@ -7,12 +7,15 @@ import { ReactNode, useState } from 'react'
 import { Button, ConfigProvider, Form, Input } from 'antd'
 import { FileDataNode } from '@canvas-capture/lib'
 import { EditableTable } from './EditableTable'
+import { AddIcon } from '@renderer/components/icons/Add'
+import { RemoveIcon } from '@renderer/components/icons/Remove'
 
 export type GUIEditorProps = {
     setGUIText: (text: string) => void
     setText: (text: string) => void
     selectedFile: FileDataNode | undefined
     guiText: string | undefined
+    setIsDirty: (value: boolean) => void
 }
 
 export function GUIEditor({
@@ -20,6 +23,7 @@ export function GUIEditor({
     setText,
     selectedFile,
     guiText,
+    setIsDirty,
 }: GUIEditorProps) {
     const guiGeneratedText: string[] = []
     const titleText: string[] = []
@@ -45,6 +49,7 @@ export function GUIEditor({
         }
         setGUIText(combinedGUIText)
         setText(combinedText)
+        setIsDirty(true)
     }
 
     const updateGUIText = () => {
@@ -195,7 +200,7 @@ export function GUIEditor({
             let sectionTitleDescription = 'Section title: '
             if (sectionTitle.startsWith('# ')) {
                 sectionTitle = sectionTitle.substring(2)
-                sectionTitleDescription = 'PDF title: '
+                sectionTitleDescription = 'Assignment title: '
             }
 
             titleText[sectionID] = sectionTitle
@@ -237,12 +242,14 @@ export function GUIEditor({
                     <Button
                         id={'newSectionButton' + sectionID}
                         onClick={addNewSection}
+                        icon={<AddIcon />}
                     >
                         Add New Section Below
                     </Button>
                     <Button
                         id={'deleteSectionButton' + sectionID}
                         onClick={deleteSection}
+                        icon={<RemoveIcon />}
                     >
                         Delete Section
                     </Button>

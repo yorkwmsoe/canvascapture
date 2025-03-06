@@ -12,15 +12,25 @@ import {
 } from '@canvas-capture/lib'
 import { useGenerateNext } from '@renderer/components/Generate/useGenerateNext'
 import { MarkdownEditor } from '@renderer/components/MarkdownEditor'
-import { Navbar } from '@renderer/components/Navbar'
 import { STEPS } from '@renderer/components/SwitchStepper'
 import { LeftArrowIcon } from '@renderer/components/icons/LeftArrow'
 import { getCourseName } from '@renderer/utils/courses'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { App, Button, Flex, Spin, TreeDataNode, Typography } from 'antd'
+import {
+    App,
+    Button,
+    Flex,
+    Popconfirm,
+    Spin,
+    TreeDataNode,
+    Typography,
+} from 'antd'
 import { useCallback, useMemo, useState } from 'react'
 import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
+import { CheckIcon } from '@renderer/components/icons/Check'
+import { Navbar } from '@renderer/components/Navbar'
+import { HelpIcon } from '@renderer/components/icons/Help'
 
 function transformData(data: DataNode): TreeDataNode {
     if (isCourseDataNode(data)) {
@@ -105,6 +115,13 @@ export function MarkdownEditorPage() {
         navigate({ to: '/selection', search: { step: STEPS.length - 2 } })
     }
 
+    const goToHelpPage = () => {
+        navigate({
+            to: '/help',
+            search: { previousPage: '/markdown-editor', section: 'editor' },
+        })
+    }
+
     const handleFinish = useCallback(() => {
         generate(data)
     }, [data, generate])
@@ -120,13 +137,20 @@ export function MarkdownEditorPage() {
         <ErrorBoundary>
             <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
                 <Navbar>
-                    <Button onClick={goBack} icon={<LeftArrowIcon />}>
-                        Back
-                    </Button>
+                    <div></div>
+                    <Typography.Title level={2} style={{ textAlign: 'center' }}>
+                        Editor
+                    </Typography.Title>
+                    <Popconfirm
+                        title="Potential Unsaved Changes"
+                        description="Have you saved your changes? Any unsaved changes will be lost."
+                        okText="Yes"
+                        cancelText="No"
+                        onConfirm={goToHelpPage}
+                    >
+                        <Button icon={<HelpIcon />}>Help</Button>
+                    </Popconfirm>
                 </Navbar>
-                <Typography.Title level={2} style={{ textAlign: 'center' }}>
-                    Markdown Editor
-                </Typography.Title>
                 <div style={{ marginInline: '1rem' }}>
                     {!isLoading && !isGenerating ? (
                         <MarkdownEditor
@@ -134,7 +158,6 @@ export function MarkdownEditorPage() {
                             selectedFile={selectedFile}
                             handleSelectFile={selectFile}
                             handleSaveFile={handleSaveFile}
-                            handleFinish={handleFinish}
                         />
                     ) : (
                         <Flex justify="center" align="center">
@@ -149,6 +172,43 @@ export function MarkdownEditorPage() {
                             </Spin>
                         </Flex>
                     )}
+                </div>
+                <div
+                    style={{
+                        bottom: 0,
+                        position: 'fixed',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        width: '100%',
+                        backgroundColor: 'white',
+                        zIndex: '10',
+                        paddingTop: '20px',
+                        paddingBottom: '20px',
+                    }}
+                >
+                    <Button
+                        onClick={goBack}
+                        icon={<LeftArrowIcon />}
+                        style={{ left: 20 }}
+                    >
+                        Previous
+                    </Button>
+                    <Popconfirm
+                        title="Finish editing"
+                        description="Are you sure your done editing? Make sure to save your changes."
+                        okText="Yes"
+                        cancelText="No"
+                        onConfirm={handleFinish}
+                    >
+                        <Button
+                            type="primary"
+                            block
+                            icon={<CheckIcon />}
+                            style={{ right: 20, width: 'fit-content' }}
+                        >
+                            Generate
+                        </Button>
+                    </Popconfirm>
                 </div>
             </div>
         </ErrorBoundary>

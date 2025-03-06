@@ -13,6 +13,7 @@ const defaultProps: GUIEditorProps = {
         content: ['# Section 1\nContent 1\n## Section 2\nContent 2'],
     },
     guiText: '# Section 1\nContent 1\n## Section 2\nContent 2',
+    setIsDirty: vi.fn(),
 }
 
 describe('GUIEditor', () => {
