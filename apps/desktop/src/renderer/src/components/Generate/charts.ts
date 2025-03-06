@@ -39,7 +39,6 @@ Chart.register(
 // This specifies the background color of the generated charts.
 const BACKGROUND_COLOR: string = '#e8e8e8' //`#d6d6d6`
 
-
 /**
  * Generates a chart that displays the time taken to grade assignments.
  *
@@ -163,7 +162,6 @@ export async function generateChart(allSubmissions: Submission[]) {
         })
     })
 }
-
 
 /**
  * Generates a chart that displays the average grades for assignments.

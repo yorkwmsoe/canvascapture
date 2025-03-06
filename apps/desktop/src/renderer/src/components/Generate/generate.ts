@@ -38,7 +38,10 @@ import {
     generateAssignmentOrQuizSubmission,
     getHighMedianLowSubmissions,
 } from './utils'
-import { generateAvgGradeChart, generateChart } from '@renderer/components/Generate/charts'
+import {
+    generateAvgGradeChart,
+    generateChart,
+} from '@renderer/components/Generate/charts'
 
 export async function generate(
     data: DataNode[],
@@ -209,8 +212,3 @@ export async function generateAssignmentAndSubmissionContent(
         lowSubmissionContent: lowSubmissionContent,
     }
 }
-
-
-
-
-
