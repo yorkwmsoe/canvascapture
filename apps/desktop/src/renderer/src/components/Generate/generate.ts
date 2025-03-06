@@ -36,6 +36,24 @@ import {
     generateChart,
 } from '@renderer/components/Generate/charts'
 
+/**
+ * Generates course reports and exports them as Markdown and HTML files
+ * with optional statistical graphs.
+ *
+ * The function first processes all provided course data nodes, extracting
+ * assignment and submission details. Then, it generates per-course Markdown
+ * content, converts it to HTML, and optionally includes statistical graphs.
+ *
+ * @param data - The hierarchical course data nodes containing assignments and files.
+ * @param generationName - The name of the generation project (used for directory naming).
+ * @param documentsPath - The root path where generated files will be stored.
+ * @param canvasAccessToken
+ * @param canvasDomain
+ * @param isStudent
+ *
+ * @returns An array of objects containing file paths and their generated HTML content.
+ *          Each object represents a single course's export, including optional graphs.
+ */
 export async function generate(
     data: DataNode[],
     generationName: string,
