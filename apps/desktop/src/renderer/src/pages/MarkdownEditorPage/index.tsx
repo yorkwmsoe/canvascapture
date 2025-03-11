@@ -39,22 +39,19 @@ function transformData(data: DataNode): TreeDataNode {
             key: data.key,
             children: data.children.map(transformData),
         }
-    }
-    else if (isAssignmentDataNode(data)) {
+    } else if (isAssignmentDataNode(data)) {
         return {
             title: data.assignment.name,
             key: data.key,
             children: data.children.map(transformData),
         }
-    }
-    else if (isFileDataNode(data)) {
+    } else if (isFileDataNode(data)) {
         return {
             title: data.name,
             key: data.key,
             isLeaf: true,
         }
-    }
-    else {
+    } else {
         throw new Error('Unknown data node type')
     }
 }
