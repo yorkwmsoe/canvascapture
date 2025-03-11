@@ -14,7 +14,7 @@ import { Submission } from '../types/canvas_api/submission'
 export interface DataNode {
     type: 'course' | 'assignment' | 'file'
     key: string
-    children: DataNode[] | undefined
+    children?: DataNode[] | undefined
 }
 
 export interface CourseDataNode extends DataNode {
@@ -34,7 +34,7 @@ export interface FileDataNode extends DataNode {
     name: 'description' | 'high' | 'low' | 'median'
     submission?: Submission // TODO: For now, this field is marked as optional as to not break MarkdownEditor.
     content: string[]
-    children: undefined
+    children?: undefined
 }
 
 export function isCourseDataNode(node: DataNode): node is CourseDataNode {
