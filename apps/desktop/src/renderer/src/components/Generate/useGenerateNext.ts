@@ -143,7 +143,7 @@ async function generateContentPairs(
             'description'
         ),
         name: 'description',
-        content: descriptionContent
+        content: descriptionContent,
     })
 
     if (highSubmissionContent !== undefined) {
@@ -155,7 +155,7 @@ async function generateContentPairs(
                 'high'
             ),
             name: 'high',
-            content: highSubmissionContent
+            content: highSubmissionContent,
         })
     }
 
@@ -168,7 +168,7 @@ async function generateContentPairs(
                 'median'
             ),
             name: 'median',
-            content: medianSubmissionContent
+            content: medianSubmissionContent,
         })
     }
 
@@ -181,7 +181,7 @@ async function generateContentPairs(
                 'low'
             ),
             name: 'low',
-            content: lowSubmissionContent
+            content: lowSubmissionContent,
         })
     }
 
