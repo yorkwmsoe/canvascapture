@@ -27,12 +27,16 @@ export interface AssignmentDataNode extends DataNode {
     type: 'assignment'
     assignment: Assignment
     children: FileDataNode[]
+
+    // This field is marked as optional as to not break MarkdownEditor.
+    // As of 3/13/2025, this field is utilized for the chart generation
+    //  functions.
+    allSubmissions?: Submission[]
 }
 
 export interface FileDataNode extends DataNode {
     type: 'file'
     name: 'description' | 'high' | 'low' | 'median'
-    submission?: Submission // TODO: For now, this field is marked as optional as to not break MarkdownEditor.
     content: string[]
     children?: undefined
 }
