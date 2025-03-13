@@ -16,7 +16,7 @@ import { join } from 'path'
 import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
 import markdownit from 'markdown-it'
-import { mkdirSync, rmSync, writeFileSync } from 'fs'
+import { mkdirSync, rmSync } from 'fs'
 import {
     Assignment,
     Course,
@@ -142,13 +142,6 @@ export async function generate(
         courseMarkdownContent
     ).map((courseName) => {
         const markdownContent = courseMarkdownContent[courseName]
-        const filePath = join(
-            documentsPath,
-            join(generationName, `${courseName}`) + '.md'
-        )
-
-        // Write the markdown file for the course
-        writeFileSync(filePath, markdownContent)
 
         // Convert markdown to HTML
         const htmlContent = md.render(markdownContent)
@@ -162,7 +155,10 @@ export async function generate(
             (avgAssignGradeGraph !== undefined ? avgAssignGradeGraph : '')
 
         return {
-            filePath: join(generationName, `${courseName}`),
+            filePath: join(
+                generationName,
+                `${courseName.replaceAll('/', '_')}`
+            ),
             content: htmlContentWithTocAndCharts,
         }
     })

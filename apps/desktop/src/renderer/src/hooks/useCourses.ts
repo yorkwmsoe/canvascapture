@@ -38,7 +38,9 @@ export const useCourses = () => {
     useEffect(() => {
         if (isError) {
             message.destroy()
-            message.error('Failed to fetch courses')
+            message.error(
+                'Failed to fetch courses. Your Canvas access token may be expired.'
+            )
         }
     }, [isError, setCourses])
 
