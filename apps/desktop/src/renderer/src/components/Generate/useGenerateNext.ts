@@ -49,7 +49,6 @@ export const useGenerateNext = () => {
     const { generationName } = useGenerationStore()
     const documentsPath = getDocumentsPath()
 
-    // TODO: Why do we get assignments, obtain the course given an assignment, and search for assignments again.
     const dataNodes = useMemo(() => {
         return assignments.map<CourseDataNode>((assignment) => {
             const course = getCourseById(assignment.courseId)
