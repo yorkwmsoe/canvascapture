@@ -67,8 +67,8 @@ pages:
         - mv $DOCUMENTATION_BASE_PATH/public public
     artifacts:
         paths:
-            - public 
+            - public
     rules:
         - if: $CI_COMMIT_TAG
           when: always
-        - when: never
+        - when: manual

@@ -30,7 +30,7 @@ release-desktop-windows:
     rules:
         - if: $CI_COMMIT_TAG
           when: always
-        - when: never
+        - when: manual
 
 release-desktop-mac:
     image: $DESKTOP_IMAGE
@@ -56,7 +56,7 @@ release-desktop-linux:
     rules:
         - if: $CI_COMMIT_TAG
           when: always
-        - when: never
+        - when: manual
 
 mutate-desktop:
     image: $DESKTOP_IMAGE
@@ -70,4 +70,4 @@ mutate-desktop:
     rules:
         - if: $CI_COMMIT_TAG
           when: always
-        - when: never
+        - when: manual
