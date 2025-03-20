@@ -22,7 +22,7 @@ import {
     Submission,
     DataNode,
     isCourseDataNode,
-    CourseDataNode
+    CourseDataNode,
 } from '@canvas-capture/lib'
 import { FilePathContentPair } from './types'
 import { generateTOC } from './generateUtils'
@@ -66,7 +66,6 @@ export async function generate(
         recursive: true,
     })
 
-
     // A mapping from a course's data node to its corresponding markdown content.
     // The use of a Map instead of an Object ensured iteration are done in
     //  insertion order.
@@ -79,7 +78,6 @@ export async function generate(
 
     // Create each course's content.
     for (const courseNode of data) {
-
         const courseAssignments: Assignment[] = []
         const courseSubmissions: Submission[] = []
 
@@ -88,8 +86,11 @@ export async function generate(
         if (!isCourseDataNode(courseNode)) continue
         let markdownContent = `# ${getCourseName(courseNode.course)}\n\n` // Start course-level markdown content with a title
         for (const assignmentNode of courseNode.children) {
-            if (assignmentNode.allSubmissions === undefined
-                || assignmentNode.allSubmissions.length === 0) continue;
+            if (
+                assignmentNode.allSubmissions === undefined ||
+                assignmentNode.allSubmissions.length === 0
+            )
+                continue
 
             // Append submission content
             for (const submissionContent of assignmentNode.children) {
@@ -121,10 +122,10 @@ export async function generate(
         // TODO: This functionality has been removed from dev. Remove when
         //  merging.
         // Write the markdown file for the course
-        writeFileSync(join(
-            documentsPath,
-            join(generationName, `${courseName}`) + '.md'
-        ), markdownContent)
+        writeFileSync(
+            join(documentsPath, join(generationName, `${courseName}`) + '.md'),
+            markdownContent
+        )
 
         // Convert markdown to HTML
         const htmlContent = md.render(markdownContent)
@@ -132,9 +133,9 @@ export async function generate(
         // Add table of contents and charts
         const htmlContentWithTocAndCharts =
             generateTOC(htmlContent) +
-            '\n\n\n' +
-            htmlContent +
-            courseChartMap.get(courseNode) || ''
+                '\n\n\n' +
+                htmlContent +
+                courseChartMap.get(courseNode) || ''
 
         htmlData.push({
             filePath: join(generationName, `${courseName}`),
