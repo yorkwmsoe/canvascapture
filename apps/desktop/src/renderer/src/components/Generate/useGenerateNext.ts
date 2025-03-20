@@ -93,7 +93,7 @@ export const useGenerateNext = () => {
             await generate(
                 data ?? (await runPreGenerate()),
                 generationName,
-                documentsPath,
+                documentsPath
             )
         )
     }

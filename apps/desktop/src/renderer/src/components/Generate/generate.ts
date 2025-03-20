@@ -55,13 +55,13 @@ import {
 export async function generate(
     data: DataNode[],
     generationName: string,
-    documentsPath: string,
+    documentsPath: string
 ) {
     // TODO: Replace above code block with this, if it works properly.
     const allAssignments: Assignment[] = []
     const allSubmissions: Submission[] = []
     for (const course of data) {
-        if (!isCourseDataNode(course)) continue;
+        if (!isCourseDataNode(course)) continue
         for (const assignment of course.children) {
             allAssignments.push(assignment.assignment)
             if (assignment.allSubmissions)
