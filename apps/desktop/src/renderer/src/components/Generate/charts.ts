@@ -51,7 +51,9 @@ const BACKGROUND_COLOR: string = '#e8e8e8' //`#d6d6d6`
  * @param allSubmissions - An array of submissions containing assignment IDs and timestamps.
  * @returns A promise that resolves to a string containing the HTML of the generated chart image.
  */
-export async function generateChart(allSubmissions: Submission[]) {
+export async function generateChart(
+    allSubmissions: Submission[]
+): Promise<string> {
     let oneYearStat2
     const ctx = document.createElement('canvas')
     ctx.width = 800
@@ -179,7 +181,7 @@ export async function generateChart(allSubmissions: Submission[]) {
 export async function generateAvgGradeChart(
     allSubmissions: Submission[],
     allAssignments: Assignment[]
-) {
+): Promise<string> {
     let avgAssignGrade2
     const ctx = document.createElement('canvas')
     ctx.width = 200
