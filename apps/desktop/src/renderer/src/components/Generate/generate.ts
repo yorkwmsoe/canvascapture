@@ -22,6 +22,7 @@ import {
     Submission,
     DataNode,
     isCourseDataNode,
+    CourseDataNode
 } from '@canvas-capture/lib'
 import { FilePathContentPair } from './types'
 import { generateTOC } from './generateUtils'
@@ -45,9 +46,6 @@ import {
  * @param data - The hierarchical course data nodes containing assignments and files.
  * @param generationName - The name of the generation project (used for directory naming).
  * @param documentsPath - The root path where generated files will be stored.
- * @param canvasAccessToken
- * @param canvasDomain
- * @param isStudent
  *
  * @returns An array of objects containing file paths and their generated HTML content.
  *          Each object represents a single course's export, including optional graphs.
@@ -57,70 +55,76 @@ export async function generate(
     generationName: string,
     documentsPath: string
 ) {
-    // TODO: Replace above code block with this, if it works properly.
-    const allAssignments: Assignment[] = []
-    const allSubmissions: Submission[] = []
-    for (const course of data) {
-        if (!isCourseDataNode(course)) continue
-        for (const assignment of course.children) {
-            allAssignments.push(assignment.assignment)
-            if (assignment.allSubmissions)
-                allSubmissions.push(...assignment.allSubmissions)
-        }
-    }
-
     // Remove existing directory to start fresh
     rmSync(join(documentsPath, sanitizePath(generationName)), {
         recursive: true,
         force: true,
     })
 
-    const md = markdownit({ linkify: true, html: true })
-
-    // Object to hold combined markdown content for each course
-    const courseMarkdownContent: { [courseName: string]: string } = {}
-
-    // Iterate through courses and their assignments
-    data.forEach((course) => {
-        if (isCourseDataNode(course)) {
-            let courseContent = `# ${getCourseName(course.course)}\n\n` // Start course-level markdown content with a title
-
-            // Loop through assignments and combine their content
-            course.children.forEach((assignment) => {
-                mkdirSync(join(documentsPath, generationName), {
-                    recursive: true,
-                })
-
-                assignment.children.forEach((file) => {
-                    courseContent += `${file.content.join('\n')}\n\n` // Append file content
-                })
-            })
-
-            // Store the combined content for this course
-            courseMarkdownContent[course.course.name] = courseContent
-        }
+    // Create directory in which the generated report will be stored.
+    mkdirSync(join(documentsPath, sanitizePath(generationName)), {
+        recursive: true,
     })
 
-    // If any graphs are to be generated, generate them.
-    const oneYearStatGraph = oneYearExport()
-        ? await generateChart(allSubmissions)
-        : undefined
-    const avgAssignGradeGraph = AverageAssignmentGradeExport()
-        ? await generateAvgGradeChart(allSubmissions, allAssignments)
-        : undefined
 
-    // Write markdown and generate HTML for each course
-    const htmlData: FilePathContentPair[] = Object.keys(
-        courseMarkdownContent
-    ).map((courseName) => {
-        const markdownContent = courseMarkdownContent[courseName]
-        const filePath = join(
+    // A mapping from a course's data node to its corresponding markdown content.
+    // The use of a Map instead of an Object ensured iteration are done in
+    //  insertion order.
+    const courseMarkdownMap = new Map<CourseDataNode, string>()
+
+    // A mapping from a course's data node to its corresponding chart HTML content.
+    // The use of a Map instead of an Object ensured iteration are done in
+    //  insertion order.
+    const courseChartMap = new Map<CourseDataNode, string>()
+
+    // Create each course's content.
+    for (const courseNode of data) {
+
+        const courseAssignments: Assignment[] = []
+        const courseSubmissions: Submission[] = []
+
+        // Create the course's markdown content by combining the markdown content of its assignments and submissions.
+        // Additionally, collect all assignments and submissions for this course.
+        if (!isCourseDataNode(courseNode)) continue
+        let markdownContent = `# ${getCourseName(courseNode.course)}\n\n` // Start course-level markdown content with a title
+        for (const assignmentNode of courseNode.children) {
+            if (assignmentNode.allSubmissions === undefined
+                || assignmentNode.allSubmissions.length === 0) continue;
+
+            // Append submission content
+            for (const submissionContent of assignmentNode.children) {
+                markdownContent += `${submissionContent.content.join('\n')}\n\n`
+            }
+
+            // Collect course's assignments and submissions.
+            courseAssignments.push(assignmentNode.assignment)
+            courseSubmissions.push(...assignmentNode.allSubmissions)
+        }
+        courseMarkdownMap.set(courseNode, markdownContent) // Add content to the map for later use.
+
+        // Create the course's chart HTML content.
+        const oneYearStatChart = oneYearExport() // Check if chart should be created
+            ? await generateChart(courseSubmissions)
+            : ''
+        const avgAssignGradeChart = AverageAssignmentGradeExport() // Check if chart should be created
+            ? await generateAvgGradeChart(courseSubmissions, courseAssignments)
+            : ''
+        courseChartMap.set(courseNode, oneYearStatChart + avgAssignGradeChart) // Add content to the map for later use.
+    }
+
+    const htmlData: FilePathContentPair[] = []
+    const md = markdownit({ linkify: true, html: true })
+    for (const courseNode of courseMarkdownMap.keys()) {
+        const courseName = getCourseName(courseNode.course)
+        const markdownContent = courseMarkdownMap.get(courseNode)!
+
+        // TODO: This functionality has been removed from dev. Remove when
+        //  merging.
+        // Write the markdown file for the course
+        writeFileSync(join(
             documentsPath,
             join(generationName, `${courseName}`) + '.md'
-        )
-
-        // Write the markdown file for the course
-        writeFileSync(filePath, markdownContent)
+        ), markdownContent)
 
         // Convert markdown to HTML
         const htmlContent = md.render(markdownContent)
@@ -130,14 +134,13 @@ export async function generate(
             generateTOC(htmlContent) +
             '\n\n\n' +
             htmlContent +
-            (oneYearStatGraph !== undefined ? oneYearStatGraph : '') +
-            (avgAssignGradeGraph !== undefined ? avgAssignGradeGraph : '')
+            courseChartMap.get(courseNode) || ''
 
-        return {
+        htmlData.push({
             filePath: join(generationName, `${courseName}`),
             content: htmlContentWithTocAndCharts,
-        }
-    })
+        })
+    }
 
     // Return the array of file paths and their HTML content
     return htmlData
