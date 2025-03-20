@@ -29,8 +29,6 @@ import {
     AverageAssignmentGradeExport,
     oneYearExport,
 } from '@renderer/components/Statistics'
-import { canvasApi } from '@renderer/apis/canvas.api'
-
 import {
     generateAvgGradeChart,
     generateChart,
@@ -58,32 +56,16 @@ export async function generate(
     data: DataNode[],
     generationName: string,
     documentsPath: string,
-    canvasAccessToken: string,
-    canvasDomain: string,
-    isStudent: boolean
 ) {
-    // Find all assignments and submissions. Utilized for chart/graph creation.
+    // TODO: Replace above code block with this, if it works properly.
     const allAssignments: Assignment[] = []
     const allSubmissions: Submission[] = []
     for (const course of data) {
-        if (isCourseDataNode(course)) {
-            for (const assignment of course.children) {
-                if (assignment.assignment) {
-                    allAssignments.push(assignment.assignment)
-                    const submissions = await canvasApi.getSubmissions({
-                        canvasAccessToken,
-                        canvasDomain,
-                        isStudent,
-                        courseId: course.course.id,
-                        assignmentId: assignment.assignment.id,
-                    })
-
-                    // Add all submissions to allSubmissions
-                    for (let ivar = 0; ivar < submissions.length; ivar++) {
-                        allSubmissions.push(submissions[ivar])
-                    }
-                }
-            }
+        if (!isCourseDataNode(course)) continue;
+        for (const assignment of course.children) {
+            allAssignments.push(assignment.assignment)
+            if (assignment.allSubmissions)
+                allSubmissions.push(...assignment.allSubmissions)
         }
     }
 

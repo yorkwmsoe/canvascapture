@@ -94,9 +94,6 @@ export const useGenerateNext = () => {
                 data ?? (await runPreGenerate()),
                 generationName,
                 documentsPath,
-                canvasAccessToken,
-                canvasDomain,
-                isStudent
             )
         )
     }
@@ -266,6 +263,7 @@ async function handleNode(
                 canvasAccessToken,
                 canvasDomain
             )
+            node.allSubmissions = uniqueSubmissions
         }
     }
 }
