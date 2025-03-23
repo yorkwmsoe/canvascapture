@@ -86,18 +86,18 @@ export async function generate(
         if (!isCourseDataNode(courseNode)) continue
         let markdownContent = `# ${getCourseName(courseNode.course)}\n\n` // Start course-level markdown content with a title
         for (const assignmentNode of courseNode.children) {
+            // Append description and submission content
+            for (const fileContent of assignmentNode.children) {
+                markdownContent += `${fileContent.content.join('\n')}\n\n`
+            }
+
             if (
                 assignmentNode.allSubmissions === undefined ||
                 assignmentNode.allSubmissions.length === 0
             )
                 continue
 
-            // Append submission content
-            for (const submissionContent of assignmentNode.children) {
-                markdownContent += `${submissionContent.content.join('\n')}\n\n`
-            }
-
-            // Collect course's assignments and submissions.
+            // Collect course's assignments and submissions for chart generation.
             courseAssignments.push(assignmentNode.assignment)
             courseSubmissions.push(...assignmentNode.allSubmissions)
         }
