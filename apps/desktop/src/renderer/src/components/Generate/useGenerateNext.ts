@@ -233,7 +233,13 @@ async function handleNode(
     canvasDomain: string,
     isStudent: boolean
 ) {
-    if (isAssignmentDataNode(node)) {
+    if (isCourseDataNode(node)) {
+        node.assignmentGroups = await canvasApi.getAssignmentGroups({
+            canvasAccessToken,
+            canvasDomain,
+            courseId: node.course.id,
+        })
+    } else if (isAssignmentDataNode(node)) {
         const { courseId, assignmentId } = parseHierarchyId(node.key)
         const submissions = await canvasApi.getSubmissions({
             canvasAccessToken,
