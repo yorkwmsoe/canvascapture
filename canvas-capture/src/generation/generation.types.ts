@@ -7,7 +7,7 @@
  *
  * See individual type and method definitions below for more details
  */
-import { Assignment } from '../types/canvas_api/assignment'
+import { Assignment, AssignmentGroup } from '../types/canvas_api/assignment'
 import { Course } from '../types/canvas_api/course'
 import { Submission } from '../types/canvas_api/submission'
 
@@ -21,17 +21,14 @@ export interface CourseDataNode extends DataNode {
     type: 'course'
     course: Course
     children: AssignmentDataNode[]
+    assignmentGroups: AssignmentGroup[]
 }
 
 export interface AssignmentDataNode extends DataNode {
     type: 'assignment'
     assignment: Assignment
     children: FileDataNode[]
-
-    // This field is marked as optional as to not break MarkdownEditor.
-    // As of 3/13/2025, this field is utilized for the chart generation
-    //  functions.
-    allSubmissions?: Submission[]
+    allSubmissions: Submission[]
 }
 
 export interface FileDataNode extends DataNode {

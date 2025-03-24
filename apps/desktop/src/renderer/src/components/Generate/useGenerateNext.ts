@@ -71,8 +71,10 @@ export const useGenerateNext = () => {
                             ),
                             assignment: individualAssignment,
                             children: [],
+                            allSubmissions: [],
                         }
                     }),
+                assignmentGroups: [],
             }
         })
     }, [assignments, getCourseById])
