@@ -23,16 +23,19 @@ import {
     DataNode,
     isCourseDataNode,
     CourseDataNode,
+    AssignmentGroup,
 } from '@canvas-capture/lib'
 import { FilePathContentPair } from './types'
 import { generateTOC } from './generateUtils'
+// TODO: deprecate
+// import {
+//     AverageAssignmentGradeExport,
+//     oneYearExport,
+// } from '@renderer/components/Statistics'
 import {
-    AverageAssignmentGradeExport,
-    oneYearExport,
-} from '@renderer/components/Statistics'
-import {
-    generateAvgGradeChart,
-    generateChart,
+    // TODO: deprecate
+    // generateAvgGradeChart,
+    // generateChart,
     generateGradingTurnaroundChart,
     generateAverageGradeChart,
 } from '@renderer/components/Generate/charts'
@@ -131,56 +134,90 @@ async function createCourseContentMappings(data: DataNode[]) {
 
     // Create each course's content.
     for (const courseNode of data) {
-        const assignmentSubmissionsMap = new Map<Assignment, Submission[]>()
-        // TODO: deprecate courseAssignments and courseSubmissions
-        const courseAssignments: Assignment[] = []
-        const courseSubmissions: Submission[] = []
-
-        // Create the course's markdown content by combining the markdown content of its assignments and submissions.
-        // Additionally, collect all assignments and submissions for this course.
         if (!isCourseDataNode(courseNode)) continue
+
+        // The assignment groups for the course.
+        const assignmentGroups = courseNode.assignmentGroups
+
+        // This maps an assignment group ID to its corresponding AssignmentGroup object.
+        const idAssignmentGroupMap =
+            createIdAssignmentGroupMap(assignmentGroups)
+
+        // This maps an assignment to all its submissions.
+        const assignmentSubmissionsMap = new Map<Assignment, Submission[]>()
+
+        // TODO: deprecate courseAssignments and courseSubmissions
+        // const courseAssignments: Assignment[] = []
+        // const courseSubmissions: Submission[] = []
+
+        // This loop does the following:
+        // 1) Create the course's markdown content by combining the markdown content of its assignments and submissions.
+        // 2) Collect all assignments into the corresponding AssignmentGroup object (utilized for chart generation).
+        // 3) Creates the mapping from assignments to submissions (utilized for chart generation).
         let markdownContent = `# ${getCourseName(courseNode.course)}\n\n` // Start course-level markdown content with a title
         for (const assignmentNode of courseNode.children) {
+            // Add assignment to its corresponding AssignmentGroup object.
+            if (assignmentNode.assignment.group_category_id) {
+                idAssignmentGroupMap
+                    .get(assignmentNode.assignment.group_category_id)
+                    ?.assignments.push(assignmentNode.assignment)
+            }
+
             // Append description and submission content
             for (const fileContent of assignmentNode.children) {
                 markdownContent += `${fileContent.content.join('\n')}\n\n`
             }
 
+            // Stop here if there are no submissions.
             if (
                 assignmentNode.allSubmissions === undefined ||
                 assignmentNode.allSubmissions.length === 0
             )
                 continue
 
-            // Collect course's assignments and submissions for chart generation.
+            // Add entry to assignmentSubmissions map.
             assignmentSubmissionsMap.set(
                 assignmentNode.assignment,
                 assignmentNode.allSubmissions
             )
             // TODO: deprecate courseAssignments and courseSubmissions
-            courseAssignments.push(assignmentNode.assignment)
-            courseSubmissions.push(...assignmentNode.allSubmissions)
+            // courseAssignments.push(assignmentNode.assignment)
+            // courseSubmissions.push(...assignmentNode.allSubmissions)
         }
         courseMarkdownMap.set(courseNode, markdownContent) // Add content to the map for later use.
 
-        // Create the course's chart HTML content.
-        const oneYearStatChart = oneYearExport() // Check if chart should be created
-            ? await generateChart(courseSubmissions)
-            : ''
-        const avgAssignGradeChart = AverageAssignmentGradeExport() // Check if chart should be created
-            ? await generateAvgGradeChart(courseSubmissions, courseAssignments)
-            : ''
-        courseChartMap.set(courseNode, oneYearStatChart + avgAssignGradeChart) // Add content to the map for later use.
+        // TODO: deprecate
+        // // Create the course's chart HTML content.
+        // const oneYearStatChart = oneYearExport() // Check if chart should be created
+        //     ? await generateChart(courseSubmissions)
+        //     : ''
+        // const avgAssignGradeChart = AverageAssignmentGradeExport() // Check if chart should be created
+        //     ? await generateAvgGradeChart(courseSubmissions, courseAssignments)
+        //     : ''
+        // courseChartMap.set(courseNode, oneYearStatChart + avgAssignGradeChart) // Add content to the map for later use.
 
         // TODO: create and utilize new chart generation functions
         generateGradingTurnaroundChart(
             courseNode.assignmentGroups,
-            courseSubmissions
+            assignmentSubmissionsMap
         )
         generateAverageGradeChart(
             courseNode.assignmentGroups,
-            courseSubmissions
+            assignmentSubmissionsMap
         )
     }
     return { courseMarkdownMap, courseChartMap }
+}
+
+/**
+ * Maps assignment group IDs to their corresponding assignment group objects for faster lookup.
+ */
+function createIdAssignmentGroupMap(
+    assignmentGroups: AssignmentGroup[]
+): Map<number, AssignmentGroup> {
+    const idAssignmentGroupMap = new Map<number, AssignmentGroup>()
+    for (const assignmentGroup of assignmentGroups) {
+        idAssignmentGroupMap.set(assignmentGroup.id, assignmentGroup)
+    }
+    return idAssignmentGroupMap
 }

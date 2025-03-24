@@ -20,7 +20,7 @@ import {
     Legend,
     Filler,
 } from 'chart.js'
-import { Assignment, Submission } from '@canvas-capture/lib'
+import { Assignment, AssignmentGroup, Submission } from '@canvas-capture/lib'
 
 // This registers essential components for Chart.js.
 // Note: These components only need to be registered once.
@@ -38,6 +38,24 @@ Chart.register(
 
 // This specifies the background color of the generated charts.
 const BACKGROUND_COLOR: string = '#e8e8e8' //`#d6d6d6`
+
+export function generateGradingTurnaroundChart(
+    assignmentGroups: AssignmentGroup[],
+    assignmentSubmissionsMap: Map<Assignment, Submission[]>
+) {
+    // TODO: Complete this function, remove debug console logs.
+    console.log(assignmentGroups)
+    console.log(assignmentSubmissionsMap)
+}
+
+export function generateAverageGradeChart(
+    assignmentGroups: AssignmentGroup[],
+    assignmentSubmissionsMap: Map<Assignment, Submission[]>
+) {
+    // TODO: Complete this function, remove debug console logs.
+    console.log(assignmentGroups)
+    console.log(assignmentSubmissionsMap)
+}
 
 /**
  * Generates a chart that displays the time taken to grade assignments.
