@@ -33,6 +33,8 @@ import {
 import {
     generateAvgGradeChart,
     generateChart,
+    generateGradingTurnaroundChart,
+    generateAverageGradeChart,
 } from '@renderer/components/Generate/charts'
 
 /**
@@ -66,52 +68,9 @@ export async function generate(
         recursive: true,
     })
 
-    // A mapping from a course's data node to its corresponding markdown content.
-    // The use of a Map instead of an Object ensured iteration are done in
-    //  insertion order.
-    const courseMarkdownMap = new Map<CourseDataNode, string>()
-
-    // A mapping from a course's data node to its corresponding chart HTML content.
-    // The use of a Map instead of an Object ensured iteration are done in
-    //  insertion order.
-    const courseChartMap = new Map<CourseDataNode, string>()
-
-    // Create each course's content.
-    for (const courseNode of data) {
-        const courseAssignments: Assignment[] = []
-        const courseSubmissions: Submission[] = []
-
-        // Create the course's markdown content by combining the markdown content of its assignments and submissions.
-        // Additionally, collect all assignments and submissions for this course.
-        if (!isCourseDataNode(courseNode)) continue
-        let markdownContent = `# ${getCourseName(courseNode.course)}\n\n` // Start course-level markdown content with a title
-        for (const assignmentNode of courseNode.children) {
-            // Append description and submission content
-            for (const fileContent of assignmentNode.children) {
-                markdownContent += `${fileContent.content.join('\n')}\n\n`
-            }
-
-            if (
-                assignmentNode.allSubmissions === undefined ||
-                assignmentNode.allSubmissions.length === 0
-            )
-                continue
-
-            // Collect course's assignments and submissions for chart generation.
-            courseAssignments.push(assignmentNode.assignment)
-            courseSubmissions.push(...assignmentNode.allSubmissions)
-        }
-        courseMarkdownMap.set(courseNode, markdownContent) // Add content to the map for later use.
-
-        // Create the course's chart HTML content.
-        const oneYearStatChart = oneYearExport() // Check if chart should be created
-            ? await generateChart(courseSubmissions)
-            : ''
-        const avgAssignGradeChart = AverageAssignmentGradeExport() // Check if chart should be created
-            ? await generateAvgGradeChart(courseSubmissions, courseAssignments)
-            : ''
-        courseChartMap.set(courseNode, oneYearStatChart + avgAssignGradeChart) // Add content to the map for later use.
-    }
+    // Mappings from a course's data node to its markdown and chart content.
+    const { courseMarkdownMap, courseChartMap } =
+        await createCourseContentMappings(data)
 
     const htmlData: FilePathContentPair[] = []
     const md = markdownit({ linkify: true, html: true })
@@ -145,4 +104,83 @@ export async function generate(
 
     // Return the array of file paths and their HTML content
     return htmlData
+}
+
+/**
+ * Creates mappings for course content, associating each course's data node with its generated
+ * Markdown and chart HTML content. This function is a helper for the `generate` function and
+ * simplifies the construction of course-specific report content.
+ *
+ * @param data - An array of `DataNode` objects representing the hierarchical course structure,
+ *               which includes assignments, submissions, and associated metadata.
+ *
+ * @returns An object containing:
+ *          - `courseMarkdownMap`: A mapping of each course node to its generated Markdown content.
+ *          - `courseChartMap`: A mapping of each course node to its generated chart HTML content.
+ */
+async function createCourseContentMappings(data: DataNode[]) {
+    // A mapping from a course's data node to its corresponding markdown content.
+    // The use of a Map instead of an Object ensured iteration are done in
+    //  insertion order.
+    const courseMarkdownMap = new Map<CourseDataNode, string>()
+
+    // A mapping from a course's data node to its corresponding chart HTML content.
+    // The use of a Map instead of an Object ensured iteration are done in
+    //  insertion order.
+    const courseChartMap = new Map<CourseDataNode, string>()
+
+    // Create each course's content.
+    for (const courseNode of data) {
+        const assignmentSubmissionsMap = new Map<Assignment, Submission[]>()
+        // TODO: deprecate courseAssignments and courseSubmissions
+        const courseAssignments: Assignment[] = []
+        const courseSubmissions: Submission[] = []
+
+        // Create the course's markdown content by combining the markdown content of its assignments and submissions.
+        // Additionally, collect all assignments and submissions for this course.
+        if (!isCourseDataNode(courseNode)) continue
+        let markdownContent = `# ${getCourseName(courseNode.course)}\n\n` // Start course-level markdown content with a title
+        for (const assignmentNode of courseNode.children) {
+            // Append description and submission content
+            for (const fileContent of assignmentNode.children) {
+                markdownContent += `${fileContent.content.join('\n')}\n\n`
+            }
+
+            if (
+                assignmentNode.allSubmissions === undefined ||
+                assignmentNode.allSubmissions.length === 0
+            )
+                continue
+
+            // Collect course's assignments and submissions for chart generation.
+            assignmentSubmissionsMap.set(
+                assignmentNode.assignment,
+                assignmentNode.allSubmissions
+            )
+            // TODO: deprecate courseAssignments and courseSubmissions
+            courseAssignments.push(assignmentNode.assignment)
+            courseSubmissions.push(...assignmentNode.allSubmissions)
+        }
+        courseMarkdownMap.set(courseNode, markdownContent) // Add content to the map for later use.
+
+        // Create the course's chart HTML content.
+        const oneYearStatChart = oneYearExport() // Check if chart should be created
+            ? await generateChart(courseSubmissions)
+            : ''
+        const avgAssignGradeChart = AverageAssignmentGradeExport() // Check if chart should be created
+            ? await generateAvgGradeChart(courseSubmissions, courseAssignments)
+            : ''
+        courseChartMap.set(courseNode, oneYearStatChart + avgAssignGradeChart) // Add content to the map for later use.
+
+        // TODO: create and utilize new chart generation functions
+        generateGradingTurnaroundChart(
+            courseNode.assignmentGroups,
+            courseSubmissions
+        )
+        generateAverageGradeChart(
+            courseNode.assignmentGroups,
+            courseSubmissions
+        )
+    }
+    return { courseMarkdownMap, courseChartMap }
 }
