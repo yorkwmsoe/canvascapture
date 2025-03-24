@@ -49,6 +49,7 @@ export const useGenerateNext = () => {
     const { generationName } = useGenerationStore()
     const documentsPath = getDocumentsPath()
 
+    // Create the DataNode tree structure.
     const dataNodes = useMemo(() => {
         return assignments.map<CourseDataNode>((assignment) => {
             const course = getCourseById(assignment.courseId)
@@ -186,11 +187,20 @@ async function generateContentPairs(
     return contentPairs
 }
 
-// Note: This is what I'm guessing this ESSENTIALLY does, based off the code. -EG
-// Given a list of nodes, where each node represents a course and its children
-// represent assignments, add children to the assignments that represent the
-// submission (and description) content along with each "file" location. (the
-// "file" location is what structures the report for the markdown editor).
+/**
+ * This function processes each given DataNode tree (e.g., course or assignment nodes)
+ * and fills it with corresponding content related to assignments, submissions, and
+ * assignment group data where applicable.
+ *
+ * The function performs the following tasks:
+ * - Iterates over each node in the provided array of DataNodes.
+ * - Handles each node according to its type (`CourseDataNode` or `AssignmentDataNode`)
+ *   using the `handleNode` helper function, which fetches and attaches relevant data.
+ * - Recursively processes child nodes (if any) to populate their structure as well.
+ *
+ * Returns:
+ * - A promise that resolves to a new array of DataNodes, each populated with content.
+ */
 async function preGenerate(
     getCourse: (courseId: number) => Course | undefined,
     nodes: DataNode[],
@@ -220,12 +230,7 @@ async function preGenerate(
     return copyNodes
 }
 
-// Note: This is what I'm guessing this ESSENTIALLY does, based off the code. -EG
-// Given a node, if it does NOT represent an assignment, do nothing.
-// If it DOES represent an assignment, generate its children, which are nodes
-// that represent the submission (and description) content along with a "file"
-// location (the "file" location is what structures the report for the markdown
-// editor).
+// Helper function used by "preGenerate".
 async function handleNode(
     getCourse: (courseId: number) => Course | undefined,
     node: DataNode,
