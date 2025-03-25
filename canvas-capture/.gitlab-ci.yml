@@ -21,7 +21,7 @@ mutate-canvas-capture:
         paths:
             - canvas-capture/reports/mutation/mutation.html
     rules:
-        - if: $CI_COMMIT_TAG
-          when: always
         - when: manual
           allow_failure: true
+        - if: $CI_COMMIT_TAG
+          when: always
