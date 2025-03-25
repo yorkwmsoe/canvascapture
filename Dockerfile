@@ -4,4 +4,4 @@ WORKDIR /usr/src
 
 RUN apt-get update -y
 
-RUN npm install -g pnpm
+RUN npm install -g pnpm@9.15.9
