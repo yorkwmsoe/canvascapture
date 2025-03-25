@@ -28,10 +28,10 @@ release-desktop-windows:
         paths:
             - $DESKTOP_BASE_PATH/dist
     rules:
-        - if: $CI_COMMIT_TAG
-          when: always
         - when: manual
           allow_failure: true
+        - if: $CI_COMMIT_TAG
+          when: always
 
 release-desktop-mac:
     image: $DESKTOP_IMAGE
@@ -56,10 +56,10 @@ release-desktop-linux:
         paths:
             - $DESKTOP_BASE_PATH/dist
     rules:
-        - if: $CI_COMMIT_TAG
-          when: always
         - when: manual
           allow_failure: true
+        - if: $CI_COMMIT_TAG
+          when: always
 
 mutate-desktop:
     image: $DESKTOP_IMAGE
@@ -71,7 +71,7 @@ mutate-desktop:
         paths:
             - $DESKTOP_BASE_PATH/reports/mutation/mutation.html
     rules:
-        - if: $CI_COMMIT_TAG
-          when: always
         - when: manual
           allow_failure: true
+        - if: $CI_COMMIT_TAG
+          when: always
