@@ -72,3 +72,4 @@ pages:
         - if: $CI_COMMIT_TAG
           when: always
         - when: manual
+          allow_failure: true
