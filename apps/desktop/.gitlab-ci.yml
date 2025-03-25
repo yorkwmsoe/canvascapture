@@ -27,11 +27,7 @@ release-desktop-windows:
     artifacts:
         paths:
             - $DESKTOP_BASE_PATH/dist
-    rules:
-        - when: manual
-          allow_failure: true
-        - if: $CI_COMMIT_TAG
-          when: always
+    when: manual
 
 release-desktop-mac:
     image: $DESKTOP_IMAGE
@@ -44,7 +40,6 @@ release-desktop-mac:
         paths:
             - $DESKTOP_BASE_PATH/dist
     when: manual
-    allow_failure: true
 
 release-desktop-linux:
     image: $DESKTOP_IMAGE
@@ -55,11 +50,7 @@ release-desktop-linux:
     artifacts:
         paths:
             - $DESKTOP_BASE_PATH/dist
-    rules:
-        - when: manual
-          allow_failure: true
-        - if: $CI_COMMIT_TAG
-          when: always
+    when: manual
 
 mutate-desktop:
     image: $DESKTOP_IMAGE
@@ -70,8 +61,4 @@ mutate-desktop:
     artifacts:
         paths:
             - $DESKTOP_BASE_PATH/reports/mutation/mutation.html
-    rules:
-        - when: manual
-          allow_failure: true
-        - if: $CI_COMMIT_TAG
-          when: always
+    when: manual

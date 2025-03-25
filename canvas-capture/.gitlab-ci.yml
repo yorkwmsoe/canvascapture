@@ -20,8 +20,4 @@ mutate-canvas-capture:
     artifacts:
         paths:
             - canvas-capture/reports/mutation/mutation.html
-    rules:
-        - when: manual
-          allow_failure: true
-        - if: $CI_COMMIT_TAG
-          when: always
+    when: manual
