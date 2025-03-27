@@ -18,7 +18,6 @@ import { sanitizePath } from '@renderer/utils/sanitize-path'
 import markdownit from 'markdown-it'
 import { mkdirSync, rmSync, writeFileSync } from 'fs'
 import {
-    Assignment,
     Submission,
     DataNode,
     isCourseDataNode,
@@ -36,9 +35,11 @@ import {
     // TODO: deprecate
     // generateAvgGradeChart,
     // generateChart,
-    generateGradingTurnaroundChart,
+
+    // generateGradingTurnaroundChart,
     generateAverageGradeChart,
 } from '@renderer/components/Generate/charts'
+import { AverageAssignmentGradeExport } from '@renderer/components/Statistics'
 
 /**
  * Generates course reports and exports them as Markdown and HTML files
@@ -99,6 +100,8 @@ export async function generate(
                 htmlContent +
                 courseChartMap.get(courseNode) || ''
 
+        console.log(courseChartMap.get(courseNode)) // TODO: remove debug log
+
         htmlData.push({
             filePath: join(generationName, `${courseName}`),
             content: htmlContentWithTocAndCharts,
@@ -139,12 +142,19 @@ async function createCourseContentMappings(data: DataNode[]) {
         // The assignment groups for the course.
         const assignmentGroups = courseNode.assignmentGroups
 
+        // Prepare AssignmentGroup objects for assignment pushes.
+        // NOTE: This clears the previous assignments.
+        assignmentGroups.forEach((assignmentGroup) => {
+            assignmentGroup.assignments = []
+        })
+
         // This maps an assignment group ID to its corresponding AssignmentGroup object.
         const idAssignmentGroupMap =
             createIdAssignmentGroupMap(assignmentGroups)
+        console.log(idAssignmentGroupMap) // TODO: remove debug log
 
-        // This maps an assignment to all its submissions.
-        const assignmentSubmissionsMap = new Map<Assignment, Submission[]>()
+        // This maps an assignment ID to all the assignment's submissions.
+        const assignmentSubmissionsMap = new Map<number, Submission[]>()
 
         // TODO: deprecate courseAssignments and courseSubmissions
         // const courseAssignments: Assignment[] = []
@@ -156,12 +166,11 @@ async function createCourseContentMappings(data: DataNode[]) {
         // 3) Creates the mapping from assignments to submissions (utilized for chart generation).
         let markdownContent = `# ${getCourseName(courseNode.course)}\n\n` // Start course-level markdown content with a title
         for (const assignmentNode of courseNode.children) {
+            console.log(assignmentNode) // TODO: remove debug log
             // Add assignment to its corresponding AssignmentGroup object.
-            if (assignmentNode.assignment.group_category_id) {
-                idAssignmentGroupMap
-                    .get(assignmentNode.assignment.group_category_id)
-                    ?.assignments.push(assignmentNode.assignment)
-            }
+            idAssignmentGroupMap
+                .get(assignmentNode.assignment.assignment_group_id)
+                ?.assignments.push(assignmentNode.assignment)
 
             // Append description and submission content
             for (const fileContent of assignmentNode.children) {
@@ -177,7 +186,7 @@ async function createCourseContentMappings(data: DataNode[]) {
 
             // Add entry to assignmentSubmissions map.
             assignmentSubmissionsMap.set(
-                assignmentNode.assignment,
+                assignmentNode.assignment.id,
                 assignmentNode.allSubmissions
             )
             // TODO: deprecate courseAssignments and courseSubmissions
@@ -196,15 +205,14 @@ async function createCourseContentMappings(data: DataNode[]) {
         //     : ''
         // courseChartMap.set(courseNode, oneYearStatChart + avgAssignGradeChart) // Add content to the map for later use.
 
-        // TODO: create and utilize new chart generation functions
-        generateGradingTurnaroundChart(
-            courseNode.assignmentGroups,
-            assignmentSubmissionsMap
-        )
-        generateAverageGradeChart(
-            courseNode.assignmentGroups,
-            assignmentSubmissionsMap
-        )
+        const averageGradeChart = AverageAssignmentGradeExport()
+            ? await generateAverageGradeChart(
+                  courseNode.assignmentGroups,
+                  assignmentSubmissionsMap
+              )
+            : ''
+        // TODO: Implement grading turnaround chart
+        courseChartMap.set(courseNode, averageGradeChart)
     }
     return { courseMarkdownMap, courseChartMap }
 }

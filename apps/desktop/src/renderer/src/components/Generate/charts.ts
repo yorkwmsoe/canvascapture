@@ -2,325 +2,318 @@
  * This file provides functions to generate visual representations of grading-related data using Chart.js.
  * These charts include:
  *
- * 1. A chart showing the number of days it took to grade assignments after submission (`generateChart`).
- * 2. A chart displaying the average grades for assignments (`generateAvgGradeChart`).
+ * 1. A chart displaying the average grades for assignments (`generateAverageGradeChart`).
  *
  * The functions temporarily render charts on a canvas in the DOM, capture them as images, and return the images' HTML strings.
  * The Chart.js library is utilized to create visually appealing and customizable charts.
  */
 import {
-    Chart,
-    LinearScale,
+    BarController,
+    BarElement,
     CategoryScale,
-    LineController,
-    LineElement,
-    PointElement,
+    Chart,
+    ChartData,
+    LinearScale,
     Title,
-    Tooltip,
-    Legend,
-    Filler,
 } from 'chart.js'
 import { Assignment, AssignmentGroup, Submission } from '@canvas-capture/lib'
+import {
+    calculateDescriptiveStatistics,
+    DescriptiveStatistics,
+} from '@renderer/utils/statistics'
 
-// This registers essential components for Chart.js.
-// Note: These components only need to be registered once.
+/**
+ * This registers only the components utilized from Chart.js, reducing program bloat.
+ * If a new type of chart is added, or current charts are expanded, the required components
+ *  will need to be imported and registered also.
+ * @see https://www.chartjs.org/docs/latest/getting-started/integration.html
+ */
 Chart.register(
-    LinearScale, // for the y-axis scale
-    CategoryScale, // for the x-axis scale
-    LineController, // for creating line charts
-    LineElement, // for line elements in the chart
-    PointElement, // for point elements in the chart
-    Title, // for chart titles
-    Tooltip, // for tooltips
-    Legend, // for the chart legend
-    Filler
+    BarController, // Controller for bar charts
+    BarElement, // Render bar charts
+    CategoryScale, // X-axis categories
+    LinearScale, // Y-axis numerical data
+    Title // Chart title
 )
 
-// This specifies the background color of the generated charts.
-const BACKGROUND_COLOR: string = '#e8e8e8' //`#d6d6d6`
+// Default chart settings are accessed through Chart.defaults
+// See https://www.chartjs.org/docs/latest/api/interfaces/Defaults.html
+Chart.defaults.backgroundColor = 'rgba(255,0,0,0.75)'
+Chart.defaults.borderColor = 'rgb(62,62,62)'
+Chart.defaults.color = 'rgb(0,0,0)'
 
 export function generateGradingTurnaroundChart(
     assignmentGroups: AssignmentGroup[],
-    assignmentSubmissionsMap: Map<Assignment, Submission[]>
+    assignmentSubmissionsMap: Map<number, Submission[]>
 ) {
     // TODO: Complete this function, remove debug console logs.
     console.log(assignmentGroups)
     console.log(assignmentSubmissionsMap)
 }
 
-export function generateAverageGradeChart(
+/**
+ * Generates an image element representing a bar chart of the average grades for assignment groups.
+ *
+ * @param {AssignmentGroup[]} assignmentGroups - An array of assignment groups containing group metadata.
+ * @param {Map<number, Submission[]>} assignmentSubmissionsMap - A map linking assignment IDs to a list of its submissions.
+ * @param {number} width - The width of the image, by default 500
+ * @param {number} height - The height of the image, by default 500
+ * @return {string} The generated chart HTMLImageElement depicting the average grades.
+ */
+export async function generateAverageGradeChart(
     assignmentGroups: AssignmentGroup[],
-    assignmentSubmissionsMap: Map<Assignment, Submission[]>
+    assignmentSubmissionsMap: Map<number, Submission[]>,
+    width: number = 400,
+    height: number = 400
+): Promise<string> {
+    const dataset = createAverageGradeDataSet(
+        assignmentGroups,
+        assignmentSubmissionsMap
+    )
+    const barChartConfig = createBarChartConfigObject(
+        'Average Grade by Assignment Group',
+        'Grade Percentage',
+        'Assignment Group',
+        dataset.labels,
+        dataset.data
+    )
+    return `<img src="${await createChartImage(barChartConfig, width, height)}" alt="Average Grade Chart">`
+}
+
+/**
+ * Generates a base64 encoded image of a chart based on the provided chart configuration.
+ * This function creates a chart, renders it to a temporary canvas, and extracts the base64 image
+ * after the chart rendering is complete. The chart instance is destroyed afterward to prevent memory leaks.
+ *
+ * @param chartConfig - The configuration object for the chart to be rendered and converted into an image.
+ * @param width
+ * @param height
+ * @return {Promise<string>} A promise that resolves to a base64 encoded string representing the generated chart image.
+ */
+async function createChartImage(
+    chartConfig: any,
+    width: number,
+    height: number
+): Promise<string> {
+    return new Promise((resolve, reject) => {
+        // This function generates a base64 image of the chart once the rendering is complete.
+        // It is injected into the `onComplete` field of the `animation` option in the chart configuration.
+        // After generating the image, it destroys the chart instance to prevent memory leaks
+        // and resolves/rejects the promise based on success or failure.
+        const generateImage = (animation) => {
+            const chart: Chart = animation.chart
+            try {
+                const chartImage = chart.toBase64Image('image/png', 1) // Setting second argument 1 ensures max quality based on canvas element size.
+                chart.destroy()
+                resolve(chartImage)
+            } catch (error) {
+                chart.destroy()
+                reject(error)
+            }
+        }
+
+        // This HTMLCanvasElement will temporarily house the chart.
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+
+        // Inject generateImage function into the chartConfig object, so that
+        // it executes when the chart is fully rendered.
+        if (!chartConfig.options) chartConfig.options = {}
+        if (!chartConfig.options.animation) chartConfig.options.animation = {}
+        chartConfig.options.animation.onComplete = generateImage
+
+        new Chart(canvas, chartConfig)
+    })
+}
+
+/**
+ * Creates a dataset containing average grade statistics for assignment groups.
+ *
+ * @param {AssignmentGroup[]} assignmentGroups - An array of assignment groups to process.
+ * @param {Map<Assignment, Submission[]>} assignmentSubmissionsMap - A map linking assignments to their corresponding submissions.
+ * @return {{ labels: string[], data: number[] }} An object containing `labels`, which are the names of assignment groups,
+ * and `data`, which are the mean grade statistics for each group.
+ */
+function createAverageGradeDataSet(
+    assignmentGroups: AssignmentGroup[],
+    assignmentSubmissionsMap: Map<number, Submission[]>
+): { labels: string[]; data: number[] } {
+    const dataset = {
+        labels: [] as string[],
+        data: [] as number[],
+    }
+
+    const groupSubmissionsMap = createGroupSubmissionsMap(
+        assignmentGroups,
+        assignmentSubmissionsMap
+    )
+
+    for (const assignmentGroup of assignmentGroups) {
+        // Calculate grade statistics
+        const assignmentPointsPossibleMap = createAssignmentPointsPossibleMap(
+            assignmentGroup.assignments
+        )
+        const submissions = groupSubmissionsMap.get(assignmentGroup.id)!
+        const gradeStatistics = calculateGradeStatistics(
+            submissions,
+            assignmentPointsPossibleMap
+        )
+        if (gradeStatistics === null) continue
+
+        // Push to data set
+        dataset.labels.push(assignmentGroup.name)
+        dataset.data.push(gradeStatistics.mean)
+    }
+
+    return dataset
+}
+
+/**
+ * Creates a configuration object for a bar chart using Chart.js.
+ * See https://www.chartjs.org/docs/latest/configuration/
+ *
+ * @param {string} chartTitle - The title placed on top of the chart.
+ * @param {string} yTitle - The title placed next to the y axis.
+ * @param {string} xTitle - The title placed next to the x axis
+ * @param {string[]} labels - An array of labels for the X-axis of the chart.
+ * @param {number[]} data - An array of data points corresponding to the labels.
+ * @throws {Error} Throws an error if the lengths of labels and data do not match.
+ * @returns A Chart.js configuration object for the bar chart.
+ */
+function createBarChartConfigObject(
+    chartTitle: string,
+    yTitle: string,
+    xTitle: string,
+    labels: string[],
+    data: number[]
 ) {
-    // TODO: Complete this function, remove debug console logs.
-    console.log(assignmentGroups)
-    console.log(assignmentSubmissionsMap)
+    if (labels.length != data.length)
+        throw new Error('Labels and data must be of the same length')
+    const chartData: ChartData<'bar'> = {
+        labels: labels,
+        datasets: [
+            {
+                data: data,
+            },
+        ],
+    }
+
+    const chartOptions = {
+        responsive: false,
+        plugins: {
+            title: {
+                display: true,
+                text: chartTitle,
+            },
+        },
+        scales: {
+            y: {
+                min: 0.6, // Set the minimum value of the Y-axis
+                max: 1.0, // Set the maximum value of the Y-axis
+                ticks: {
+                    // Convert decimal to percent (e.g. 0.1 -> 10%)
+                    callback: (value) => {
+                        if (typeof value !== 'number') return value
+                        return `${(value * 100).toFixed(0)}%`
+                    },
+                },
+                title: {
+                    display: true,
+                    text: yTitle,
+                },
+            },
+            x: {
+                ticks: {
+                    align: 'center', // Ensures the labels align to the center of the bars
+                },
+                grid: {
+                    offset: true, // Forces alignment between labels and the bars
+                },
+                title: {
+                    display: true,
+                    text: xTitle,
+                },
+            },
+        },
+    }
+    return {
+        type: 'bar',
+        data: chartData,
+        options: chartOptions,
+    }
 }
 
 /**
- * Generates a chart that displays the time taken to grade assignments.
+ * Creates a map of group IDs to a list of submissions for the assignments in each group.
  *
- * This function processes a list of submissions to compute the number of days
- * it took for each assignment to be graded after being submitted. A line chart
- * is generated using Chart.js to visually present the grading time data. The
- * chart is temporarily rendered on a canvas in the DOM, captured as an image,
- * and then converted into an HTML string to be returned for reuse elsewhere.
+ * For proper use of this function, each AssignmentGroup object must be prepped by populating the
+ *  Assignments field with an array of type Assignment[]. The Canvas API request can be modified to
+ *  include all assignments. See: https://canvas.instructure.com/doc/api/assignment_groups.html
  *
- * @param allSubmissions - An array of submissions containing assignment IDs and timestamps.
- * @returns A promise that resolves to a string containing the HTML of the generated chart image.
+ * @param {AssignmentGroup[]} assignmentGroups - An array of assignment groups, where each group contains assignments.
+ * @param {Map<Assignment, Submission[]>} assignmentSubmissionsMap - A map linking assignments to their corresponding submissions.
+ * @return {Map<string, Submission[]>} A map where the key is the group name and the value is an array of submissions for assignments in that group.
  */
-export async function generateChart(
-    allSubmissions: Submission[]
-): Promise<string> {
-    let oneYearStat2
-    const ctx = document.createElement('canvas')
-    ctx.width = 800
-    ctx.height = 800
-    const allUniqueSubmissions: Submission[] = []
-    const submittedAt: Date[] = []
-    const gradedAt: Date[] = []
-    for (let ivar = 0; ivar < allSubmissions.length; ivar++) {
-        const isFound = allUniqueSubmissions.find(
-            (x) => x.id == allSubmissions[ivar].id
-        )
-
-        if (!isFound) {
-            allUniqueSubmissions.push(allSubmissions[ivar])
+function createGroupSubmissionsMap(
+    assignmentGroups: AssignmentGroup[],
+    assignmentSubmissionsMap: Map<number, Submission[]>
+): Map<number, Submission[]> {
+    const allSubmissionsByGroup: Map<number, Submission[]> = new Map()
+    for (const assignmentGroup of assignmentGroups) {
+        console.log(assignmentGroup) // TODO: remove debug log
+        for (const assignment of assignmentGroup.assignments) {
+            console.log('iterated') // TODO: remove debug log
+            if (!assignmentSubmissionsMap.has(assignment.id)) continue
+            const submissions = assignmentSubmissionsMap.get(assignment.id)!
+            allSubmissionsByGroup.set(assignmentGroup.id, submissions)
         }
     }
-
-    for (let ivar = 0; ivar < allUniqueSubmissions.length; ivar++) {
-        submittedAt.push(allUniqueSubmissions[ivar].submitted_at)
-        gradedAt.push(allUniqueSubmissions[ivar].graded_at)
-    }
-
-    const timeToGrade: number[] = []
-    const assignmentCount: number[] = []
-    let passed = 0
-    for (let ivar = 0; ivar < submittedAt.length; ivar++) {
-        if (gradedAt[ivar] != null && submittedAt[ivar] != null) {
-            passed++
-            const months =
-                parseInt((gradedAt[ivar] + '').substring(5, 7)) -
-                parseInt((submittedAt[ivar] + '').substring(5, 7))
-            let days
-            if (months == 0) {
-                days =
-                    parseInt((gradedAt[ivar] + '').substring(8, 10)) -
-                    parseInt((submittedAt[ivar] + '').substring(8, 10))
-            } else {
-                days =
-                    parseInt((gradedAt[ivar] + '').substring(8, 10)) +
-                    (months * 30 -
-                        parseInt((submittedAt[ivar] + '').substring(8, 10)))
-            }
-
-            timeToGrade.push(days) //graded at - submitted at.
-            assignmentCount.push(passed)
-        }
-    }
-
-    // Append the canvas to the body temporarily
-    document.body.appendChild(ctx)
-    Chart.defaults.font.size = 32
-    return new Promise((resolve) => {
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: assignmentCount,
-                datasets: [
-                    {
-                        label: 'Days to Grade',
-                        data: timeToGrade,
-                        borderWidth: 5,
-                        pointBackgroundColor: 'cyan',
-                        borderColor: '#008b8b',
-                        fill: 'origin',
-                        backgroundColor: BACKGROUND_COLOR,
-                    },
-                ],
-            },
-            options: {
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Assignments',
-                        },
-                    },
-                    y: {
-                        beginAtZero: true,
-
-                        title: {
-                            display: true,
-                            text: 'Days since submitted',
-                        },
-                    },
-                },
-                animation: {
-                    onComplete: function () {
-                        // Now that the chart is rendered, capture the canvas as an image
-                        const imgData = ctx.toDataURL()
-
-                        const wrap = document.createElement('div')
-                        const img = document.createElement('img')
-                        img.src = imgData // Set the image as the source of the img element
-                        img.width = 400
-                        img.height = 400
-
-                        wrap.appendChild(img)
-
-                        oneYearStat2 = wrap.innerHTML
-
-                        // Remove the canvas from the DOM
-                        document.body.removeChild(ctx)
-
-                        resolve(oneYearStat2) // Resolve the promise with the image HTML
-                    },
-                },
-            },
-        })
-    })
+    return allSubmissionsByGroup
 }
 
 /**
- * Generates a chart that displays the average grades for assignments.
+ * Creates a map of assignments and their corresponding points possible.
  *
- * This function processes a list of submissions and assignments to compute
- * the average grade for each assignment. A line chart is generated using Chart.js
- * to visually present the average grades. The chart is temporarily rendered on a
- * canvas in the DOM, captured as an image, and then converted into an HTML string
- * to be returned for reuse elsewhere.
- *
- * @param allSubmissions - An array of submissions containing assignment IDs and scores.
- * @param allAssignments - An array of assignments containing assignment details like ID and points possible.
- * @returns A promise that resolves to a string containing the HTML of the generated chart image.
+ * @param {Assignment[]} assignments - An array of assignment objects, each containing an `id` and `points_possible` property.
+ * @return {Map<number, number>} A map where the keys are assignment IDs and the values are the points possible for each assignment.
  */
-export async function generateAvgGradeChart(
-    allSubmissions: Submission[],
-    allAssignments: Assignment[]
-): Promise<string> {
-    let avgAssignGrade2
-    const ctx = document.createElement('canvas')
-    ctx.width = 200
-    ctx.height = 200
-
-    const assignmentCount: number[] = [] //TODO: delete
-
-    const gradesByAssignent: number[][] = []
-    let gbalength = 0
-    for (let ivar = 0; ivar < allAssignments.length; ivar++) {
-        //Adds ONE OF EACH assignemnt to GBA
-        const isInGBA = gradesByAssignent.find(
-            (x) => x[0] == allAssignments[ivar].id
+function createAssignmentPointsPossibleMap(
+    assignments: Assignment[]
+): Map<number, number> {
+    const pointsPossibleByAssignment = new Map<number, number>()
+    for (const assignment of assignments) {
+        pointsPossibleByAssignment.set(
+            assignment.id,
+            assignment.points_possible
         )
-        if (!isInGBA) {
-            gradesByAssignent.push([])
-            gradesByAssignent[gbalength].push(allAssignments[ivar].id)
-            gbalength++
-        }
     }
+    return pointsPossibleByAssignment
+}
 
-    for (let ivar = 0; ivar < allSubmissions.length; ivar++) {
-        for (let xvar = 0; xvar < gradesByAssignent.length; xvar++) {
-            if (
-                allSubmissions[ivar].assignment_id == gradesByAssignent[xvar][0]
-            ) {
-                gradesByAssignent[xvar].push(allSubmissions[ivar].score)
-            }
-        }
-    }
+/**
+ * Calculates descriptive statistics for standardized grade percentages (0 = 0%, 1 = 100%) based on submissions and points possible.
+ *
+ * Grades are standardized as percentages by dividing the score by the points possible for each assignment.
+ * All assignments are weighted equally, regardless of their total points (e.g., 8/10 is equivalent to 80/100).
+ *
+ * @param {Submission[]} submissions - An array of submission objects containing assignment-related scores.
+ * @param {Map<number, number>} assignmentPointsPossibleMap - A map where keys are assignment IDs and values are the total points possible for each assignment.
+ * @return {DescriptiveStatistics | null} Descriptive statistics for grade percentages (0 = 0%, 1 = 100%), or null if no submissions.
+ **/
+function calculateGradeStatistics(
+    submissions: Submission[],
+    assignmentPointsPossibleMap: Map<number, number>
+): DescriptiveStatistics | null {
+    if (submissions.length === 0) return null
 
-    for (let ivar = 0; ivar < gradesByAssignent.length; ivar++) {
-        if (gradesByAssignent[ivar][1] === undefined) {
-            gradesByAssignent.splice(ivar, 1)
-            ivar--
-        }
-    }
-
-    const temparr: number[] = []
-
-    for (let ivar = 0; ivar < gradesByAssignent.length; ivar++) {
-        assignmentCount.push(ivar + 1)
-        let sum = 0
-        const pp = allAssignments.find(
-            (as) => as.id == gradesByAssignent[ivar][0]
-        )?.points_possible
-
-        for (let xvar = 1; xvar < gradesByAssignent[ivar].length; xvar++) {
-            if (pp != undefined) {
-                sum += gradesByAssignent[ivar][xvar] * (100 / pp)
-            } else {
-                sum += gradesByAssignent[ivar][xvar]
-            }
-        }
-        if (gradesByAssignent[ivar].length > 1) {
-            //if statement in case no-one turns it in
-            sum /= gradesByAssignent[ivar].length - 1
-        }
-
-        temparr.push(sum)
-    }
-
-    // Append the canvas to the body temporarily
-    document.body.appendChild(ctx)
-    const minValue: number = Math.min(...temparr)
-    const chartMin: number = minValue * 0.9
-    return new Promise((resolve) => {
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: assignmentCount,
-                datasets: [
-                    {
-                        label: 'Avg Assignment Grade',
-                        data: temparr,
-                        borderWidth: 5,
-                        pointBackgroundColor: 'cyan',
-                        borderColor: '#008b8b',
-                        fill: true,
-                        backgroundColor: BACKGROUND_COLOR,
-                    },
-                ],
-            },
-            options: {
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Assignments',
-                        },
-                    },
-                    y: {
-                        min: chartMin,
-                        title: {
-                            display: true,
-                            text: 'Average Percent Grade',
-                        },
-                    },
-                },
-                animation: {
-                    onComplete: function () {
-                        // Now that the chart is rendered, capture the canvas as an image
-                        const imgData = ctx.toDataURL()
-
-                        const wrap = document.createElement('div')
-                        const img = document.createElement('img')
-                        img.src = imgData // Set the image as the source of the img element
-                        img.width = 400
-                        img.height = 400
-
-                        wrap.appendChild(img)
-
-                        avgAssignGrade2 = wrap.innerHTML
-
-                        // Remove the canvas from the DOM
-                        document.body.removeChild(ctx)
-
-                        resolve(avgAssignGrade2) // Resolve the promise with the image HTML
-                    },
-                },
-            },
-        })
+    const gradePercentages = submissions.map((submission) => {
+        const pointsPossible = assignmentPointsPossibleMap.get(
+            submission.assignment_id
+        )
+        if (pointsPossible === undefined) return 0
+        return submission.score / pointsPossible
     })
+
+    return calculateDescriptiveStatistics(gradePercentages)
 }
