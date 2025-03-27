@@ -10,7 +10,7 @@ import {
     GetQuizSubmissionRequest,
     CreateCanvasApiConfig,
 } from './canvas.api'
-import { Assignment } from './types/canvas_api/assignment'
+import { Assignment, AssignmentGroup } from './types/canvas_api/assignment'
 import { Course } from './types/canvas_api/course'
 import { DiscussionTopic } from './types/canvas_api/discussion-topic'
 import { Enrollment } from './types/canvas_api/enrollment'
@@ -56,6 +56,7 @@ export {
     testSubmissions,
     createCanvasApi,
     Assignment,
+    AssignmentGroup,
     Course,
     DiscussionTopic,
     Enrollment,
