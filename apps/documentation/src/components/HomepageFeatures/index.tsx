@@ -14,8 +14,8 @@ const FeatureList: FeatureItem[] = [
         Svg: require('@site/static/img/desktop.svg').default,
         description: (
             <>
-                With the desktop application you will now be able to install it
-                and use it retrieve work from Canvas.
+                The desktop application is where users interact with Canvas
+                Capture.
             </>
         ),
     },
@@ -23,7 +23,18 @@ const FeatureList: FeatureItem[] = [
         title: 'Documentation Site',
         Svg: require('@site/static/img/docs.svg').default,
         description: (
-            <>This site is the documentation for the Canvas Capture project.</>
+            <>
+                This site is the developer notes for the Canvas Capture project.
+            </>
+        ),
+    },
+    {
+        title: 'COMING SOON: Database',
+        Svg: require('@site/static/img/database.svg').default,
+        description: (
+            <>
+                The database will be used to cache data and improve performance.
+            </>
         ),
     },
 ]

@@ -1,13 +1,14 @@
-# Canvas Capture [Private/Shared Module]
-
-This package provides a library of common utilities shared between the various canvas capture apps. There are 4 main modules that are utilized within this library: Markdown, CanvasAPI, Generators. There is one other module that is currently in development and not complete. This is the Scraper module and has some outgoing issues. These are capture in the **Unresolved Implementation** section.
+This package primarily serves to facilitate fetching data from Canvas and formatting it for use.
 
 ## Installation
 
-from the root directory not `canvas-capture`
+Follow the instructions on the [Getting Started Quickstart page](/sdl/sdl/canvascapture/docs/Getting%20Started/Quickstart) (if you haven't already done so).
 
+## Building
+
+If a change is made to this module, it will need to be rebuilt in order for the change to registered. To register this, run:
 ```bash
-pnpm install
+pnpm package
 ```
 
 ## Developing
@@ -21,8 +22,9 @@ pnpm @canvas-capture package --watch
 ```bash
 pnpm @canvas-capture test
 ```
+
 ## Markdown Module
-When this project was in the very early stages of development, there were some concerns about existing npm packages and their capabilities when outputting markdown. There was not a library that would perform all the desired capabilities of this project. Therefore, a custom markdown library was built. 
+When this project was in the very early stages of development, there were some concerns about existing npm packages and their capabilities when outputting markdown. There was not a library that would perform all the desired capabilities of this project. Therefore, a custom markdown library was built.
 
 This markdown module has the ability to output:
  + Variable sizes headings
@@ -54,7 +56,7 @@ In order to grab information from Canvas, the [Canvas LMS API](https://canvas.in
 + (getQuizQuestionsParams) Gets all quiz questions with parameters in URL
 
 ## Generators
-This is the module responsible for outputting all the desired data into markdown format. It utilizes the methods from the markdown module and the input data provided to it in order to accomplish this. In the end, it will return list of strings. 
+This is the module responsible for outputting all the desired data into markdown format. It utilizes the methods from the markdown module and the input data provided to it in order to accomplish this. In the end, it will return list of strings.
 
 ## Quiz Organization
 This module groups much of the laborious quiz implementation. It is responsible for getting data on a quiz's individual question

@@ -1,79 +1,23 @@
-### Install
+### Installation
 
-from the root directory not `apps/docs`
-
-```bash
-$ pnpm i
-```
-
-### build
-    
-```bash
-$ pnpm documentation build
-```
+Follow the instructions on the [Getting Started Quickstart page](/sdl/sdl/canvascapture/docs/Getting%20Started/Quickstart) (if you haven't already done so).
 
 ### Development
 
 ```bash
-$ pnpm documentation start
+pnpm documentation start
 ```
 
-### Code Changes 
-Using hot reloading the website refreshes the files that were changes and shows the changes in real time.
-
-### Create a Document 
-Documents are groups of pages connected through:
-- a sidebar
-- previous/next navigation
-- versioning
-
-#### Creating Document Example
-Create a Markdown file at docs/hello.md:
-
-```markdown
-# Hello
-
-This is my **first Docusaurus document**!
-
-```
-
-#### Configure the Sidebar 
-
-Docusaurus automatically creates a sidebar from the docs folder.
-Add metadata to customize the sidebar label and position:
-
+### Build
 
 ```bash
----
-sidebar_label: 'Hi!'
-sidebar_position: 3
----
-```
-```markdown
-
-# Hello
-
-This is my **first Docusaurus document**!
-
+pnpm documentation build
 ```
 
+### Configure the Sidebar
 
-It is also possible to create your sidebar explicitly in the sidebar.js file.
+Docusaurus automatically creates a sidebar from the docs folder. You can customize the sidebars in the `sidebars.ts` file.
 
-```bash
-export default {
-  tutorialSidebar: [
-    'intro',
-    'hello',
-    {
-      type: 'category',
-      label: 'Tutorial',
-      items: ['tutorial-basics/create-a-document'],
-    },
-  ],
-};
-```
+### Configure the Header Navigation
 
-## Project Structure Diagram
-
-The project structure diagram is a [plantuml work breakdown structure](https://plantuml.com/wbs-diagram), and was created in VS Code with the official plantuml extension.
+You can customize the header navigation in the items section of the themeConfig in `docusaurus.config.ts` file.

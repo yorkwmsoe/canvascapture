@@ -28,7 +28,8 @@
   "pnpm": {
     "patchedDependencies": {
       "pyodide@0.25.0": "patches/pyodide@0.25.0.patch"
-    }
+    },
+    "neverBuiltDependencies": []
   },
   "dependencies": {
     "jsdom": "^25.0.1",
