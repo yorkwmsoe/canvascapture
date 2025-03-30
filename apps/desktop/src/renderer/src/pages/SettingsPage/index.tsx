@@ -65,7 +65,7 @@ export function SettingsPage() {
             configCourses = parsedData.myNumbers
             configAssignments = parsedData.myStrings
         } catch (error) {
-            
+            configGenerationName = "Failed to load config file"
         }
 
         setGenerationName(configGenerationName)
@@ -78,9 +78,7 @@ export function SettingsPage() {
     }
 
     const downloadConfigFile = async () => {
-        const copiedFilePath = await ipcRenderer.invoke('copy-file')
-
-        
+        await ipcRenderer.invoke('copy-file')
     }
 
     const onFinish = (values: Config) => {
