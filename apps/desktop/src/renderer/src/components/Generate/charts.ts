@@ -42,13 +42,15 @@ Chart.defaults.backgroundColor = 'rgba(255,0,0,0.75)'
 Chart.defaults.borderColor = 'rgb(62,62,62)'
 Chart.defaults.color = 'rgb(0,0,0)'
 
-export function generateGradingTurnaroundChart(
+export async function generateGradingTurnaroundChart(
     assignmentGroups: AssignmentGroup[],
     assignmentSubmissionsMap: Map<number, Submission[]>
 ) {
     // TODO: Complete this function, remove debug console logs.
     console.log(assignmentGroups)
     console.log(assignmentSubmissionsMap)
+
+    return ''
 }
 
 /**
