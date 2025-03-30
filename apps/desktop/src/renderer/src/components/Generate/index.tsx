@@ -43,7 +43,18 @@ export function Generate() {
                     'utf-8'
                 )
             } catch (error) {
-                console.log('Error saving config file')
+                let errorMessage =
+                'Something went wrong during generation. Please try again.'
+
+                if (error instanceof Error) {
+                    errorMessage = error.message // Safely access the error message
+                }
+
+                notification.destroy()
+                notification.error({
+                    message: 'Generation Failed',
+                    description: errorMessage,
+                })
             }
         } catch (error: unknown) {
             let errorMessage =
