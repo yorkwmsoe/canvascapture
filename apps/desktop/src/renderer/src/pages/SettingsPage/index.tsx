@@ -65,7 +65,7 @@ export function SettingsPage() {
             configCourses = parsedData.myNumbers
             configAssignments = parsedData.myStrings
         } catch (error) {
-            console.log('Could not read config file')
+            
         }
 
         setGenerationName(configGenerationName)
@@ -80,9 +80,7 @@ export function SettingsPage() {
     const downloadConfigFile = async () => {
         const copiedFilePath = await ipcRenderer.invoke('copy-file')
 
-        if (!copiedFilePath) {
-            console.log('File save canceled or failed')
-        }
+        
     }
 
     const onFinish = (values: Config) => {
