@@ -6,7 +6,6 @@ import * as remote from '@electron/remote/main'
 import { writeFile, copyFileSync } from 'fs'
 import path from 'path'
 
-
 const isTest = process.env.NODE_ENV === 'test'
 if (isTest) {
     require('wdio-electron-service/main')
@@ -113,36 +112,35 @@ type FilePathContentPair = {
     content: string
 }
 ipcMain.handle('dialog:openFile', async () => {
-    
     const result = await dialog.showOpenDialog({
         properties: ['openFile'],
-        filters: [
-            { name: 'JSON Files', extensions: ['json'] }
-        ]
+        filters: [{ name: 'JSON Files', extensions: ['json'] }],
     })
-    
+
     return result.filePaths
 })
 
 ipcMain.handle('copy-file', async () => {
-    let SOURCE_FILE_PATH = path.join(__dirname, '../../../../assignmentsConfig.json')
-    console.log("filePath: "+SOURCE_FILE_PATH)
+    let SOURCE_FILE_PATH = path.join(
+        __dirname,
+        '../../../../assignmentsConfig.json'
+    )
+    console.log('filePath: ' + SOURCE_FILE_PATH)
 
     const { filePath: destinationFile } = await dialog.showSaveDialog({
         title: 'Save Copy As',
         defaultPath: SOURCE_FILE_PATH,
-        filters: [
-            { name: 'All Files', extensions: ['.json'] }
-        ]
+        filters: [{ name: 'All Files', extensions: ['.json'] }],
     })
 
-    if (!destinationFile){ //User didn't select location
-        return null 
+    if (!destinationFile) {
+        //User didn't select location
+        return null
     }
-    
+
     try {
         copyFileSync(SOURCE_FILE_PATH, destinationFile)
-        return destinationFile 
+        return destinationFile
     } catch (error) {
         console.error('Error copying file:', error)
         return null

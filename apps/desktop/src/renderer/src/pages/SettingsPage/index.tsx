@@ -27,7 +27,8 @@ export function SettingsPage() {
         canvasAccessToken,
         markdownEditor,
     } = useSettingsStore()
-    const { generationName, setGenerationName, setAssignments, setCourses } = useGenerationStore()
+    const { generationName, setGenerationName, setAssignments, setCourses } =
+        useGenerationStore()
     //const { runPreGenerate, runGenerate } = useGenerateNext()
     const queryClient = useQueryClient()
     const isSetup = useRouterState().location.pathname.includes('/setup')
@@ -46,37 +47,37 @@ export function SettingsPage() {
             },
         })
     }
-    const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+    const wait = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms))
 
-    const loadConfigFromFile = async () =>{
-        let configGenerationName: string = "FromConfig"
+    const loadConfigFromFile = async () => {
+        let configGenerationName: string = 'FromConfig'
         let configCourses: number[] = [12981]
         let configAssignments: string[] = ['12981:149723']
-        
-        try{//Read the json chosen
+
+        try {
+            //Read the json chosen
             const filePath = await ipcRenderer.invoke('dialog:openFile')
             const data = fs.readFileSync(filePath[0], 'utf-8')
             const parsedData = JSON.parse(data)
-        
+
             configGenerationName = parsedData.myString
             configCourses = parsedData.myNumbers
             configAssignments = parsedData.myStrings
-        }catch(error){
-            console.log("Could not read config file")
+        } catch (error) {
+            console.log('Could not read config file')
         }
-        
+
         setGenerationName(configGenerationName)
         await wait(200)
         setCourses(configCourses)
         setAssignments(configAssignments)
 
-        await wait(2000);
+        await wait(2000)
         navigate({ to: '/selection', search: { step: 2 } })
-        
     }
 
-
-    const downloadConfigFile = async () =>{
+    const downloadConfigFile = async () => {
         const copiedFilePath = await ipcRenderer.invoke('copy-file')
 
         if (!copiedFilePath) {

@@ -12,7 +12,6 @@ import { useGenerationStore } from '@renderer/stores/generation.store'
 import fs from 'fs'
 import path from 'path'
 
-
 export function Generate() {
     const { notification } = App.useApp()
     const navigate = useNavigate({ from: '/generation' })
@@ -31,16 +30,21 @@ export function Generate() {
             const dataToWrite = {
                 myString: generationName,
                 myNumbers: courses,
-                myStrings: assignments
+                myStrings: assignments,
             }
-            try{
-                const filePath = path.join(__dirname, '../../../../../../../../../assignmentsConfig.json')
-                fs.writeFileSync(filePath, JSON.stringify(dataToWrite, null, 2), 'utf-8')
-            }catch(error){
-                console.log("Error saving config file")
+            try {
+                const filePath = path.join(
+                    __dirname,
+                    '../../../../../../../../../assignmentsConfig.json'
+                )
+                fs.writeFileSync(
+                    filePath,
+                    JSON.stringify(dataToWrite, null, 2),
+                    'utf-8'
+                )
+            } catch (error) {
+                console.log('Error saving config file')
             }
-            
-
         } catch (error: unknown) {
             let errorMessage =
                 'Something went wrong during generation. Please try again.'
