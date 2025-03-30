@@ -44,7 +44,7 @@ export function Generate() {
                 )
             } catch (error) {
                 let errorMessage =
-                'Something went wrong during generation. Please try again.'
+                    'Something went wrong during generation. Please try again.'
 
                 if (error instanceof Error) {
                     errorMessage = error.message // Safely access the error message
