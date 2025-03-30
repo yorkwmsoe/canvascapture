@@ -31,10 +31,6 @@ import {
     generateAverageGradeChart,
     generateGradingTurnaroundChart,
 } from '@renderer/components/Generate/charts'
-import {
-    AverageAssignmentGradeExport,
-    oneYearExport,
-} from '@renderer/components/Statistics'
 
 /**
  * Generates course reports and exports them as Markdown and HTML files
@@ -47,14 +43,17 @@ import {
  * @param data - The hierarchical course data nodes containing assignments and files.
  * @param generationName - The name of the generation project (used for directory naming).
  * @param documentsPath - The root path where generated files will be stored.
- *
+ *  * @param requestedCharts - An optional record that specifies which charts to generate.
+ *                          The keys represent chart names (e.g., "averageGradeChart", "gradeTurnaroundChart"),
+ *                          and the values are booleans indicating whether each chart should be included.
  * @returns An array of objects containing file paths and their generated HTML content.
  *          Each object represents a single course's export, including optional graphs.
  */
 export async function generate(
     data: DataNode[],
     generationName: string,
-    documentsPath: string
+    documentsPath: string,
+    requestedCharts: Record<string, boolean> = {}
 ) {
     // Remove existing directory to start fresh
     rmSync(join(documentsPath, sanitizePath(generationName)), {
@@ -69,7 +68,7 @@ export async function generate(
 
     // Mappings from a course's data node to its markdown and chart content.
     const { courseMarkdownMap, courseChartMap } =
-        await createCourseContentMappings(data)
+        await createCourseContentMappings(data, requestedCharts)
 
     const htmlData: FilePathContentPair[] = []
     const md = markdownit({ linkify: true, html: true })
@@ -110,12 +109,17 @@ export async function generate(
  *
  * @param data - An array of `DataNode` objects representing the hierarchical course structure,
  *               which includes assignments, submissions, and associated metadata.
- *
+ * @param requestedCharts - A record specifying which charts to generate, with keys as chart names
+ *                          (e.g., "averageGradeChart", "gradeTurnaroundChart") and boolean values
+ *                          indicating whether the chart should be generated.
  * @returns An object containing:
  *          - `courseMarkdownMap`: A mapping of each course node to its generated Markdown content.
  *          - `courseChartMap`: A mapping of each course node to its generated chart HTML content.
  */
-async function createCourseContentMappings(data: DataNode[]) {
+async function createCourseContentMappings(
+    data: DataNode[],
+    requestedCharts: Record<string, boolean>
+) {
     // A mapping from a course's data node to its corresponding markdown content.
     // The use of a Map instead of an Object ensured iteration are done in
     //  insertion order.
@@ -178,7 +182,7 @@ async function createCourseContentMappings(data: DataNode[]) {
         courseMarkdownMap.set(courseNode, markdownContent) // Add content to the map for later use.
 
         // If option is checked, generate average grade chart.
-        const averageGradeChart = AverageAssignmentGradeExport()
+        const averageGradeChart = requestedCharts.averageGradeByGroup
             ? await generateAverageGradeChart(
                   courseNode.assignmentGroups,
                   assignmentSubmissionsMap
@@ -186,7 +190,7 @@ async function createCourseContentMappings(data: DataNode[]) {
             : ''
 
         // If options is checked, generate grading turnaround chart.
-        const gradeTurnaroundChart = oneYearExport()
+        const gradeTurnaroundChart = requestedCharts.gradingTurnaroundByGroup
             ? await generateGradingTurnaroundChart(
                   courseNode.assignmentGroups,
                   assignmentSubmissionsMap

@@ -46,7 +46,7 @@ export const useGenerateNext = () => {
     const { canvasAccessToken, canvasDomain, isStudent } = useSettingsStore()
     const { assignments, selectedAssignments } = useAssignments()
     const { getCourseById } = useCourses()
-    const { generationName } = useGenerationStore()
+    const { generationName, requestedCharts } = useGenerationStore()
     const documentsPath = getDocumentsPath()
 
     // Create the DataNode tree structure.
@@ -96,7 +96,8 @@ export const useGenerateNext = () => {
             await generate(
                 data ?? (await runPreGenerate()),
                 generationName,
-                documentsPath
+                documentsPath,
+                requestedCharts
             )
         )
     }
