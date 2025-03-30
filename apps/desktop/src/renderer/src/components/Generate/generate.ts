@@ -28,7 +28,9 @@ import { FilePathContentPair } from './types'
 import { generateTOC } from './generateUtils'
 
 import {
+    generateAverageGradeByAssignmentChart,
     generateAverageGradeChart,
+    generateGradingTurnaroundByAssignmentChart,
     generateGradingTurnaroundChart,
 } from '@renderer/components/Generate/charts'
 
@@ -43,9 +45,9 @@ import {
  * @param data - The hierarchical course data nodes containing assignments and files.
  * @param generationName - The name of the generation project (used for directory naming).
  * @param documentsPath - The root path where generated files will be stored.
- *  * @param requestedCharts - An optional record that specifies which charts to generate.
- *                          The keys represent chart names (e.g., "averageGradeChart", "gradeTurnaroundChart"),
- *                          and the values are booleans indicating whether each chart should be included.
+ * @param requestedCharts - A record indicating which optional charts to include in the report.
+ *                          Keys represent chart types (e.g., "averageGradeChart", "gradeTurnaroundChart"),
+ *                          and values are booleans specifying whether the chart should be included.
  * @returns An array of objects containing file paths and their generated HTML content.
  *          Each object represents a single course's export, including optional graphs.
  */
@@ -181,23 +183,41 @@ async function createCourseContentMappings(
         }
         courseMarkdownMap.set(courseNode, markdownContent) // Add content to the map for later use.
 
-        // If option is checked, generate average grade chart.
-        const averageGradeChart = requestedCharts.averageGradeByGroup
+        // Generate requested charts.
+        const averageGradeByGroupChart = requestedCharts.averageGradeByGroup
             ? await generateAverageGradeChart(
                   courseNode.assignmentGroups,
                   assignmentSubmissionsMap
               )
             : ''
+        const averageGradeByAssignmentChart =
+            requestedCharts.averageGradeByAssignment
+                ? await generateAverageGradeByAssignmentChart(
+                      courseNode.assignmentGroups,
+                      assignmentSubmissionsMap
+                  )
+                : ''
+        const gradeTurnaroundByGroupChart =
+            requestedCharts.gradingTurnaroundByGroup
+                ? await generateGradingTurnaroundChart(
+                      courseNode.assignmentGroups,
+                      assignmentSubmissionsMap
+                  )
+                : ''
+        const gradeTurnaroundByAssignmentChart =
+            requestedCharts.gradingTurnaroundByAssignment
+                ? await generateGradingTurnaroundByAssignmentChart(
+                      courseNode.assignmentGroups,
+                      assignmentSubmissionsMap
+                  )
+                : ''
+        const charts =
+            averageGradeByGroupChart +
+            averageGradeByAssignmentChart +
+            gradeTurnaroundByGroupChart +
+            gradeTurnaroundByAssignmentChart
 
-        // If options is checked, generate grading turnaround chart.
-        const gradeTurnaroundChart = requestedCharts.gradingTurnaroundByGroup
-            ? await generateGradingTurnaroundChart(
-                  courseNode.assignmentGroups,
-                  assignmentSubmissionsMap
-              )
-            : ''
-
-        courseChartMap.set(courseNode, averageGradeChart + gradeTurnaroundChart)
+        courseChartMap.set(courseNode, charts)
     }
     return { courseMarkdownMap, courseChartMap }
 }

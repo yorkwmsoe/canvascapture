@@ -13,6 +13,7 @@ import {
     CategoryScale,
     Chart,
     ChartData,
+    ChartOptions,
     LinearScale,
     Title,
 } from 'chart.js'
@@ -42,10 +43,19 @@ Chart.defaults.backgroundColor = 'rgba(255,0,0,0.75)'
 Chart.defaults.borderColor = 'rgb(62,62,62)'
 Chart.defaults.color = 'rgb(0,0,0)'
 
+/**
+ * Generates a grading turnaround chart for given assignment groups and submissions data.
+ *
+ * @param {AssignmentGroup[]} assignmentGroups - An array of assignment groups to be included in the chart.
+ * @param {Map<number, Submission[]>} assignmentSubmissionsMap - A map where the key is the assignment ID and the value is an array of submissions related to that assignment.
+ * @param {number} [width=400] - The width of the chart image in pixels.
+ * @param {number} [height=400] - The height of the chart image in pixels.
+ * @return {Promise<string>} A promise that resolves to an HTML string containing an image element with the grading turnaround chart.
+ */
 export async function generateGradingTurnaroundChart(
     assignmentGroups: AssignmentGroup[],
     assignmentSubmissionsMap: Map<number, Submission[]>,
-    width: number = 400,
+    width: number = 600,
     height: number = 400
 ) {
     const dataset = createGradingTurnaroundDataSet(
@@ -54,6 +64,38 @@ export async function generateGradingTurnaroundChart(
     )
     const barChartConfig = createBarChartConfigObject(
         'Grading Turnaround by Assignment Group',
+        dataset.labels,
+        dataset.data,
+        'Days past due date.',
+        'Assignment Group',
+        -5, // From -1 business week (for early grading)
+        10 // To two business weeks.
+    )
+    return `<img src="${await createChartImage(barChartConfig, width, height)}" alt="Average Grade Chart">`
+}
+
+/**
+ * Generates a grading turnaround chart by assignment in the form of an image URL.
+ * The chart visualizes the average grading turnaround in days per assignment group.
+ *
+ * @param {AssignmentGroup[]} assignmentGroups - An array of assignment groups containing information about the assignments.
+ * @param {Map<number, Submission[]>} assignmentSubmissionsMap - A map of assignment IDs to arrays of submissions for each assignment.
+ * @param {number} [width=600] - The width of the generated chart image in pixels.
+ * @param {number} [height=400] - The height of the generated chart image in pixels.
+ * @returns {Promise<string>} The generated chart image as a string containing the image URL with alt text.
+ */
+export async function generateGradingTurnaroundByAssignmentChart(
+    assignmentGroups: AssignmentGroup[],
+    assignmentSubmissionsMap: Map<number, Submission[]>,
+    width: number = 600,
+    height: number = 400
+) {
+    const dataset = createGradingTurnaroundByAssignmentDataSet(
+        assignmentGroups,
+        assignmentSubmissionsMap
+    )
+    const barChartConfig = createBarChartConfigObject(
+        'Grading Turnaround by Assignment',
         dataset.labels,
         dataset.data,
         'Days past due date.',
@@ -76,7 +118,7 @@ export async function generateGradingTurnaroundChart(
 export async function generateAverageGradeChart(
     assignmentGroups: AssignmentGroup[],
     assignmentSubmissionsMap: Map<number, Submission[]>,
-    width: number = 400,
+    width: number = 600,
     height: number = 400
 ): Promise<string> {
     const dataset = createAverageGradeDataSet(
@@ -91,7 +133,45 @@ export async function generateAverageGradeChart(
         'Assignment Group',
         0.7,
         1.0,
-        (value: number) => `${(value * 100).toFixed(0)}%`
+        (value) => {
+            if (typeof value === 'string') return value
+            return `${(value * 100).toFixed(0)}%`
+        }
+    )
+    return `<img src="${await createChartImage(barChartConfig, width, height)}" alt="Average Grade Chart">`
+}
+
+/**
+ * Generates a bar chart representing the average grade by assignment in the form of an image string.
+ *
+ * @param {AssignmentGroup[]} assignmentGroups - The list of assignment groups containing assignment details.
+ * @param {Map<number, Submission[]>} assignmentSubmissionsMap - A map where the key represents an assignment ID and the value is an array of submissions for that assignment.
+ * @param {number} [width=600] - The width of the chart image to be generated. Default is 600.
+ * @param {number} [height=400] - The height of the chart image to be generated. Default is 400.
+ * @return {Promise<string>} A Promise that resolves to an HTML image tag string containing the generated chart.
+ */
+export async function generateAverageGradeByAssignmentChart(
+    assignmentGroups: AssignmentGroup[],
+    assignmentSubmissionsMap: Map<number, Submission[]>,
+    width: number = 600,
+    height: number = 400
+): Promise<string> {
+    const dataset = createAverageGradeDataSetByAssignment(
+        assignmentGroups,
+        assignmentSubmissionsMap
+    )
+    const barChartConfig = createBarChartConfigObject(
+        'Average Grade by Assignment',
+        dataset.labels,
+        dataset.data,
+        'Grade Percentage',
+        'Assignment Group',
+        0.7,
+        1.0,
+        (value) => {
+            if (typeof value === 'string') return value
+            return `${(value * 100).toFixed(0)}%`
+        }
     )
     return `<img src="${await createChartImage(barChartConfig, width, height)}" alt="Average Grade Chart">`
 }
@@ -107,7 +187,11 @@ export async function generateAverageGradeChart(
  * @return {Promise<string>} A promise that resolves to a base64 encoded string representing the generated chart image.
  */
 async function createChartImage(
-    chartConfig: any,
+    chartConfig: {
+        type: 'bar'
+        data: ChartData<'bar'>
+        options: ChartOptions<'bar'>
+    },
     width: number,
     height: number
 ): Promise<string> {
@@ -196,6 +280,56 @@ function createAverageGradeDataSet(
 }
 
 /**
+ * Creates a dataset containing average grade data by assignment.
+ *
+ * @param {AssignmentGroup[]} assignmentGroups - An array of assignment groups, where each group contains assignments.
+ * @param {Map<number, Submission[]>} assignmentSubmissionsMap - A map where the key is the assignment ID and the value is an array of submissions for that assignment.
+ * @return {{ labels: string[], data: number[] }} - An object containing two arrays: `labels`, which holds the assignment names, and `data`, which holds the mean grades for those assignments.
+ */
+function createAverageGradeDataSetByAssignment(
+    assignmentGroups: AssignmentGroup[],
+    assignmentSubmissionsMap: Map<number, Submission[]>
+): { labels: string[]; data: number[] } {
+    const dataset = {
+        labels: [] as string[],
+        data: [] as number[],
+    }
+
+    const assignments = assignmentGroups
+        .map((group) => group.assignments)
+        .flat()
+    const assignmentPointsPossibleMap =
+        createAssignmentPointsPossibleMap(assignments)
+
+    for (const assignment of assignments) {
+        if (assignmentSubmissionsMap.get(assignment.id) === undefined) continue
+        // Collect all on-time and graded submissions
+        const submissions = assignmentSubmissionsMap
+            .get(assignment.id)!
+            .filter((submission) => {
+                return (
+                    !submission.missing &&
+                    !submission.late &&
+                    submission.grade !== null
+                )
+            })
+
+        // Calculate grade statistics.
+        const gradeStatistics = calculateGradeStatistics(
+            submissions,
+            assignmentPointsPossibleMap
+        )
+        if (gradeStatistics === null) continue
+
+        // Push to data set
+        dataset.labels.push(assignment.name)
+        dataset.data.push(gradeStatistics.mean)
+    }
+
+    return dataset
+}
+
+/**
  * Creates a dataset containing grading turnaround statistics for assignment groups.
  * Turnaround time is determined as business days between due date and submission grade.
  * Late/missing submissions are not included in this calculation and early grading
@@ -247,6 +381,47 @@ function createGradingTurnaroundDataSet(
 }
 
 /**
+ * Creates a dataset containing grading turnaround data for assignments.
+ * The dataset includes assignment names as labels and the mean grading turnaround times as data points.
+ *
+ * @param {AssignmentGroup[]} assignmentGroups - An array of assignment groups, each containing a list of assignments.
+ * @param {Map<number, Submission[]>} assignmentSubmissionsMap - A map where the key is the assignment ID and the value is an array of submissions for that assignment.
+ * @return {{ labels: string[], data: number[] }} An object containing an array of assignment labels and their corresponding mean grading turnaround times.
+ */
+function createGradingTurnaroundByAssignmentDataSet(
+    assignmentGroups: AssignmentGroup[],
+    assignmentSubmissionsMap: Map<number, Submission[]>
+): { labels: string[]; data: number[] } {
+    const dataset = {
+        labels: [] as string[],
+        data: [] as number[],
+    }
+
+    const assignments = assignmentGroups
+        .map((group) => group.assignments)
+        .flat()
+    const assignmentDueDateMap = createAssignmentDueDateMap(assignments)
+
+    for (const assignment of assignments) {
+        if (assignmentSubmissionsMap.get(assignment.id) === undefined) continue
+        // Collect all graded submissions
+        const submissions = assignmentSubmissionsMap
+            .get(assignment.id)!
+            .filter((submission) => submission.grade !== null)
+        if (submissions === undefined) continue
+        const turnaroundStatistics = calculateGradingTurnaroundStatistics(
+            submissions,
+            assignmentDueDateMap
+        )
+        if (turnaroundStatistics === null) continue
+        dataset.labels.push(assignment.name)
+        dataset.data.push(turnaroundStatistics.mean)
+    }
+
+    return dataset
+}
+
+/**
  * Creates a configuration object for a bar chart using Chart.js.
  * See https://www.chartjs.org/docs/latest/configuration/
  *
@@ -269,8 +444,8 @@ function createBarChartConfigObject(
     xTitle: string,
     yMin: number,
     yMax: number,
-    tickFnc: (value: number) => string = (value) => `${value}`
-) {
+    tickFnc: (value: string | number) => string = (value) => `${value}`
+): { type: 'bar'; data: ChartData<'bar'>; options: ChartOptions<'bar'> } {
     if (labels.length != data.length)
         throw new Error('Labels and data must be of the same length')
     const chartData: ChartData<'bar'> = {
@@ -282,7 +457,7 @@ function createBarChartConfigObject(
         ],
     }
 
-    const chartOptions = {
+    const chartOptions: ChartOptions<'bar'> = {
         responsive: false,
         plugins: {
             title: {
@@ -462,7 +637,7 @@ function calculateBusinessDays(startDate: Date, endDate: Date): number {
         ;[startDate, endDate] = [endDate, startDate]
     }
 
-    let currentDate = new Date(startDate)
+    const currentDate = new Date(startDate)
     currentDate.setHours(0, 0, 0, 0) // Normalize startDate to midnight
     const normalizedEndDate = new Date(endDate)
     normalizedEndDate.setHours(0, 0, 0, 0) // Normalize endDate to midnight
