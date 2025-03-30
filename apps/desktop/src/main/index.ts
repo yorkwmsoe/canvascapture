@@ -1,9 +1,11 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import * as remote from '@electron/remote/main'
-import { writeFile } from 'fs'
+import { writeFile, copyFileSync } from 'fs'
+import path from 'path'
+
 
 const isTest = process.env.NODE_ENV === 'test'
 if (isTest) {
@@ -110,6 +112,42 @@ type FilePathContentPair = {
     filePath: string
     content: string
 }
+ipcMain.handle('dialog:openFile', async () => {
+    
+    const result = await dialog.showOpenDialog({
+        properties: ['openFile'],
+        filters: [
+            { name: 'JSON Files', extensions: ['json'] }
+        ]
+    })
+    
+    return result.filePaths
+})
+
+ipcMain.handle('copy-file', async () => {
+    let SOURCE_FILE_PATH = path.join(__dirname, '../../../../assignmentsConfig.json')
+    console.log("filePath: "+SOURCE_FILE_PATH)
+
+    const { filePath: destinationFile } = await dialog.showSaveDialog({
+        title: 'Save Copy As',
+        defaultPath: SOURCE_FILE_PATH,
+        filters: [
+            { name: 'All Files', extensions: ['.json'] }
+        ]
+    })
+
+    if (!destinationFile){ //User didn't select location
+        return null 
+    }
+    
+    try {
+        copyFileSync(SOURCE_FILE_PATH, destinationFile)
+        return destinationFile 
+    } catch (error) {
+        console.error('Error copying file:', error)
+        return null
+    }
+})
 
 ipcMain.handle('generate', async (_event, htmlData: FilePathContentPair[]) => {
     for (const pair of htmlData) {

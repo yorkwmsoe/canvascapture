@@ -15,6 +15,9 @@ import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
 import { useQueryClient } from '@tanstack/react-query'
 import { SaveIcon } from '@renderer/components/icons/Save'
 import { HelpIcon } from '@renderer/components/icons/Help'
+import { useGenerationStore } from '@renderer/stores/generation.store'
+import { ipcRenderer } from 'electron'
+import fs from 'fs'
 
 export function SettingsPage() {
     const {
@@ -24,6 +27,8 @@ export function SettingsPage() {
         canvasAccessToken,
         markdownEditor,
     } = useSettingsStore()
+    const { generationName, setGenerationName, setAssignments, setCourses } = useGenerationStore()
+    //const { runPreGenerate, runGenerate } = useGenerateNext()
     const queryClient = useQueryClient()
     const isSetup = useRouterState().location.pathname.includes('/setup')
     const navigate = useNavigate({ from: isSetup ? '/setup' : '/settings' })
@@ -40,6 +45,43 @@ export function SettingsPage() {
                 section: 'settings',
             },
         })
+    }
+    const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    const loadConfigFromFile = async () =>{
+        let configGenerationName: string = "FromConfig"
+        let configCourses: number[] = [12981]
+        let configAssignments: string[] = ['12981:149723']
+        
+        try{//Read the json chosen
+            const filePath = await ipcRenderer.invoke('dialog:openFile')
+            const data = fs.readFileSync(filePath[0], 'utf-8')
+            const parsedData = JSON.parse(data)
+        
+            configGenerationName = parsedData.myString
+            configCourses = parsedData.myNumbers
+            configAssignments = parsedData.myStrings
+        }catch(error){
+            console.log("Could not read config file")
+        }
+        
+        setGenerationName(configGenerationName)
+        await wait(200)
+        setCourses(configCourses)
+        setAssignments(configAssignments)
+
+        await wait(2000);
+        navigate({ to: '/selection', search: { step: 2 } })
+        
+    }
+
+
+    const downloadConfigFile = async () =>{
+        const copiedFilePath = await ipcRenderer.invoke('copy-file')
+
+        if (!copiedFilePath) {
+            console.log('File save canceled or failed')
+        }
     }
 
     const onFinish = (values: Config) => {
@@ -125,6 +167,16 @@ export function SettingsPage() {
                                 <Checkbox>Show Editor</Checkbox>
                             </Form.Item>
                         )}
+                        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                            <Button onClick={downloadConfigFile}>
+                                Download Assignment Config
+                            </Button>
+                        </Form.Item>
+                        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                            <Button onClick={loadConfigFromFile}>
+                                Load From Assignment Config
+                            </Button>
+                        </Form.Item>
                         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                             <Button
                                 type="primary"
