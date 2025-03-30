@@ -121,11 +121,11 @@ ipcMain.handle('dialog:openFile', async () => {
 })
 
 ipcMain.handle('copy-file', async () => {
-    let SOURCE_FILE_PATH = path.join(
+    const SOURCE_FILE_PATH = path.join(
         __dirname,
         '../../../../assignmentsConfig.json'
     )
-    console.log('filePath: ' + SOURCE_FILE_PATH)
+    
 
     const { filePath: destinationFile } = await dialog.showSaveDialog({
         title: 'Save Copy As',
@@ -142,7 +142,6 @@ ipcMain.handle('copy-file', async () => {
         copyFileSync(SOURCE_FILE_PATH, destinationFile)
         return destinationFile
     } catch (error) {
-        console.error('Error copying file:', error)
         return null
     }
 })

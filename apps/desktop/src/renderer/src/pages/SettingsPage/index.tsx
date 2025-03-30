@@ -27,7 +27,7 @@ export function SettingsPage() {
         canvasAccessToken,
         markdownEditor,
     } = useSettingsStore()
-    const { generationName, setGenerationName, setAssignments, setCourses } =
+    const { setGenerationName, setAssignments, setCourses } =
         useGenerationStore()
     //const { runPreGenerate, runGenerate } = useGenerateNext()
     const queryClient = useQueryClient()
