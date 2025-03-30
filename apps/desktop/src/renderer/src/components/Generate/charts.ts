@@ -44,13 +44,24 @@ Chart.defaults.color = 'rgb(0,0,0)'
 
 export async function generateGradingTurnaroundChart(
     assignmentGroups: AssignmentGroup[],
-    assignmentSubmissionsMap: Map<number, Submission[]>
+    assignmentSubmissionsMap: Map<number, Submission[]>,
+    width: number = 400,
+    height: number = 400
 ) {
-    // TODO: Complete this function, remove debug console logs.
-    console.log(assignmentGroups)
-    console.log(assignmentSubmissionsMap)
-
-    return ''
+    const dataset = createGradingTurnaroundDataSet(
+        assignmentGroups,
+        assignmentSubmissionsMap
+    )
+    const barChartConfig = createBarChartConfigObject(
+        'Grading Turnaround by Assignment Group',
+        dataset.labels,
+        dataset.data,
+        'Days past due date.',
+        'Assignment Group',
+        -5, // From -1 business week (for early grading)
+        10 // To two business weeks.
+    )
+    return `<img src="${await createChartImage(barChartConfig, width, height)}" alt="Average Grade Chart">`
 }
 
 /**
@@ -74,10 +85,13 @@ export async function generateAverageGradeChart(
     )
     const barChartConfig = createBarChartConfigObject(
         'Average Grade by Assignment Group',
+        dataset.labels,
+        dataset.data,
         'Grade Percentage',
         'Assignment Group',
-        dataset.labels,
-        dataset.data
+        0.7,
+        1.0,
+        (value: number) => `${(value * 100).toFixed(0)}%`
     )
     return `<img src="${await createChartImage(barChartConfig, width, height)}" alt="Average Grade Chart">`
 }
@@ -152,11 +166,21 @@ function createAverageGradeDataSet(
     )
 
     for (const assignmentGroup of assignmentGroups) {
-        // Calculate grade statistics
+        // Collect all on-time and graded submissions
+        const submissions = groupSubmissionsMap
+            .get(assignmentGroup.id)!
+            .filter((submission) => {
+                return (
+                    !submission.missing &&
+                    !submission.late &&
+                    submission.grade !== null
+                )
+            })
+
+        // Calculate grade statistics.
         const assignmentPointsPossibleMap = createAssignmentPointsPossibleMap(
             assignmentGroup.assignments
         )
-        const submissions = groupSubmissionsMap.get(assignmentGroup.id)!
         const gradeStatistics = calculateGradeStatistics(
             submissions,
             assignmentPointsPossibleMap
@@ -172,23 +196,80 @@ function createAverageGradeDataSet(
 }
 
 /**
+ * Creates a dataset containing grading turnaround statistics for assignment groups.
+ * Turnaround time is determined as business days between due date and submission grade.
+ * Late/missing submissions are not included in this calculation and early grading
+ *  is counted as negative days.
+ *
+ * @param {AssignmentGroup[]} assignmentGroups - An array of assignment groups to process.
+ * @param {Map<Assignment, Submission[]>} assignmentSubmissionsMap - A map linking assignments to their corresponding submissions.
+ * @return {{ labels: string[], data: number[] }} An object containing `labels`, which are the names of assignment groups,
+ * and `data`, which are the mean grade statistics for each group.
+ */
+function createGradingTurnaroundDataSet(
+    assignmentGroups: AssignmentGroup[],
+    assignmentSubmissionsMap: Map<number, Submission[]>
+): { labels: string[]; data: number[] } {
+    const dataset = {
+        labels: [] as string[],
+        data: [] as number[],
+    }
+
+    const groupSubmissionsMap = createGroupSubmissionsMap(
+        assignmentGroups,
+        assignmentSubmissionsMap
+    )
+
+    for (const assignmentGroup of assignmentGroups) {
+        // Collect all graded submissions
+        const submissions = groupSubmissionsMap
+            .get(assignmentGroup.id)!
+            .filter((submission) => submission.grade !== null)
+
+        // Calculate turnaround statistics.
+        const assignmentDueDateMap = createAssignmentDueDateMap(
+            assignmentGroup.assignments.filter((assignment) => {
+                return assignment.due_at !== null
+            })
+        )
+        const turnaroundStatistics = calculateGradingTurnaroundStatistics(
+            submissions,
+            assignmentDueDateMap
+        )
+        if (turnaroundStatistics === null) continue
+
+        // Push to data set
+        dataset.labels.push(assignmentGroup.name)
+        dataset.data.push(turnaroundStatistics.mean)
+    }
+
+    return dataset
+}
+
+/**
  * Creates a configuration object for a bar chart using Chart.js.
  * See https://www.chartjs.org/docs/latest/configuration/
  *
  * @param {string} chartTitle - The title placed on top of the chart.
- * @param {string} yTitle - The title placed next to the y axis.
- * @param {string} xTitle - The title placed next to the x axis
  * @param {string[]} labels - An array of labels for the X-axis of the chart.
  * @param {number[]} data - An array of data points corresponding to the labels.
+ * @param {string} yTitle - The title placed next to the y axis.
+ * @param {string} xTitle - The title placed next to the x axis
+ * @param {number} yMin - The minimum value displayed on the Y-axis.
+ * @param {number} yMax - The maximum value displayed on the Y-axis.
+ * @param {(value: number) => string} tickFnc - A function to customize the display of tick labels on the Y-axis.
  * @throws {Error} Throws an error if the lengths of labels and data do not match.
  * @returns A Chart.js configuration object for the bar chart.
  */
 function createBarChartConfigObject(
     chartTitle: string,
+    labels: string[],
+    data: number[],
     yTitle: string,
     xTitle: string,
-    labels: string[],
-    data: number[]
+    yMin: number,
+    yMax: number,
+    tickFnc: (value: number) => string = (value) => `${value}`
 ) {
     if (labels.length != data.length)
         throw new Error('Labels and data must be of the same length')
@@ -211,14 +292,10 @@ function createBarChartConfigObject(
         },
         scales: {
             y: {
-                min: 0.6, // Set the minimum value of the Y-axis
-                max: 1.0, // Set the maximum value of the Y-axis
+                min: yMin, // Set the minimum value of the Y-axis
+                max: yMax, // Set the maximum value of the Y-axis
                 ticks: {
-                    // Convert decimal to percent (e.g. 0.1 -> 10%)
-                    callback: (value) => {
-                        if (typeof value !== 'number') return value
-                        return `${(value * 100).toFixed(0)}%`
-                    },
+                    callback: tickFnc, // For custom y-tick labels.
                 },
                 title: {
                     display: true,
@@ -263,9 +340,7 @@ function createGroupSubmissionsMap(
 ): Map<number, Submission[]> {
     const allSubmissionsByGroup: Map<number, Submission[]> = new Map()
     for (const assignmentGroup of assignmentGroups) {
-        console.log(assignmentGroup) // TODO: remove debug log
         for (const assignment of assignmentGroup.assignments) {
-            console.log('iterated') // TODO: remove debug log
             if (!assignmentSubmissionsMap.has(assignment.id)) continue
             const submissions = assignmentSubmissionsMap.get(assignment.id)!
             allSubmissionsByGroup.set(assignmentGroup.id, submissions)
@@ -294,6 +369,23 @@ function createAssignmentPointsPossibleMap(
 }
 
 /**
+ * Creates a map of assignment IDs to their corresponding due dates.
+ *
+ * @param {Assignment[]} assignments - An array of assignment objects, each containing the assignment details, including ID and due date.
+ * @return {Map<number, Date>} A map where the keys are assignment IDs and the values are the corresponding due dates as Date objects.
+ */
+function createAssignmentDueDateMap(
+    assignments: Assignment[]
+): Map<number, Date> {
+    const dueDateByAssignment = new Map<number, Date>()
+    for (const assignment of assignments) {
+        if (assignment.due_at === null) continue
+        dueDateByAssignment.set(assignment.id, new Date(assignment.due_at!))
+    }
+    return dueDateByAssignment
+}
+
+/**
  * Calculates descriptive statistics for standardized grade percentages (0 = 0%, 1 = 100%) based on submissions and points possible.
  *
  * Grades are standardized as percentages by dividing the score by the points possible for each assignment.
@@ -318,4 +410,75 @@ function calculateGradeStatistics(
     })
 
     return calculateDescriptiveStatistics(gradePercentages)
+}
+
+/**
+ * Calculates the descriptive statistics for grading turnaround times based on student submissions and assignment due dates.
+ *
+ * @param {Submission[]} submissions - An array of submissions where each submission contains information about the assignment and grading details.
+ * @param {Map<number, Date>} assignmentDueDateMap - A map where the key is the assignment ID and the value is the corresponding due date.
+ * @return {DescriptiveStatistics | null} The descriptive statistics of grading turnaround times in business days, or null if there are no submissions.
+ */
+function calculateGradingTurnaroundStatistics(
+    submissions: Submission[],
+    assignmentDueDateMap: Map<number, Date>
+): DescriptiveStatistics | null {
+    if (submissions.length === 0) return null
+
+    // Calculate days between submission and graded.
+    const gradingTurnaround = submissions
+        .map((submission) => {
+            if (
+                !submission.graded_at ||
+                !assignmentDueDateMap.has(submission.assignment_id)
+            )
+                return null
+            const dueDate = assignmentDueDateMap.get(submission.assignment_id!)!
+            const gradeDate = new Date(submission.graded_at!)
+            return calculateBusinessDays(dueDate, gradeDate)
+        })
+        .filter((value) => value !== null)
+
+    return calculateDescriptiveStatistics(gradingTurnaround)
+}
+
+/**
+ * Calculates the number of business days (non-weekend days) between two dates.
+ * If the start date is after the end date, the calculation will return a negative count.
+ *
+ * @param {Date} startDate - The starting date of the calculation.
+ * @param {Date} endDate - The ending date of the calculation.
+ * @return {number} The number of business days between the start and end dates.
+ *                  A negative count is returned if the start date is after the end date.
+ */
+function calculateBusinessDays(startDate: Date, endDate: Date): number {
+    let count = 0
+    let forward = true
+
+    // Determine the direction of calculation
+    if (startDate > endDate) {
+        forward = false
+        // Swap the dates to calculate correctly
+        ;[startDate, endDate] = [endDate, startDate]
+    }
+
+    let currentDate = new Date(startDate)
+    currentDate.setHours(0, 0, 0, 0) // Normalize startDate to midnight
+    const normalizedEndDate = new Date(endDate)
+    normalizedEndDate.setHours(0, 0, 0, 0) // Normalize endDate to midnight
+
+    // While there are at least 24 hours between the current date and the end date
+    while (
+        currentDate.getTime() + 24 * 60 * 60 * 1000 <=
+        normalizedEndDate.getTime()
+    ) {
+        const day = currentDate.getDay() // 0 = Sunday, 6 = Saturday
+        if (day !== 0 && day !== 6) {
+            count++ // Count only business (non-weekend) days
+        }
+        currentDate.setDate(currentDate.getDate() + 1) // Move to the next day
+    }
+
+    // If the calculation was in reverse, make the count negative
+    return forward ? count : -count
 }
