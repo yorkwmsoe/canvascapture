@@ -65,7 +65,7 @@ export function SettingsPage() {
             configCourses = parsedData.myNumbers
             configAssignments = parsedData.myStrings
         } catch (error) {
-            configGenerationName = "Failed to load config file"
+            configGenerationName = 'Failed to load config file'
         }
 
         setGenerationName(configGenerationName)
