@@ -125,7 +125,6 @@ ipcMain.handle('copy-file', async () => {
         __dirname,
         '../../../../assignmentsConfig.json'
     )
-    
 
     const { filePath: destinationFile } = await dialog.showSaveDialog({
         title: 'Save Copy As',
