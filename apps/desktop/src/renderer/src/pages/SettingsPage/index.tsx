@@ -89,7 +89,7 @@ export function SettingsPage() {
             JSON.stringify(settingsToSave),
             (err) => {
                 if (err) {
-                    settingsFilePath = ""
+                    settingsFilePath = ''
                 }
             }
         )
