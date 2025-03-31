@@ -76,20 +76,20 @@ export function SettingsPage() {
         chaseLinks: boolean
     ) => {
         // Only write gitHubClassroomToken and chaseLinks to the file
-        const settingsFilePath = path.join(
+        let settingsFilePath = path.join(
             __dirname,
             '../../../../../../../../../apps/desktop/src/renderer/src/apis/LinkSettings.json'
         )
         ensureFileExists(settingsFilePath)
 
         const settingsToSave = { gitHubClassroomToken, chaseLinks }
-        
+
         fs.writeFile(
             settingsFilePath,
             JSON.stringify(settingsToSave),
-            (_) => {
-                if (_) {
-                    //Do nothing
+            (err) => {
+                if (err) {
+                    settingsFilePath = ""
                 }
             }
         )
