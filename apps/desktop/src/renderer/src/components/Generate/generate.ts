@@ -16,7 +16,7 @@ import { join } from 'path'
 import { getCourseName } from '@renderer/utils/courses'
 import { sanitizePath } from '@renderer/utils/sanitize-path'
 import markdownit from 'markdown-it'
-import { mkdirSync, rmSync, writeFileSync } from 'fs'
+import { mkdirSync, rmSync } from 'fs'
 import {
     Submission,
     DataNode,
@@ -77,12 +77,6 @@ export async function generate(
     for (const courseNode of courseMarkdownMap.keys()) {
         const courseName = getCourseName(courseNode.course)
         const markdownContent = courseMarkdownMap.get(courseNode)!
-
-        // Write the markdown file for the course
-        writeFileSync(
-            join(documentsPath, join(generationName, `${courseName}`) + '.md'),
-            markdownContent
-        )
 
         // Convert markdown to HTML
         const htmlContent = md.render(markdownContent)
