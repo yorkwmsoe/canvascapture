@@ -15,6 +15,8 @@ import { ErrorBoundary } from '@renderer/components/ErrorBoundary'
 import { useQueryClient } from '@tanstack/react-query'
 import { SaveIcon } from '@renderer/components/icons/Save'
 import { HelpIcon } from '@renderer/components/icons/Help'
+import fs from 'fs'
+import path from 'path'
 
 export function SettingsPage() {
     const {
@@ -27,7 +29,8 @@ export function SettingsPage() {
     const queryClient = useQueryClient()
     const isSetup = useRouterState().location.pathname.includes('/setup')
     const navigate = useNavigate({ from: isSetup ? '/setup' : '/settings' })
-
+    let gitHubCAPIToken: string = ""
+    let chaseLinks: boolean = false;
     const goToHomePage = () => {
         navigate({ to: '/' })
     }
@@ -42,9 +45,63 @@ export function SettingsPage() {
         })
     }
 
+    const updateGithubClassToken=(token)=>{
+        gitHubCAPIToken = token;
+    }
+    const updateChaseLinks=(cL)=>{
+        chaseLinks = cL.target.checked;
+    }
+
+    const readSettings = () => {
+        const settingsFilePath = path.join(__dirname, '../../../../../../../../../apps/desktop/src/renderer/src/apis/LinkSettings.json')
+        if (fs.existsSync(settingsFilePath)) {
+            try {
+                const fileData = fs.readFileSync(settingsFilePath, 'utf-8');
+                return JSON.parse(fileData);
+            } catch (error) {
+                console.error('Failed to read settings file:', error);
+            }
+        }
+        return { gitHubClassroomToken: '', chaseLinks: false }; // Default values
+    };
+
+    // Get settings at render time
+    const settings = readSettings();
+
+
+    const writeStateToFile = (gitHubClassroomToken: string, chaseLinks: boolean) => {
+        // Only write gitHubClassroomToken and chaseLinks to the file
+        const settingsFilePath = path.join(__dirname, '../../../../../../../../../apps/desktop/src/renderer/src/apis/LinkSettings.json')
+        ensureFileExists(settingsFilePath)
+        
+        const settingsToSave = { gitHubClassroomToken, chaseLinks }
+        
+        fs.writeFile(settingsFilePath, JSON.stringify(settingsToSave), (err) => {
+            if (err) {
+                console.error('Failed to save settings to file', err)
+            }
+        })
+    }
+    const ensureFileExists = (settingsFilePath) => {
+        const directory = path.dirname(settingsFilePath)
+    
+        // Ensure the directory exists
+        if (!fs.existsSync(directory)) {
+            fs.mkdirSync(directory, { recursive: true })
+        }
+    
+        // Ensure the file exists (if not, create it)
+        if (!fs.existsSync(settingsFilePath)) {
+            fs.writeFileSync(settingsFilePath, '{}') // Create an empty JSON file
+        }
+    }
+
     const onFinish = (values: Config) => {
         setCanvasAccessToken(values.canvasAccessToken)
         setMarkdownEditor(values.markdownEditor)
+
+        writeStateToFile(gitHubCAPIToken,chaseLinks)
+
         queryClient.invalidateQueries({ queryKey: ['courses'] })
         if (isSetup) {
             getCurrentWindow().reload()
@@ -103,6 +160,50 @@ export function SettingsPage() {
                             }
                         >
                             <Input.Password />
+                        </Form.Item>
+                        <Form.Item<Config>
+                            label="Github Classroom Token"
+                            
+                            rules={[
+                                {
+                                    required: false,
+                                    message:
+                                        'GitHub Classroom Token is missing',
+                                },
+                            ]}
+                        >
+                            <Input
+                                type="password"
+                                onChange={(e) =>
+                                    updateGithubClassToken(
+                                        e.currentTarget.value
+                                    )
+                                }
+                                defaultValue={settings.gitHubClassroomToken}
+                            />
+                        </Form.Item>
+                        <Form.Item<Config>
+                            valuePropName="checked"
+                            wrapperCol={{ offset: 8, span: 16 }}
+                            label={
+                                <span
+                                    title={
+                                        'Show Github Clasrrom Descriptions In Readme'
+                                    }
+                                    style={{ fontSize: 20, color: 'blue' }}
+                                >
+                                    ⓘ
+                                </span>
+                            }
+                            labelCol={{ style: { order: 2 } }}
+                            colon={false}
+                        >
+                            <Checkbox
+                            onChange={(e)=>updateChaseLinks(e)}
+                            defaultChecked={settings.chaseLinks}
+                            >
+                                Chase Links (Requires Github Classroom Token)
+                            </Checkbox>
                         </Form.Item>
                         {!isSetup && (
                             <Form.Item<Config>

@@ -15,14 +15,15 @@ import {
     createTableHeader,
     createTableRows,
 } from './markdown'
-
-export function generateAssignmentDescription(
+import { getDescriptionFromClassroomInvite } from '../../apps/desktop/src/renderer/src/apis/GitHub.api'
+export async function generateAssignmentDescription(
     assignment: Assignment,
     fancy: boolean
 ) {
     const title = convertToHeader('ASSIGNMENT: ' + assignment.name, 1)
+    const descriptionInfo = await assembleDescriptionInfo(assignment, fancy)
 
-    const items = [title, ...assembleDescriptionInfo(assignment, fancy)]
+    const items = [title, ...descriptionInfo]
 
     return items.filter((item) => !!item)
 }
@@ -42,7 +43,7 @@ export function generateAssignmentSubmission(
     return items.filter((item) => !!item)
 }
 
-export function generateQuiz(
+export async function generateQuiz(
     assignment: Assignment,
     submission: Submission,
     quiz: Quiz,
@@ -50,9 +51,10 @@ export function generateQuiz(
     quizQuestionInfo: string[],
     fancy: boolean
 ) {
+    const descriptionInfo = await assembleDescriptionInfo(assignment, fancy)
     const items = [
         ...assembleTitleAndGrade(assignment, submission, 'QUIZ: '),
-        ...assembleDescriptionInfo(assignment, fancy),
+        ...descriptionInfo,
         ...assembleFeedbackInfo(submission),
         ...quizOverview(assignment, quiz),
         ...quizUserOverview(submission, quizSubmission),
@@ -61,16 +63,17 @@ export function generateQuiz(
     return items.filter((item) => !!item)
 }
 
-export function generateQuizDescription(
+export async function generateQuizDescription(
     assignment: Assignment,
     quiz: Quiz,
     quizQuestionInfo: string[],
     fancy: boolean
 ) {
     const title = convertToHeader('QUIZ: ' + assignment.name, 1)
+    const descriptionInfo = await assembleDescriptionInfo(assignment, fancy)
     const items = [
         title,
-        ...assembleDescriptionInfo(assignment, fancy),
+        ...descriptionInfo,
         ...quizOverview(assignment, quiz),
         ...quizQuestionInfo,
     ]
@@ -156,13 +159,41 @@ function assembleTitleAndGrade(
     return [title, grade]
 }
 
-function assembleDescriptionInfo(assignment: Assignment, fancy: boolean) {
+async function assembleDescriptionInfo(assignment: Assignment, fancy: boolean) {
     if (!assignment.description || assignment.description.trim() === '') {
         // If there's no description, return an empty array (i.e., nothing will be added)
         return []
     }
+
+    let chasedLink: string = ''
+
+    //Descriptions start with a canvas link, so skip that one first.
+    let workableDescription: string = assignment.description.substring(
+        assignment.description.indexOf('>' + 1)
+    )
+    workableDescription = workableDescription.substring(
+        workableDescription.indexOf('>') + 1
+    )
+    if (workableDescription.includes('href')) {
+        //Check if description is or starts with a link.
+        let urlStart: string = workableDescription.substring(
+            workableDescription.indexOf('href')
+        )
+        urlStart = urlStart.substring(urlStart.indexOf('"') + 1)
+        const url: string = urlStart.substring(0, urlStart.indexOf('"'))
+
+        console.log('URL: ' + url)
+        chasedLink = ' THIS IS A LINK'
+
+        chasedLink = await getDescriptionFromClassroomInvite(url)
+    }
+
+    //check if it's a link to github, chase the link if so
+    //run pnpm package everytime you update this file or another inside this folder.
     const descriptionHeader = convertToHeader('Description', 2)
-    const description = wrapUserContent(assignment.description, fancy)
+    const description =
+        wrapUserContent(assignment.description, fancy) + chasedLink
+        
     return [descriptionHeader, description]
 }
 
