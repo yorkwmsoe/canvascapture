@@ -62,7 +62,7 @@ export function SettingsPage() {
                 const fileData = fs.readFileSync(settingsFilePath, 'utf-8')
                 return JSON.parse(fileData)
             } catch (error) {
-                console.error('Failed to read settings file:', error)
+                return { gitHubClassroomToken: '', chaseLinks: false } // Default values
             }
         }
         return { gitHubClassroomToken: '', chaseLinks: false } // Default values
