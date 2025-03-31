@@ -14,7 +14,6 @@ export const getDescriptionFromClassroomInvite = async (url) => {
     } catch (e) {
         classToken = ''
         doChase = false
-        console.log('failed to read')
     }
 
     let readme = ''
@@ -47,7 +46,7 @@ export const getDescriptionFromClassroomInvite = async (url) => {
             )
 
             //Loops through all assignments in the class of this loop
-            for (let classAssignments in classroom_assignments[classID][
+            for (const classAssignments in classroom_assignments[classID][
                 'data'
             ]) {
                 const aid =
