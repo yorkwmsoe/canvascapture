@@ -5,55 +5,63 @@
  * See the individual definitions below for more details
  */
 import { Checkbox } from 'antd'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useGenerationStore } from '@renderer/stores/generation.store'
 
-let oneYearStat = false
-let avgAssignGrade = false
+/**
+ * A Map that associates checkbox item names with their corresponding titles.
+ */
+const titleByItemName = new Map<string, string>()
+titleByItemName.set('averageGradeByGroup', 'Average Grade by Group')
+titleByItemName.set('averageGradeByAssignment', 'Average Grade by Assignment')
+titleByItemName.set('gradingTurnaroundByGroup', 'Grading Turnaround by Group')
+titleByItemName.set(
+    'gradingTurnaroundByAssignment',
+    'Grading Turnaround by Assignment'
+)
 
 export function Statistics() {
-    const [oneYearChecked, setOneYearChecked] = useState(oneYearStat)
-    const [avgAssignChecked, setAvgAssignChecked] = useState(avgAssignGrade)
+    const { requestedCharts, setRequestedChart } = useGenerationStore()
 
-    const OneYearChange = () => {
-        const newState = !oneYearChecked
-        setOneYearChecked(newState)
-        oneYearStat = newState
+    // State to track which checkboxes are checked.
+    const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({
+        // Average Grade Charts
+        averageGradeByGroup: requestedCharts.averageGradeByGroup ?? false,
+        averageGradeByAssignment:
+            requestedCharts.averageGradeByAssignment ?? false,
+
+        // Turnaround charts
+        gradingTurnaroundByGroup:
+            requestedCharts.gradingTurnaroundByGroup ?? false,
+        gradingTurnaroundByAssignment:
+            requestedCharts.gradingTurnaroundByAssignment ?? false,
+    })
+
+    // Handler to toggle the checkbox state.
+    const handleCheckboxChange = (itemName: string, checked: boolean) => {
+        setCheckedItems({ ...checkedItems, [itemName]: checked })
     }
 
-    const avgAssignChange = () => {
-        const newState = !avgAssignChecked
-        setAvgAssignChecked(newState)
-        avgAssignGrade = newState
-    }
+    // Ensure stores has set values.
+    useEffect(() => {
+        Object.entries(checkedItems).forEach(([key, value]) => {
+            setRequestedChart(key, value)
+        })
+    }, [checkedItems, setRequestedChart])
 
     return (
         <>
-            <Checkbox
-                title="Time to grade assignments, over one year"
-                checked={oneYearChecked} //when set[insertVariableName] is called, it updates the checkbox UI
-                onChange={OneYearChange}
-            >
-                Time to Grade
-            </Checkbox>
-            <Checkbox
-                title="Time to grade assignments, over multiple years"
-                checked={avgAssignChecked} //when set[insertVariableName] is called, it updates the checkbox UI
-                onChange={avgAssignChange}
-            >
-                Average Assignment Grades
-            </Checkbox>
+            {Object.keys(checkedItems).map((itemName) => (
+                <Checkbox
+                    key={itemName}
+                    checked={checkedItems[itemName]}
+                    onChange={(e) =>
+                        handleCheckboxChange(itemName, e.target.checked)
+                    }
+                >
+                    {titleByItemName.get(itemName) ?? itemName}
+                </Checkbox>
+            ))}
         </>
     )
 }
-
-export function oneYearExport() {
-    return oneYearStat
-}
-
-export function AverageAssignmentGradeExport() {
-    return avgAssignGrade
-}
-
-//This is way too much code for what should be built in. What a huge waste of time from this terrible api
-//Why would I use a checkbox, if not for changing a variable
-//The api should just have the "value=variable" and then update that variable when the checkbox is checked

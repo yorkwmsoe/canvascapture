@@ -7,30 +7,35 @@
  *
  * See individual type and method definitions below for more details
  */
-import { Assignment } from '../types/canvas_api/assignment'
+import { Assignment, AssignmentGroup } from '../types/canvas_api/assignment'
 import { Course } from '../types/canvas_api/course'
+import { Submission } from '../types/canvas_api/submission'
 
-export type DataNode = CourseDataNode | AssignmentDataNode | FileDataNode
-
-export type CourseDataNode = {
-    type: 'course'
+export interface DataNode {
+    type: 'course' | 'assignment' | 'file'
     key: string
+    children?: DataNode[] | undefined
+}
+
+export interface CourseDataNode extends DataNode {
+    type: 'course'
     course: Course
     children: AssignmentDataNode[]
+    assignmentGroups: AssignmentGroup[]
 }
 
-export type AssignmentDataNode = {
+export interface AssignmentDataNode extends DataNode {
     type: 'assignment'
-    key: string
     assignment: Assignment
     children: FileDataNode[]
+    allSubmissions: Submission[]
 }
 
-export type FileDataNode = {
+export interface FileDataNode extends DataNode {
     type: 'file'
-    key: string
     name: 'description' | 'high' | 'low' | 'median'
     content: string[]
+    children?: undefined
 }
 
 export function isCourseDataNode(node: DataNode): node is CourseDataNode {

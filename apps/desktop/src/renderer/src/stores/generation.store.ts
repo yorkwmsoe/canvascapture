@@ -10,6 +10,7 @@ type State = {
     courses: number[]
     assignments: string[]
     generationName: string
+    requestedCharts: Record<string, boolean>
 }
 
 type Actions = {
@@ -17,6 +18,7 @@ type Actions = {
     setAssignments: (assignments: string[]) => void
     setGenerationName: (generationName: string) => void
     reset: () => void
+    setRequestedChart: (itemName: string, requested: boolean) => void
 }
 
 export type GenerationStore = State & Actions
@@ -25,6 +27,7 @@ const initialState: State = {
     courses: [],
     assignments: [],
     generationName: '',
+    requestedCharts: {},
 }
 
 export const useGenerationStore = create<GenerationStore>()((set) => ({
@@ -32,5 +35,12 @@ export const useGenerationStore = create<GenerationStore>()((set) => ({
     setCourses: (courses) => set({ courses }),
     setAssignments: (assignments) => set({ assignments }),
     setGenerationName: (generationName) => set({ generationName }),
+    setRequestedChart: (itemName, requested) =>
+        set((state) => ({
+            requestedCharts: {
+                ...state.requestedCharts,
+                [itemName]: requested,
+            },
+        })),
     reset: () => set(initialState),
 }))

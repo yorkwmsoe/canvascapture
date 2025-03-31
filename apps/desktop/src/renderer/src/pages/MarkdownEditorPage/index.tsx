@@ -49,8 +49,7 @@ function transformData(data: DataNode): TreeDataNode {
                 .map(transformData)
                 .filter((d) => d.key !== 'SKIP'),
         }
-    }
-    if (isAssignmentDataNode(data)) {
+    } else if (isAssignmentDataNode(data)) {
         return {
             title: data.assignment.name,
             key: data.key,
@@ -58,11 +57,14 @@ function transformData(data: DataNode): TreeDataNode {
                 .map(transformData)
                 .filter((d) => d.key !== 'SKIP'),
         }
-    }
-    return {
-        title: data.name,
-        key: data.key,
-        isLeaf: true,
+    } else if (isFileDataNode(data)) {
+        return {
+            title: data.name,
+            key: data.key,
+            isLeaf: true,
+        }
+    } else {
+        throw new Error('Unknown data node type')
     }
 }
 

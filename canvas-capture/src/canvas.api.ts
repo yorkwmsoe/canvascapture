@@ -5,7 +5,7 @@
  * See individual definitions below for more details
  */
 import { parseISO } from 'date-fns'
-import { Assignment } from './types/canvas_api/assignment'
+import { Assignment, AssignmentGroup } from './types/canvas_api/assignment'
 import { Course } from './types/canvas_api/course'
 import { Submission } from './types/canvas_api/submission'
 import { Quiz } from './types/canvas_api/quiz'
@@ -284,6 +284,41 @@ export const getQuizQuestionsParams = async (
     return quizQuestions
 }
 
+/**
+ * Fetches the assignment groups for a specific course.
+ *
+ * @param args - The arguments required for the API call, including:
+ *   - `canvasAccessToken`: The access token required to authenticate with the Canvas API.
+ *   - `canvasDomain`: The domain of the Canvas instance.
+ *   - `courseId`: The ID of the course for which the assignment groups are being fetched.
+ *
+ * @returns A promise that resolves to an array of `AssignmentGroup` objects.
+ *
+ * The endpoint used:
+ * GET /api/v1/courses/:course_id/assignment_groups
+ */
+export async function getAssignmentGroups(
+    args: GetAssignmentsRequest & Auth
+): Promise<AssignmentGroup[]> {
+    // Fetch assignment groups.
+    const assignmentGroups = await fetch(
+        `${args.canvasDomain}/api/v1/courses/${args.courseId}/assignment_groups`,
+        {
+            method: 'GET',
+            headers: getApiHeaders({ accessToken: args.canvasAccessToken }),
+        }
+    )
+        .then(intercept)
+        .then(toJSON<AssignmentGroup[]>)
+
+    // Inject course_id into each AssignmentGroup object.
+    for (const assignmentGroup of assignmentGroups) {
+        assignmentGroup.course_id = args.courseId
+    }
+
+    return assignmentGroups
+}
+
 export type CreateCanvasApiConfig =
     | {
           type: 'withAuth'
@@ -367,6 +402,12 @@ export const createCanvasApi = (
                     canvasDomain: config.domain,
                     ...args,
                 }),
+            getAssignmentGroups: (args: GetAssignmentsRequest) =>
+                getAssignmentGroups({
+                    canvasAccessToken: config.accessToken,
+                    canvasDomain: config.domain,
+                    ...args,
+                }),
         }
     }
 
@@ -377,5 +418,6 @@ export const createCanvasApi = (
         getSubmissions,
         getQuiz,
         getQuizSubmission,
+        getAssignmentGroups,
     }
 }

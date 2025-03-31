@@ -28,7 +28,7 @@ export default defineConfig({
                 '**/generateTOC.ts',
                 '**/model.ts',
                 '**/types.ts',
-                '**/utils.ts',
+                '**/generateUtils.ts',
                 '**/*.e2e.ts',
                 'wdio.conf.ts',
                 '**/components/ErrorBoundary',

@@ -18,130 +18,65 @@ import { sanitizePath } from '@renderer/utils/sanitize-path'
 import markdownit from 'markdown-it'
 import { mkdirSync, rmSync } from 'fs'
 import {
-    Assignment,
-    Course,
-    Quiz,
     Submission,
     DataNode,
     isCourseDataNode,
+    CourseDataNode,
+    AssignmentGroup,
 } from '@canvas-capture/lib'
 import { FilePathContentPair } from './types'
-import { generateTOC } from '@renderer/components/Generate/generateTOC'
-import {
-    AverageAssignmentGradeExport,
-    oneYearExport,
-} from '@renderer/components/Statistics'
-import { canvasApi } from '@renderer/apis/canvas.api'
+import { generateTOC } from './generateUtils'
 
 import {
-    generateAssignmentOrQuizDescription,
-    generateAssignmentOrQuizSubmission,
-    getHighMedianLowSubmissions,
-} from './utils'
+    generateAverageGradeByAssignmentChart,
+    generateAverageGradeChart,
+    generateGradingTurnaroundByAssignmentChart,
+    generateGradingTurnaroundChart,
+} from '@renderer/components/Generate/charts'
 
-import {
-    Chart,
-    LinearScale,
-    CategoryScale,
-    LineController,
-    LineElement,
-    PointElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler,
-} from 'chart.js'
-
-Chart.register(
-    LinearScale, // for the y-axis scale
-    CategoryScale, // for the x-axis scale
-    LineController, // for creating line charts
-    LineElement, // for line elements in the chart
-    PointElement, // for point elements in the chart
-    Title, // for chart titles
-    Tooltip, // for tooltips
-    Legend, // for the chart legend
-    Filler
-)
-
+/**
+ * Generates course reports and exports them as Markdown and HTML files
+ * with optional statistical graphs.
+ *
+ * The function first processes all provided course data nodes, extracting
+ * assignment and submission details. Then, it generates per-course Markdown
+ * content, converts it to HTML, and optionally includes statistical graphs.
+ *
+ * @param data - The hierarchical course data nodes containing assignments and files.
+ * @param generationName - The name of the generation project (used for directory naming).
+ * @param documentsPath - The root path where generated files will be stored.
+ * @param requestedCharts - A record indicating which optional charts to include in the report.
+ *                          Keys represent chart types (e.g., "averageGradeChart", "gradeTurnaroundChart"),
+ *                          and values are booleans specifying whether the chart should be included.
+ * @returns An array of objects containing file paths and their generated HTML content.
+ *          Each object represents a single course's export, including optional graphs.
+ */
 export async function generate(
     data: DataNode[],
     generationName: string,
     documentsPath: string,
-    canvasAccessToken: string,
-    canvasDomain: string,
-    isStudent: boolean
+    requestedCharts: Record<string, boolean> = {}
 ) {
-    // Find all assignments and submissions. Utilized for chart/graph creation.
-    const allAssignments: Assignment[] = []
-    const allSubmissions: Submission[] = []
-    for (const course of data) {
-        if (isCourseDataNode(course)) {
-            for (const assignment of course.children) {
-                if (assignment.assignment) {
-                    allAssignments.push(assignment.assignment)
-                    const submissions = await canvasApi.getSubmissions({
-                        canvasAccessToken,
-                        canvasDomain,
-                        isStudent,
-                        courseId: course.course.id,
-                        assignmentId: assignment.assignment.id,
-                    })
-
-                    // Add all submissions to allSubmissions
-                    for (let ivar = 0; ivar < submissions.length; ivar++) {
-                        allSubmissions.push(submissions[ivar])
-                    }
-                }
-            }
-        }
-    }
-
     // Remove existing directory to start fresh
     rmSync(join(documentsPath, sanitizePath(generationName)), {
         recursive: true,
         force: true,
     })
 
-    const md = markdownit({ linkify: true, html: true })
-
-    // Object to hold combined markdown content for each course
-    const courseMarkdownContent: { [courseName: string]: string } = {}
-
-    // Iterate through courses and their assignments
-    data.forEach((course) => {
-        if (isCourseDataNode(course)) {
-            let courseContent = `# ${getCourseName(course.course)}\n\n` // Start course-level markdown content with a title
-
-            // Loop through assignments and combine their content
-            course.children.forEach((assignment) => {
-                mkdirSync(join(documentsPath, generationName), {
-                    recursive: true,
-                })
-
-                assignment.children.forEach((file) => {
-                    courseContent += `${file.content.join('\n')}\n\n` // Append file content
-                })
-            })
-
-            // Store the combined content for this course
-            courseMarkdownContent[course.course.name] = courseContent
-        }
+    // Create directory in which the generated report will be stored.
+    mkdirSync(join(documentsPath, sanitizePath(generationName)), {
+        recursive: true,
     })
 
-    // If any graphs are to be generated, generate them.
-    const oneYearStatGraph = oneYearExport()
-        ? await generateChart(allSubmissions)
-        : undefined
-    const avgAssignGradeGraph = AverageAssignmentGradeExport()
-        ? await generateAvgGradeChart(allSubmissions, allAssignments)
-        : undefined
+    // Mappings from a course's data node to its markdown and chart content.
+    const { courseMarkdownMap, courseChartMap } =
+        await createCourseContentMappings(data, requestedCharts)
 
-    // Write markdown and generate HTML for each course
-    const htmlData: FilePathContentPair[] = Object.keys(
-        courseMarkdownContent
-    ).map((courseName) => {
-        const markdownContent = courseMarkdownContent[courseName]
+    const htmlData: FilePathContentPair[] = []
+    const md = markdownit({ linkify: true, html: true })
+    for (const courseNode of courseMarkdownMap.keys()) {
+        const courseName = getCourseName(courseNode.course)
+        const markdownContent = courseMarkdownMap.get(courseNode)!
 
         // Convert markdown to HTML
         const htmlContent = md.render(markdownContent)
@@ -149,325 +84,147 @@ export async function generate(
         // Add table of contents and charts
         const htmlContentWithTocAndCharts =
             generateTOC(htmlContent) +
-            '\n\n\n' +
-            htmlContent +
-            (oneYearStatGraph !== undefined ? oneYearStatGraph : '') +
-            (avgAssignGradeGraph !== undefined ? avgAssignGradeGraph : '')
+                '\n\n\n' +
+                htmlContent +
+                courseChartMap.get(courseNode) || ''
 
-        return {
-            filePath: join(
-                generationName,
-                `${courseName.replaceAll('/', '_')}`
-            ),
+        htmlData.push({
+            filePath: join(generationName, `${courseName}`),
             content: htmlContentWithTocAndCharts,
-        }
-    })
+        })
+    }
 
     // Return the array of file paths and their HTML content
     return htmlData
 }
 
-export async function generateAssignmentAndSubmissionContent(
-    course: Course,
-    assignment: Assignment,
-    submissions: Submission[],
-    quiz: Quiz | undefined,
-    canvasAccessToken: string,
-    canvasDomain: string
+/**
+ * Creates mappings for course content, associating each course's data node with its generated
+ * Markdown and chart HTML content. This function is a helper for the `generate` function and
+ * simplifies the construction of course-specific report content.
+ *
+ * @param data - An array of `DataNode` objects representing the hierarchical course structure,
+ *               which includes assignments, submissions, and associated metadata.
+ * @param requestedCharts - A record specifying which charts to generate, with keys as chart names
+ *                          (e.g., "averageGradeChart", "gradeTurnaroundChart") and boolean values
+ *                          indicating whether the chart should be generated.
+ * @returns An object containing:
+ *          - `courseMarkdownMap`: A mapping of each course node to its generated Markdown content.
+ *          - `courseChartMap`: A mapping of each course node to its generated chart HTML content.
+ */
+async function createCourseContentMappings(
+    data: DataNode[],
+    requestedCharts: Record<string, boolean>
 ) {
-    const { highSubmission, medianSubmission, lowSubmission } =
-        getHighMedianLowSubmissions(submissions)
+    // A mapping from a course's data node to its corresponding markdown content.
+    // The use of a Map instead of an Object ensured iteration are done in
+    //  insertion order.
+    const courseMarkdownMap = new Map<CourseDataNode, string>()
 
-    const descriptionContent = await generateAssignmentOrQuizDescription(
-        course,
-        assignment,
-        quiz,
-        canvasAccessToken,
-        canvasDomain
-    )
+    // A mapping from a course's data node to its corresponding chart HTML content.
+    // The use of a Map instead of an Object ensured iteration are done in
+    //  insertion order.
+    const courseChartMap = new Map<CourseDataNode, string>()
 
-    const highSubmissionContent =
-        highSubmission === undefined
-            ? undefined
-            : await generateAssignmentOrQuizSubmission(
-                  course,
-                  assignment,
-                  highSubmission,
-                  quiz,
-                  canvasAccessToken,
-                  canvasDomain
-              )
+    // Create each course's content.
+    for (const courseNode of data) {
+        if (!isCourseDataNode(courseNode)) continue
 
-    const medianSubmissionContent =
-        medianSubmission === undefined
-            ? undefined
-            : await generateAssignmentOrQuizSubmission(
-                  course,
-                  assignment,
-                  medianSubmission,
-                  quiz,
-                  canvasAccessToken,
-                  canvasDomain
-              )
+        // The assignment groups for the course.
+        const assignmentGroups = courseNode.assignmentGroups
 
-    const lowSubmissionContent =
-        lowSubmission === undefined
-            ? undefined
-            : await generateAssignmentOrQuizSubmission(
-                  course,
-                  assignment,
-                  lowSubmission,
-                  quiz,
-                  canvasAccessToken,
-                  canvasDomain
-              )
+        // Prepare AssignmentGroup objects for assignment pushes.
+        // NOTE: This clears the previous assignments.
+        assignmentGroups.forEach((assignmentGroup) => {
+            assignmentGroup.assignments = []
+        })
 
-    return {
-        descriptionContent: descriptionContent,
-        highSubmissionContent: highSubmissionContent,
-        medianSubmissionContent: medianSubmissionContent,
-        lowSubmissionContent: lowSubmissionContent,
-    }
-}
+        // This maps an assignment group ID to its corresponding AssignmentGroup object.
+        const idAssignmentGroupMap =
+            createIdAssignmentGroupMap(assignmentGroups)
 
-const bgc: string = '#e8e8e8' //`#d6d6d6`
-export async function generateChart(allSubmissions: Submission[]) {
-    let oneYearStat2
-    const ctx = document.createElement('canvas')
-    ctx.width = 800
-    ctx.height = 800
-    const allUniqueSubmissions: Submission[] = []
-    const submittedAt: Date[] = []
-    const gradedAt: Date[] = []
-    for (let ivar = 0; ivar < allSubmissions.length; ivar++) {
-        const isFound = allUniqueSubmissions.find(
-            (x) => x.id == allSubmissions[ivar].id
-        )
+        // This maps an assignment ID to all the assignment's submissions.
+        const assignmentSubmissionsMap = new Map<number, Submission[]>()
 
-        if (!isFound) {
-            allUniqueSubmissions.push(allSubmissions[ivar])
-        }
-    }
+        // This loop does the following:
+        // 1) Create the course's markdown content by combining the markdown content of its assignments and submissions.
+        // 2) Collect all assignments into the corresponding AssignmentGroup object (utilized for chart generation).
+        // 3) Creates the mapping from assignments to submissions (utilized for chart generation).
+        let markdownContent = `# ${getCourseName(courseNode.course)}\n\n` // Start course-level markdown content with a title
+        for (const assignmentNode of courseNode.children) {
+            // Add assignment to its corresponding AssignmentGroup object.
+            idAssignmentGroupMap
+                .get(assignmentNode.assignment.assignment_group_id)
+                ?.assignments.push(assignmentNode.assignment)
 
-    for (let ivar = 0; ivar < allUniqueSubmissions.length; ivar++) {
-        submittedAt.push(allUniqueSubmissions[ivar].submitted_at)
-        gradedAt.push(allUniqueSubmissions[ivar].graded_at)
-    }
-
-    const timeToGrade: number[] = []
-    const assignmentCount: number[] = []
-    let passed = 0
-    for (let ivar = 0; ivar < submittedAt.length; ivar++) {
-        if (gradedAt[ivar] != null && submittedAt[ivar] != null) {
-            passed++
-            const months =
-                parseInt((gradedAt[ivar] + '').substring(5, 7)) -
-                parseInt((submittedAt[ivar] + '').substring(5, 7))
-            let days
-            if (months == 0) {
-                days =
-                    parseInt((gradedAt[ivar] + '').substring(8, 10)) -
-                    parseInt((submittedAt[ivar] + '').substring(8, 10))
-            } else {
-                days =
-                    parseInt((gradedAt[ivar] + '').substring(8, 10)) +
-                    (months * 30 -
-                        parseInt((submittedAt[ivar] + '').substring(8, 10)))
+            // Append description and submission content
+            for (const fileContent of assignmentNode.children) {
+                markdownContent += `${fileContent.content.join('\n')}\n\n`
             }
 
-            timeToGrade.push(days) //graded at - submitted at.
-            assignmentCount.push(passed)
-        }
-    }
-
-    // Append the canvas to the body temporarily
-    document.body.appendChild(ctx)
-    Chart.defaults.font.size = 32
-    return new Promise((resolve) => {
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: assignmentCount,
-                datasets: [
-                    {
-                        label: 'Days to Grade',
-                        data: timeToGrade,
-                        borderWidth: 5,
-                        pointBackgroundColor: 'cyan',
-                        borderColor: '#008b8b',
-                        fill: 'origin',
-                        backgroundColor: bgc,
-                    },
-                ],
-            },
-            options: {
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Assignments',
-                        },
-                    },
-                    y: {
-                        beginAtZero: true,
-
-                        title: {
-                            display: true,
-                            text: 'Days since submitted',
-                        },
-                    },
-                },
-                animation: {
-                    onComplete: function () {
-                        // Now that the chart is rendered, capture the canvas as an image
-                        const imgData = ctx.toDataURL()
-
-                        const wrap = document.createElement('div')
-                        const img = document.createElement('img')
-                        img.src = imgData // Set the image as the source of the img element
-                        img.width = 400
-                        img.height = 400
-
-                        wrap.appendChild(img)
-
-                        oneYearStat2 = wrap.innerHTML
-
-                        // Remove the canvas from the DOM
-                        document.body.removeChild(ctx)
-
-                        resolve(oneYearStat2) // Resolve the promise with the image HTML
-                    },
-                },
-            },
-        })
-    })
-}
-
-export async function generateAvgGradeChart(
-    allSubmissions: Submission[],
-    allAssignments: Assignment[]
-) {
-    let avgAssignGrade2
-    const ctx = document.createElement('canvas')
-    ctx.width = 200
-    ctx.height = 200
-
-    const assignmentCount: number[] = [] //TODO: delete
-
-    const gradesByAssignent: number[][] = []
-    let gbalength = 0
-    for (let ivar = 0; ivar < allAssignments.length; ivar++) {
-        //Adds ONE OF EACH assignemnt to GBA
-        const isInGBA = gradesByAssignent.find(
-            (x) => x[0] == allAssignments[ivar].id
-        )
-        if (!isInGBA) {
-            gradesByAssignent.push([])
-            gradesByAssignent[gbalength].push(allAssignments[ivar].id)
-            gbalength++
-        }
-    }
-
-    for (let ivar = 0; ivar < allSubmissions.length; ivar++) {
-        for (let xvar = 0; xvar < gradesByAssignent.length; xvar++) {
+            // Stop here if there are no submissions.
             if (
-                allSubmissions[ivar].assignment_id == gradesByAssignent[xvar][0]
-            ) {
-                gradesByAssignent[xvar].push(allSubmissions[ivar].score)
-            }
+                assignmentNode.allSubmissions === undefined ||
+                assignmentNode.allSubmissions.length === 0
+            )
+                continue
+
+            // Add entry to assignmentSubmissions map.
+            assignmentSubmissionsMap.set(
+                assignmentNode.assignment.id,
+                assignmentNode.allSubmissions
+            )
         }
+        courseMarkdownMap.set(courseNode, markdownContent) // Add content to the map for later use.
+
+        // Generate requested charts.
+        const averageGradeByGroupChart = requestedCharts.averageGradeByGroup
+            ? await generateAverageGradeChart(
+                  courseNode.assignmentGroups,
+                  assignmentSubmissionsMap
+              )
+            : ''
+        const averageGradeByAssignmentChart =
+            requestedCharts.averageGradeByAssignment
+                ? await generateAverageGradeByAssignmentChart(
+                      courseNode.assignmentGroups,
+                      assignmentSubmissionsMap
+                  )
+                : ''
+        const gradeTurnaroundByGroupChart =
+            requestedCharts.gradingTurnaroundByGroup
+                ? await generateGradingTurnaroundChart(
+                      courseNode.assignmentGroups,
+                      assignmentSubmissionsMap
+                  )
+                : ''
+        const gradeTurnaroundByAssignmentChart =
+            requestedCharts.gradingTurnaroundByAssignment
+                ? await generateGradingTurnaroundByAssignmentChart(
+                      courseNode.assignmentGroups,
+                      assignmentSubmissionsMap
+                  )
+                : ''
+        const charts =
+            averageGradeByGroupChart +
+            averageGradeByAssignmentChart +
+            gradeTurnaroundByGroupChart +
+            gradeTurnaroundByAssignmentChart
+
+        courseChartMap.set(courseNode, charts)
     }
+    return { courseMarkdownMap, courseChartMap }
+}
 
-    for (let ivar = 0; ivar < gradesByAssignent.length; ivar++) {
-        if (gradesByAssignent[ivar][1] === undefined) {
-            gradesByAssignent.splice(ivar, 1)
-            ivar--
-        }
+/**
+ * Maps assignment group IDs to their corresponding assignment group objects for faster lookup.
+ */
+function createIdAssignmentGroupMap(
+    assignmentGroups: AssignmentGroup[]
+): Map<number, AssignmentGroup> {
+    const idAssignmentGroupMap = new Map<number, AssignmentGroup>()
+    for (const assignmentGroup of assignmentGroups) {
+        idAssignmentGroupMap.set(assignmentGroup.id, assignmentGroup)
     }
-
-    const temparr: number[] = []
-
-    for (let ivar = 0; ivar < gradesByAssignent.length; ivar++) {
-        assignmentCount.push(ivar + 1)
-        let sum = 0
-        const pp = allAssignments.find(
-            (as) => as.id == gradesByAssignent[ivar][0]
-        )?.points_possible
-
-        for (let xvar = 1; xvar < gradesByAssignent[ivar].length; xvar++) {
-            if (pp != undefined) {
-                sum += gradesByAssignent[ivar][xvar] * (100 / pp)
-            } else {
-                sum += gradesByAssignent[ivar][xvar]
-            }
-        }
-        if (gradesByAssignent[ivar].length > 1) {
-            //if statement in case no-one turns it in
-            sum /= gradesByAssignent[ivar].length - 1
-        }
-
-        temparr.push(sum)
-    }
-
-    // Append the canvas to the body temporarily
-    document.body.appendChild(ctx)
-    const minValue: number = Math.min(...temparr)
-    const chartMin: number = minValue * 0.9
-    return new Promise((resolve) => {
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: assignmentCount,
-                datasets: [
-                    {
-                        label: 'Avg Assignment Grade',
-                        data: temparr,
-                        borderWidth: 5,
-                        pointBackgroundColor: 'cyan',
-                        borderColor: '#008b8b',
-                        fill: true,
-                        backgroundColor: bgc,
-                    },
-                ],
-            },
-            options: {
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Assignments',
-                        },
-                    },
-                    y: {
-                        min: chartMin,
-                        title: {
-                            display: true,
-                            text: 'Average Percent Grade',
-                        },
-                    },
-                },
-                animation: {
-                    onComplete: function () {
-                        // Now that the chart is rendered, capture the canvas as an image
-                        const imgData = ctx.toDataURL()
-
-                        const wrap = document.createElement('div')
-                        const img = document.createElement('img')
-                        img.src = imgData // Set the image as the source of the img element
-                        img.width = 400
-                        img.height = 400
-
-                        wrap.appendChild(img)
-
-                        avgAssignGrade2 = wrap.innerHTML
-
-                        // Remove the canvas from the DOM
-                        document.body.removeChild(ctx)
-
-                        resolve(avgAssignGrade2) // Resolve the promise with the image HTML
-                    },
-                },
-            },
-        })
-    })
+    return idAssignmentGroupMap
 }

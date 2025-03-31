@@ -300,6 +300,62 @@ export type AssignmentDate = {
     lock_at: Date
 }
 
+/**
+ * Represents a group of assignments in a course.
+ * An assignment group is used to organize assignments and can also include grading rules for that group.
+ *
+ * @see {@link https://canvas.instructure.com/doc/api/assignment_groups.html} for more details.
+ */
+export type AssignmentGroup = {
+    /**
+     * The unique identifier for the Assignment Group.
+     */
+    id: number
+
+    /**
+     * (Not part of the official Canvas Assignment Group API, added for convenience)
+     * The ID of the course this Assignment Group belongs to.
+     * This field was added as it might be helpful for associating assignment groups
+     * with courses in future implementations.
+     */
+    course_id?: number
+
+    /**
+     * The name of the Assignment Group.
+     */
+    name: string
+
+    /**
+     * The position (order) of the Assignment Group within the course.
+     */
+    position: number
+
+    /**
+     * The weight of the Assignment Group, typically used for weighted grading.
+     */
+    group_weight: number
+
+    /**
+     * The SIS (Student Information System) source ID for the Assignment Group.
+     */
+    sis_source_id: string
+
+    /**
+     * Additional integration data for the Assignment Group.
+     */
+    integration_data: object
+
+    /**
+     * The list of assignments that belong to this Assignment Group.
+     */
+    assignments: Assignment[]
+
+    /**
+     * Any grading rules that apply to this Assignment Group.
+     */
+    rules: string
+}
+
 export type ScoreStatistic = {
     // Min score
     min: number

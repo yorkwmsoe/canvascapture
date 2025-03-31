@@ -71,6 +71,24 @@ export const useGetAssignments = () => {
     })
 }
 
+export function useGetAssignmentGroups() {
+    const { canvasDomain, canvasAccessToken } = useSettingsStore()
+    const { courses } = useGenerationStore()
+    return useQueries({
+        queries: courses.map((courseId) => {
+            return {
+                queryKey: ['assignment_groups', courseId],
+                queryFn: () =>
+                    canvasApi.getAssignmentGroups({
+                        canvasAccessToken,
+                        canvasDomain,
+                        courseId,
+                    }),
+            }
+        }),
+    })
+}
+
 export const useGetCourses = () => {
     const { canvasDomain, canvasAccessToken, setIsStudent } = useSettingsStore()
     return useQuery({
