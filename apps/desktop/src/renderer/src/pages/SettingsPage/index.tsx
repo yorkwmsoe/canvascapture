@@ -83,13 +83,13 @@ export function SettingsPage() {
         ensureFileExists(settingsFilePath)
 
         const settingsToSave = { gitHubClassroomToken, chaseLinks }
-        let passVarLoveESLint = ""
+        
         fs.writeFile(
             settingsFilePath,
             JSON.stringify(settingsToSave),
-            (err) => {
-                if (err) {
-                    passVarLoveESLint = "pass"
+            (_) => {
+                if (_) {
+                    //Do nothing
                 }
             }
         )
