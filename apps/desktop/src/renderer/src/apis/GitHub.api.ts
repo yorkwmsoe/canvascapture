@@ -16,8 +16,7 @@ export const getDescriptionFromClassroomInvite = async (url) => {
         doChase = false
         console.log('failed to read')
     }
-    
-    
+
     let readme = ''
     if (doChase) {
         const octokit = new Octokit({

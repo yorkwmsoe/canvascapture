@@ -193,7 +193,7 @@ async function assembleDescriptionInfo(assignment: Assignment, fancy: boolean) {
     const descriptionHeader = convertToHeader('Description', 2)
     const description =
         wrapUserContent(assignment.description, fancy) + chasedLink
-        
+
     return [descriptionHeader, description]
 }
 
