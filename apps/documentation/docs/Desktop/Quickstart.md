@@ -2,28 +2,25 @@
 
 ### Install
 
-from the root directory not `apps/desktop`
-
-```bash
-$ pnpm i
-```
+Follow the instructions on the [Getting Started Quickstart page](/sdl/sdl/canvascapture/docs/Getting%20Started/Quickstart) (if you haven't already done so).
 
 ### Development
+Use the following command to run your locally developed version of the application:
 
 ```bash
-$ pnpm desktop dev
+pnpm desktop dev
 ```
 
-```bash
-# For the demo app that shows you how to use most of the libraries in this project
-$ pnpm desktop dev:demo
-```
+#### Changing the Canvas Domain
 
-#### Adding a new API
-
-1. Create a new file in the `api` folder
-2. Add the api to the `spi/store.ts` file
-3. Add the api domain to the `connect-src` in the `index.html` file `Content-Security-Policy` meta tag
+1. Navigate to `apps/desktop/src/renderer/src/utils/base-info.ts`
+2. Change the `CANVAS_DOMAIN` constant to your Canvas domain
+   1. Example: `export const CANVAS_DOMAIN = 'http://sdlstudentvm09.msoe.edu/'` for the development Canvas instance
+   2. **Remember to change the constant back before publishing a new release.**
+3. Navigate to `apps/desktop/src/renderer/index.html`
+4. Add your Canvas domain to the `connect-src` in the `Content-Security-Policy` meta tag
+5. Run `pnpm desktop dev` (if it is not already running)
+6. Input your Canvas Access Token from your Canvas instance into the Settings page of the application (if you haven't already done so)
 
 #### Adding a new page
 
@@ -35,29 +32,27 @@ $ pnpm desktop dev:demo
 ### Test
 
 ```bash
-$ pnpm desktop test
+pnpm desktop test
 ```
 
 ```bash
 # For the vitest ui
-$ pnpm desktop test:ui
+pnpm desktop test:ui
 ```
 
 ### Build
 
 ```bash
 # For windows
-$ pnpm desktop build:win
+pnpm desktop build:win
 
 # For macOS
-$ pnpm desktop build:mac
+pnpm desktop build:mac
 
 # For Linux
-$ pnpm desktop build:linux
+pnpm desktop build:linux
 ```
 
 ## Coding Standards
 
 [React Handbook](https://reacthandbook.dev/)
-
-Note: the `features` folder is now the `pages` folder

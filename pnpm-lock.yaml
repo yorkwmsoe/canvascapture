@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   pyodide@0.25.0:
-    hash: no7wjrk3gfdy7yagcs3aa7mqga
+    hash: dd9050505d72995ba6c223121a2e063e3ed9e0a7293fe326580b9a89c8b6441c
     path: patches/pyodide@0.25.0.patch
 
 importers:
@@ -27,7 +27,7 @@ importers:
         version: 4.1.2
       pyodide:
         specifier: 0.25.0
-        version: 0.25.0(patch_hash=no7wjrk3gfdy7yagcs3aa7mqga)
+        version: 0.25.0(patch_hash=dd9050505d72995ba6c223121a2e063e3ed9e0a7293fe326580b9a89c8b6441c)
     devDependencies:
       '@testing-library/jest-dom':
         specifier: ^6.6.3
@@ -18504,7 +18504,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  pyodide@0.25.0(patch_hash=no7wjrk3gfdy7yagcs3aa7mqga):
+  pyodide@0.25.0(patch_hash=dd9050505d72995ba6c223121a2e063e3ed9e0a7293fe326580b9a89c8b6441c):
     dependencies:
       base-64: 1.0.0
       ws: 8.18.0

@@ -1,11 +1,8 @@
-PBIs
-  - https://gitlab.com/msoe.edu/sdl/sdl/canvascapture/-/issues/97
-
 ## Running
 
 The End-to-End (e2e) tests are not part of the pipeline, as they take a long time to run, and it is difficult to run Electron, which these tests use, in a Docker container. Instead, run them on your computer as described below.
 
-To run the e2e tests, run the following command:  
+To run the e2e tests, run the following command:
 ```pnpm install && pnpm package && pnpm install && pnpm desktop build:linux --dir && pnpm desktop wdio```
 
 Broken down:
