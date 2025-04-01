@@ -14,6 +14,7 @@ An application to generate PDF reports of Canvas assignments.
 -   Rudy Evonich
 -   David Mbele
 -   Billy York
+-   Emanuel Gonzalez
 
 ## Product Owner
 
