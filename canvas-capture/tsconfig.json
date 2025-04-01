@@ -11,9 +11,12 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "strictPropertyInitialization": false,
 
         "declaration": true,
-        "outDir": "./dist",
+        "outDir": "./dist"
     },
     "include": ["src/**/*"]
 }
