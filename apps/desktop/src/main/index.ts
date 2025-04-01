@@ -5,7 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import * as remote from '@electron/remote/main'
 import { writeFile, copyFileSync } from 'fs'
 import path from 'path'
-
+import os from 'os'
 const isTest = process.env.NODE_ENV === 'test'
 if (isTest) {
     require('wdio-electron-service/main')
@@ -122,13 +122,19 @@ ipcMain.handle('dialog:openFile', async () => {
 
 ipcMain.handle('copy-file', async () => {
     const SOURCE_FILE_PATH = path.join(
-        __dirname,
-        '../../../../assignmentsConfig.json'
+        os.homedir(),
+        'AppData',
+        'Roaming',
+        'canvas-capture-desktop', // Change to your program's folder
+        'assignmentsConfig.json'
     )
 
     const { filePath: destinationFile } = await dialog.showSaveDialog({
         title: 'Save Copy As',
-        defaultPath: SOURCE_FILE_PATH,
+        defaultPath: path.join(
+            app.getPath('downloads'),
+            'AssignmentConfiguration.json'
+        ),
         filters: [{ name: 'All Files', extensions: ['.json'] }],
     })
 

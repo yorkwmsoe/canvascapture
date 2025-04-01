@@ -52,8 +52,8 @@ export function SettingsPage() {
 
     const loadConfigFromFile = async () => {
         let configGenerationName: string = 'FromConfig'
-        let configCourses: number[] = [12981]
-        let configAssignments: string[] = ['12981:149723']
+        let configCourses: number[] = []
+        let configAssignments: string[] = []
 
         try {
             //Read the json chosen
@@ -74,7 +74,9 @@ export function SettingsPage() {
         setAssignments(configAssignments)
 
         await wait(2000)
-        navigate({ to: '/selection', search: { step: 2 } })
+        if (configCourses[0] != null) {
+            navigate({ to: '/selection', search: { step: 2 } })
+        }
     }
 
     const downloadConfigFile = async () => {

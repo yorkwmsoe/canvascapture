@@ -11,6 +11,7 @@ import { useGenerateNext } from '@renderer/components/Generate/useGenerateNext'
 import { useGenerationStore } from '@renderer/stores/generation.store'
 import fs from 'fs'
 import path from 'path'
+import os from 'os'
 
 export function Generate() {
     const { notification } = App.useApp()
@@ -34,9 +35,13 @@ export function Generate() {
             }
             try {
                 const filePath = path.join(
-                    __dirname,
-                    '../../../../../../../../../assignmentsConfig.json'
+                    os.homedir(),
+                    'AppData',
+                    'Roaming',
+                    'canvas-capture-desktop', // Change to your program's folder
+                    'assignmentsConfig.json'
                 )
+
                 fs.writeFileSync(
                     filePath,
                     JSON.stringify(dataToWrite, null, 2),
