@@ -22,7 +22,12 @@ export function Generate() {
             // Call the generation step (creates and saves actual report).
             await runGenerate()
 
-            // If successful, navigate back to the home page
+            // If successful, display success message, and navigate back to the home page
+            notification.destroy()
+            notification.success({
+                message: 'Success',
+                description: 'Report Successfully Generated!',
+            })
             navigate({ to: '/' })
         } catch (error: unknown) {
             let errorMessage =
