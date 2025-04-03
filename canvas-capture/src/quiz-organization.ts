@@ -85,7 +85,7 @@ export async function assembleQuizQuestionsAndComments(
             incorrect_comments: quizQuestionsParams[i].incorrect_comments_html,
             correct_answers: [], //need further implementation
             correct: quizSubmissionQuestions[i].correct,
-            question_type: quizSubmissionQuestions[i].question_type
+            question_type: quizSubmissionQuestions[i].question_type,
         })
         questionsData.push(questionData)
     }
