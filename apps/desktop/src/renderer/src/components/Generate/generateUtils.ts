@@ -3,7 +3,7 @@
  *
  * Exported Functions:
  *
- * - `generateTOC()`
+ * - `prependTOC()`
  *   Generates a Table of Contents for the provided HTML content.
  *
  * - `generateAssignmentAndSubmissionContent()`
@@ -41,7 +41,7 @@ export function prependTOC(htmlContent: string) {
     const parser = new DOMParser()
     const doc = parser.parseFromString(htmlContent, 'text/html')
 
-    const headings = doc.querySelectorAll('h1, h2')
+    const headings = doc.querySelectorAll('h1')
     const tocEntries: string[] = []
 
     // Prepare document for anchor navigation.

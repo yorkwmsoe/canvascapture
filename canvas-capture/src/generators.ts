@@ -103,7 +103,7 @@ function wrapUserContent(userContent: string, fancy: boolean) {
 
 function quizOverview(assignment: Assignment, quiz: Quiz) {
     const quiz_id = assignment.quiz_id as number
-    const infoHeader = convertToHeader('Quiz Info', 2)
+    const infoHeader = convertToHeader('Quiz Info', 3)
     const quizHeader = createTableHeader([
         'Quiz Id',
         'Assignment Id',
@@ -127,7 +127,7 @@ function quizUserOverview(
     submission: Submission,
     quizSubmission: QuizSubmission | undefined
 ) {
-    const userOverviewHeader = convertToHeader('User Overview', 2)
+    const userOverviewHeader = convertToHeader('User Overview', 3)
     const userHeader = createTableHeader([
         'User Id',
         'Score',
@@ -154,7 +154,7 @@ function assembleTitleAndGrade(
     submission: Submission,
     type: string
 ) {
-    const title = convertToHeader(type + assignment.name, 1)
+    const title = convertToHeader(type + assignment.name, 2)
     const grade = `${submission.score}/${assignment.points_possible}`
     return [title, grade]
 }
@@ -190,7 +190,7 @@ async function assembleDescriptionInfo(assignment: Assignment, fancy: boolean) {
 
     //check if it's a link to github, chase the link if so
     //run pnpm package everytime you update this file or another inside this folder.
-    const descriptionHeader = convertToHeader('Description', 2)
+    const descriptionHeader = convertToHeader('Description', 3)
     const description =
         wrapUserContent(assignment.description, fancy) + chasedLink
 
@@ -203,7 +203,7 @@ function assembleSubmissionInfo(submission: Submission, fancy: boolean) {
         return []
     }
 
-    const submissionHeader = convertToHeader('Submission', 2)
+    const submissionHeader = convertToHeader('Submission', 3)
 
     switch (submission.submission_type) {
         case 'online_text_entry': {

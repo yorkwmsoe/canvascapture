@@ -203,11 +203,13 @@ async function createCourseContentMappings(
                       assignmentSubmissionsMap
                   )
                 : ''
-        const charts =
+        let charts =
             averageGradeByGroupChart +
             averageGradeByAssignmentChart +
             gradeTurnaroundByGroupChart +
             gradeTurnaroundByAssignmentChart
+        if (charts.trim().length > 0)
+            charts = '<h1>Statistic Charts</h1>' + charts
 
         courseChartMap.set(courseNode, charts)
     }
