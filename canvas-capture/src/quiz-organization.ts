@@ -74,22 +74,19 @@ export async function assembleQuizQuestionsAndComments(
 
     const questionsData: QuestionData[] = []
     for (let i = 0; i < quizQuestionsParams.length; i++) {
-        const questionData: QuestionData = new QuestionData()
-        questionData.quiz_id = quizSubmissionQuestions[i].quiz_id
-        questionData.question_name = quizQuestionsNoParams[i].question_name
-        questionData.question_description =
-            quizQuestionsNoParams[i].question_text
-        questionData.position = quizSubmissionQuestions[i].position
-        questionData.points_possible = quizQuestionsNoParams[i].points_possible
-        questionData.correct_comments =
-            quizQuestionsParams[i].correct_comments_html
-        questionData.neutral_comments =
-            quizQuestionsParams[i].neutral_comments_html
-        questionData.incorrect_comments =
-            quizQuestionsParams[i].incorrect_comments_html
-        questionData.correct_answers = [] //need further implementation
-        questionData.correct = quizSubmissionQuestions[i].correct
-        questionData.question_type = quizSubmissionQuestions[i].question_type
+        const questionData: QuestionData = new QuestionData({
+            quiz_id: quizSubmissionQuestions[i].quiz_id,
+            question_name: quizQuestionsNoParams[i].question_name,
+            question_description: quizQuestionsNoParams[i].question_text,
+            position: quizSubmissionQuestions[i].position,
+            points_possible: quizQuestionsNoParams[i].points_possible,
+            correct_comments: quizQuestionsParams[i].correct_comments_html,
+            neutral_comments: quizQuestionsParams[i].neutral_comments_html,
+            incorrect_comments: quizQuestionsParams[i].incorrect_comments_html,
+            correct_answers: [], //need further implementation
+            correct: quizSubmissionQuestions[i].correct,
+            question_type: quizSubmissionQuestions[i].question_type
+        })
         questionsData.push(questionData)
     }
     return formatQuizQuestions(questionsData)

@@ -204,6 +204,11 @@ export class QuestionData extends CanvasEntity {
 
     @UpdateDateColumn({ type: 'date' })
     date_last_received_from_canvas: Date
+
+    constructor(data: Partial<QuestionData>) {
+        super(data)
+        Object.assign(this, data)
+    }
 }
 
 @Entity()
