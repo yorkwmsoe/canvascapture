@@ -260,11 +260,17 @@ export class Quiz extends CanvasEntity {
     @Column()
     question_types: string[]
 
-    @OneToMany('QuizQuestion', (quizQuestion: QuizQuestion) => quizQuestion.quiz)
+    @OneToMany(
+        'QuizQuestion',
+        (quizQuestion: QuizQuestion) => quizQuestion.quiz
+    )
     @JoinColumn()
     quiz_questions: QuizQuestion[]
 
-    @OneToMany('QuizSubmission', (quizSubmission: QuizSubmission) => quizSubmission.quiz)
+    @OneToMany(
+        'QuizSubmission',
+        (quizSubmission: QuizSubmission) => quizSubmission.quiz
+    )
     @JoinColumn()
     quiz_submissions: QuizSubmission[]
 

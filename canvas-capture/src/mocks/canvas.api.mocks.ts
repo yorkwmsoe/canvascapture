@@ -63,7 +63,7 @@ export const testAssignments: Assignment[] = [
             'http://10.200.4.10/courses/1/assignments/1/submissions?zip=1',
         post_manually: false,
         anonymize_students: false,
-        require_lockdown_browser: false
+        require_lockdown_browser: false,
     }),
 ]
 

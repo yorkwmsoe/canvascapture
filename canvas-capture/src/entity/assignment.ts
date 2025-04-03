@@ -14,7 +14,7 @@ import {
     OneToMany,
     OneToOne,
     PrimaryColumn,
-    UpdateDateColumn
+    UpdateDateColumn,
 } from 'typeorm'
 import CanvasEntity from './canvas-entity'
 
@@ -117,7 +117,7 @@ export class Assignment extends CanvasEntity {
     @Column({ nullable: true, type: 'boolean' })
     vericite_enabled?: boolean
 
-    @Column({nullable: true, type: 'numeric'})
+    @Column({ nullable: true, type: 'numeric' })
     turnitin_settingsId: number
 
     // Settings to pass along to turnitin to control what kinds of matches should be
@@ -189,7 +189,7 @@ export class Assignment extends CanvasEntity {
     @Column({ nullable: true, type: 'numeric' })
     needs_grading_count?: number
 
-    @Column({nullable:true, type: 'numeric'})
+    @Column({ nullable: true, type: 'numeric' })
     needs_grading_count_by_sectionId: number
 
     // if the requesting user has grading rights and the
@@ -264,7 +264,7 @@ export class Assignment extends CanvasEntity {
     @Column({ type: 'boolean' })
     locked_for_user: boolean
 
-    @Column({nullable: true, type: 'numeric'})
+    @Column({ nullable: true, type: 'numeric' })
     lock_info_id: number
 
     // (Optional) Information for the user about the lock. Present when
@@ -288,7 +288,7 @@ export class Assignment extends CanvasEntity {
     @Column({ nullable: true, type: 'boolean' })
     anonymous_submissions?: boolean
 
-    @Column({nullable: true, type: 'numeric'})
+    @Column({ nullable: true, type: 'numeric' })
     discussion_topicId: number
 
     // (Optional) the DiscussionTopic associated with the assignment, if applicable
@@ -326,7 +326,7 @@ export class Assignment extends CanvasEntity {
     // information from the api) current submission for the assignment. See the
     // Submissions API for an example response. If the user does not have a
     // submission, this key will be absent.
-    @OneToOne("Submission")
+    @OneToOne('Submission')
     @JoinColumn()
     submission?: Submission
 
@@ -335,7 +335,7 @@ export class Assignment extends CanvasEntity {
     @Column({ nullable: true, type: 'boolean' })
     use_rubric_for_grading?: boolean
 
-    @Column({nullable: true, type: 'numeric'})
+    @Column({ nullable: true, type: 'numeric' })
     rubric_settingsId: number
 
     // (Optional) An object describing the basic attributes of the rubric, including
@@ -344,7 +344,7 @@ export class Assignment extends CanvasEntity {
     @JoinColumn()
     rubric_settings?: RubricSettings
 
-    @Column({nullable: true, type: 'simple-array'})
+    @Column({ nullable: true, type: 'simple-array' })
     rubricIds: number[]
 
     // (Optional) A list of scoring criteria and ratings for each rubric criterion.
@@ -424,7 +424,7 @@ export class Assignment extends CanvasEntity {
     @Column({ type: 'boolean' })
     post_manually: boolean
 
-    @Column({nullable: true, type: 'simple-array'})
+    @Column({ nullable: true, type: 'simple-array' })
     score_statisticsIds: number[]
 
     // (Optional) If 'score_statistics' and 'submission' are included in the
@@ -577,7 +577,7 @@ export class AssignmentGroup extends CanvasEntity {
     @PrimaryColumn({ type: 'numeric' })
     id: number
 
-    @Column({nullable: true, type: 'numeric'})
+    @Column({ nullable: true, type: 'numeric' })
     courseId?: number
 
     /**
@@ -635,7 +635,6 @@ export class AssignmentGroup extends CanvasEntity {
 
     @UpdateDateColumn()
     date_last_received_from_canvas: Date
-
 }
 
 @Entity()
@@ -710,7 +709,11 @@ export class RubricCriteria extends CanvasEntity {
     @JoinColumn()
     assignment: Assignment
 
-    @OneToMany('RubricAssessmentCriterion', (rubricAssessmentCriterion: RubricAssessmentCriterion) => rubricAssessmentCriterion.rubricCriteria)
+    @OneToMany(
+        'RubricAssessmentCriterion',
+        (rubricAssessmentCriterion: RubricAssessmentCriterion) =>
+            rubricAssessmentCriterion.rubricCriteria
+    )
     @JoinColumn()
     assessments: RubricAssessmentCriterion[]
 }

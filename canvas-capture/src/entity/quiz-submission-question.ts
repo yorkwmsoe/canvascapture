@@ -55,12 +55,18 @@ export class QuizSubmissionQuestion extends CanvasEntity {
     answers: Answer[]
 
     // Variables associated with the question
-    @OneToMany('Variable', (variable: Variable) => variable.quiz_submission_question)
+    @OneToMany(
+        'Variable',
+        (variable: Variable) => variable.quiz_submission_question
+    )
     @JoinColumn()
     variables: Variable[]
 
     // Formulas associated with the question
-    @OneToMany('Formula', (formula: Formula) => formula.quiz_submission_question)
+    @OneToMany(
+        'Formula',
+        (formula: Formula) => formula.quiz_submission_question
+    )
     @JoinColumn()
     formulas: Formula[]
 

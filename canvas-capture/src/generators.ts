@@ -301,13 +301,17 @@ function assembleRubricInfo(assignment: Assignment, submission: Submission) {
 
     const assessment = submission.rubric_assessment
     const rows = rubric?.map((criterion) => {
-        const assessment_criterion = assessment?.find((ac: RubricAssessmentCriterion) => {
-            return ac.rubricCriteria.id === criterion.id;
-        });
+        const assessment_criterion = assessment?.find(
+            (ac: RubricAssessmentCriterion) => {
+                return ac.rubricCriteria.id === criterion.id
+            }
+        )
 
         const description = criterion.description
         const points = criterion.points
-        const comments = assessment_criterion ? assessment_criterion?.comments : ''
+        const comments = assessment_criterion
+            ? assessment_criterion?.comments
+            : ''
         const score = assessment_criterion ? assessment_criterion?.points : ''
         return [description, `${score}/${points}`, comments]
     })

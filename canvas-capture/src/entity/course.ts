@@ -74,7 +74,10 @@ export class Course extends CanvasEntity {
     enrollment_term_id: number
 
     // A list of grading periods associated with the course
-    @OneToMany('GradingPeriod', (gradingPeriod: GradingPeriod) => gradingPeriod.course)
+    @OneToMany(
+        'GradingPeriod',
+        (gradingPeriod: GradingPeriod) => gradingPeriod.course
+    )
     @JoinColumn()
     grading_periods?: GradingPeriod[]
 
@@ -150,7 +153,7 @@ export class Course extends CanvasEntity {
 
     // optional: the permissions the user has for the course. returned only for a
     // single course and include[]=permissions
-    @Column({nullable: true, type: 'simple-json'})
+    @Column({ nullable: true, type: 'simple-json' })
     permissions?: Record<string, boolean>
 
     @Column({ nullable: true, type: 'boolean' })
@@ -216,20 +219,21 @@ export class Course extends CanvasEntity {
     @Column({ nullable: true, type: 'boolean' })
     blueprint?: boolean
 
-    @Column({nullable: true, type: 'numeric'})
+    @Column({ nullable: true, type: 'numeric' })
     blueprint_restrictionsId: number
 
     // optional: Set of restrictions applied to all locked course objects
     @OneToOne(
         'BlueprintRestrictions',
-        (blueprintRestrictions: BlueprintRestrictions) => blueprintRestrictions.course
+        (blueprintRestrictions: BlueprintRestrictions) =>
+            blueprintRestrictions.course
     )
     @JoinColumn()
     blueprint_restrictions?: BlueprintRestrictions
 
     // optional: Sets of restrictions differentiated by object type applied to
     // locked course objects
-    @Column({nullable: true, type: 'json'})
+    @Column({ nullable: true, type: 'json' })
     blueprint_restrictions_by_object_type?: Record<
         string,
         Record<string, boolean>
@@ -244,7 +248,7 @@ export class Course extends CanvasEntity {
     @JoinColumn()
     submissions: Submission[]
 
-    @Column({nullable: true, type: 'simple-array'})
+    @Column({ nullable: true, type: 'simple-array' })
     assignment_groupsIds: number[]
 
     @OneToMany(
