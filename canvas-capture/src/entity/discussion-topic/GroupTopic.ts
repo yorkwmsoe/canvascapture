@@ -3,14 +3,7 @@
  * portions of the Canvas API
  */
 import 'reflect-metadata'
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    PrimaryColumn,
-    UpdateDateColumn,
-} from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 import type { DiscussionTopic } from './DiscussionTopic'
 import CanvasEntity from '../canvas-entity'
 
@@ -27,11 +20,8 @@ export class GroupTopic extends CanvasEntity {
     @JoinColumn()
     discussion_topic: DiscussionTopic
 
-    @Column({ type: 'number' })
+    @Column({ type: 'numeric' })
     group_id: number
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<GroupTopic>) {
         super(data)

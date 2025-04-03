@@ -3,7 +3,7 @@
  * portions of the Canvas API
  */
 import 'reflect-metadata'
-import { Column, Entity, JoinColumn, OneToOne, UpdateDateColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm'
 import { Submission, SubmissionComment } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
@@ -15,7 +15,7 @@ export class MediaComment extends CanvasEntity {
     @Column({ type: 'text' })
     display_name?: string
 
-    @Column({ type: 'text' })
+    @PrimaryColumn({ type: 'text' })
     media_id: string
 
     @Column({ type: 'text' })
@@ -38,9 +38,6 @@ export class MediaComment extends CanvasEntity {
     )
     @JoinColumn()
     submission_comment: SubmissionComment
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<MediaComment>) {
         super(data)

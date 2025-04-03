@@ -3,14 +3,7 @@
  * portions of the Canvas API
  */
 import 'reflect-metadata'
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    OneToMany,
-    PrimaryColumn,
-    UpdateDateColumn,
-} from 'typeorm'
+import { Column, Entity, JoinColumn, OneToMany, PrimaryColumn } from 'typeorm'
 import type { Answer, Formula, Match, Variable } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
@@ -33,19 +26,19 @@ export class QuizSubmissionQuestion extends CanvasEntity {
     assessment_question_id: number
 
     // Position of the question within the quiz
-    @Column()
+    @Column({ type: 'numeric' })
     position: number
 
     // Name of the question
-    @Column()
+    @Column({ type: 'text' })
     question_name: string
 
     // Type of the question
-    @Column()
+    @Column({ type: 'text' })
     question_type: string
 
     // Text of the question
-    @Column()
+    @Column({ type: 'text' })
     question_text: string
 
     // List of answers for the question
@@ -70,11 +63,11 @@ export class QuizSubmissionQuestion extends CanvasEntity {
     formulas: Formula[]
 
     // Tolerance for answer comparison
-    @Column()
+    @Column({ nullable: true, type: 'numeric' })
     answer_tolerance: number | null
 
     // Decimal places for formulas
-    @Column()
+    @Column({ nullable: true, type: 'numeric' })
     formula_decimal_places: number | null
 
     // Matches associated with the question
@@ -83,15 +76,12 @@ export class QuizSubmissionQuestion extends CanvasEntity {
     matches: Match[]
 
     // Indicates if the question is flagged
-    @Column()
+    @Column({ type: 'boolean' })
     flagged: boolean
 
     // Indicates if the question is correct
-    @Column()
+    @Column({ type: 'text' })
     correct: boolean | 'partial'
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<QuizSubmissionQuestion>) {
         super(data)

@@ -3,7 +3,7 @@
  * of the Canvas API
  */
 import 'reflect-metadata'
-import { Column, Entity, JoinColumn, OneToOne, UpdateDateColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm'
 import type { Course } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
@@ -28,12 +28,12 @@ export class CourseProgress extends CanvasEntity {
     @Column({ nullable: true, type: 'date' })
     completed_at: Date | null
 
+    @PrimaryColumn({ type: 'numeric' })
+    courseId: number
+
     @OneToOne('Course', (course: Course) => course.course_progress)
     @JoinColumn()
     course: Course
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<CourseProgress>) {
         super(data)

@@ -10,7 +10,6 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryColumn,
-    UpdateDateColumn,
 } from 'typeorm'
 import type {
     Formula,
@@ -119,9 +118,6 @@ export class QuizQuestion extends CanvasEntity {
     // Matching answer incorrect matches
     @Column({ nullable: true, type: 'text' })
     matching_answer_incorrect_matches: null | string
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<QuizQuestion>) {
         super(data)

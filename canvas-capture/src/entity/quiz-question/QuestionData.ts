@@ -3,16 +3,27 @@
  * portions of the Canvas API
  */
 import 'reflect-metadata'
-import { Column, Entity, OneToMany, UpdateDateColumn } from 'typeorm'
-import type { QuizSubmissionAnswer } from '../entity.types'
+import {
+    Column,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+    PrimaryColumn,
+} from 'typeorm'
+import { Quiz, QuizSubmissionAnswer } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class QuestionData extends CanvasEntity {
-    @Column({ type: 'numeric' })
+    @PrimaryColumn({ type: 'numeric' })
     quiz_id: number
 
-    @Column({ type: 'text' })
+    @ManyToOne('Quiz', (quiz: Quiz) => quiz.question_data)
+    @JoinColumn({ name: 'quiz_id' })
+    quiz: Quiz
+
+    @PrimaryColumn({ type: 'text' })
     question_name: string
 
     @Column({ type: 'text' })
@@ -45,9 +56,6 @@ export class QuestionData extends CanvasEntity {
 
     @Column({ type: 'text' })
     question_type: string //should eventually make this explicit
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<QuestionData>) {
         super(data)

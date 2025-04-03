@@ -3,14 +3,7 @@
  * portion of the Canvas API
  */
 import 'reflect-metadata'
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    PrimaryColumn,
-    UpdateDateColumn,
-} from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 import type { Course } from '../course/Course'
 import CanvasEntity from '../canvas-entity'
 
@@ -49,9 +42,6 @@ export class GradingPeriod extends CanvasEntity {
     @ManyToOne('Course', (course: Course) => course.grading_periods)
     @JoinColumn()
     course: Course
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<GradingPeriod>) {
         super(data)

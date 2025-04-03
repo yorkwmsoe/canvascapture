@@ -10,7 +10,6 @@ import {
     OneToMany,
     OneToOne,
     PrimaryColumn,
-    UpdateDateColumn,
 } from 'typeorm'
 import type {
     AssignmentGroup,
@@ -21,7 +20,14 @@ import type {
     Term,
     Submission,
 } from '../entity.types'
+import { CourseCalendar } from './CourseCalendar'
 import CanvasEntity from '../canvas-entity'
+
+export type WorkflowState =
+    | 'unpublished'
+    | 'available'
+    | 'completed'
+    | 'deleted'
 
 @Entity()
 export class Course extends CanvasEntity {
@@ -267,23 +273,8 @@ export class Course extends CanvasEntity {
     @JoinColumn()
     assignment_groups?: AssignmentGroup[]
 
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
-
     constructor(data?: Partial<Course>) {
         super(data)
         Object.assign(this, data)
     }
 }
-
-export class CourseCalendar {
-    // The URL of the calendar in ICS format
-    @Column({ type: 'text' })
-    ics: string
-}
-
-export type WorkflowState =
-    | 'unpublished'
-    | 'available'
-    | 'completed'
-    | 'deleted'

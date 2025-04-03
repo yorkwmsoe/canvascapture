@@ -3,14 +3,7 @@
  * portions of the Canvas API
  */
 import 'reflect-metadata'
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    OneToMany,
-    PrimaryColumn,
-    UpdateDateColumn,
-} from 'typeorm'
+import { Column, Entity, JoinColumn, OneToMany, PrimaryColumn } from 'typeorm'
 import type { SubmissionComment } from '../submission/SubmissionComment'
 import CanvasEntity from '../canvas-entity'
 
@@ -39,9 +32,6 @@ export class UserDisplay extends CanvasEntity {
     )
     @JoinColumn()
     submission_comments: SubmissionComment[]
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<UserDisplay>) {
         super(data)

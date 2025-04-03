@@ -3,14 +3,7 @@
  * portions of the Canvas API
  */
 import 'reflect-metadata'
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    PrimaryColumn,
-    UpdateDateColumn,
-} from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 import type { Enrollment } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
@@ -102,9 +95,6 @@ export class User extends CanvasEntity {
     // Optional: The user's bio.
     @Column({ nullable: true, type: 'text' })
     bio?: string
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<User>) {
         super(data)

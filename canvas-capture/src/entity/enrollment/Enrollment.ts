@@ -10,7 +10,6 @@ import {
     ManyToOne,
     OneToOne,
     PrimaryColumn,
-    UpdateDateColumn,
 } from 'typeorm'
 import type { Course, Grade, User } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
@@ -249,9 +248,6 @@ export class Enrollment extends CanvasEntity {
     // only available in course endpoints)
     @Column({ nullable: true, type: 'text' })
     current_period_unposted_final_grade?: string
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<Enrollment>) {
         super(data)

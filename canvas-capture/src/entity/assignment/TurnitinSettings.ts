@@ -3,12 +3,21 @@
  * of the Canvas API
  */
 import 'reflect-metadata'
-import { Column, Entity, JoinColumn, OneToOne, UpdateDateColumn } from 'typeorm'
+import {
+    Column,
+    Entity,
+    JoinColumn,
+    OneToOne,
+    PrimaryGeneratedColumn,
+} from 'typeorm'
 import CanvasEntity from '../canvas-entity'
 import type { Assignment } from '../entity.types'
 
 @Entity()
 export class TurnitinSettings extends CanvasEntity {
+    @PrimaryGeneratedColumn({ type: 'numeric' })
+    id: number
+
     @Column({ type: 'text' })
     originality_report_visibility: OriginallyReportVisibility
 
@@ -39,9 +48,6 @@ export class TurnitinSettings extends CanvasEntity {
     )
     @JoinColumn()
     assignment: Assignment
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<TurnitinSettings>) {
         super(data)

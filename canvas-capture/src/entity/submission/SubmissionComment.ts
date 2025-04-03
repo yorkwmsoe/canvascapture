@@ -6,7 +6,6 @@ import {
     OneToOne,
     ManyToOne,
     PrimaryColumn,
-    UpdateDateColumn,
 } from 'typeorm'
 import type { MediaComment, Submission, UserDisplay } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
@@ -52,9 +51,6 @@ export class SubmissionComment extends CanvasEntity {
     )
     @JoinColumn()
     submission: Submission
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<SubmissionComment>) {
         super(data)

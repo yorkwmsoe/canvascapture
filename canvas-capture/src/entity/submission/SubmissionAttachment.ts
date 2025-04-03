@@ -3,14 +3,7 @@
  * portions of the Canvas API
  */
 import 'reflect-metadata'
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    PrimaryColumn,
-    UpdateDateColumn,
-} from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 import type { Submission } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
@@ -68,7 +61,7 @@ export class SubmissionAttachment extends CanvasEntity {
     @Column({ type: 'date' })
     modified_at: Date
 
-    @Column({ type: 'string' })
+    @Column({ type: 'text' })
     mime_class: string
 
     media_entry_id: null
@@ -84,9 +77,6 @@ export class SubmissionAttachment extends CanvasEntity {
     @ManyToOne('Submission', (submission: Submission) => submission.attachments)
     @JoinColumn()
     submission: Submission
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<SubmissionAttachment>) {
         super(data)

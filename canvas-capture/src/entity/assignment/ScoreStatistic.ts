@@ -8,13 +8,16 @@ import {
     Entity,
     JoinColumn,
     ManyToOne,
-    UpdateDateColumn,
+    PrimaryGeneratedColumn,
 } from 'typeorm'
 import type { Assignment } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class ScoreStatistic extends CanvasEntity {
+    @PrimaryGeneratedColumn({ type: 'numeric' })
+    id: number
+
     @ManyToOne(
         'Assignment',
         (assignment: Assignment) => assignment.score_statistics
@@ -45,9 +48,6 @@ export class ScoreStatistic extends CanvasEntity {
     // Lower quartile score
     @Column({ type: 'numeric' })
     lower_q: number
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<ScoreStatistic>) {
         super(data)

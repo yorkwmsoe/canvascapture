@@ -10,7 +10,6 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryColumn,
-    UpdateDateColumn,
 } from 'typeorm'
 import type {
     Assignment,
@@ -67,9 +66,6 @@ export class RubricCriteria extends CanvasEntity {
     )
     @JoinColumn()
     assessments: RubricAssessmentCriterion[]
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<RubricCriteria>) {
         super(data)

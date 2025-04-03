@@ -8,11 +8,13 @@ import { LockInfo } from './assignment/LockInfo'
 import { NeedsGradingCountBySection } from './assignment/NeedsGradingCountBySection'
 import { RubricCriteria } from './assignment/RubricCriteria'
 import { RubricRating } from './assignment/RubricRating'
+import { RubricSettings } from './assignment/RubricSettings'
 import { ScoreStatistic } from './assignment/ScoreStatistic'
 import { TurnitinSettings } from './assignment/TurnitinSettings'
 // ./course
 import { BlueprintRestrictions } from './course/BlueprintRestrictions'
 import { Course } from './course/Course'
+import { CourseCalendar } from './course/CourseCalendar'
 import { CourseProgress } from './course/CourseProgress'
 import { Term } from './course/Term'
 // ./discussion-topic
@@ -61,6 +63,7 @@ export {
     AssignmentGroup,
     BlueprintRestrictions,
     Course,
+    CourseCalendar,
     CourseProgress,
     DiscussionTopic,
     Enrollment,
@@ -84,6 +87,7 @@ export {
     RubricAssessmentCriterion,
     RubricCriteria,
     RubricRating,
+    RubricSettings,
     ScoreStatistic,
     Submission,
     SubmissionAttachment,

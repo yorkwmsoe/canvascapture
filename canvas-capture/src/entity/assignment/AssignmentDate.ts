@@ -3,15 +3,15 @@
  * of the Canvas API
  */
 import 'reflect-metadata'
-import { Column, Entity, UpdateDateColumn } from 'typeorm'
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class AssignmentDate extends CanvasEntity {
     // (Optional, missing if 'base' is present) id of the assignment override this
     // date represents
-    @Column({ nullable: true, type: 'numeric', unique: true })
-    id?: number
+    @PrimaryColumn({ type: 'numeric' })
+    id: number
 
     // (Optional, present if 'id' is missing) whether this date represents the
     // assignment's or quiz's default due date
@@ -35,9 +35,6 @@ export class AssignmentDate extends CanvasEntity {
     // due date.
     @Column({ type: 'date' })
     lock_at: Date
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<AssignmentDate>) {
         super(data)

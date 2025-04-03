@@ -3,13 +3,7 @@
  * of the Canvas API
  */
 import 'reflect-metadata'
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    UpdateDateColumn,
-} from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 import type { Assignment } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
@@ -31,11 +25,8 @@ export class ExternalToolTagAttributes extends CanvasEntity {
     new_tab: boolean
 
     // the identifier for this tool_tag
-    @Column({ type: 'text' })
+    @PrimaryColumn({ type: 'text' })
     resource_link_id: string
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<ExternalToolTagAttributes>) {
         super(data)

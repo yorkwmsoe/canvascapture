@@ -10,7 +10,6 @@ import {
     OneToMany,
     OneToOne,
     PrimaryColumn,
-    UpdateDateColumn,
 } from 'typeorm'
 import { Assignment, File, GroupTopic, ReadState } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
@@ -161,11 +160,11 @@ export class DiscussionTopic extends CanvasEntity {
 
     // Array of file attachments.
     @OneToMany('File', (file: File) => file.discussion_topic)
-    @Column()
+    @JoinColumn()
     attachments: File[]
 
     // The current user's permissions on this topic.
-    @Column()
+    @Column({ type: 'simple-json' })
     permissions: Record<string, boolean>
 
     // Whether or not users can rate entries in this topic.
@@ -179,9 +178,6 @@ export class DiscussionTopic extends CanvasEntity {
     // Whether or not entries should be sorted by rating.
     @Column({ type: 'boolean' })
     sort_by_rating: boolean
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<DiscussionTopic>) {
         super(data)

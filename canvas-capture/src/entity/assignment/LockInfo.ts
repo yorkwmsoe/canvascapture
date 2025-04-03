@@ -3,14 +3,14 @@
  * of the Canvas API
  */
 import 'reflect-metadata'
-import { Column, Entity, JoinColumn, OneToOne, UpdateDateColumn } from 'typeorm'
-import { Assignment } from '../entity.types'
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm'
+import { Assignment, File } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class LockInfo extends CanvasEntity {
     // Asset string for the object causing the lock
-    @Column({ type: 'text' })
+    @PrimaryColumn({ type: 'text' })
     asset_string: string
 
     // (Optional) Time at which this was/will be unlocked. Must be before the due
@@ -33,8 +33,12 @@ export class LockInfo extends CanvasEntity {
     @JoinColumn()
     assignment: Assignment
 
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
+    @Column({ nullable: true, type: 'numeric' })
+    file_id: number
+
+    @OneToOne('File', (file: File) => file.lock_info)
+    @JoinColumn({ name: 'file_id' })
+    file?: File
 
     constructor(data?: Partial<LockInfo>) {
         super(data)

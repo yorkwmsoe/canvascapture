@@ -12,9 +12,8 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryColumn,
-    UpdateDateColumn,
 } from 'typeorm'
-import type { Assignment, Course } from '../entity.types'
+import { Assignment, Course, Quiz } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
 @Entity()
@@ -53,7 +52,7 @@ export class AssignmentGroup extends CanvasEntity {
     /**
      * The weight of the Assignment Group, typically used for weighted grading.
      */
-    @Column({ type: 'number' })
+    @Column({ type: 'numeric' })
     group_weight: number
 
     /**
@@ -78,14 +77,15 @@ export class AssignmentGroup extends CanvasEntity {
     @JoinColumn()
     assignments: Assignment[]
 
+    @OneToMany('Quiz', (quiz: Quiz) => quiz.assignment_group)
+    @JoinColumn()
+    quizzes: Quiz[]
+
     /**
      * Any grading rules that apply to this Assignment Group.
      */
     @Column({ type: 'text' })
     rules: string
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<AssignmentGroup>) {
         super(data)

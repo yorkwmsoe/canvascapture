@@ -3,14 +3,7 @@
  * of the Canvas API
  */
 import 'reflect-metadata'
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    OneToMany,
-    PrimaryColumn,
-    UpdateDateColumn,
-} from 'typeorm'
+import { Column, Entity, JoinColumn, OneToMany, PrimaryColumn } from 'typeorm'
 import type { Course } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
@@ -31,9 +24,6 @@ export class Term extends CanvasEntity {
     @OneToMany('Course', (course: Course) => course.term)
     @JoinColumn()
     courses: Course[]
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<Term>) {
         super(data)

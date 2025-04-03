@@ -3,7 +3,7 @@
  * portions of the Canvas API
  */
 import 'reflect-metadata'
-import { Column, Entity, JoinColumn, OneToOne, UpdateDateColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm'
 import type { Enrollment } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
@@ -71,12 +71,12 @@ export class Grade extends CanvasEntity {
     @Column({ type: 'numeric' })
     unposted_current_points: number
 
-    @OneToOne('Enrollment', (enrollment: Enrollment) => enrollment.grades)
-    @JoinColumn()
-    enrollment: Enrollment
+    @PrimaryColumn({ type: 'numeric' })
+    enrollment_id: number
 
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
+    @OneToOne('Enrollment', (enrollment: Enrollment) => enrollment.grades)
+    @JoinColumn({ name: 'enrollment_id' })
+    enrollment: Enrollment
 
     constructor(data?: Partial<Grade>) {
         super(data)

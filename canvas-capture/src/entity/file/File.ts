@@ -8,83 +8,84 @@ import {
     Entity,
     JoinColumn,
     ManyToOne,
+    OneToOne,
     PrimaryColumn,
-    UpdateDateColumn,
 } from 'typeorm'
 import type { DiscussionTopic, LockInfo } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class File extends CanvasEntity {
-    @PrimaryColumn()
+    @PrimaryColumn({ type: 'numeric' })
     id: number
 
-    @Column()
+    @Column({ type: 'uuid' })
     uuid: string
 
-    @Column()
+    @Column({ type: 'numeric' })
     folder_id: number
 
-    @Column()
+    @Column({ type: 'text' })
     display_name: string
 
-    @Column()
+    @Column({ type: 'text' })
     filename: string
 
-    @Column()
+    @Column({ type: 'text' })
     'content-type': string
 
-    @Column()
+    @Column({ type: 'text' })
     url: string
 
     // file size in bytes
-    @Column()
+    @Column({ type: 'numeric' })
     size: number
 
-    @Column()
+    @Column({ type: 'date' })
     created_at: Date
 
-    @Column()
+    @Column({ type: 'date' })
     updated_at: Date
 
-    @Column()
+    @Column({ type: 'date' })
     unlock_at: Date
 
-    @Column()
+    @Column({ type: 'boolean' })
     locked: boolean
 
-    @Column()
+    @Column({ type: 'boolean' })
     hidden: boolean
 
-    @Column()
+    @Column({ type: 'date' })
     lock_at: Date
 
-    @Column()
+    @Column({ type: 'boolean' })
     hidden_for_user: boolean
 
     // Changes who can access the file. Valid options are 'inherit' (the default),
     // 'course', 'institution', and 'public'. Only valid in course endpoints.
-    @Column()
+    @Column({ type: 'text' })
     visibility_level: VisibilityLevel
 
-    @Column()
+    @Column({ type: 'text' })
     thumbnail_url: string
 
-    @Column()
+    @Column({ type: 'date' })
     modified_at: Date
 
     // simplified content-type mapping
-    @Column()
+    @Column({ type: 'text' })
     mime_class: string
 
     // identifier for file in third-party transcoding service
-    @Column()
+    @Column({ type: 'text' })
     media_entry_id: string
 
-    @Column()
+    @Column({ type: 'boolean' })
     locked_for_user: boolean
 
-    @Column()
+    @OneToOne('LockInfo', (lockInfo: LockInfo) => lockInfo.file)
+    @JoinColumn()
     lock_info: LockInfo
 
     @Column()
@@ -101,9 +102,6 @@ export class File extends CanvasEntity {
     )
     @JoinColumn()
     discussion_topic?: DiscussionTopic
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<File>) {
         super(data)

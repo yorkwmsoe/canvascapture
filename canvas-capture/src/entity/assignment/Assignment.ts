@@ -11,7 +11,6 @@ import {
     OneToMany,
     OneToOne,
     PrimaryColumn,
-    UpdateDateColumn,
 } from 'typeorm'
 import {
     AssignmentGroup,
@@ -23,7 +22,9 @@ import {
     ScoreStatistic,
     Submission,
     LockInfo,
+    Quiz,
 } from '../entity.types'
+import { RubricSettings } from './RubricSettings'
 import CanvasEntity from '../canvas-entity'
 
 @Entity()
@@ -296,6 +297,10 @@ export class Assignment extends CanvasEntity {
     @Column({ nullable: true, type: 'numeric' })
     quiz_id?: number
 
+    @OneToOne('Quiz', (quiz: Quiz) => quiz.assignment)
+    @JoinColumn({ name: 'quiz_id' })
+    quiz: Quiz
+
     // (Optional) whether anonymous submissions are accepted (applies only to quiz
     // assignments)
     @Column({ nullable: true, type: 'boolean' })
@@ -356,8 +361,7 @@ export class Assignment extends CanvasEntity {
 
     // (Optional) An object describing the basic attributes of the rubric, including
     // the point total. Included if there is an associated rubric.
-    @OneToOne('RubricSettings') // TypeORM will drop in rubric settings as a column
-    @JoinColumn() // instead of making a relation, don't need 2nd param
+    @Column(() => RubricSettings)
     rubric_settings?: RubricSettings
 
     @Column({ nullable: true, type: 'simple-array' })
@@ -540,18 +544,10 @@ export class Assignment extends CanvasEntity {
     @Column({ type: 'text' })
     workflow_state: string
 
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
-
     constructor(data?: Partial<Assignment>) {
         super(data)
         if (data) {
             Object.assign(data)
         }
     }
-}
-
-export class RubricSettings {
-    @Column({ type: 'text' })
-    points_possible: string
 }

@@ -3,13 +3,7 @@
  * of the Canvas API
  */
 import 'reflect-metadata'
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    UpdateDateColumn,
-} from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 import type { Assignment } from '../entity.types'
 import CanvasEntity from '../canvas-entity'
 
@@ -22,14 +16,11 @@ export class NeedsGradingCountBySection extends CanvasEntity {
     @JoinColumn()
     assignment: Assignment
 
-    @Column({ type: 'text' })
+    @PrimaryColumn({ type: 'text' })
     section_id: string
 
     @Column({ type: 'numeric' })
     needs_grading_count: number
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
 
     constructor(data?: Partial<NeedsGradingCountBySection>) {
         super(data)
