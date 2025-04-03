@@ -25,7 +25,7 @@ import {
     AssignmentGroup,
 } from '@canvas-capture/lib'
 import { FilePathContentPair } from './types'
-import { generateTOC } from './generateUtils'
+import { prependTOC } from './generateUtils'
 
 import {
     generateAverageGradeByAssignmentChart,
@@ -78,19 +78,17 @@ export async function generate(
         const courseName = getCourseName(courseNode.course)
         const markdownContent = courseMarkdownMap.get(courseNode)!
 
-        // Convert markdown to HTML
-        const htmlContent = md.render(markdownContent)
-
-        // Add table of contents and charts
-        const htmlContentWithTocAndCharts =
-            generateTOC(htmlContent) +
-                '\n\n\n' +
-                htmlContent +
+        // Combine HTML content.
+        let htmlContent =
+            md.render(markdownContent) + // Convert markdown to HTML
                 courseChartMap.get(courseNode) || ''
+
+        // Attach TOC
+        htmlContent = prependTOC(htmlContent)
 
         htmlData.push({
             filePath: join(generationName, `${courseName}`),
-            content: htmlContentWithTocAndCharts,
+            content: htmlContent,
         })
     }
 
