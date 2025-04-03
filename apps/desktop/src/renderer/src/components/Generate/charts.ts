@@ -515,10 +515,11 @@ function createGroupSubmissionsMap(
 ): Map<number, Submission[]> {
     const allSubmissionsByGroup: Map<number, Submission[]> = new Map()
     for (const assignmentGroup of assignmentGroups) {
+        allSubmissionsByGroup.set(assignmentGroup.id, [])
         for (const assignment of assignmentGroup.assignments) {
             if (!assignmentSubmissionsMap.has(assignment.id)) continue
             const submissions = assignmentSubmissionsMap.get(assignment.id)!
-            allSubmissionsByGroup.set(assignmentGroup.id, submissions)
+            allSubmissionsByGroup.get(assignmentGroup.id)!.push(...submissions)
         }
     }
     return allSubmissionsByGroup
