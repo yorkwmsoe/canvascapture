@@ -52,7 +52,11 @@ const getCachedArray = async (
         },
     })
     if (cachedArray.length > 0) {
-        return apiFunction.call(args)
+        const newData: CanvasEntity[] = (await apiFunction.call(
+            args
+        )) as CanvasEntity[]
+        await entity.upsert(newData, ['id'])
+        return newData
     } else {
         return entity.find()
     }
@@ -106,8 +110,10 @@ export function getCachedAssignmentGroups(
 //Single
 export function getCachedQuiz(args: GetQuizRequest & Auth): Promise<Quiz> {
     if (args.quizId) {
-        Quiz.findBy({ id: args.quizId }).then((quizzes) => {
+        Quiz.findBy({ id: args.quizId }).then(async (quizzes) => {
             if (quizzes[0].date_last_received_from_canvas < yesterday()) {
+                const quiz = await getQuiz(args)
+                await Quiz.upsert(quiz, ['id'])
                 return getQuiz(args)
             } else {
                 return quizzes[0]
@@ -131,13 +137,21 @@ export async function getCachedQuizSubmission(
             submission &&
             submission.date_last_received_from_canvas < yesterday()
         ) {
-            return getQuizSubmission(args)
+            submission = await getQuizSubmission(args)
+            if (submission) {
+                await QuizSubmission.upsert(submission, ['id'])
+            }
+            return submission
         }
     }
     if (submission) {
         return submission
     } else {
-        return getQuizSubmission(args)
+        submission = await getQuizSubmission(args)
+        if (submission) {
+            await QuizSubmission.upsert(submission, ['id'])
+        }
+        return submission
     }
 }
 

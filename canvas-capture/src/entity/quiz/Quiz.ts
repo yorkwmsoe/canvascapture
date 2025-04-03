@@ -173,7 +173,7 @@ export class Quiz extends CanvasEntity {
 
     // Data related to lockdown browser monitoring.
     @Column({ type: 'simple-json' })
-    lockdown_browser_monitor_data: unknown
+    lockdown_browser_monitor_data: object
 
     // The URL for speed grader associated with the quiz.
     @Column({ type: 'text' })
