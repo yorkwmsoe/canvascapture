@@ -154,7 +154,7 @@ async function createCourseContentMappings(
         for (const assignmentNode of courseNode.children) {
             // Add assignment to its corresponding AssignmentGroup object.
             idAssignmentGroupMap
-                .get(assignmentNode.assignment.assignment_group_id)
+                .get(assignmentNode.assignment.assignment_group.id)
                 ?.assignments.push(assignmentNode.assignment)
 
             // Append description and submission content

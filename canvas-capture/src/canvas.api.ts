@@ -5,13 +5,13 @@
  * See individual definitions below for more details
  */
 import { parseISO } from 'date-fns'
-import { Assignment, AssignmentGroup } from './types/canvas_api/assignment'
-import { Course } from './types/canvas_api/course'
-import { Submission } from './types/canvas_api/submission'
-import { Quiz } from './types/canvas_api/quiz'
-import { QuizSubmission } from './types/canvas_api/quiz-submissions'
-import { QuizSubmissionQuestion } from './types/canvas_api/quiz-submission-question'
-import { QuizQuestion } from './types/canvas_api/quiz-question'
+import { Assignment, AssignmentGroup } from './entity/assignment'
+import { Course } from './entity/course'
+import { Submission } from './entity/submission'
+import { Quiz } from './entity/quiz'
+import { QuizSubmission } from './entity/quiz-submissions'
+import { QuizSubmissionQuestion } from './entity/quiz-submission-question'
+import { QuizQuestion } from './entity/quiz-question'
 
 export type Auth = {
     canvasAccessToken: string
@@ -313,11 +313,22 @@ export async function getAssignmentGroups(
 
     // Inject course_id into each AssignmentGroup object.
     for (const assignmentGroup of assignmentGroups) {
-        assignmentGroup.course_id = args.courseId
+        assignmentGroup.course.id = args.courseId
     }
 
     return assignmentGroups
 }
+
+export type CanvasRequest =
+    | GetAssignmentsRequest
+    | GetLatestQuizVersionRequest
+    | GetMostCommonQuizVersionRequest
+    | GetQuizRequest
+    | GetQuizQuestionsNoParamsRequest
+    | GetQuizQuestionsParamsRequest
+    | GetQuizSubmissionQuestionsRequest
+    | GetQuizSubmissionRequest
+    | GetSubmissionsRequest
 
 export type CreateCanvasApiConfig =
     | {

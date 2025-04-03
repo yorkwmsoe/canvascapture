@@ -3,9 +3,9 @@ import { readFile } from 'fs'
 
 const settingsFilePath = '../desktop/src/renderer/src/apis/LinkSettings.json'
 
-export const getDescriptionFromClassroomInvite = async (url) => {
-    let classToken
-    let doChase
+export const getDescriptionFromClassroomInvite = async (url: string) => {
+    let classToken: string
+    let doChase: boolean
     try {
         const { gitHubClassroomToken, chaseLinks } =
             await loadSettingsFromFile()

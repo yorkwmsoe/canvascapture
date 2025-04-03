@@ -1,11 +1,11 @@
 import { parse } from 'date-fns'
-import { Assignment } from '../types/canvas_api/assignment'
-import { Course } from '../types/canvas_api/course'
-import { Enrollment } from '../types/canvas_api/enrollment'
-import { Submission } from '../types/canvas_api/submission'
+import { Assignment } from '../entity/assignment'
+import { Course } from '../entity/course'
+import { Enrollment } from '../entity/enrollment'
+import { Submission } from '../entity/submission'
 
 export const testAssignments: Assignment[] = [
-    {
+    new Assignment({
         id: 1,
         description: '',
         points_possible: 5,
@@ -63,12 +63,12 @@ export const testAssignments: Assignment[] = [
             'http://10.200.4.10/courses/1/assignments/1/submissions?zip=1',
         post_manually: false,
         anonymize_students: false,
-        require_lockdown_browser: false,
-    },
+        require_lockdown_browser: false
+    }),
 ]
 
 export const testCourses: Course[] = [
-    {
+    new Course({
         id: 1,
         name: 'Test Course 1',
         account_id: 3,
@@ -105,8 +105,8 @@ export const testCourses: Course[] = [
         hide_final_grades: false,
         workflow_state: 'available',
         restrict_enrollments_to_course_dates: false,
-    },
-    {
+    }),
+    new Course({
         id: 1,
         original_name: 'Noice Name',
         name: 'Test Course 1',
@@ -144,11 +144,11 @@ export const testCourses: Course[] = [
         hide_final_grades: false,
         workflow_state: 'available',
         restrict_enrollments_to_course_dates: false,
-    },
+    }),
 ]
 
 export const testSubmissions: Submission[] = [
-    {
+    new Submission({
         id: 1,
         body: '<p>I am a user</p>',
         grade: '0',
@@ -185,8 +185,8 @@ export const testSubmissions: Submission[] = [
         preview_url:
             'http://10.200.4.10/courses/1/assignments/1/submissions/2?preview=1&version=2',
         anonymous_id: 'aaaaa',
-    },
-    {
+    }),
+    new Submission({
         id: 2,
         body: '<p>I am a user 2</p>',
         grade: '0',
@@ -223,8 +223,8 @@ export const testSubmissions: Submission[] = [
         preview_url:
             'http://10.200.4.10/courses/1/assignments/1/submissions/2?preview=1&version=2',
         anonymous_id: 'aaaab',
-    },
-    {
+    }),
+    new Submission({
         id: 3,
         body: '<p>I am a user 2</p>',
         grade: '0',
@@ -261,7 +261,7 @@ export const testSubmissions: Submission[] = [
         preview_url:
             'http://10.200.4.10/courses/1/assignments/1/submissions/2?preview=1&version=2',
         anonymous_id: 'aaaac',
-    },
+    }),
 ]
 
 export const assignmentsRawJSON = JSON.stringify([

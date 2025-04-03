@@ -9,6 +9,7 @@ export default defineConfig({
                 '**/types/**',
                 '**/index.ts',
                 '**/*.types.ts',
+                '**/entity/**',
             ],
         },
         reporters: ['default', 'junit'],

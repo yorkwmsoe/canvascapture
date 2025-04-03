@@ -2,12 +2,21 @@
  * Defines types matching file-related
  * portions of the Canvas API
  */
-import { LockInfo } from './assignment'
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
-import { DiscussionTopic } from './discussion-topic'
+import 'reflect-metadata'
+import type { LockInfo } from './assignment'
+import type { DiscussionTopic } from './discussion-topic'
+import {
+    Column,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryColumn,
+    UpdateDateColumn,
+} from 'typeorm'
+import CanvasEntity from './canvas-entity'
 
 @Entity()
-export class File {
+export class File extends CanvasEntity {
     @PrimaryColumn()
     id: number
 
@@ -88,11 +97,14 @@ export class File {
     preview_url?: string
 
     @ManyToOne(
-        () => DiscussionTopic,
-        (discussionTopic) => discussionTopic.attachments
+        'DiscussionTopic',
+        (discussionTopic: DiscussionTopic) => discussionTopic.attachments
     )
     @JoinColumn()
     discussion_topic?: DiscussionTopic
+
+    @UpdateDateColumn()
+    date_last_received_from_canvas: Date
 }
 
 export type VisibilityLevel = 'course' | 'institution' | 'public' | 'inherit'

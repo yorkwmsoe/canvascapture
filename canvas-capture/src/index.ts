@@ -2,7 +2,6 @@
  * Exports various methods and types defined in other files
  */
 import {
-    createCanvasApi,
     Auth,
     GetAssignmentsRequest,
     GetSubmissionsRequest,
@@ -10,26 +9,28 @@ import {
     GetQuizSubmissionRequest,
     CreateCanvasApiConfig,
 } from './canvas.api'
-import { Assignment, AssignmentGroup } from './types/canvas_api/assignment'
-import { Course } from './types/canvas_api/course'
-import { DiscussionTopic } from './types/canvas_api/discussion-topic'
-import { Enrollment } from './types/canvas_api/enrollment'
-import { File } from './types/canvas_api/file'
-import { GradingPeriod } from './types/canvas_api/grading-period'
-import { ReadState } from './types/canvas_api/read-state'
+
+import { createCanvasCache } from './canvas.cache'
+
+import { Assignment, AssignmentGroup } from './entity/assignment'
+import { Course } from './entity/course'
+import { DiscussionTopic } from './entity/discussion-topic'
+import { Enrollment } from './entity/enrollment'
+import { File } from './entity/file'
+import { GradingPeriod } from './entity/grading-period'
+import { ReadState } from './entity/read-state'
 import {
     Submission,
     SubmissionComment,
     MediaComment,
-    RubricAssessment,
     RubricAssessmentCriterion,
     WorkflowState,
     LatePolicyStatus,
     SubmissionType,
-} from './types/canvas_api/submission'
-import { User } from './types/canvas_api/user'
-import { Quiz } from './types/canvas_api/quiz'
-import { QuizSubmission } from './types/canvas_api/quiz-submissions'
+} from './entity/submission'
+import { User } from './entity/user'
+import { Quiz } from './entity/quiz'
+import { QuizSubmission } from './entity/quiz-submissions'
 import {
     generateAssignmentDescription,
     generateAssignmentSubmission,
@@ -54,7 +55,7 @@ export {
     testCourses,
     testAssignments,
     testSubmissions,
-    createCanvasApi,
+    createCanvasCache as createCanvasApi,
     Assignment,
     AssignmentGroup,
     Course,
@@ -81,7 +82,6 @@ export {
     CreateCanvasApiConfig,
     SubmissionComment,
     MediaComment,
-    RubricAssessment,
     RubricAssessmentCriterion,
     WorkflowState,
     LatePolicyStatus,

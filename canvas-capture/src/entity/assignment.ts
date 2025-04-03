@@ -2,8 +2,10 @@
  * Defines types matching assignment-related portions
  * of the Canvas API
  */
-import { DiscussionTopic } from './discussion-topic'
-import { Submission } from './submission'
+import 'reflect-metadata'
+import type { Course } from './course'
+import type { DiscussionTopic } from './discussion-topic'
+import { RubricAssessmentCriterion, Submission } from './submission'
 import {
     Column,
     Entity,
@@ -12,69 +14,74 @@ import {
     OneToMany,
     OneToOne,
     PrimaryColumn,
+    UpdateDateColumn
 } from 'typeorm'
+import CanvasEntity from './canvas-entity'
 
 @Entity()
-export class Assignment {
+export class Assignment extends CanvasEntity {
     // the ID of the assignment
-    @PrimaryColumn()
+    @PrimaryColumn({ type: 'numeric' })
     id: number
 
     // the name of the assignment
-    @Column()
+    @Column({ type: 'text' })
     name: string
 
     // the assignment description, in an HTML fragment
-    @Column()
+    @Column({ type: 'text' })
     description: string
 
     // The time at which this assignment was originally created
-    @Column()
+    @Column({ type: 'date' })
     created_at: Date
 
     // The time at which this assignment was last modified in any way
-    @Column()
+    @Column({ type: 'date' })
     updated_at: Date
 
     // the due date for the assignment. returns null if not present. NOTE: If this
     // assignment has assignment overrides, this field will be the due date as it
     // applies to the user requesting information from the API.
-    @Column()
+    @Column({ nullable: true, type: 'date' })
     due_at?: Date | null
 
     // the lock date (assignment is locked after this date). returns null if not
     // present. NOTE: If this assignment has assignment overrides, this field will
     // be the lock date as it applies to the user requesting information from the
     // API.
-    @Column()
+    @Column({ nullable: true, type: 'date' })
     lock_at?: Date | null
 
     // the unlock date (assignment is unlocked after this date) returns null if not
     // present NOTE: If this assignment has assignment overrides, this field will be
     // the unlock date as it applies to the user requesting information from the
     // API.
-    @Column()
+    @Column({ nullable: true, type: 'date' })
     unlock_at?: Date | null
 
     // whether this assignment has overrides
-    @Column()
+    @Column({ type: 'boolean' })
     has_overrides: boolean
 
     // (Optional) all dates associated with the assignment, if applicable
-    @Column()
+    @Column({ nullable: true, type: 'simple-array' })
     all_dates?: Date[]
 
     // the ID of the course the assignment belongs to
-    @Column()
+    @Column({ type: 'numeric' })
     course_id: number
 
     // the URL to the assignment's web page
-    @Column()
+    @Column({ type: 'text' })
     html_url: string
 
     // the URL to download all submissions as a zip
-    @Column()
+    @Column({ type: 'text' })
     submissions_download_url: string
+
+    @Column({ nullable: true, type: 'numeric' })
+    assignment_group_id?: number
 
     // the ID of the assignment's group
     @ManyToOne(
@@ -86,29 +93,32 @@ export class Assignment {
 
     // Boolean flag indicating whether the assignment requires a due date based on
     // the account level setting
-    @Column()
+    @Column({ type: 'boolean' })
     due_date_required: boolean
 
     // Allowed file extensions, which take effect if submission_types includes
     // 'online_upload'.
-    @Column()
+    @Column({ nullable: true, type: 'simple-array' })
     allowed_extensions?: string[]
 
     // An integer indicating the maximum length an assignment's name may be
-    @Column()
+    @Column({ type: 'numeric' })
     max_name_length: number
 
     // Boolean flag indicating whether or not Turnitin has been enabled for the
     // assignment. NOTE: This flag will not appear unless your account has the
     // Turnitin plugin available
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     turnitin_enabled?: boolean
 
     // Boolean flag indicating whether or not VeriCite has been enabled for the
     // assignment. NOTE: This flag will not appear unless your account has the
     // VeriCite plugin available
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     vericite_enabled?: boolean
+
+    @Column({nullable: true, type: 'numeric'})
+    turnitin_settingsId: number
 
     // Settings to pass along to turnitin to control what kinds of matches should be
     // considered. originality_report_visibility can be 'immediate',
@@ -120,13 +130,16 @@ export class Assignment {
     // words a match must contain for it to be considered NOTE: This flag will not
     // appear unless your account has the Turnitin plugin available
     @OneToOne(() => TurnitinSettings)
-    @Column()
+    @JoinColumn()
     turnitin_settings?: TurnitinSettings
 
     // If this is a group assignment, boolean flag indicating whether or not
     // students will be graded individually.
-    @Column()
+    @Column({ type: 'boolean' })
     grade_group_students_individually: boolean
+
+    @Column({ nullable: true, type: 'numeric' })
+    external_tool_tag_attributesId: number
 
     // (Optional) assignment's settings for external tools if submission_types
     // include 'external_tool'. Only url and new_tab are included (new_tab defaults
@@ -140,41 +153,44 @@ export class Assignment {
     external_tool_tag_attributes?: ExternalToolTagAttributes[]
 
     // Boolean indicating if peer reviews are required for this assignment
-    @Column()
+    @Column({ type: 'boolean' })
     peer_reviews: boolean
 
     // Boolean indicating peer reviews are assigned automatically. If false, the
     // teacher is expected to manually assign peer reviews.
-    @Column()
+    @Column({ type: 'boolean' })
     automatic_peer_reviews: boolean
 
     // Integer representing the amount of reviews each user is assigned. NOTE: This
     // key is NOT present unless you have automatic_peer_reviews set to true.
-    @Column()
+    @Column({ nullable: true, type: 'numeric' })
     peer_review_count?: number
 
     // String representing a date the reviews are due by. Must be a date that occurs
     // after the default due date. If blank, or date is not after the assignment's
     // due date, the assignment's due date will be used. NOTE: This key is NOT
     // present unless you have automatic_peer_reviews set to true.
-    @Column()
+    @Column({ nullable: true, type: 'date' })
     peer_reviews_assign_at?: Date
 
     // Boolean representing whether or not members from within the same group on a
     // group assignment can be assigned to peer review their own group's work
-    @Column()
+    @Column({ type: 'boolean' })
     intra_group_peer_reviews: boolean
 
     // The ID of the assignment’s group set, if this is a group assignment. For
     // group discussions, set group_category_id on the discussion topic, not the
     // linked assignment.
-    @JoinColumn()
+    @Column({ nullable: true, type: 'numeric' })
     group_category_id?: number
 
     // if the requesting user has grading rights, the number of submissions that
     // need grading.
-    @Column()
+    @Column({ nullable: true, type: 'numeric' })
     needs_grading_count?: number
+
+    @Column({nullable:true, type: 'numeric'})
+    needs_grading_count_by_sectionId: number
 
     // if the requesting user has grading rights and the
     // 'needs_grading_count_by_section' flag is specified, the number of submissions
@@ -191,97 +207,105 @@ export class Assignment {
     needs_grading_count_by_section?: NeedsGradingCountBySection[]
 
     // the sorting order of the assignment in the group
-    @Column()
+    @Column({ type: 'numeric' })
     position: number
 
     // (optional, present if Sync Grades to SIS feature is enabled)
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     post_to_sis?: boolean
 
     // (optional, Third Party unique identifier for Assignment)
-    @Column()
+    @Column({ nullable: true, type: 'text' })
     integration_id?: string
 
     // (optional, Third Party integration data for assignment)
-    @Column()
+    @Column({ nullable: true, type: 'simple-json' })
     integration_data?: Record<string, string>
 
     // the maximum points possible for the assignment
-    @Column()
+    @Column({ type: 'numeric' })
     points_possible: number
 
     // the types of submissions allowed for this assignment list containing one or
     // more of the following: 'discussion_topic', 'online_quiz', 'on_paper', 'none',
     // 'external_tool', 'online_text_entry', 'online_url', 'online_upload',
     // 'media_recording', 'student_annotation'
-    @Column()
+    @Column({ type: 'simple-array' })
     submission_types: string[]
 
     // If true, the assignment has been submitted to by at least one student
-    @Column()
+    @Column({ type: 'boolean' })
     has_submitted_submissions: boolean
 
     // The type of grading the assignment receives; one of 'pass_fail', 'percent',
     // 'letter_grade', 'gpa_scale', 'points'
-    @Column()
+    @Column({ type: 'text' })
     grading_type: string
 
     // The id of the grading standard being applied to this assignment. Valid if
     // grading_type is 'letter_grade' or 'gpa_scale'.
-    @Column()
+    @Column({ nullable: true, type: 'text' })
     grading_standard_id?: string
 
     // Whether the assignment is published
-    @Column()
+    @Column({ type: 'boolean' })
     published: boolean
 
     // Whether the assignment's 'published' state can be changed to false. Will be
     // false if there are student submissions for the assignment.
-    @Column()
+    @Column({ type: 'boolean' })
     unpublishable: boolean
 
     // Whether the assignment is only visible to overrides.
-    @Column()
+    @Column({ type: 'boolean' })
     only_visible_to_overrides: boolean
 
     // Whether or not this is locked for the user.
-    @Column()
+    @Column({ type: 'boolean' })
     locked_for_user: boolean
+
+    @Column({nullable: true, type: 'numeric'})
+    lock_info_id: number
 
     // (Optional) Information for the user about the lock. Present when
     // locked_for_user is true.
-    @Column()
+    @OneToOne('LockInfo')
+    @JoinColumn()
     lock_info?: LockInfo
 
     // (Optional) An explanation of why this is locked for the user. Present when
     // locked_for_user is true.
-    @Column()
+    @Column({ nullable: true, type: 'text' })
     lock_explanation?: string
 
     // (Optional) id of the associated quiz (applies only when submission_types is
     // ['online_quiz'])
-    @Column()
+    @Column({ nullable: true, type: 'numeric' })
     quiz_id?: number
 
     // (Optional) whether anonymous submissions are accepted (applies only to quiz
     // assignments)
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     anonymous_submissions?: boolean
 
+    @Column({nullable: true, type: 'numeric'})
+    discussion_topicId: number
+
     // (Optional) the DiscussionTopic associated with the assignment, if applicable
-    @Column()
+    @OneToOne('DiscussionTopic')
+    @JoinColumn()
     discussion_topic?: DiscussionTopic
 
     // (Optional) Boolean indicating if assignment will be frozen when it is copied.
     // NOTE: This field will only be present if the AssignmentFreezer plugin is
     // available for your account.
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     freeze_on_copy?: boolean
 
     // (Optional) Boolean indicating if assignment is frozen for the calling user.
     // NOTE: This field will only be present if the AssignmentFreezer plugin is
     // available for your account.
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     frozen?: boolean
 
     // (Optional) Array of frozen attributes for the assignment. Only account
@@ -291,59 +315,68 @@ export class Assignment {
     // grading_type, submission_types, assignment_group_id, allowed_extensions,
     // group_category_id, notify_of_update, peer_reviews NOTE: This field will only
     // be present if the AssignmentFreezer plugin is available for your account.
-    @Column()
+    @Column({ nullable: true, type: 'simple-array' })
     frozen_attributes?: string[]
+
+    @Column({ nullable: true, type: 'numeric' })
+    submission_id: number
 
     // (Optional) If 'submission' is included in the 'include' parameter, includes a
     // Submission object that represents the current user's (user who is requesting
     // information from the api) current submission for the assignment. See the
     // Submissions API for an example response. If the user does not have a
     // submission, this key will be absent.
-    @OneToOne(() => Submission)
+    @OneToOne("Submission")
     @JoinColumn()
     submission?: Submission
 
     // (Optional) If true, the rubric is directly tied to grading the assignment.
     // Otherwise, it is only advisory. Included if there is an associated rubric.
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     use_rubric_for_grading?: boolean
+
+    @Column({nullable: true, type: 'numeric'})
+    rubric_settingsId: number
 
     // (Optional) An object describing the basic attributes of the rubric, including
     // the point total. Included if there is an associated rubric.
-    @OneToOne(() => RubricSettings)
+    @OneToOne('RubricSettings')
     @JoinColumn()
     rubric_settings?: RubricSettings
+
+    @Column({nullable: true, type: 'simple-array'})
+    rubricIds: number[]
 
     // (Optional) A list of scoring criteria and ratings for each rubric criterion.
     // Included if there is an associated rubric.
     @OneToMany(
-        () => RubricCriteria,
-        (rubricCriteria) => rubricCriteria.assignment
+        'RubricCriteria',
+        (rubricCriteria: RubricCriteria) => rubricCriteria.assignment
     )
     @JoinColumn()
     rubric?: RubricCriteria[]
 
     // (Optional) If 'assignment_visibility' is included in the 'include' parameter,
     // includes an array of student IDs who can see this assignment.
-    @Column()
+    @Column({ nullable: true, type: 'simple-array' })
     assignment_visibility?: number[]
 
     // (Optional) If 'overrides' is included in the 'include' parameter, includes an
     // array of assignment override objects.
-    @Column()
+    @Column({ nullable: true, type: 'simple-array' })
     overrides?: boolean
 
     // (Optional) If true, the assignment will be omitted from the student's final
     // grade
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     omit_from_final_grade?: boolean
 
     // (Optional) If true, the assignment will not be shown in any gradebooks
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     hide_in_gradebook?: boolean
 
     // Boolean indicating if the assignment is moderated.
-    @Column()
+    @Column({ type: 'boolean' })
     moderated_grading: boolean
 
     // The maximum number of provisional graders who may issue grades for this
@@ -352,44 +385,47 @@ export class Assignment {
     // instructors. Otherwise, the maximum value is the number of active instructors
     // in the course minus one, or 10 if the course has more than 11 active
     // instructors.
-    @Column()
+    @Column({ type: 'numeric' })
     grader_count: number
 
     // The user ID of the grader responsible for choosing final grades for this
     // assignment. Only relevant for moderated assignments.
-    @Column()
+    @Column({ nullable: true, type: 'numeric' })
     final_grader_id?: number
 
     // Boolean indicating if provisional graders' comments are visible to other
     // provisional graders. Only relevant for moderated assignments.
-    @Column()
+    @Column({ type: 'boolean' })
     grader_comments_visible_to_graders: boolean
 
     // Boolean indicating if provisional graders' identities are hidden from other
     // provisional graders. Only relevant for moderated assignments with
     // grader_comments_visible_to_graders set to true.
-    @Column()
+    @Column({ type: 'boolean' })
     graders_anonymous_to_graders: boolean
 
     // Boolean indicating if provisional grader identities are visible to the final
     // grader. Only relevant for moderated assignments.
-    @Column()
+    @Column({ type: 'boolean' })
     grader_names_visible_to_final_grader: boolean
 
     // Boolean indicating if the assignment is graded anonymously. If true, graders
     // cannot see student identities.
-    @Column()
+    @Column({ type: 'boolean' })
     anonymous_grading: boolean
 
     // The number of submission attempts a student can make for this assignment. -1
     // is considered unlimited.
-    @Column()
+    @Column({ type: 'numeric' })
     allowed_attempts: number
 
     // Whether the assignment has manual posting enabled. Only relevant for courses
     // using New Gradebook.
-    @Column()
+    @Column({ type: 'boolean' })
     post_manually: boolean
+
+    @Column({nullable: true, type: 'simple-array'})
+    score_statisticsIds: number[]
 
     // (Optional) If 'score_statistics' and 'submission' are included in the
     // 'include' parameter and statistics are available, includes the min, max, and
@@ -407,115 +443,123 @@ export class Assignment {
     // attempts remaining, etc...). Including 'can submit' automatically includes
     // 'submission' in the include parameter. Not available when observed_users are
     // included.
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     can_submit?: boolean
 
     // (Optional) The academic benchmark(s) associated with the assignment or the
     // assignment's rubric. Only included if 'ab_guid' is included in the 'include'
     // parameter.
-    @Column()
+    @Column({ nullable: true, type: 'simple-array' })
     ab_guid?: string[]
 
     // The id of the attachment to be annotated by students. Relevant only if
     // submission_types includes 'student_annotation'.
-    @Column()
+    @Column({ nullable: true, type: 'numeric' })
     annotatable_attachment_id?: number
 
     // (Optional) Boolean indicating whether student names are anonymized
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     anonymize_students?: boolean
 
     // (Optional) Boolean indicating whether the Respondus LockDown Browser® is
     // required for this assignment.
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     require_lockdown_browser?: boolean
 
     // (Optional) Boolean indicating whether this assignment has important dates.
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     important_dates?: boolean
 
     // (Optional, Deprecated) Boolean indicating whether notifications are muted for
     // this assignment.
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     muted?: boolean
 
     // Boolean indicating whether peer reviews are anonymous.
-    @Column()
+    @Column({ type: 'boolean' })
     anonymous_peer_reviews: boolean
 
     // Boolean indicating whether instructor anotations are anonymous.
-    @Column()
+    @Column({ type: 'boolean' })
     anonymous_instructor_annotations: boolean
 
     // Boolean indicating whether this assignment has graded submissions.
-    @Column()
+    @Column({ type: 'boolean' })
     graded_submissions_exist: boolean
 
     // Boolean indicating whether this is a quiz lti assignment.
-    @Column()
+    @Column({ type: 'boolean' })
     is_quiz_assignment: boolean
 
     // Boolean indicating whether this assignment is in a closed grading period.
-    @Column()
+    @Column({ type: 'boolean' })
     in_closed_grading_period: boolean
 
     // Boolean indicating whether this assignment can be duplicated.
-    @Column()
+    @Column({ type: 'boolean' })
     can_duplicate: boolean
 
     // If this assignment is a duplicate, it is the original assignment's course_id
-    @Column()
+    @Column({ nullable: true, type: 'numeric' })
     original_course_id?: number
 
     // If this assignment is a duplicate, it is the original assignment's id
-    @Column()
+    @Column({ nullable: true, type: 'numeric' })
     original_assignment_id?: number
 
     // If this assignment is a duplicate, it is the original assignment's
     // lti_resource_link_id
-    @Column()
+    @Column({ nullable: true, type: 'numeric' })
     original_lti_resource_link_id?: number
 
     // If this assignment is a duplicate, it is the original assignment's name
-    @Column()
+    @Column({ nullable: true, type: 'text' })
     original_assignment_name?: string
 
     // If this assignment is a duplicate, it is the original assignment's quiz_id
-    @Column()
+    @Column({ nullable: true, type: 'numeric' })
     original_quiz_id?: number
 
     // String indicating what state this assignment is in.
+    @Column({ type: 'text' })
     workflow_state: string
+
+    constructor(data?: Partial<Assignment>) {
+        super(data)
+        if (data) {
+            Object.assign(data)
+        }
+    }
 }
 
 @Entity()
-export class AssignmentDate {
+export class AssignmentDate extends CanvasEntity {
     // (Optional, missing if 'base' is present) id of the assignment override this
     // date represents
-    @Column()
+    @Column({ nullable: true, type: 'numeric', unique: true })
     id?: number
 
     // (Optional, present if 'id' is missing) whether this date represents the
     // assignment's or quiz's default due date
-    @Column()
+    @Column({ nullable: true, type: 'boolean' })
     base?: boolean
 
-    @Column()
+    @Column({ type: 'text' })
     title: string
 
     // The due date for the assignment. Must be between the unlock date and the lock
     // date if there are lock dates
-    @Column()
+    @Column({ type: 'date' })
     due_at: Date
 
     // The unlock date for the assignment. Must be before the due date if there is a
     // due date.
-    @Column()
+    @Column({ type: 'date' })
     unlock_at: Date
 
     // The lock date for the assignment. Must be after the due date if there is a
     // due date.
-    @Column()
+    @Column({ type: 'date' })
     lock_at: Date
 }
 
@@ -526,12 +570,15 @@ export class AssignmentDate {
  * @see {@link https://canvas.instructure.com/doc/api/assignment_groups.html} for more details.
  */
 @Entity()
-export class AssignmentGroup {
+export class AssignmentGroup extends CanvasEntity {
     /**
      * The unique identifier for the Assignment Group.
      */
-    @PrimaryColumn()
+    @PrimaryColumn({ type: 'numeric' })
     id: number
+
+    @Column({nullable: true, type: 'numeric'})
+    courseId?: number
 
     /**
      * (Not part of the official Canvas Assignment Group API, added for convenience)
@@ -539,37 +586,38 @@ export class AssignmentGroup {
      * This field was added as it might be helpful for associating assignment groups
      * with courses in future implementations.
      */
-    @Column()
-    course_id?: number
+    @ManyToOne('Course', (course: Course) => course.assignment_groups)
+    @JoinColumn()
+    course: Course
 
     /**
      * The name of the Assignment Group.
      */
-    @Column()
+    @Column({ type: 'text' })
     name: string
 
     /**
      * The position (order) of the Assignment Group within the course.
      */
-    @Column()
+    @Column({ type: 'numeric' })
     position: number
 
     /**
      * The weight of the Assignment Group, typically used for weighted grading.
      */
-    @Column()
+    @Column({ type: 'number' })
     group_weight: number
 
     /**
      * The SIS (Student Information System) source ID for the Assignment Group.
      */
-    @Column()
+    @Column({ type: 'text' })
     sis_source_id: string
 
     /**
      * Additional integration data for the Assignment Group.
      */
-    @Column()
+    @Column({ type: 'simple-json' })
     integration_data: object
 
     /**
@@ -582,94 +630,103 @@ export class AssignmentGroup {
     /**
      * Any grading rules that apply to this Assignment Group.
      */
-    @Column()
+    @Column({ type: 'text' })
     rules: string
+
+    @UpdateDateColumn()
+    date_last_received_from_canvas: Date
+
 }
 
 @Entity()
-export class ScoreStatistic {
+export class ScoreStatistic extends CanvasEntity {
     @ManyToOne(() => Assignment, (assignment) => assignment.score_statistics)
     @JoinColumn()
     assignment: Assignment
 
     // Min score
-    @Column()
+    @Column({ type: 'numeric' })
     min: number
 
     // Max score
-    @Column()
+    @Column({ type: 'numeric' })
     max: number
 
     // Mean score
-    @Column()
+    @Column({ type: 'numeric' })
     mean: number
 
     // Upper quartile score
-    @Column()
+    @Column({ type: 'numeric' })
     upper_q: number
 
     // Median score
-    @Column()
+    @Column({ type: 'numeric' })
     median: number
 
     // Lower quartile score
+    @Column({ type: 'numeric' })
     lower_q: number
 }
 
 @Entity()
-export class RubricCriteria {
-    @Column()
+export class RubricCriteria extends CanvasEntity {
+    @Column({ type: 'numeric' })
     points: number
 
     // The id of rubric criteria.
-    @PrimaryColumn()
+    @PrimaryColumn({ type: 'text' })
     id: string
 
     // (Optional) The id of the learning outcome this criteria uses, if any.
-    @Column()
+    @Column({ nullable: true, type: 'text' })
     learning_outcome_id?: string
 
     // (Optional) The 3rd party vendor's GUID for the outcome this criteria
     // references, if any.
-    @Column()
+    @Column({ nullable: true, type: 'text' })
     vendor_guid?: string
 
-    @Column()
+    @Column({ type: 'text' })
     description: string
 
-    @Column()
+    @Column({ type: 'text' })
     long_description: string
 
-    @Column()
+    @Column({ type: 'boolean' })
     criterion_use_range: boolean
 
     @OneToMany(
         () => RubricRating,
         (rubricRating) => rubricRating.rubric_criteria
     )
-    @Column()
+    @JoinColumn()
     ratings: RubricRating[]
 
-    @Column()
+    @Column({ type: 'boolean' })
     ignore_for_scoring: boolean
 
     @ManyToOne(() => Assignment, (assignment) => assignment.rubric)
     @JoinColumn()
     assignment: Assignment
+
+    @OneToMany('RubricAssessmentCriterion', (rubricAssessmentCriterion: RubricAssessmentCriterion) => rubricAssessmentCriterion.rubricCriteria)
+    @JoinColumn()
+    assessments: RubricAssessmentCriterion[]
 }
 
 @Entity()
-export class RubricRating {
-    @Column()
+export class RubricRating extends CanvasEntity {
+    @Column({ type: 'numeric' })
     points: number
 
-    @PrimaryColumn()
+    @PrimaryColumn({ type: 'text' })
     id: string
 
-    @Column()
+    @Column({ type: 'text' })
     description: string
 
-    @Column()
+    @Column({ type: 'text' })
     long_description: string
 
     @ManyToOne(() => RubricCriteria, (rubricCriteria) => rubricCriteria.ratings)
@@ -678,30 +735,30 @@ export class RubricRating {
 }
 
 @Entity()
-export class LockInfo {
+export class LockInfo extends CanvasEntity {
     // Asset string for the object causing the lock
-    @Column()
+    @Column({ type: 'text' })
     asset_string: string
 
     // (Optional) Time at which this was/will be unlocked. Must be before the due
     // date.
-    @Column()
+    @Column({ nullable: true, type: 'date' })
     unlock_at?: Date
 
     // (Optional) Time at which this was/will be locked. Must be after the due date.
-    @Column()
+    @Column({ nullable: true, type: 'date' })
     lock_at?: Date
 
     // (Optional) Context module causing the lock.
-    @Column()
+    @Column({ type: 'text' })
     context_module: string
 
-    @Column()
+    @Column({ type: 'boolean' })
     manually_locked: boolean
 }
 
 @Entity()
-export class ExternalToolTagAttributes {
+export class ExternalToolTagAttributes extends CanvasEntity {
     @ManyToOne(
         () => Assignment,
         (assignment) => assignment.external_tool_tag_attributes
@@ -710,15 +767,15 @@ export class ExternalToolTagAttributes {
     assignment: Assignment
 
     // URL to the external tool
-    @Column()
+    @Column({ type: 'text' })
     url: string
 
     // Whether or not there is a new tab for the external tool
-    @Column()
+    @Column({ type: 'boolean' })
     new_tab: boolean
 
     // the identifier for this tool_tag
-    @Column()
+    @Column({ type: 'text' })
     resource_link_id: string
 }
 
@@ -729,29 +786,29 @@ export class ExternalToolTagAttributes {
 // 0 and 100 representing match size to exclude as a percentage of the document
 // size. - if type is 'words', this will be number > 0 representing how many
 @Entity()
-export class TurnitinSettings {
-    @Column()
+export class TurnitinSettings extends CanvasEntity {
+    @Column({ type: 'text' })
     originality_report_visibility: OriginallyReportVisibility
 
-    @Column()
+    @Column({ type: 'boolean' })
     s_paper_check: boolean
 
-    @Column()
+    @Column({ type: 'boolean' })
     internet_check: boolean
 
-    @Column()
+    @Column({ type: 'boolean' })
     journal_check: boolean
 
-    @Column()
+    @Column({ type: 'boolean' })
     exclude_biblio: boolean
 
-    @Column()
+    @Column({ type: 'boolean' })
     exclude_quoted: boolean
 
-    @Column()
+    @Column({ type: 'text' })
     exclude_small_matches_type: ExcludeSmallMatchesType
 
-    @Column()
+    @Column({ nullable: true, type: 'numeric' })
     exclude_small_matches_value: number | null
 }
 
@@ -764,7 +821,7 @@ export type OriginallyReportVisibility =
 export type ExcludeSmallMatchesType = 'percent' | 'words' | null
 
 @Entity()
-export class NeedsGradingCountBySection {
+export class NeedsGradingCountBySection extends CanvasEntity {
     @ManyToOne(
         () => Assignment,
         (assignment) => assignment.needs_grading_count_by_section
@@ -772,14 +829,14 @@ export class NeedsGradingCountBySection {
     @JoinColumn()
     assignment: Assignment
 
-    @Column()
+    @Column({ type: 'text' })
     section_id: string
 
-    @Column()
+    @Column({ type: 'numeric' })
     needs_grading_count: number
 }
 
 export class RubricSettings {
-    @Column()
+    @Column({ type: 'text' })
     points_possible: string
 }

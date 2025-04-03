@@ -7,9 +7,9 @@
  *
  * See individual type and method definitions below for more details
  */
-import { Assignment, AssignmentGroup } from '../types/canvas_api/assignment'
-import { Course } from '../types/canvas_api/course'
-import { Submission } from '../types/canvas_api/submission'
+import { Assignment, AssignmentGroup } from '../entity/assignment'
+import { Course } from '../entity/course'
+import { Submission } from '../entity/submission'
 
 export interface DataNode {
     type: 'course' | 'assignment' | 'file'

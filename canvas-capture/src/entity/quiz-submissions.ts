@@ -2,18 +2,27 @@
  * Defines a type matching the quiz submission-related
  * portion of the Canvas API
  */
-
-import { Column, Entity, PrimaryColumn } from 'typeorm'
+import 'reflect-metadata'
+import {
+    Column,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryColumn,
+    UpdateDateColumn,
+} from 'typeorm'
+import type { Quiz } from './quiz'
+import CanvasEntity from './canvas-entity'
 
 @Entity()
-export class QuizSubmission {
+export class QuizSubmission extends CanvasEntity {
     // The unique identifier for the quiz submission.
     @PrimaryColumn()
     id: number
 
-    // The ID of the quiz associated with the submission.
-    @Column()
-    quiz_id: number
+    @ManyToOne('Quiz', (quiz: Quiz) => quiz.quiz_submissions)
+    @JoinColumn()
+    quiz: Quiz
 
     // The version of the quiz associated with the submission.
     @Column()
@@ -110,4 +119,7 @@ export class QuizSubmission {
     // The URL for the result
     @Column()
     result_url: string
+
+    @UpdateDateColumn()
+    date_last_received_from_canvas: Date
 }

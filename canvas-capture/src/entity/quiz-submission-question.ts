@@ -2,7 +2,8 @@
  * Defines types matching quiz submission question-related
  * portions of the Canvas API
  */
-import { Formula, Match, Variable } from './quiz-question'
+import 'reflect-metadata'
+import type { Formula, Match, Variable } from './quiz-question'
 import {
     Column,
     Entity,
@@ -10,10 +11,12 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryColumn,
+    UpdateDateColumn,
 } from 'typeorm'
+import CanvasEntity from './canvas-entity'
 
 @Entity()
-export class QuizSubmissionQuestion {
+export class QuizSubmissionQuestion extends CanvasEntity {
     // Unique identifier for the question
     @PrimaryColumn()
     id: number
@@ -52,12 +55,12 @@ export class QuizSubmissionQuestion {
     answers: Answer[]
 
     // Variables associated with the question
-    @OneToMany(() => Variable, (variable) => variable.quiz_submission_question)
+    @OneToMany('Variable', (variable: Variable) => variable.quiz_submission_question)
     @JoinColumn()
     variables: Variable[]
 
     // Formulas associated with the question
-    @OneToMany(() => Formula, (formula) => formula.quiz_submission_question)
+    @OneToMany('Formula', (formula: Formula) => formula.quiz_submission_question)
     @JoinColumn()
     formulas: Formula[]
 
@@ -70,7 +73,7 @@ export class QuizSubmissionQuestion {
     formula_decimal_places: number | null
 
     // Matches associated with the question
-    @OneToMany(() => Match, (match) => match.quiz_submission_question)
+    @OneToMany('Match', (match: Match) => match.quiz_submission_question)
     @JoinColumn()
     matches: Match[]
 
@@ -81,10 +84,13 @@ export class QuizSubmissionQuestion {
     // Indicates if the question is correct
     @Column()
     correct: boolean | 'partial'
+
+    @UpdateDateColumn()
+    date_last_received_from_canvas: Date
 }
 
 @Entity()
-export class Answer {
+export class Answer extends CanvasEntity {
     // Unique identifier for the answer
     @PrimaryColumn()
     id: number
@@ -103,4 +109,7 @@ export class Answer {
     )
     @JoinColumn()
     quiz_submission_question: QuizSubmissionQuestion
+
+    @UpdateDateColumn()
+    date_last_received_from_canvas: Date
 }

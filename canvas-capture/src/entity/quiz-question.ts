@@ -2,6 +2,8 @@
  * Defines types matching quiz question-related
  * portions of the Canvas API
  */
+import 'reflect-metadata'
+import type { QuizSubmissionQuestion } from './quiz-submission-question'
 import {
     Column,
     Entity,
@@ -9,70 +11,73 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryColumn,
+    UpdateDateColumn,
 } from 'typeorm'
-import { QuizSubmissionQuestion } from './quiz-submission-question'
+import { Quiz } from './quiz'
+import CanvasEntity from './canvas-entity'
 
 // from endpoint http://sdlstudentvm06.msoe.edu/api/v1/courses/2/quizzes/3/questions?&quiz_submission_id=9&quiz_submission_attempt=1
 @Entity()
-export class QuizQuestion {
+export class QuizQuestion extends CanvasEntity {
     // Unique identifier for the question
-    @Column()
+    @PrimaryColumn({type: 'numeric'})
     id: number
 
     // ID of the quiz this question belongs to
-    @Column()
-    quiz_id: number
+    @ManyToOne('Quiz', (quiz: Quiz) => quiz.quiz_questions)
+    @JoinColumn()
+    quiz: Quiz
 
     // ID of the quiz group if the question belongs to a group
-    @Column()
+    @Column({nullable: true, type: 'numeric'})
     quiz_group_id: number | null
 
     // ID of the assessment question
-    @Column()
+    @Column({type: 'numeric'})
     assessment_question_id: number
 
     // Position of the question within the quiz
-    @Column()
+    @Column({type: 'numeric'})
     position: number
 
     // Name of the question
-    @Column()
+    @Column({type: 'text'})
     question_name: string
 
     // Type of the question
-    @Column()
+    @Column({type: 'text'})
     question_type: string
 
     // Text of the question
-    @Column()
+    @Column({type: 'text'})
     question_text: string
 
     // Points possible for the question
-    @Column()
+    @Column({type: 'numeric'})
     points_possible: number
 
     // Comments for correct answers
-    @Column()
+    @Column({type: 'text'})
     correct_comments: string
 
     // Comments for incorrect answers
-    @Column()
+    @Column({type: 'text'})
     incorrect_comments: string
 
     // Comments for neutral answers
-    @Column()
+    @Column({type: 'text'})
     neutral_comments: string
 
     // HTML representation of correct comments
-    @Column()
+    @Column({type: 'text'})
     correct_comments_html: string
 
     // HTML representation of incorrect comments
-    @Column()
+    @Column({type: 'text'})
     incorrect_comments_html: string
 
     // HTML representation of neutral comments
-    @Column()
+    @Column({type: 'text'})
     neutral_comments_html: string
 
     // List of answers for the question
@@ -94,11 +99,11 @@ export class QuizQuestion {
     formulas: null | Formula[]
 
     // Tolerance for answer comparison
-    @Column()
+    @Column({nullable: true, type: 'numeric'})
     answer_tolerance: null | number
 
     // Decimal places for formulas
-    @Column()
+    @Column({nullable: true, type: 'numeric'})
     formula_decimal_places: null | number
 
     // Matches associated with the question
@@ -107,135 +112,173 @@ export class QuizQuestion {
     matches: Match[]
 
     // Matching answer incorrect matches
+    @Column({nullable: true, type: 'text'})
     matching_answer_incorrect_matches: null | string
+
+    @UpdateDateColumn({type: 'date'})
+    date_last_received_from_canvas: Date
 }
 
 @Entity()
-export class QuizSubmissionAnswer {
+export class QuizSubmissionAnswer extends CanvasEntity {
     // Unique identifier for the answer
-    @Column()
+    @PrimaryColumn({type: 'text'})
     id: string
 
     // The text of the answer
-    @Column()
+    @Column({type: 'text'})
     text: string
 
     // Comments for the answer
-    @Column()
+    @Column({type: 'text'})
     comments: string
 
     // HTML representation of the comments
-    @Column()
+    @Column({type: 'text'})
     comments_html: string
 
     // Weight of the answer
-    @Column()
+    @Column({type: 'numeric'})
     weight: number
 
     // Identifier for the blank associated with the answer
-    @Column()
+    @Column({type: 'text'})
     blank_id: string
 
-    @ManyToOne(() => QuizQuestion, (quizQuestion) => quizQuestion.answers)
+    @ManyToOne('QuizQuestion', (quizQuestion: QuizQuestion) => quizQuestion.answers)
     @JoinColumn()
     quiz_question: QuizQuestion
+
+    @ManyToOne('QuestionData', (questionData: QuestionData) => questionData.correct_answers)
+    @JoinColumn()
+    question_data: QuestionData
+
+    @UpdateDateColumn({type: 'date'})
+    date_last_received_from_canvas: Date
 }
 
 @Entity()
-export class QuestionData {
-    @Column()
+export class QuestionData extends CanvasEntity {
+    @Column({type: 'numeric'})
     quiz_id: number
 
-    @Column()
+    @Column({type: 'text'})
     question_name: string
 
-    @Column()
+    @Column({type: 'text'})
     question_description: string
 
-    @Column()
+    @Column({type: 'numeric'})
     position: number
 
-    @Column()
+    @Column({type: 'numeric'})
     points_possible: number
 
-    @Column()
+    @Column({type: 'text'})
     correct_comments: string
 
-    @Column()
+    @Column({type: 'text'})
     neutral_comments: string
 
-    @Column()
+    @Column({type: 'text'})
     incorrect_comments: string
 
-    @Column()
+    @OneToMany('QuizSubmissionAnswer', (quizSubmissionAnswer: QuizSubmissionAnswer) => quizSubmissionAnswer.question_data)
     correct_answers: QuizSubmissionAnswer[]
 
-    @Column()
+    @Column({type: 'text'})
     correct: boolean | 'partial'
 
-    @Column()
+    @Column({type: 'text'})
     question_type: string //should eventually make this explicit
+
+    @UpdateDateColumn({type: 'date'})
+    date_last_received_from_canvas: Date
 }
 
 @Entity()
-export class Variable {
-    @Column()
+export class Variable extends CanvasEntity {
+    @Column({type: 'text'})
     name: string
 
-    @Column()
+    @Column({type: 'numeric'})
     min: number
 
-    @Column()
+    @Column({type: 'numeric'})
     max: number
 
-    @Column()
+    @Column({type: 'numeric'})
     scale: number
+
+    @Column({nullable: true, type: 'numeric'})
+    quiz_questionId: number
 
     @ManyToOne(() => QuizQuestion, (quizQuestion) => quizQuestion.variables)
     @JoinColumn()
     quiz_question?: QuizQuestion
 
     @ManyToOne(
-        () => QuizSubmissionQuestion,
-        (quizSubmissionQuestion) => quizSubmissionQuestion.variables
+        'QuizSubmissionQuestion',
+        (quizSubmissionQuestion: QuizSubmissionQuestion) => quizSubmissionQuestion.variables
     )
     @JoinColumn()
     quiz_submission_question?: QuizSubmissionQuestion
+
+    @UpdateDateColumn({type: 'date'})
+    date_last_received_from_canvas: Date
 }
 
 @Entity()
-export class Formula {
-    @Column()
+export class Formula extends CanvasEntity {
+    @Column({type: 'text'})
     formula: string
+
+    @Column({nullable: true, type: 'numeric'})
+    quiz_questionId?: number
 
     @ManyToOne(() => QuizQuestion, (quizQuestion) => quizQuestion.formulas)
     @JoinColumn()
     quiz_question?: QuizQuestion
 
+    @Column({nullable: true, type: 'numeric'})
+    quiz_submission_questionId: number
+
     @ManyToOne(
-        () => QuizSubmissionQuestion,
-        (quizSubmissionQuestion) => quizSubmissionQuestion.formulas
+        'QuizSubmissionQuestion',
+        (quizSubmissionQuestion: QuizSubmissionQuestion) => quizSubmissionQuestion.formulas
     )
     @JoinColumn()
     quiz_submission_question?: QuizSubmissionQuestion
+
+    @UpdateDateColumn({type: 'date'})
+    date_last_received_from_canvas: Date
 }
 
 @Entity()
-export class Match {
-    @Column()
+export class Match extends CanvasEntity {
+    @Column({type: 'text'})
     text: string
 
-    @PrimaryColumn()
+    @PrimaryColumn({type: 'numeric'})
     match_id: number
+
+    @Column({nullable: true, type: 'number'})
+    quiz_questionId?: number
 
     @ManyToOne(() => QuizQuestion, (quizQuestion) => quizQuestion.matches)
     @JoinColumn()
     quiz_question?: QuizQuestion
 
+    @Column({nullable: true, type: 'number'})
+    quiz_submission_questionId?: number
+
     @ManyToOne(
-        () => QuizSubmissionQuestion,
-        (quizSubmissionQuestion) => quizSubmissionQuestion.matches
+        'QuizSubmissionQuestion',
+        (quizSubmissionQuestion: QuizSubmissionQuestion) => quizSubmissionQuestion.matches
     )
     @JoinColumn()
     quiz_submission_question?: QuizSubmissionQuestion
+
+    @UpdateDateColumn({type: 'date'})
+    date_last_received_from_canvas: Date
 }
