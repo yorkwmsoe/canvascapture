@@ -3,17 +3,17 @@
  * portions of the Canvas API
  */
 import 'reflect-metadata'
-import type { File } from './file'
-import type { ReadState } from './read-state'
 import {
     Column,
     Entity,
     JoinColumn,
-    ManyToOne,
     OneToMany,
+    OneToOne,
     PrimaryColumn,
+    UpdateDateColumn,
 } from 'typeorm'
-import CanvasEntity from './canvas-entity'
+import { Assignment, File, GroupTopic, ReadState } from '../entity.types'
+import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class DiscussionTopic extends CanvasEntity {
@@ -80,6 +80,13 @@ export class DiscussionTopic extends CanvasEntity {
     @Column({ nullable: true, type: 'numeric' })
     assignment_id: number | null
 
+    @OneToOne(
+        'Assignment',
+        (assignment: Assignment) => assignment.discussion_topic
+    )
+    @JoinColumn()
+    assignment: Assignment
+
     // The datetime to publish the topic (if not right away).
     @Column({ type: 'date' })
     delayed_post_at: Date
@@ -125,7 +132,10 @@ export class DiscussionTopic extends CanvasEntity {
 
     // An array of group discussions the user is a part of. Fields include: id,
     // group_id
-    @OneToMany(() => GroupTopic, (groupTopic) => groupTopic.discussion_topic)
+    @OneToMany(
+        'GroupTopic',
+        (groupTopic: GroupTopic) => groupTopic.discussion_topic
+    )
     @JoinColumn()
     group_topic_children: GroupTopic[]
 
@@ -169,6 +179,14 @@ export class DiscussionTopic extends CanvasEntity {
     // Whether or not entries should be sorted by rating.
     @Column({ type: 'boolean' })
     sort_by_rating: boolean
+
+    @UpdateDateColumn()
+    date_last_received_from_canvas: Date
+
+    constructor(data?: Partial<DiscussionTopic>) {
+        super(data)
+        Object.assign(this, data)
+    }
 }
 
 export type SubscriptionHold =
@@ -178,19 +196,3 @@ export type SubscriptionHold =
     | 'initial_post_required'
 
 export type DiscussionType = 'side_comment' | 'threaded'
-
-@Entity()
-export class GroupTopic extends CanvasEntity {
-    @PrimaryColumn()
-    id: number
-
-    @ManyToOne(
-        () => DiscussionTopic,
-        (discussionTopic) => discussionTopic.group_topic_children
-    )
-    @JoinColumn()
-    discussion_topic: DiscussionTopic
-
-    @Column()
-    group_id: number
-}

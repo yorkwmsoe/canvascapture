@@ -10,10 +10,12 @@ import {
     assignmentWhichIsQuiz,
     submissionForQuiz,
 } from '../mocks/canvas.api.mocks'
-import { Course } from '../entity/course'
-import { Assignment } from '../entity/assignment'
-import { Submission } from '../entity/submission'
-import { QuestionData } from '../entity/quiz-question'
+import {
+    Assignment,
+    Course,
+    QuestionData,
+    Submission,
+} from '../entity/entity.types'
 
 const expectedOutput = [
     '## Question 1\n' +

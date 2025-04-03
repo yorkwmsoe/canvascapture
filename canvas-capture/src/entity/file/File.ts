@@ -3,8 +3,6 @@
  * portions of the Canvas API
  */
 import 'reflect-metadata'
-import type { LockInfo } from './assignment'
-import type { DiscussionTopic } from './discussion-topic'
 import {
     Column,
     Entity,
@@ -13,7 +11,8 @@ import {
     PrimaryColumn,
     UpdateDateColumn,
 } from 'typeorm'
-import CanvasEntity from './canvas-entity'
+import type { DiscussionTopic, LockInfo } from '../entity.types'
+import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class File extends CanvasEntity {
@@ -105,6 +104,11 @@ export class File extends CanvasEntity {
 
     @UpdateDateColumn()
     date_last_received_from_canvas: Date
+
+    constructor(data?: Partial<File>) {
+        super(data)
+        Object.assign(this, data)
+    }
 }
 
 export type VisibilityLevel = 'course' | 'institution' | 'public' | 'inherit'

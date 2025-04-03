@@ -7,9 +7,12 @@
  *
  * See individual type and method definitions below for more details
  */
-import { Assignment, AssignmentGroup } from '../entity/assignment'
-import { Course } from '../entity/course'
-import { Submission } from '../entity/submission'
+import {
+    Assignment,
+    AssignmentGroup,
+    Course,
+    Submission,
+} from '../entity/entity.types'
 
 export interface DataNode {
     type: 'course' | 'assignment' | 'file'

@@ -1,5 +1,12 @@
-import { Assignment, AssignmentGroup } from './entity/assignment'
-import { Course } from './entity/course'
+import {
+    Assignment,
+    AssignmentGroup,
+    Course,
+    Quiz,
+    QuizSubmission,
+    QuizSubmissionQuestion,
+    Submission,
+} from './entity/entity.types'
 import {
     Auth,
     CanvasRequest,
@@ -26,10 +33,6 @@ import {
 } from './canvas.api'
 import { LessThan } from 'typeorm'
 import CanvasEntity from './entity/canvas-entity'
-import { Submission } from './entity/submission'
-import { Quiz } from './entity/quiz'
-import { QuizSubmission } from './entity/quiz-submissions'
-import { QuizSubmissionQuestion } from './entity/quiz-submission-question'
 
 const yesterday = (): Date => {
     const date = new Date()

@@ -3,21 +3,27 @@
  * portions of the Canvas API
  */
 import 'reflect-metadata'
-import type { Assignment, RubricCriteria } from './assignment'
-import type { Course } from './course'
-import type { ReadState } from './read-state'
-import type { User, UserDisplay } from './user'
 import {
     Column,
     Entity,
     JoinColumn,
     ManyToOne,
-    OneToMany,
     OneToOne,
+    OneToMany,
     PrimaryColumn,
     UpdateDateColumn,
 } from 'typeorm'
-import CanvasEntity from './canvas-entity'
+import type {
+    Assignment,
+    Course,
+    MediaComment,
+    ReadState,
+    RubricAssessmentCriterion,
+    SubmissionAttachment,
+    SubmissionComment,
+    User,
+} from '../entity.types'
+import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class Submission extends CanvasEntity {
@@ -73,8 +79,8 @@ export class Submission extends CanvasEntity {
 
     // Associated comments for a submission (optional)
     @OneToMany(
-        () => SubmissionComment,
-        (submissionComment) => submissionComment.submission
+        'SubmissionComment',
+        (submissionComment: SubmissionComment) => submissionComment.submission
     )
     @JoinColumn()
     submission_comments?: SubmissionComment[]
@@ -196,8 +202,9 @@ export class Submission extends CanvasEntity {
     rubric_assessment?: RubricAssessmentCriterion[]
 
     @OneToMany(
-        () => SubmissionAttachment,
-        (submissionAttachment) => submissionAttachment.submission
+        'SubmissionAttachment',
+        (submissionAttachment: SubmissionAttachment) =>
+            submissionAttachment.submission
     )
     @JoinColumn()
     attachments?: SubmissionAttachment[]
@@ -205,192 +212,20 @@ export class Submission extends CanvasEntity {
     @Column({ nullable: true, type: 'numeric' })
     media_commentId: number
 
-    @OneToOne(() => MediaComment, (mediaComment) => mediaComment.submission)
+    @OneToOne(
+        'MediaComment',
+        (mediaComment: MediaComment) => mediaComment.submission
+    )
     @JoinColumn()
     media_comment?: MediaComment
 
     @UpdateDateColumn()
     date_last_received_from_canvas: Date
 
-    constructor(data: Partial<Submission>) {
-        super()
+    constructor(data?: Partial<Submission>) {
+        super(data)
         Object.assign(this, data)
     }
-}
-
-@Entity()
-export class SubmissionAttachment extends CanvasEntity {
-    @PrimaryColumn({ type: 'numeric' })
-    id: number
-
-    @Column({ type: 'numeric' })
-    uuid: string
-
-    @Column({ type: 'numeric' })
-    folder_id: number
-
-    @Column({ type: 'text' })
-    display_name: string
-
-    @Column({ type: 'text' })
-    filename: string
-
-    @Column({ type: 'text' })
-    upload_status: string
-
-    @Column({ type: 'text' })
-    'content-type': string
-
-    @Column({ type: 'text' })
-    url: string
-
-    @Column({ type: 'numeric' })
-    size: number
-
-    @Column({ type: 'date' })
-    created_at: Date
-
-    @Column({ type: 'date' })
-    updated_at: Date
-
-    unlock_at: null
-
-    @Column({ type: 'boolean' })
-    locked: boolean
-
-    @Column({ type: 'boolean' })
-    hidden: boolean
-
-    lock_at: null
-
-    @Column({ type: 'boolean' })
-    hidden_for_user: boolean
-
-    @Column({ type: 'text' })
-    thumbnail_url: string
-
-    @Column({ type: 'date' })
-    modified_at: Date
-
-    @Column({ type: 'string' })
-    mime_class: string
-
-    media_entry_id: null
-
-    @Column({ type: 'text' })
-    category: string
-
-    @Column({ type: 'boolean' })
-    locked_for_user: boolean
-
-    preview_url: null
-
-    @ManyToOne(() => Submission, (submission) => submission.attachments)
-    @JoinColumn()
-    submission: Submission
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
-}
-
-@Entity()
-export class SubmissionComment extends CanvasEntity {
-    @PrimaryColumn({ type: 'numeric' })
-    id: number
-
-    @Column({ type: 'numeric' })
-    author_id: number
-
-    @Column({ type: 'text' })
-    author_name: string
-
-    // Abbreviated user object UserDisplay (see users API).
-    @OneToOne('UserDisplay')
-    @JoinColumn()
-    author: UserDisplay
-
-    @Column({ type: 'text' })
-    comment: string
-
-    @Column({ type: 'date' })
-    created_at: Date
-
-    @Column({ type: 'date' })
-    edited_at: Date
-
-    @OneToOne('MediaComment')
-    @JoinColumn()
-    media_comment: MediaComment
-
-    @ManyToOne(
-        'Submission',
-        (submission: Submission) => submission.submission_comments
-    )
-    @JoinColumn()
-    submission: Submission
-
-    @UpdateDateColumn({ type: 'date' })
-    date_last_received_from_canvas: Date
-}
-
-@Entity()
-export class MediaComment extends CanvasEntity {
-    @Column({ type: 'text' })
-    'content-type': string
-
-    @Column({ type: 'text' })
-    display_name?: string
-
-    @Column({ type: 'text' })
-    media_id: string
-
-    @Column({ type: 'text' })
-    media_type: string
-
-    @Column({ type: 'text' })
-    url: string
-
-    @OneToOne(
-        'Submission',
-        (submission: Submission) => submission.media_comment
-    )
-    @JoinColumn()
-    submission: Submission
-
-    @UpdateDateColumn({ type: 'date' })
-    date_last_received_from_canvas: Date
-}
-
-@Entity()
-export class RubricAssessmentCriterion extends CanvasEntity {
-    @PrimaryColumn({ type: 'numeric' })
-    id: number
-
-    @ManyToOne(
-        'RubricCriteria',
-        (rubricCriteria: RubricCriteria) => rubricCriteria.assessments
-    )
-    @JoinColumn()
-    rubricCriteria: RubricCriteria
-
-    @Column({ type: 'numeric' })
-    points: number
-
-    @Column({ type: 'text' })
-    comments: string
-
-    @Column({ type: 'text' })
-    rating_id: string
-
-    @ManyToOne(
-        'Submission',
-        (submission: Submission) => submission.rubric_assessment
-    )
-    @JoinColumn()
-    submission: Submission
-
-    @UpdateDateColumn({ type: 'date' })
-    date_last_received_from_canvas: Date
 }
 
 export type WorkflowState =

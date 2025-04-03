@@ -5,13 +5,16 @@
  * See individual definitions below for more details
  */
 import { parseISO } from 'date-fns'
-import { Assignment, AssignmentGroup } from './entity/assignment'
-import { Course } from './entity/course'
-import { Submission } from './entity/submission'
-import { Quiz } from './entity/quiz'
-import { QuizSubmission } from './entity/quiz-submissions'
-import { QuizSubmissionQuestion } from './entity/quiz-submission-question'
-import { QuizQuestion } from './entity/quiz-question'
+import {
+    Assignment,
+    AssignmentGroup,
+    Course,
+    Submission,
+    Quiz,
+    QuizQuestion,
+    QuizSubmission,
+    QuizSubmissionQuestion,
+} from './entity/entity.types'
 
 export type Auth = {
     canvasAccessToken: string

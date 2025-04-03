@@ -3,9 +3,12 @@
  *
  * See individual definitions for more details
  */
-import { Course } from './entity/course'
-import { Assignment } from './entity/assignment'
-import { Submission } from './entity/submission'
+import {
+    Assignment,
+    Course,
+    QuestionData,
+    Submission,
+} from './entity/entity.types'
 import {
     getQuizQuestionsNoParams,
     getQuizQuestionsParams,
@@ -13,7 +16,6 @@ import {
     getQuizSubmissionQuestions,
     Auth,
 } from './canvas.api'
-import { QuestionData } from './entity/quiz-question'
 import { convertToHeader, createTableHeader, createTableRows } from './markdown'
 
 export async function assembleQuizQuestionsAndComments(

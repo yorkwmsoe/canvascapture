@@ -11,8 +11,8 @@ import {
     PrimaryColumn,
     UpdateDateColumn,
 } from 'typeorm'
-import type { Quiz } from './quiz'
-import CanvasEntity from './canvas-entity'
+import type { Quiz } from '../entity.types'
+import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class QuizSubmission extends CanvasEntity {
@@ -122,4 +122,9 @@ export class QuizSubmission extends CanvasEntity {
 
     @UpdateDateColumn()
     date_last_received_from_canvas: Date
+
+    constructor(data?: Partial<QuizSubmission>) {
+        super(data)
+        Object.assign(this, data)
+    }
 }

@@ -4,10 +4,13 @@
  *
  * See individual definitions below for more details
  */
-import { Assignment } from './entity/assignment'
-import { RubricAssessmentCriterion, Submission } from './entity/submission'
-import { Quiz } from './entity/quiz'
-import { QuizSubmission } from './entity/quiz-submissions'
+import {
+    Assignment,
+    Quiz,
+    QuizSubmission,
+    RubricAssessmentCriterion,
+    Submission,
+} from './entity/entity.types'
 import {
     convertToHeader,
     createLinkNormal,

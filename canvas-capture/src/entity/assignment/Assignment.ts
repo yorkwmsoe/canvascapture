@@ -3,9 +3,6 @@
  * of the Canvas API
  */
 import 'reflect-metadata'
-import type { Course } from './course'
-import type { DiscussionTopic } from './discussion-topic'
-import { RubricAssessmentCriterion, Submission } from './submission'
 import {
     Column,
     Entity,
@@ -16,7 +13,18 @@ import {
     PrimaryColumn,
     UpdateDateColumn,
 } from 'typeorm'
-import CanvasEntity from './canvas-entity'
+import {
+    AssignmentGroup,
+    DiscussionTopic,
+    ExternalToolTagAttributes,
+    NeedsGradingCountBySection,
+    TurnitinSettings,
+    RubricCriteria,
+    ScoreStatistic,
+    Submission,
+    LockInfo,
+} from '../entity.types'
+import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class Assignment extends CanvasEntity {
@@ -85,8 +93,8 @@ export class Assignment extends CanvasEntity {
 
     // the ID of the assignment's group
     @ManyToOne(
-        () => AssignmentGroup,
-        (assignmentGroup) => assignmentGroup.assignments
+        'AssignmentGroup',
+        (assignmentGroup: AssignmentGroup) => assignmentGroup.assignments
     )
     @JoinColumn()
     assignment_group: AssignmentGroup
@@ -129,7 +137,10 @@ export class Assignment extends CanvasEntity {
     // size. - if type is 'words', this will be number > 0 representing how many
     // words a match must contain for it to be considered NOTE: This flag will not
     // appear unless your account has the Turnitin plugin available
-    @OneToOne(() => TurnitinSettings)
+    @OneToOne(
+        'TurnitinSettings',
+        (turnitinSettings: TurnitinSettings) => turnitinSettings.assignment
+    )
     @JoinColumn()
     turnitin_settings?: TurnitinSettings
 
@@ -146,8 +157,9 @@ export class Assignment extends CanvasEntity {
     // to false).  Use the 'External Tools' API if you need more information about
     // an external tool.
     @OneToMany(
-        () => ExternalToolTagAttributes,
-        (externalToolTagAttributes) => externalToolTagAttributes.assignment
+        'ExternalToolTagAttributes',
+        (externalToolTagAttributes: ExternalToolTagAttributes) =>
+            externalToolTagAttributes.assignment
     )
     @JoinColumn()
     external_tool_tag_attributes?: ExternalToolTagAttributes[]
@@ -200,8 +212,9 @@ export class Assignment extends CanvasEntity {
     // setup that way they will show an assignment that needs grading in multiple
     // sections (effectively the count will be duplicated between sections)
     @OneToMany(
-        () => NeedsGradingCountBySection,
-        (needsGradingCountBySection) => needsGradingCountBySection.assignment
+        'NeedsGradingCountBySection',
+        (needsGradingCountBySection: NeedsGradingCountBySection) =>
+            needsGradingCountBySection.assignment
     )
     @JoinColumn()
     needs_grading_count_by_section?: NeedsGradingCountBySection[]
@@ -269,7 +282,7 @@ export class Assignment extends CanvasEntity {
 
     // (Optional) Information for the user about the lock. Present when
     // locked_for_user is true.
-    @OneToOne('LockInfo')
+    @OneToOne('LockInfo', (lockInfo: LockInfo) => lockInfo.assignment)
     @JoinColumn()
     lock_info?: LockInfo
 
@@ -292,7 +305,10 @@ export class Assignment extends CanvasEntity {
     discussion_topicId: number
 
     // (Optional) the DiscussionTopic associated with the assignment, if applicable
-    @OneToOne('DiscussionTopic')
+    @OneToOne(
+        'DiscussionTopic',
+        (discussionTopic: DiscussionTopic) => discussionTopic.assignment
+    )
     @JoinColumn()
     discussion_topic?: DiscussionTopic
 
@@ -326,7 +342,7 @@ export class Assignment extends CanvasEntity {
     // information from the api) current submission for the assignment. See the
     // Submissions API for an example response. If the user does not have a
     // submission, this key will be absent.
-    @OneToOne('Submission')
+    @OneToOne('Submission', (submission: Submission) => submission.assignment)
     @JoinColumn()
     submission?: Submission
 
@@ -340,8 +356,8 @@ export class Assignment extends CanvasEntity {
 
     // (Optional) An object describing the basic attributes of the rubric, including
     // the point total. Included if there is an associated rubric.
-    @OneToOne('RubricSettings')
-    @JoinColumn()
+    @OneToOne('RubricSettings') // TypeORM will drop in rubric settings as a column
+    @JoinColumn() // instead of making a relation, don't need 2nd param
     rubric_settings?: RubricSettings
 
     @Column({ nullable: true, type: 'simple-array' })
@@ -431,8 +447,8 @@ export class Assignment extends CanvasEntity {
     // 'include' parameter and statistics are available, includes the min, max, and
     // mode for this assignment
     @OneToMany(
-        () => ScoreStatistic,
-        (scoreStatistic) => scoreStatistic.assignment
+        'ScoreStatistic',
+        (scoreStatistic: ScoreStatistic) => scoreStatistic.assignment
     )
     @JoinColumn()
     score_statistics?: ScoreStatistic[]
@@ -524,319 +540,15 @@ export class Assignment extends CanvasEntity {
     @Column({ type: 'text' })
     workflow_state: string
 
+    @UpdateDateColumn()
+    date_last_received_from_canvas: Date
+
     constructor(data?: Partial<Assignment>) {
         super(data)
         if (data) {
             Object.assign(data)
         }
     }
-}
-
-@Entity()
-export class AssignmentDate extends CanvasEntity {
-    // (Optional, missing if 'base' is present) id of the assignment override this
-    // date represents
-    @Column({ nullable: true, type: 'numeric', unique: true })
-    id?: number
-
-    // (Optional, present if 'id' is missing) whether this date represents the
-    // assignment's or quiz's default due date
-    @Column({ nullable: true, type: 'boolean' })
-    base?: boolean
-
-    @Column({ type: 'text' })
-    title: string
-
-    // The due date for the assignment. Must be between the unlock date and the lock
-    // date if there are lock dates
-    @Column({ type: 'date' })
-    due_at: Date
-
-    // The unlock date for the assignment. Must be before the due date if there is a
-    // due date.
-    @Column({ type: 'date' })
-    unlock_at: Date
-
-    // The lock date for the assignment. Must be after the due date if there is a
-    // due date.
-    @Column({ type: 'date' })
-    lock_at: Date
-}
-
-/**
- * Represents a group of assignments in a course.
- * An assignment group is used to organize assignments and can also include grading rules for that group.
- *
- * @see {@link https://canvas.instructure.com/doc/api/assignment_groups.html} for more details.
- */
-@Entity()
-export class AssignmentGroup extends CanvasEntity {
-    /**
-     * The unique identifier for the Assignment Group.
-     */
-    @PrimaryColumn({ type: 'numeric' })
-    id: number
-
-    @Column({ nullable: true, type: 'numeric' })
-    courseId?: number
-
-    /**
-     * (Not part of the official Canvas Assignment Group API, added for convenience)
-     * The ID of the course this Assignment Group belongs to.
-     * This field was added as it might be helpful for associating assignment groups
-     * with courses in future implementations.
-     */
-    @ManyToOne('Course', (course: Course) => course.assignment_groups)
-    @JoinColumn()
-    course: Course
-
-    /**
-     * The name of the Assignment Group.
-     */
-    @Column({ type: 'text' })
-    name: string
-
-    /**
-     * The position (order) of the Assignment Group within the course.
-     */
-    @Column({ type: 'numeric' })
-    position: number
-
-    /**
-     * The weight of the Assignment Group, typically used for weighted grading.
-     */
-    @Column({ type: 'number' })
-    group_weight: number
-
-    /**
-     * The SIS (Student Information System) source ID for the Assignment Group.
-     */
-    @Column({ type: 'text' })
-    sis_source_id: string
-
-    /**
-     * Additional integration data for the Assignment Group.
-     */
-    @Column({ type: 'simple-json' })
-    integration_data: object
-
-    /**
-     * The list of assignments that belong to this Assignment Group.
-     */
-    @OneToMany(() => Assignment, (assignment) => assignment.assignment_group)
-    @JoinColumn()
-    assignments: Assignment[]
-
-    /**
-     * Any grading rules that apply to this Assignment Group.
-     */
-    @Column({ type: 'text' })
-    rules: string
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
-}
-
-@Entity()
-export class ScoreStatistic extends CanvasEntity {
-    @ManyToOne(() => Assignment, (assignment) => assignment.score_statistics)
-    @JoinColumn()
-    assignment: Assignment
-
-    // Min score
-    @Column({ type: 'numeric' })
-    min: number
-
-    // Max score
-    @Column({ type: 'numeric' })
-    max: number
-
-    // Mean score
-    @Column({ type: 'numeric' })
-    mean: number
-
-    // Upper quartile score
-    @Column({ type: 'numeric' })
-    upper_q: number
-
-    // Median score
-    @Column({ type: 'numeric' })
-    median: number
-
-    // Lower quartile score
-    @Column({ type: 'numeric' })
-    lower_q: number
-}
-
-@Entity()
-export class RubricCriteria extends CanvasEntity {
-    @Column({ type: 'numeric' })
-    points: number
-
-    // The id of rubric criteria.
-    @PrimaryColumn({ type: 'text' })
-    id: string
-
-    // (Optional) The id of the learning outcome this criteria uses, if any.
-    @Column({ nullable: true, type: 'text' })
-    learning_outcome_id?: string
-
-    // (Optional) The 3rd party vendor's GUID for the outcome this criteria
-    // references, if any.
-    @Column({ nullable: true, type: 'text' })
-    vendor_guid?: string
-
-    @Column({ type: 'text' })
-    description: string
-
-    @Column({ type: 'text' })
-    long_description: string
-
-    @Column({ type: 'boolean' })
-    criterion_use_range: boolean
-
-    @OneToMany(
-        () => RubricRating,
-        (rubricRating) => rubricRating.rubric_criteria
-    )
-    @JoinColumn()
-    ratings: RubricRating[]
-
-    @Column({ type: 'boolean' })
-    ignore_for_scoring: boolean
-
-    @ManyToOne(() => Assignment, (assignment) => assignment.rubric)
-    @JoinColumn()
-    assignment: Assignment
-
-    @OneToMany(
-        'RubricAssessmentCriterion',
-        (rubricAssessmentCriterion: RubricAssessmentCriterion) =>
-            rubricAssessmentCriterion.rubricCriteria
-    )
-    @JoinColumn()
-    assessments: RubricAssessmentCriterion[]
-}
-
-@Entity()
-export class RubricRating extends CanvasEntity {
-    @Column({ type: 'numeric' })
-    points: number
-
-    @PrimaryColumn({ type: 'text' })
-    id: string
-
-    @Column({ type: 'text' })
-    description: string
-
-    @Column({ type: 'text' })
-    long_description: string
-
-    @ManyToOne(() => RubricCriteria, (rubricCriteria) => rubricCriteria.ratings)
-    @JoinColumn()
-    rubric_criteria: RubricCriteria
-}
-
-@Entity()
-export class LockInfo extends CanvasEntity {
-    // Asset string for the object causing the lock
-    @Column({ type: 'text' })
-    asset_string: string
-
-    // (Optional) Time at which this was/will be unlocked. Must be before the due
-    // date.
-    @Column({ nullable: true, type: 'date' })
-    unlock_at?: Date
-
-    // (Optional) Time at which this was/will be locked. Must be after the due date.
-    @Column({ nullable: true, type: 'date' })
-    lock_at?: Date
-
-    // (Optional) Context module causing the lock.
-    @Column({ type: 'text' })
-    context_module: string
-
-    @Column({ type: 'boolean' })
-    manually_locked: boolean
-}
-
-@Entity()
-export class ExternalToolTagAttributes extends CanvasEntity {
-    @ManyToOne(
-        () => Assignment,
-        (assignment) => assignment.external_tool_tag_attributes
-    )
-    @JoinColumn()
-    assignment: Assignment
-
-    // URL to the external tool
-    @Column({ type: 'text' })
-    url: string
-
-    // Whether or not there is a new tab for the external tool
-    @Column({ type: 'boolean' })
-    new_tab: boolean
-
-    // the identifier for this tool_tag
-    @Column({ type: 'text' })
-    resource_link_id: string
-}
-
-// originality_report_visibility can be 'immediate',
-// 'after_grading', 'after_due_date', or 'never' exclude_small_matches_type can
-// be null, 'percent', 'words' exclude_small_matches_value: - if type is null,
-// this will be null also - if type is 'percent', this will be a number between
-// 0 and 100 representing match size to exclude as a percentage of the document
-// size. - if type is 'words', this will be number > 0 representing how many
-@Entity()
-export class TurnitinSettings extends CanvasEntity {
-    @Column({ type: 'text' })
-    originality_report_visibility: OriginallyReportVisibility
-
-    @Column({ type: 'boolean' })
-    s_paper_check: boolean
-
-    @Column({ type: 'boolean' })
-    internet_check: boolean
-
-    @Column({ type: 'boolean' })
-    journal_check: boolean
-
-    @Column({ type: 'boolean' })
-    exclude_biblio: boolean
-
-    @Column({ type: 'boolean' })
-    exclude_quoted: boolean
-
-    @Column({ type: 'text' })
-    exclude_small_matches_type: ExcludeSmallMatchesType
-
-    @Column({ nullable: true, type: 'numeric' })
-    exclude_small_matches_value: number | null
-}
-
-export type OriginallyReportVisibility =
-    | 'immediate'
-    | 'after_grading'
-    | 'after_due_date'
-    | 'never'
-
-export type ExcludeSmallMatchesType = 'percent' | 'words' | null
-
-@Entity()
-export class NeedsGradingCountBySection extends CanvasEntity {
-    @ManyToOne(
-        () => Assignment,
-        (assignment) => assignment.needs_grading_count_by_section
-    )
-    @JoinColumn()
-    assignment: Assignment
-
-    @Column({ type: 'text' })
-    section_id: string
-
-    @Column({ type: 'numeric' })
-    needs_grading_count: number
 }
 
 export class RubricSettings {

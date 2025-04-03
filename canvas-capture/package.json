@@ -16,7 +16,12 @@
         "test:cli": "vitest run",
         "test:ui": "vitest --ui",
         "test:mutate": "stryker run",
-        "coverage": "vitest run --coverage"
+        "coverage": "vitest run --coverage",
+        "typeorm": "typeorm-ts-node-esm",
+        "typeorm:run-migrations": "npm run typeorm migration:run -- -d ./typeorm.config.ts",
+        "typeorm:generate-migration": "npm run typeorm -- -d ./typeOrm.config.ts migration:generate ./migrations/$npm_config_name",
+        "typeorm:create-migration": "npm run typeorm -- migration:create ./src/migration/$npm_config_name",
+        "typeorm:revert-migration": "npm run typeorm -- -d ./typeOrm.config.ts migration:revert"
     },
     "devDependencies": {
         "@stryker-mutator/typescript-checker": "^8.7.1",
@@ -27,6 +32,7 @@
         "@vitest/ui": "^1.2.2",
         "eslint": "^8.56.0",
         "msw": "^2.2.14",
+        "ts-node": "^10.9.2",
         "typescript": "^5.2.2",
         "vitest": "^1.2.1"
     },

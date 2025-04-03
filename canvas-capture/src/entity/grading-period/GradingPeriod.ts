@@ -3,7 +3,6 @@
  * portion of the Canvas API
  */
 import 'reflect-metadata'
-import type { Course } from './course'
 import {
     Column,
     Entity,
@@ -12,7 +11,8 @@ import {
     PrimaryColumn,
     UpdateDateColumn,
 } from 'typeorm'
-import CanvasEntity from './canvas-entity'
+import type { Course } from '../course/Course'
+import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class GradingPeriod extends CanvasEntity {
@@ -52,4 +52,9 @@ export class GradingPeriod extends CanvasEntity {
 
     @UpdateDateColumn()
     date_last_received_from_canvas: Date
+
+    constructor(data?: Partial<GradingPeriod>) {
+        super(data)
+        Object.assign(this, data)
+    }
 }

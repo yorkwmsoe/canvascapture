@@ -3,9 +3,6 @@
  * of the Canvas API
  */
 import 'reflect-metadata'
-import type { AssignmentGroup } from './assignment'
-import type { Enrollment } from './enrollment'
-import type { GradingPeriod } from './grading-period'
 import {
     Column,
     Entity,
@@ -13,9 +10,18 @@ import {
     OneToMany,
     OneToOne,
     PrimaryColumn,
+    UpdateDateColumn,
 } from 'typeorm'
-import { Submission } from './submission'
-import CanvasEntity from './canvas-entity'
+import type {
+    AssignmentGroup,
+    BlueprintRestrictions,
+    CourseProgress,
+    GradingPeriod,
+    Enrollment,
+    Term,
+    Submission,
+} from '../entity.types'
+import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class Course extends CanvasEntity {
@@ -137,13 +143,16 @@ export class Course extends CanvasEntity {
 
     // optional: the enrollment term object for the course returned only if
     // include[]=term
-    @OneToMany(() => Term, (term) => term.courses)
+    @OneToMany('Term', (term: Term) => term.courses)
     @JoinColumn()
     term?: Term
 
     // optional: information on progress through the course returned only if
     // include[]=course_progress
-    @OneToOne(() => CourseProgress)
+    @OneToOne(
+        'CourseProgress',
+        (courseProgress: CourseProgress) => courseProgress.course
+    )
     @JoinColumn()
     course_progress?: CourseProgress
 
@@ -244,7 +253,7 @@ export class Course extends CanvasEntity {
     @Column({ nullable: true, type: 'boolean' })
     template?: boolean
 
-    @OneToMany(() => Submission, (submission) => submission.course)
+    @OneToMany('Submission', (submission: Submission) => submission.course)
     @JoinColumn()
     submissions: Submission[]
 
@@ -258,76 +267,19 @@ export class Course extends CanvasEntity {
     @JoinColumn()
     assignment_groups?: AssignmentGroup[]
 
-    constructor(data: Partial<Course>) {
-        super()
+    @UpdateDateColumn()
+    date_last_received_from_canvas: Date
+
+    constructor(data?: Partial<Course>) {
+        super(data)
         Object.assign(this, data)
     }
-}
-
-@Entity()
-export class CourseProgress extends CanvasEntity {
-    // total number of requirements from all modules
-    @Column({ type: 'numeric' })
-    requirement_count: number
-
-    // total number of requirements the user has completed from all modules
-    @Column({ type: 'numeric' })
-    requirement_completed_count: number
-
-    // url to next module item that has an unmet requirement. null if the user has
-    // completed the course or the current module does not require sequential
-    // progress
-    @Column({ nullable: true, type: 'text' })
-    next_requirement_url: string | null
-
-    // date the course was completed. null if the course has not been completed by
-    // this user
-    @Column({ nullable: true, type: 'date' })
-    completed_at: Date | null
-}
-
-@Entity()
-export class Term extends CanvasEntity {
-    @PrimaryColumn({ type: 'numeric' })
-    id: number
-
-    @Column({ type: 'date' })
-    name: string
-
-    @Column({ type: 'date' })
-    start_at: Date
-
-    @Column({ nullable: true, type: 'date' })
-    end_at: Date | null
-
-    @OneToMany(() => Course, (course) => course.term)
-    @JoinColumn()
-    courses: Course[]
 }
 
 export class CourseCalendar {
     // The URL of the calendar in ICS format
     @Column({ type: 'text' })
     ics: string
-}
-
-@Entity()
-export class BlueprintRestrictions {
-    @Column({ type: 'boolean' })
-    content: boolean
-
-    @Column({ type: 'boolean' })
-    points: boolean
-
-    @Column({ type: 'boolean' })
-    due_dates: boolean
-
-    @Column({ type: 'boolean' })
-    availability_dates: boolean
-
-    @OneToOne(() => Course, (course) => course.blueprint_restrictions)
-    @JoinColumn()
-    course: Course
 }
 
 export type WorkflowState =

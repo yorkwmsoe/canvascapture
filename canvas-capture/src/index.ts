@@ -12,25 +12,26 @@ import {
 
 import { createCanvasCache } from './canvas.cache'
 
-import { Assignment, AssignmentGroup } from './entity/assignment'
-import { Course } from './entity/course'
-import { DiscussionTopic } from './entity/discussion-topic'
-import { Enrollment } from './entity/enrollment'
-import { File } from './entity/file'
-import { GradingPeriod } from './entity/grading-period'
-import { ReadState } from './entity/read-state'
 import {
-    Submission,
-    SubmissionComment,
-    MediaComment,
-    RubricAssessmentCriterion,
-    WorkflowState,
+    Assignment,
+    AssignmentGroup,
+    Course,
+    DiscussionTopic,
+    Enrollment,
+    File,
+    GradingPeriod,
     LatePolicyStatus,
+    MediaComment,
+    Quiz,
+    QuizSubmission,
+    ReadState,
+    RubricAssessmentCriterion,
+    Submission,
     SubmissionType,
-} from './entity/submission'
-import { User } from './entity/user'
-import { Quiz } from './entity/quiz'
-import { QuizSubmission } from './entity/quiz-submissions'
+    SubmissionComment,
+    WorkflowState,
+    User,
+} from './entity/entity.types'
 import {
     generateAssignmentDescription,
     generateAssignmentSubmission,
@@ -49,7 +50,11 @@ import {
     testSubmissions,
 } from './mocks/canvas.api.mocks'
 
+//export * from './migration'
+
 export * from './generation'
+
+export { FrontEndDataSource } from '../typeorm.config'
 
 export {
     testCourses,

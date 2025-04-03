@@ -1,8 +1,10 @@
 import { parse } from 'date-fns'
-import { Assignment } from '../entity/assignment'
-import { Course } from '../entity/course'
-import { Enrollment } from '../entity/enrollment'
-import { Submission } from '../entity/submission'
+import {
+    Assignment,
+    Course,
+    Enrollment,
+    Submission,
+} from '../entity/entity.types'
 
 export const testAssignments: Assignment[] = [
     new Assignment({

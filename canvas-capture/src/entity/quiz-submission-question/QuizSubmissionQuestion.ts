@@ -3,34 +3,33 @@
  * portions of the Canvas API
  */
 import 'reflect-metadata'
-import type { Formula, Match, Variable } from './quiz-question'
 import {
     Column,
     Entity,
     JoinColumn,
-    ManyToOne,
     OneToMany,
     PrimaryColumn,
     UpdateDateColumn,
 } from 'typeorm'
-import CanvasEntity from './canvas-entity'
+import type { Answer, Formula, Match, Variable } from '../entity.types'
+import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class QuizSubmissionQuestion extends CanvasEntity {
     // Unique identifier for the question
-    @PrimaryColumn()
+    @PrimaryColumn({ type: 'numeric' })
     id: number
 
     // ID of the quiz this question belongs to
-    @Column()
+    @Column({ type: 'numeric' })
     quiz_id: number
 
     // ID of the quiz group if the question belongs to a group
-    @Column()
+    @Column({ nullable: true, type: 'numeric' })
     quiz_group_id: number | null
 
     // ID of the assessment question
-    @Column()
+    @Column({ type: 'numeric' })
     assessment_question_id: number
 
     // Position of the question within the quiz
@@ -50,7 +49,7 @@ export class QuizSubmissionQuestion extends CanvasEntity {
     question_text: string
 
     // List of answers for the question
-    @OneToMany(() => Answer, (answer) => answer.quiz_submission_question)
+    @OneToMany('Answer', (answer: Answer) => answer.quiz_submission_question)
     @JoinColumn()
     answers: Answer[]
 
@@ -93,29 +92,9 @@ export class QuizSubmissionQuestion extends CanvasEntity {
 
     @UpdateDateColumn()
     date_last_received_from_canvas: Date
-}
 
-@Entity()
-export class Answer extends CanvasEntity {
-    // Unique identifier for the answer
-    @PrimaryColumn()
-    id: number
-
-    // The text of the answer
-    @Column()
-    text: string
-
-    // HTML representation of the answer
-    @Column()
-    html: string
-
-    @ManyToOne(
-        () => QuizSubmissionQuestion,
-        (quizSubmissionQuestion) => quizSubmissionQuestion
-    )
-    @JoinColumn()
-    quiz_submission_question: QuizSubmissionQuestion
-
-    @UpdateDateColumn()
-    date_last_received_from_canvas: Date
+    constructor(data?: Partial<QuizSubmissionQuestion>) {
+        super(data)
+        Object.assign(this, data)
+    }
 }

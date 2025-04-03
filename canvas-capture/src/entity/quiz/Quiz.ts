@@ -3,7 +3,6 @@
  * portion of the Canvas API
  */
 import 'reflect-metadata'
-import type { Assignment } from './assignment'
 import {
     Column,
     Entity,
@@ -13,9 +12,8 @@ import {
     PrimaryColumn,
     UpdateDateColumn,
 } from 'typeorm'
-import { QuizQuestion } from './quiz-question'
-import CanvasEntity from './canvas-entity'
-import { QuizSubmission } from './quiz-submissions'
+import type { Assignment, QuizQuestion, QuizSubmission } from '../entity.types'
+import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class Quiz extends CanvasEntity {
@@ -276,4 +274,9 @@ export class Quiz extends CanvasEntity {
 
     @UpdateDateColumn()
     date_last_received_from_canvas: Date
+
+    constructor(data?: Partial<Quiz>) {
+        super(data)
+        Object.assign(this, data)
+    }
 }
