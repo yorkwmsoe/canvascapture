@@ -87,7 +87,10 @@ export async function generate(
         htmlContent = prependTOC(htmlContent)
 
         htmlData.push({
-            filePath: join(generationName, `${courseName}`),
+            filePath: join(
+                generationName,
+                `${courseName.replaceAll('/', '_')}`
+            ),
             content: htmlContent,
         })
     }
