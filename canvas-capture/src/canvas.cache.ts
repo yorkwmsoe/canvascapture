@@ -6,7 +6,7 @@ import {
     QuizSubmission,
     QuizSubmissionQuestion,
     Submission,
-} from './entity/entity.types'
+} from './db/entity/entity.types'
 import {
     Auth,
     CanvasRequest,
@@ -32,7 +32,7 @@ import {
     GetSubmissionsRequest,
 } from './canvas.api'
 import { LessThan } from 'typeorm'
-import CanvasEntity from './entity/canvas-entity'
+import CanvasEntity from './db/entity/canvas-entity'
 
 const yesterday = (): Date => {
     const date = new Date()

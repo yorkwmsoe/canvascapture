@@ -10,7 +10,7 @@ import {
     QuizSubmission,
     RubricAssessmentCriterion,
     Submission,
-} from './entity/entity.types'
+} from './db/entity/entity.types'
 import {
     convertToHeader,
     createLinkNormal,

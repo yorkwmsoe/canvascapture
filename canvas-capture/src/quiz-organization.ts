@@ -8,7 +8,7 @@ import {
     Course,
     QuestionData,
     Submission,
-} from './entity/entity.types'
+} from './db/entity/entity.types'
 import {
     getQuizQuestionsNoParams,
     getQuizQuestionsParams,

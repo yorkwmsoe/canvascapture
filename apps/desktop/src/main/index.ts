@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import * as remote from '@electron/remote/main'
 import { writeFile } from 'fs'
+import { FrontEndDataSource } from '../db/typeorm.config'
 
 const isTest = process.env.NODE_ENV === 'test'
 if (isTest) {
@@ -11,6 +12,22 @@ if (isTest) {
 }
 
 remote.initialize()
+
+async function createCache() {
+    try {
+        await FrontEndDataSource.initialize()
+        console.info('Database initialized')
+        const pendingMigrations = await FrontEndDataSource.showMigrations()
+        console.info('Pending migrations:', pendingMigrations)
+        if (pendingMigrations) {
+            console.info('Running migrations...')
+            await FrontEndDataSource.runMigrations()
+            console.info('Migrations completed')
+        }
+    } catch (err) {
+        console.error(err)
+    }
+}
 
 function createWindow(): void {
     // Create the browser window.
@@ -30,6 +47,7 @@ function createWindow(): void {
         },
     })
     remote.enable(mainWindow.webContents)
+    mainWindow.webContents.openDevTools()
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show()
@@ -77,7 +95,7 @@ function createWindow(): void {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
     // Set app user model id for windows
     electronApp.setAppUserModelId('com.electron')
 
@@ -87,6 +105,8 @@ app.whenReady().then(() => {
     app.on('browser-window-created', (_, window) => {
         optimizer.watchWindowShortcuts(window)
     })
+
+    await createCache()
 
     createWindow()
 

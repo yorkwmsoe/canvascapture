@@ -14,7 +14,7 @@ import {
     QuizQuestion,
     QuizSubmission,
     QuizSubmissionQuestion,
-} from './entity/entity.types'
+} from './db/entity/entity.types'
 
 export type Auth = {
     canvasAccessToken: string

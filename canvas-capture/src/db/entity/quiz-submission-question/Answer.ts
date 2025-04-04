@@ -10,15 +10,15 @@ import CanvasEntity from '../canvas-entity'
 @Entity()
 export class Answer extends CanvasEntity {
     // Unique identifier for the answer
-    @PrimaryColumn()
+    @PrimaryColumn({ type: 'numeric' })
     id: number
 
     // The text of the answer
-    @Column()
+    @Column({ type: 'text' })
     text: string
 
     // HTML representation of the answer
-    @Column()
+    @Column({ type: 'text' })
     html: string
 
     @ManyToOne(

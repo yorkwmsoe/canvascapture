@@ -12,7 +12,7 @@ import {
     AssignmentGroup,
     Course,
     Submission,
-} from '../entity/entity.types'
+} from '../db/entity/entity.types'
 
 export interface DataNode {
     type: 'course' | 'assignment' | 'file'

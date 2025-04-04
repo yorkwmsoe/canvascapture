@@ -15,7 +15,7 @@ import CanvasEntity from '../canvas-entity'
 
 @Entity()
 export class ScoreStatistic extends CanvasEntity {
-    @PrimaryGeneratedColumn({ type: 'numeric' })
+    @PrimaryGeneratedColumn({ type: 'integer' })
     id: number
 
     @ManyToOne(

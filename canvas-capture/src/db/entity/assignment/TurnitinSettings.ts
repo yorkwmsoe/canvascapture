@@ -15,7 +15,7 @@ import type { Assignment } from '../entity.types'
 
 @Entity()
 export class TurnitinSettings extends CanvasEntity {
-    @PrimaryGeneratedColumn({ type: 'numeric' })
+    @PrimaryGeneratedColumn({ type: 'integer' })
     id: number
 
     @Column({ type: 'text' })

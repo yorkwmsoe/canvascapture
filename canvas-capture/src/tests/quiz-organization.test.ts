@@ -15,7 +15,7 @@ import {
     Course,
     QuestionData,
     Submission,
-} from '../entity/entity.types'
+} from '../db/entity/entity.types'
 
 const expectedOutput = [
     '## Question 1\n' +

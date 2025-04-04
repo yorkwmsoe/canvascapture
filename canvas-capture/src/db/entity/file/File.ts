@@ -88,19 +88,22 @@ export class File extends CanvasEntity {
     @JoinColumn()
     lock_info: LockInfo
 
-    @Column()
+    @Column({ type: 'text' })
     lock_explanation: string
 
     // optional: url to the document preview. This url is specific to the user
     // making the api call. Only included in submission endpoints.
-    @Column()
+    @Column({ nullable: true, type: 'text' })
     preview_url?: string
+
+    @Column({ nullable: true, type: 'numeric' })
+    discussion_topic_id: number
 
     @ManyToOne(
         'DiscussionTopic',
         (discussionTopic: DiscussionTopic) => discussionTopic.attachments
     )
-    @JoinColumn()
+    @JoinColumn({ name: 'discussion_topic_id' })
     discussion_topic?: DiscussionTopic
 
     constructor(data?: Partial<File>) {

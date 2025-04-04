@@ -26,6 +26,7 @@
     "devDependencies": {
         "@stryker-mutator/typescript-checker": "^8.7.1",
         "@stryker-mutator/vitest-runner": "^8.7.1",
+        "@types/better-sqlite3": "^7.6.12",
         "@typescript-eslint/eslint-plugin": "^7.0.1",
         "@typescript-eslint/parser": "^7.0.1",
         "@vitest/coverage-v8": "^1.2.1",
@@ -39,9 +40,9 @@
     "dependencies": {
         "@types/node": "^20.11.19",
         "axios": "^1.6.7",
+        "better-sqlite3": "^11.9.1",
         "date-fns": "^3.3.1",
         "reflect-metadata": "^0.2.2",
-        "sqlite3": "^5.1.7",
         "tsup": "^8.0.2",
         "typeorm": "^0.3.22"
     }

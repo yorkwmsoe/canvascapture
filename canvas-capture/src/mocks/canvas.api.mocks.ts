@@ -4,7 +4,7 @@ import {
     Course,
     Enrollment,
     Submission,
-} from '../entity/entity.types'
+} from '../db/entity/entity.types'
 
 export const testAssignments: Assignment[] = [
     new Assignment({
