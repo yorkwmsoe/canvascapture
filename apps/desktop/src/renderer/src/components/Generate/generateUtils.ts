@@ -3,7 +3,7 @@
  *
  * Exported Functions:
  *
- * - `generateTOC()`
+ * - `prependTOC()`
  *   Generates a Table of Contents for the provided HTML content.
  *
  * - `generateAssignmentAndSubmissionContent()`
@@ -37,13 +37,14 @@ import { canvasApi } from '@renderer/apis/canvas.api'
  * @param htmlContent - The HTML content as a string from which the TOC should be generated.
  * @returns A string containing the HTML representation of the generated Table of Contents.
  */
-export function generateTOC(htmlContent: string) {
+export function prependTOC(htmlContent: string) {
     const parser = new DOMParser()
     const doc = parser.parseFromString(htmlContent, 'text/html')
 
-    const headings = doc.querySelectorAll('h1, h2')
+    const headings = doc.querySelectorAll('h1')
     const tocEntries: string[] = []
 
+    // Prepare document for anchor navigation.
     headings.forEach((heading, index) => {
         const level = heading.tagName.toLowerCase()
         const text = heading.textContent || ''
@@ -62,15 +63,19 @@ export function generateTOC(htmlContent: string) {
         tocEntries.push(tocEntry)
     })
 
-    const tocHTML = `
-    <div class="toc" style="text-align: center;">
-      <h2>Table of Contents</h2>
-      <ul style="list-style-position: inside; list-style-type: none; padding-left: 0;">
-        ${tocEntries.join('')}
-      </ul>
-    </div>
-  `
-    return tocHTML
+    // Generate table of contents.
+    const tableOfContents = `
+        <div class="toc" style="text-align: center;">
+            <h2>Table of Contents</h2>
+            <ul style="list-style-position: inside; list-style-type: none; padding-left: 0;">
+                ${tocEntries.join('')}
+            </ul>
+        </div>`
+
+    // Prepend the table of contents to the report.
+    doc.body.insertAdjacentHTML('afterbegin', tableOfContents)
+
+    return doc.body.innerHTML
 }
 
 /**
