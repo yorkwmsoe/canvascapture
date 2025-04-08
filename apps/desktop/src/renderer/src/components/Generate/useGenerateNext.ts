@@ -26,19 +26,33 @@ import {
 } from '@renderer/utils/assignments'
 import { isNil, uniqBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { generateAssignmentAndSubmissionContent } from './generate'
+import { generateAssignmentAndSubmissionContent } from './generateUtils'
 import { generate } from './generate'
 import { ipcRenderer } from 'electron'
 import { getDocumentsPath } from '@renderer/utils/config'
 import { useGenerationStore } from '@renderer/stores/generation.store'
+import { App } from 'antd'
+import { MessageInstance } from 'antd/es/message/interface'
 
+/**
+ * The hook provides methods for:
+ * - Pre-generating content nodes (`runPreGenerate`) to scaffold the data structure for report generation.
+ * - Generating reports (`runGenerate`) based on prepared content nodes or external data.
+ *
+ * Return:
+ * - `runPreGenerate`: A callback that generates data nodes to structure the data.
+ * - `runGenerate`: A function that generates the pdf for the report using the
+ *   pre-generated nodes or provided data.
+ */
 export const useGenerateNext = () => {
     const { canvasAccessToken, canvasDomain, isStudent } = useSettingsStore()
     const { assignments, selectedAssignments } = useAssignments()
     const { getCourseById } = useCourses()
-    const { generationName } = useGenerationStore()
+    const { generationName, requestedCharts } = useGenerationStore()
     const documentsPath = getDocumentsPath()
+    const { message } = App.useApp()
 
+    // Create the DataNode tree structure.
     const dataNodes = useMemo(() => {
         return assignments.map<CourseDataNode>((assignment) => {
             const course = getCourseById(assignment.courseId)
@@ -61,8 +75,10 @@ export const useGenerateNext = () => {
                             ),
                             assignment: individualAssignment,
                             children: [],
+                            allSubmissions: [],
                         }
                     }),
+                assignmentGroups: [],
             }
         })
     }, [assignments, getCourseById])
@@ -73,7 +89,8 @@ export const useGenerateNext = () => {
             dataNodes,
             canvasAccessToken,
             canvasDomain,
-            isStudent
+            isStudent,
+            message
         )
     }, [dataNodes])
 
@@ -84,9 +101,7 @@ export const useGenerateNext = () => {
                 data ?? (await runPreGenerate()),
                 generationName,
                 documentsPath,
-                canvasAccessToken,
-                canvasDomain,
-                isStudent
+                requestedCharts
             )
         )
     }
@@ -106,125 +121,155 @@ async function generateContentPairs(
     submissions: Submission[],
     quiz: Quiz | undefined,
     canvasAccessToken: string,
-    canvasDomain: string
+    canvasDomain: string,
+    isStudent: boolean,
+    message: MessageInstance
 ) {
     const contentPairs: FileDataNode[] = []
 
-    const {
-        descriptionContent,
-        highSubmissionContent,
-        medianSubmissionContent,
-        lowSubmissionContent,
-    } = await generateAssignmentAndSubmissionContent(
-        course,
-        assignment,
-        submissions,
-        quiz,
-        canvasAccessToken,
-        canvasDomain
-    )
+    if (isStudent && assignment.is_quiz_assignment) {
+        message.error({
+            key: 'STUDENTQUIZERROR',
+            content: 'Students cannot access quiz questions',
+            duration: 5,
+        })
+    } else {
+        const {
+            descriptionContent,
+            highSubmissionContent,
+            medianSubmissionContent,
+            lowSubmissionContent,
+        } = await generateAssignmentAndSubmissionContent(
+            course,
+            assignment,
+            submissions,
+            quiz,
+            canvasAccessToken,
+            canvasDomain
+        )
 
-    contentPairs.push({
-        type: 'file',
-        key: generateHierarchyIdNext(
-            assignment.course_id.toString(),
-            assignment.id.toString(),
-            'description'
-        ),
-        name: 'description',
-        content: descriptionContent,
-    })
-
-    if (highSubmissionContent !== undefined) {
         contentPairs.push({
             type: 'file',
             key: generateHierarchyIdNext(
                 assignment.course_id.toString(),
                 assignment.id.toString(),
-                'high'
+                'description'
             ),
-            name: 'high',
-            content: highSubmissionContent,
+            name: 'description',
+            content: descriptionContent,
         })
-    }
 
-    if (medianSubmissionContent !== undefined) {
-        contentPairs.push({
-            type: 'file',
-            key: generateHierarchyIdNext(
-                assignment.course_id.toString(),
-                assignment.id.toString(),
-                'median'
-            ),
-            name: 'median',
-            content: medianSubmissionContent,
-        })
-    }
+        if (highSubmissionContent !== undefined) {
+            contentPairs.push({
+                type: 'file',
+                key: generateHierarchyIdNext(
+                    assignment.course_id.toString(),
+                    assignment.id.toString(),
+                    'high'
+                ),
+                name: 'high',
+                content: highSubmissionContent,
+            })
+        }
 
-    if (lowSubmissionContent !== undefined) {
-        contentPairs.push({
-            type: 'file',
-            key: generateHierarchyIdNext(
-                assignment.course_id.toString(),
-                assignment.id.toString(),
-                'low'
-            ),
-            name: 'low',
-            content: lowSubmissionContent,
-        })
+        if (medianSubmissionContent !== undefined) {
+            contentPairs.push({
+                type: 'file',
+                key: generateHierarchyIdNext(
+                    assignment.course_id.toString(),
+                    assignment.id.toString(),
+                    'median'
+                ),
+                name: 'median',
+                content: medianSubmissionContent,
+            })
+        }
+
+        if (lowSubmissionContent !== undefined) {
+            contentPairs.push({
+                type: 'file',
+                key: generateHierarchyIdNext(
+                    assignment.course_id.toString(),
+                    assignment.id.toString(),
+                    'low'
+                ),
+                name: 'low',
+                content: lowSubmissionContent,
+            })
+        }
     }
 
     return contentPairs
 }
 
-// Note: This is what I'm guessing this ESSENTIALLY does, based off the code. -EG
-// Given a list of nodes, where each node represents a course and its children
-// represent assignments, add children to the assignments that represent the
-// submission (and description) content along with each "file" location. (the
-// "file" location is what structures the report for the markdown editor).
+/**
+ * This function processes each given DataNode tree (e.g., course or assignment nodes)
+ * and fills it with corresponding content related to assignments, submissions, and
+ * assignment group data where applicable.
+ *
+ * The function performs the following tasks:
+ * - Iterates over each node in the provided array of DataNodes.
+ * - Handles each node according to its type (`CourseDataNode` or `AssignmentDataNode`)
+ *   using the `handleNode` helper function, which fetches and attaches relevant data.
+ * - Recursively processes child nodes (if any) to populate their structure as well.
+ *
+ * Returns:
+ * - A promise that resolves to a new array of DataNodes, each populated with content.
+ */
 async function preGenerate(
     getCourse: (courseId: number) => Course | undefined,
     nodes: DataNode[],
     canvasAccessToken: string,
     canvasDomain: string,
-    isStudent: boolean
+    isStudent: boolean,
+    message: MessageInstance
 ) {
     const copyNodes = [...nodes]
+    const validNodes: DataNode[] = []
     for (const n of copyNodes) {
         await handleNode(
             getCourse,
             n,
             canvasAccessToken,
             canvasDomain,
-            isStudent
+            isStudent,
+            message
         )
         if (isAssignmentDataNode(n) || isCourseDataNode(n)) {
-            await preGenerate(
-                getCourse,
-                n.children,
-                canvasAccessToken,
-                canvasDomain,
-                isStudent
-            )
+            if (n.children.length > 0) {
+                await preGenerate(
+                    getCourse,
+                    n.children,
+                    canvasAccessToken,
+                    canvasDomain,
+                    isStudent,
+                    message
+                )
+                validNodes.push(n)
+            }
+        } else {
+            validNodes.push(n)
         }
     }
-    return copyNodes
+    return validNodes
 }
 
-// Note: This is what I'm guessing this ESSENTIALLY does, based off the code. -EG
-// Given a node, if it does NOT represent an assignment, do nothing.
-// If it DOES represent an assignment, generate its children, which are nodes
-// that represent the submission (and description) content along with a "file"
-// location (the "file" location is what structures the report for the markdown
-// editor).
+// Helper function used by "preGenerate".
 async function handleNode(
     getCourse: (courseId: number) => Course | undefined,
     node: DataNode,
     canvasAccessToken: string,
     canvasDomain: string,
-    isStudent: boolean
+    isStudent: boolean,
+    message: MessageInstance
 ) {
-    if (isAssignmentDataNode(node)) {
+    if (isCourseDataNode(node)) {
+        node.assignmentGroups = await canvasApi.getAssignmentGroups({
+            canvasAccessToken,
+            canvasDomain,
+            courseId: node.course.id,
+        })
+    } else if (isAssignmentDataNode(node)) {
         const { courseId, assignmentId } = parseHierarchyId(node.key)
         const submissions = await canvasApi.getSubmissions({
             canvasAccessToken,
@@ -254,8 +299,11 @@ async function handleNode(
                 uniqueSubmissions,
                 quiz,
                 canvasAccessToken,
-                canvasDomain
+                canvasDomain,
+                isStudent,
+                message
             )
+            node.allSubmissions = uniqueSubmissions
         }
     }
 }

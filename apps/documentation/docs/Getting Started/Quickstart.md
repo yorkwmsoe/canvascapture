@@ -1,22 +1,21 @@
-## Installation 
+## Setup
 
-from the root directory not `canvas-capture`
-- Make sure npm is installed
-
-- type `npm install -g pnpm` in the terminal on the root of the project
-
+- In the terminal, navigate to the root of the project.
+- Make sure npm is installed.
+- Install pnpm:
+```bash
+npm install -g pnpm
+```
+- Install the project dependencies:
 ```bash
 pnpm install
 ```
-
-## Developing
-
+- Build the private module:
 ```bash
-pnpm @canvas-capture package --watch
+pnpm package
 ```
-
-## Testing
-
+- Install any remaining project dependencies:
 ```bash
-pnpm @canvas-capture test
+pnpm install
 ```
+- Begin developing.

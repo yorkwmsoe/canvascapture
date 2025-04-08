@@ -1,9 +1,4 @@
----
-title: v1.0.0
-tags: [1.0.0, desktop-1.0.0, cli-1.0.0]
----
-
-First release of the CLI and Desktop applications.
+First release of the CLI and Desktop applications. Released in Spring 2025.
 
 ### Features
 #### CLI

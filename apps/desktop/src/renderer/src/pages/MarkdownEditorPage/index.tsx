@@ -33,24 +33,38 @@ import { Navbar } from '@renderer/components/Navbar'
 import { HelpIcon } from '@renderer/components/icons/Help'
 
 function transformData(data: DataNode): TreeDataNode {
+    if (
+        (isCourseDataNode(data) || isAssignmentDataNode(data)) &&
+        data.children.length == 0
+    ) {
+        return {
+            key: 'SKIP',
+        }
+    }
     if (isCourseDataNode(data)) {
         return {
             title: getCourseName(data.course),
             key: data.key,
-            children: data.children.map(transformData),
+            children: data.children
+                .map(transformData)
+                .filter((d) => d.key !== 'SKIP'),
         }
-    }
-    if (isAssignmentDataNode(data)) {
+    } else if (isAssignmentDataNode(data)) {
         return {
             title: data.assignment.name,
             key: data.key,
-            children: data.children.map(transformData),
+            children: data.children
+                .map(transformData)
+                .filter((d) => d.key !== 'SKIP'),
         }
-    }
-    return {
-        title: data.name,
-        key: data.key,
-        isLeaf: true,
+    } else if (isFileDataNode(data)) {
+        return {
+            title: data.name,
+            key: data.key,
+            isLeaf: true,
+        }
+    } else {
+        throw new Error('Unknown data node type')
     }
 }
 
@@ -84,6 +98,11 @@ export function MarkdownEditorPage() {
     const { mutate: generate, isPending: isGenerating } = useMutation({
         mutationFn: runGenerate,
         onSuccess: () => {
+            notification.destroy()
+            notification.success({
+                message: 'Success',
+                description: 'Report Successfully Generated!',
+            })
             navigate({ to: '/' })
         },
         onError: () => {
@@ -96,7 +115,7 @@ export function MarkdownEditorPage() {
     })
 
     const treeData = useMemo(() => {
-        return data?.map(transformData)
+        return data?.map(transformData).filter((d) => d.key !== 'SKIP')
     }, [data])
 
     const [selectedFile, setSelectedFile] = useState<FileDataNode>()
