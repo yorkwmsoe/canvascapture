@@ -39,10 +39,17 @@ import { MessageInstance } from 'antd/es/message/interface'
  * - Pre-generating content nodes (`runPreGenerate`) to scaffold the data structure for report generation.
  * - Generating reports (`runGenerate`) based on prepared content nodes or external data.
  *
- * Return:
- * - `runPreGenerate`: A callback that generates data nodes to structure the data.
- * - `runGenerate`: A function that generates the pdf for the report using the
- *   pre-generated nodes or provided data.
+ * @return runPregenerate: () => Promise<DataNode[]>
+ * @return
+ * - `runPreGenerate`: A callback that generates a list of DataNode trees that represented the structured Canvas LMS data.
+ *      - The list returned will be a list of DataNodes with the following structure:
+ *          CourseDataNode -> AssignmentDataNode -> FileDataNode (FileDataNodes represent assignment data, such as
+ *          descriptions or submissions).
+ *
+ * - `runGenerate`: A function that generates the pdf for the report using the pre-generated DataNode structure or
+ *      the provided one.
+ *
+ *   @See canvas-capture/src/generation/generation.types.ts
  */
 export const useGenerateNext = () => {
     const { canvasAccessToken, canvasDomain, isStudent } = useSettingsStore()
