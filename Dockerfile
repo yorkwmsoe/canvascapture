@@ -1,7 +1,7 @@
-FROM node:20.18.0-slim
+FROM electronuserland/builder:wine
 
 WORKDIR /usr/src
 
 RUN apt-get update -y
 
-RUN npm install -g pnpm@9.15.5
+RUN npm install -g pnpm@10.7
