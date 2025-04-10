@@ -88,6 +88,9 @@ export async function generate(
         // Attach TOC
         htmlContent = prependTOC(htmlContent)
 
+        // Insert jump links
+        htmlContent = insertJumpLinks(htmlContent)
+
         htmlData.push({
             filePath: join(
                 generationName,
@@ -150,7 +153,9 @@ async function createCourseHTMLMapping(
                 // Surround child node's content with a labeled div.
                 // This steps "embeds" the structure onto the resulting document.
                 const div: HTMLDivElement = document.createElement('div')
-                div.id = childNode.key // label the div with the nodes key
+                div.id =
+                    'data-node-content-' + childNode.key.replaceAll(':', '-') // identify the div with the nodes key
+                div.className = 'data-node-content' // label the div
                 div.innerHTML = md.render(childNode.content.join('\n')) // insert actual content to div
 
                 // Append child content to assignment's total content.
@@ -270,6 +275,69 @@ async function createCourseChartMapping(
         courseChartMap.set(courseNode, charts)
     }
     return courseChartMap
+}
+
+/**
+ * Modifies the provided HTML string by inserting jump links into content areas with a specific structure
+ * and returns the updated HTML string.
+ *
+ * Specifically, a "Jump to:" section is added to every data node content div.
+ *
+ * @param {string} html - The input HTML string to process and add jump links to.
+ * @return {string} - The updated HTML string with jump links inserted.
+ */
+function insertJumpLinks(html: string) {
+    // Prepare HTML for modification.
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(html, 'text/html')
+
+    // Find all data node content divs (where we will insert jump links)
+    const dataNodeContentDivs = [
+        ...doc.querySelectorAll('.data-node-content'),
+    ] as HTMLDivElement[]
+
+    // Insert jump links.
+    for (const div of dataNodeContentDivs) {
+        const parentKey = div.id.slice(0, div.id.lastIndexOf('-'))
+
+        const descriptionID = parentKey + '-description'
+        const lowID = parentKey + '-low'
+        const medianID = parentKey + '-median'
+        const highID = parentKey + '-high'
+
+        const jumpLinks = doc.createElement('h3')
+        jumpLinks.innerText = 'Jump to: '
+
+        if (doc.querySelector(`#${descriptionID}`) !== null) {
+            const descriptionLink = doc.createElement('a')
+            descriptionLink.href = `#${descriptionID}`
+            descriptionLink.innerText = 'Description'
+            jumpLinks.innerHTML += descriptionLink.outerHTML + ' | '
+        }
+        if (doc.querySelector(`#${lowID}`) !== null) {
+            const lowLink = doc.createElement('a')
+            lowLink.href = `#${lowID}`
+            lowLink.innerText = 'Low'
+            jumpLinks.innerHTML += lowLink.outerHTML + ' | '
+        }
+        if (doc.querySelector(`#${medianID}`) !== null) {
+            const medianLink = doc.createElement('a')
+            medianLink.href = `#${medianID}`
+            medianLink.innerText = 'Median'
+            jumpLinks.innerHTML += medianLink.outerHTML + ' | '
+        }
+        if (doc.querySelector(`#${highID}`) !== null) {
+            const highLink = doc.createElement('a')
+            highLink.href = `#${highID}`
+            highLink.innerText = 'High'
+            jumpLinks.innerHTML += highLink.outerHTML + ' | '
+        }
+
+        // Insert after assignment/submission title.
+        div.insertBefore(jumpLinks, div.children[1] || null)
+    }
+
+    return doc.body.innerHTML
 }
 
 /**
