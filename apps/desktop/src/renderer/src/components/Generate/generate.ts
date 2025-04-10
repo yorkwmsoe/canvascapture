@@ -42,6 +42,8 @@ import {
  * assignment and submission details. Then, it generates per-course Markdown
  * content, converts it to HTML, and optionally includes statistical graphs.
  *
+ * Any non-CourseDataNodes are simply ignored.
+ *
  * @param data - The hierarchical course data nodes containing assignments and files.
  * @param generationName - The name of the generation project (used for directory naming).
  * @param documentsPath - The root path where generated files will be stored.
@@ -57,6 +59,8 @@ export async function generate(
     documentsPath: string,
     requestedCharts: Record<string, boolean> = {}
 ) {
+    const courses = data.filter((n) => isCourseDataNode(n))
+
     // Remove existing directory to start fresh
     rmSync(join(documentsPath, sanitizePath(generationName)), {
         recursive: true,
@@ -70,7 +74,7 @@ export async function generate(
 
     // Mappings from a course's data node to its markdown and chart content.
     const { courseMarkdownMap, courseChartMap } =
-        await createCourseContentMappings(data, requestedCharts)
+        await createCourseContentMappings(courses, requestedCharts)
 
     const htmlData: FilePathContentPair[] = []
     const md = markdownit({ linkify: true, html: true })
@@ -79,7 +83,7 @@ export async function generate(
         const markdownContent = courseMarkdownMap.get(courseNode)!
 
         // Combine HTML content.
-        let htmlContent =
+        let htmlContent: string =
             md.render(markdownContent) + // Convert markdown to HTML
                 courseChartMap.get(courseNode) || ''
 
@@ -114,7 +118,7 @@ export async function generate(
  *          - `courseChartMap`: A mapping of each course node to its generated chart HTML content.
  */
 async function createCourseContentMappings(
-    data: DataNode[],
+    data: CourseDataNode[],
     requestedCharts: Record<string, boolean>
 ) {
     // A mapping from a course's data node to its corresponding markdown content.
