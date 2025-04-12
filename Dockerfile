@@ -1,4 +1,4 @@
-FROM electronuserland/builder:wine
+FROM node:20.18.1-slim
 
 WORKDIR /usr/src
 

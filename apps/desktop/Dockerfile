@@ -1,4 +1,4 @@
-FROM electronuserland/builder:wine
+FROM electronuserland/builder:20-wine-01.25
 
 WORKDIR /usr/src
 
