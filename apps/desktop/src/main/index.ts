@@ -134,18 +134,13 @@ ipcMain.handle('generate', async (_event, htmlData: FilePathContentPair[]) => {
                 printBackground: true,
             })
 
-            // Write file
-            try {
-                // Ensure the directory exists
-                const dir = dirname(pdfPath) // Get the directory path
-                if (!existsSync(dir)) {
-                    mkdirSync(dir, { recursive: true }) // Create directory if it doesn't exist
-                }
-                // Write the file
-                writeFileSync(pdfPath, data, { encoding: 'utf-8' })
-            } catch (error) {
-                console.error('Error writing file:', error)
+            // Ensure the directory exists
+            const dir = dirname(pdfPath) // Get the directory path
+            if (!existsSync(dir)) {
+                mkdirSync(dir, { recursive: true }) // Create directory if it doesn't exist
             }
+            // Write the file
+            writeFileSync(pdfPath, data, { encoding: 'utf-8' })
         })
     }
 })
