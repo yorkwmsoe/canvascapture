@@ -23,7 +23,7 @@ const expectedOutput = [
         '\n' +
         '| Student Score | Correct Comments | Neutral Comments | Additional Comments |\n' +
         '| --- | --- | --- | --- |\n' +
-        '| Full | <p>Wow you are so amazing you guessed this correct, these are the corrents</p> | <p>To Drake or not to drake, these are neutral comment</p> | ADD FROM SCRAPING |\n',
+        '| Full | <p>Wow you are so amazing you guessed this correct, these are the corrents</p> | <p>To Drake or not to drake, these are neutral comment</p> | None |\n',
     '## Question 2\n' +
         '| Question Name | Points Possible | Question Description | Question Type |\n' +
         '| --- | --- | --- | --- |\n' +
@@ -31,7 +31,7 @@ const expectedOutput = [
         '\n' +
         '| Student Score | Correct Comments | Neutral Comments | Additional Comments |\n' +
         '| --- | --- | --- | --- |\n' +
-        '| Full |  |  | ADD FROM SCRAPING |\n',
+        '| Full |  |  | None |\n',
     '## Question 3\n' +
         '| Question Name | Points Possible | Question Description | Question Type |\n' +
         '| --- | --- | --- | --- |\n' +
@@ -39,7 +39,7 @@ const expectedOutput = [
         '\n' +
         '| Student Score | Incorrect Comments | Neutral Comments | Additional Comments |\n' +
         '| --- | --- | --- | --- |\n' +
-        '| No Points | <p>You guessed incorrectly DRAKE, these are the incorrect comments</p> | <p>These are the Neutral comments Drake celly</p> | ADD FROM SCRAPING |\n',
+        '| No Points | <p>You guessed incorrectly DRAKE, these are the incorrect comments</p> | <p>These are the Neutral comments Drake celly</p> | None |\n',
 ]
 
 describe('Testing assembleQuizQuestionsAndComments', async () => {
