@@ -3,7 +3,8 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import * as remote from '@electron/remote/main'
-import { writeFile } from 'fs'
+import { writeFileSync, mkdirSync, existsSync } from 'fs'
+import { dirname } from 'path'
 
 const isTest = process.env.NODE_ENV === 'test'
 if (isTest) {
@@ -132,7 +133,19 @@ ipcMain.handle('generate', async (_event, htmlData: FilePathContentPair[]) => {
             const data = await win.webContents.printToPDF({
                 printBackground: true,
             })
-            writeFile(pdfPath, data, () => {})
+
+            // Write file
+            try {
+                // Ensure the directory exists
+                const dir = dirname(pdfPath) // Get the directory path
+                if (!existsSync(dir)) {
+                    mkdirSync(dir, { recursive: true }) // Create directory if it doesn't exist
+                }
+                // Write the file
+                writeFileSync(pdfPath, data, { encoding: 'utf-8' })
+            } catch (error) {
+                console.error('Error writing file:', error)
+            }
         })
     }
 })
