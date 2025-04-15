@@ -77,6 +77,7 @@ export type QuestionData = {
     correct_answers: QuizSubmissionAnswer[]
     correct: boolean | 'partial'
     question_type: string //should eventually make this explicit
+    additional_comments?: string
 }
 
 export type Variable = {
