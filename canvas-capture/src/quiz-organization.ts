@@ -69,17 +69,17 @@ export async function assembleQuizQuestionsAndComments(
         auth.canvasDomain,
         auth.canvasAccessToken
     )
-    
+
     quizSubmissionQuestions.sort((a, b) => a.position - b.position)
     quizQuestionsParams.sort((a, b) => a.position - b.position)
     quizQuestionsNoParams.sort(
         (a, b) => a.assessment_question_id - b.assessment_question_id
     )
 
-    
-    quizAdditionalComments = quizAdditionalComments.filter(a => a.id===submission_id)
+    quizAdditionalComments = quizAdditionalComments.filter(
+        (a) => a.id === submission_id
+    )
 
-    
     // for(let i =0;i<quizAdditionalComments.length;i++){
     //     quizAdditionalComments[i].comments.sort((a,b)=>a.question_id-b.question_id)
     // }
@@ -104,7 +104,8 @@ export async function assembleQuizQuestionsAndComments(
             correct_answers: [], //need further implementation
             correct: quizSubmissionQuestions[i].correct,
             question_type: quizSubmissionQuestions[i].question_type,
-            additional_comments: quizAdditionalComments[0].comments[i].more_comments
+            additional_comments:
+                quizAdditionalComments[0].comments[i].more_comments,
         } as QuestionData
         questionsData.push(questionData)
     }
@@ -219,9 +220,9 @@ export function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
             'Neutral Comments',
             'Additional Comments',
         ])
-        let curComment = "None"
-        if(question.additional_comments!=undefined){
-            curComment=question.additional_comments
+        let curComment = 'None'
+        if (question.additional_comments != undefined) {
+            curComment = question.additional_comments
         }
         const questionTableBody2 = createTableRows([
             [score, conditionalComments, neutral_comments, curComment],
