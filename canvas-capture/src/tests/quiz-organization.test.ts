@@ -41,26 +41,8 @@ const expectedOutput = [
         '| --- | --- | --- | --- |\n' +
         '| No Points | <p>You guessed incorrectly DRAKE, these are the incorrect comments</p> | <p>These are the Neutral comments Drake celly</p> | None |\n',
 ]
+//TODO: write an "assembleQuizQuestionsAndComments test" with a working vm after new implementation that requires new values/data
 
-describe('Testing assembleQuizQuestionsAndComments', async () => {
-    const sampleCourse: Course = JSON.parse(courseWithQuiz)
-    const sampleAssignment: Assignment = JSON.parse(assignmentWhichIsQuiz)
-    const sampleSubmission: Submission = JSON.parse(submissionForQuiz)
-    const auth: Auth = {
-        canvasAccessToken: 'Fake Token',
-        canvasDomain: 'http://sdlstudentvm06.msoe.edu',
-    }
-
-    test('assembleQuizQuestionsAndComments', async () => {
-        const output = await assembleQuizQuestionsAndComments(
-            auth,
-            sampleCourse,
-            sampleAssignment,
-            sampleSubmission
-        )
-        expect(output).toEqual(expectedOutput)
-    })
-})
 
 describe('Testing formatQuizQuestions', async () => {
     const questionsDataString = JSON.stringify([
