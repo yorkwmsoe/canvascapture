@@ -275,7 +275,7 @@ export const getAdditionalQuizComments = async (
         { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
     ).then(toJSON<QuizSubmissionHistory[]>)
 
-    let commentsAndID = []
+    const commentsAndID = []
     if (query != undefined) {
         for (let i = 0; i < query.length; i++) {
             const history = query[i].submission_history
