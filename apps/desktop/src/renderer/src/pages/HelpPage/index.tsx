@@ -383,13 +383,8 @@ export function HelpPage() {
                             </li>
                         </ol>
                     </Collapse.Panel>
-                    <Collapse.Panel
-                        key={'GAT'}
-                        header={'Github Access Token'}
-                    >
+                    <Collapse.Panel key={'GAT'} header={'Github Access Token'}>
                         <h1>TBD</h1>
-
-
                     </Collapse.Panel>
                 </Collapse>
             </Layout>

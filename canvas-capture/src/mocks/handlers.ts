@@ -16,7 +16,6 @@ import {
     quizSubmissionQuestionsOrganizationRawJSON,
     quiz2QuestionsNoParamsRawJSON,
     quiz2QuestionsParamsRawJSON,
-    
 } from './canvas.api.mocks'
 
 const sampleOptions = { status: 200, statusText: 'OK' }
@@ -75,7 +74,6 @@ export const handlers = [
             return new Response(submissionForQuiz, sampleOptions)
         }
     ),
-    
 
     // Quiz Header
     http.get(

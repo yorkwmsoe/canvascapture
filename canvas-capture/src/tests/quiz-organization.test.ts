@@ -1,18 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import {
-    assembleQuizQuestionsAndComments,
-    formatQuizQuestions,
-} from '../quiz-organization'
-import { Auth } from '../canvas.api'
-
-import {
-    courseWithQuiz,
-    assignmentWhichIsQuiz,
-    submissionForQuiz,
-} from '../mocks/canvas.api.mocks'
-import { Course } from '../types/canvas_api/course'
-import { Assignment } from '../types/canvas_api/assignment'
-import { Submission } from '../types/canvas_api/submission'
+import { formatQuizQuestions } from '../quiz-organization'
 import { QuestionData } from '../types/canvas_api/quiz-question'
 
 const expectedOutput = [
@@ -42,7 +29,6 @@ const expectedOutput = [
         '| No Points | <p>You guessed incorrectly DRAKE, these are the incorrect comments</p> | <p>These are the Neutral comments Drake celly</p> | None |\n',
 ]
 //TODO: write an "assembleQuizQuestionsAndComments test" with a working vm after new implementation that requires new values/data
-
 
 describe('Testing formatQuizQuestions', async () => {
     const questionsDataString = JSON.stringify([
