@@ -74,10 +74,15 @@ export type QuestionData = {
     correct_comments: string
     neutral_comments: string
     incorrect_comments: string
-    correct_answers: QuizSubmissionAnswer[]
+    answers: QuizSubmissionAnswer[]
     correct: boolean | 'partial'
     question_type: string //should eventually make this explicit
-    additional_comments?: string
+    submission_data: {
+        more_comments: string
+        text: string
+        points: number
+        [key: string]: string | number
+    }
 }
 
 export type Variable = {

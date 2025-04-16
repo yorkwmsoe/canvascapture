@@ -263,7 +263,7 @@ export const getQuizQuestionsNoParams = async (
     return quizQuestions
 }
 
-export const getAdditionalQuizComments = async (
+export const getSubmissionData = async (
     courseId: number,
     assignmentId: number,
     canvasDomain: string,
@@ -299,7 +299,7 @@ export const getAdditionalQuizComments = async (
 
                         commentsAndID.push({
                             id: query[i].id,
-                            comments: lowComments,
+                            submissionData: lowComments,
                         })
                     }
                 }
@@ -316,7 +316,9 @@ interface QuizSubmissionHistory {
         id: number
         submission_data: {
             more_comments: string
-            question_id: number
+            text: string
+            points: number
+            [key: string]: string | number
         }[]
     }[]
 }
