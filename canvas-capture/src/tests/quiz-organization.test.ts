@@ -1,18 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import {
-    assembleQuizQuestionsAndComments,
-    formatQuizQuestions,
-} from '../quiz-organization'
-import { Auth } from '../canvas.api'
-
-import {
-    courseWithQuiz,
-    assignmentWhichIsQuiz,
-    submissionForQuiz,
-} from '../mocks/canvas.api.mocks'
-import { Course } from '../types/canvas_api/course'
-import { Assignment } from '../types/canvas_api/assignment'
-import { Submission } from '../types/canvas_api/submission'
+import { formatQuizQuestions } from '../quiz-organization'
 import { QuestionData } from '../types/canvas_api/quiz-question'
 
 const expectedOutput = [
@@ -23,7 +10,7 @@ const expectedOutput = [
         '\n' +
         '| Student Score | Correct Comments | Neutral Comments | Additional Comments |\n' +
         '| --- | --- | --- | --- |\n' +
-        '| Full | <p>Wow you are so amazing you guessed this correct, these are the corrents</p> | <p>To Drake or not to drake, these are neutral comment</p> | ADD FROM SCRAPING |\n',
+        '| Full | <p>Wow you are so amazing you guessed this correct, these are the corrents</p> | <p>To Drake or not to drake, these are neutral comment</p> | None |\n',
     '## Question 2\n' +
         '| Question Name | Points Possible | Question Description | Question Type |\n' +
         '| --- | --- | --- | --- |\n' +
@@ -31,7 +18,7 @@ const expectedOutput = [
         '\n' +
         '| Student Score | Correct Comments | Neutral Comments | Additional Comments |\n' +
         '| --- | --- | --- | --- |\n' +
-        '| Full |  |  | ADD FROM SCRAPING |\n',
+        '| Full |  |  | None |\n',
     '## Question 3\n' +
         '| Question Name | Points Possible | Question Description | Question Type |\n' +
         '| --- | --- | --- | --- |\n' +
@@ -39,28 +26,9 @@ const expectedOutput = [
         '\n' +
         '| Student Score | Incorrect Comments | Neutral Comments | Additional Comments |\n' +
         '| --- | --- | --- | --- |\n' +
-        '| No Points | <p>You guessed incorrectly DRAKE, these are the incorrect comments</p> | <p>These are the Neutral comments Drake celly</p> | ADD FROM SCRAPING |\n',
+        '| No Points | <p>You guessed incorrectly DRAKE, these are the incorrect comments</p> | <p>These are the Neutral comments Drake celly</p> | None |\n',
 ]
-
-describe('Testing assembleQuizQuestionsAndComments', async () => {
-    const sampleCourse: Course = JSON.parse(courseWithQuiz)
-    const sampleAssignment: Assignment = JSON.parse(assignmentWhichIsQuiz)
-    const sampleSubmission: Submission = JSON.parse(submissionForQuiz)
-    const auth: Auth = {
-        canvasAccessToken: 'Fake Token',
-        canvasDomain: 'http://sdlstudentvm06.msoe.edu',
-    }
-
-    test('assembleQuizQuestionsAndComments', async () => {
-        const output = await assembleQuizQuestionsAndComments(
-            auth,
-            sampleCourse,
-            sampleAssignment,
-            sampleSubmission
-        )
-        expect(output).toEqual(expectedOutput)
-    })
-})
+//TODO: write an "assembleQuizQuestionsAndComments test" with a working vm after new implementation that requires new values/data
 
 describe('Testing formatQuizQuestions', async () => {
     const questionsDataString = JSON.stringify([

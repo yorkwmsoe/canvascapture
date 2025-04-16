@@ -11,6 +11,7 @@ import {
     getQuizQuestionsParams,
     getQuizSubmission,
     getQuizSubmissionQuestions,
+    getAdditionalQuizComments,
     Auth,
 } from './canvas.api'
 import { QuestionData } from './types/canvas_api/quiz-question'
@@ -62,11 +63,28 @@ export async function assembleQuizQuestionsAndComments(
         canvasDomain: auth.canvasDomain,
         canvasAccessToken: auth.canvasAccessToken,
     })
+    let quizAdditionalComments = await getAdditionalQuizComments(
+        course.id,
+        assignment.id,
+        auth.canvasDomain,
+        auth.canvasAccessToken
+    )
+
     quizSubmissionQuestions.sort((a, b) => a.position - b.position)
     quizQuestionsParams.sort((a, b) => a.position - b.position)
     quizQuestionsNoParams.sort(
         (a, b) => a.assessment_question_id - b.assessment_question_id
     )
+
+    quizAdditionalComments = quizAdditionalComments.filter(
+        (a) => a.id === submission_id
+    )
+
+    // for(let i =0;i<quizAdditionalComments.length;i++){
+    //     quizAdditionalComments[i].comments.sort((a,b)=>a.question_id-b.question_id)
+    // }
+    // quizAdditionalComments.sort((a,b)=> a.id-b.id)
+    console.log(quizAdditionalComments)
 
     //The quizSubmissionQuestions has 2 more items, depending on the quiz than quizQuestionsParams/NoParams
     //This is because there is a spacer which is not a question, and there is a question that has
@@ -86,6 +104,8 @@ export async function assembleQuizQuestionsAndComments(
             correct_answers: [], //need further implementation
             correct: quizSubmissionQuestions[i].correct,
             question_type: quizSubmissionQuestions[i].question_type,
+            additional_comments:
+                quizAdditionalComments[0].comments[i].more_comments,
         } as QuestionData
         questionsData.push(questionData)
     }
@@ -200,8 +220,12 @@ export function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
             'Neutral Comments',
             'Additional Comments',
         ])
+        let curComment = 'None'
+        if (question.additional_comments != undefined) {
+            curComment = question.additional_comments
+        }
         const questionTableBody2 = createTableRows([
-            [score, conditionalComments, neutral_comments, 'ADD FROM SCRAPING'],
+            [score, conditionalComments, neutral_comments, curComment],
         ])
         const questionString =
             questionHeader +
