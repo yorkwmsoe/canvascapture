@@ -121,30 +121,36 @@ export async function assembleQuizQuestionsAndAnswers(
     })
 
     // format quiz questions
-    const formattedQuestionsAndAnswers = quizQuestions.map(
-        (question, index) => {
-            const position = (index + 1).toString()
-            const question_name = question.question_name
-            const points_possible = question.points_possible.toString()
-            const qDescription = question.question_text
-                .toString()
-                .replace(/(<([^>]+)>|\n|&nbsp;)/gi, '')
-            const qType = question.question_type
+    return quizQuestions.map((question, index) => {
+        const position = (index + 1).toString()
+        const question_name = question.question_name
+        const points_possible = question.points_possible.toString()
+        const qDescription = question.question_text
+            .toString()
+            .replace(/(<([^>]+)>|\n|&nbsp;)/gi, '')
+        const qType = question.question_type
 
-            // generate question table
-            const questionHeader =
-                convertToHeader('Question #' + position, 2) + '\n'
-            const questionTableHeader = createTableHeader([
-                'Question Name',
-                'Points Possible',
-                'Question Description',
-                'Question Type',
-            ])
-            const questionTableBody =
-                createTableRows([
-                    [question_name, points_possible, qDescription, qType],
-                ]) + '\n'
+        // generate question table
+        const questionHeader =
+            convertToHeader('Question #' + position, 2) + '\n'
+        const questionTableHeader = createTableHeader([
+            'Question Name',
+            'Points Possible',
+            'Question Description',
+            'Question Type',
+        ])
+        const questionTableBody =
+            createTableRows([
+                [question_name, points_possible, qDescription, qType],
+            ]) + '\n'
 
+        if (
+            qType != 'numerical_question' &&
+            qType != 'essay_question' &&
+            qType != 'file_upload_question' &&
+            qType != 'text_only_question' &&
+            qType != 'matching_question'
+        ) {
             // generate answers table
             const answerTableHeader = createTableHeader(['Answer', 'Weight'])
             const answerTableBody = createTableRows([
@@ -154,18 +160,18 @@ export async function assembleQuizQuestionsAndAnswers(
             ])
 
             // put it all together
-            const formattedString =
+            return (
                 questionHeader +
                 questionTableHeader +
                 questionTableBody +
                 answerTableHeader +
                 answerTableBody
-
-            return formattedString
+            )
         }
-    )
 
-    return formattedQuestionsAndAnswers
+        // put it all together
+        return questionHeader + questionTableHeader + questionTableBody
+    })
 }
 
 /**
@@ -318,6 +324,56 @@ export function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
             answer = 'Uploaded a file'
         } else if (qType == 'text_only_question') {
             answer = 'n/a'
+        } else if (qType == 'matching_question') {
+            // Get all fields from submission_data that begin with 'answer_'
+            const answer_ids: string[] = []
+            const answerKeys = Object.keys(question.submission_data).filter(
+                function (k) {
+                    return k.indexOf('answer_') == 0
+                }
+            )
+            // For each remaining field the remaining part of the field (not 'answer_') is the id
+            for (let i = 0; i < answerKeys.length; i++) {
+                answer_ids.push(answerKeys[i].substring(7))
+            }
+            // Get the selected answers
+            const answerValues: string[] = []
+            for (let i = 0; i < answerKeys.length; i++) {
+                answerValues.push(
+                    <string>question.submission_data[answerKeys[i]]
+                )
+            }
+            // Get the left matches
+            const answerValues2: string[] = []
+            const answers = question.answers
+            for (let i = 0; i < answer_ids.length; i++) {
+                const currentId = answer_ids[i]
+                for (let j = 0; j < answers.length; j++) {
+                    const currentAnswer = answers[j]
+                    if ('' + currentAnswer.id == currentId) {
+                        answerValues2.push(currentAnswer.text)
+                        break
+                    }
+                }
+            }
+            // Get the selected right matches
+            const answerValues3: string[] = []
+            for (let i = 0; i < answerValues.length; i++) {
+                const currentId = answerValues[i]
+                for (let j = 0; j < answers.length; j++) {
+                    const currentAnswer = answers[j]
+                    if ('' + currentAnswer.match_id == currentId) {
+                        answerValues3.push(currentAnswer.right)
+                        break
+                    }
+                }
+            }
+            // Concatenate (and format) those values and store in 'answer'
+            const output: string[] = []
+            for (let i = 0; i < answerValues2.length; i++) {
+                output.push(answerValues2[i] + ' &#8594; ' + answerValues3[i])
+            }
+            answer = output.join(' &#124; ')
         }
 
         // If the answer is too long move it to a subsection below the table

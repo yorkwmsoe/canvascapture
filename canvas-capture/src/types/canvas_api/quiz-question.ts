@@ -63,6 +63,9 @@ export type QuizSubmissionAnswer = {
     weight: number
     // Identifier for the blank associated with the answer
     blank_id: string
+    // Identifiers used for matching questions
+    match_id: number
+    right: string
 }
 
 export type QuestionData = {
