@@ -3,30 +3,18 @@ import { formatQuizQuestions } from '../quiz-organization'
 import { QuestionData } from '../types/canvas_api/quiz-question'
 
 const expectedOutput = [
-    '## Question 1\n' +
-        '| Question Name | Points Possible | Question Description | Question Type |\n' +
+    '## Summary Table\n' +
+        '| Question Number | Question Type | Answer(s) | Score |\n' +
         '| --- | --- | --- | --- |\n' +
-        '| Question | 1 | Drake???? | true_false_question |\n' +
-        '\n' +
-        '| Student Score | Correct Comments | Neutral Comments | Additional Comments |\n' +
+        '| 1 | true false question |  | 0/1 |\n' +
+        '| 2 | multiple choice question |  | 0/1 |\n' +
+        '| 3 | multiple answers question |  | 0/1 |\n' +
+        '|  |  | **TOTAL SCORE:** | **0/3** |\n',
+    '## Comments\n' +
+        '| Question Number | Response Comments | Neutral Comments | Additional Comments |\n' +
         '| --- | --- | --- | --- |\n' +
-        '| Full | <p>Wow you are so amazing you guessed this correct, these are the corrents</p> | <p>To Drake or not to drake, these are neutral comment</p> | None |\n',
-    '## Question 2\n' +
-        '| Question Name | Points Possible | Question Description | Question Type |\n' +
-        '| --- | --- | --- | --- |\n' +
-        '| Question | 1 | Nice Spice??? | multiple_choice_question |\n' +
-        '\n' +
-        '| Student Score | Correct Comments | Neutral Comments | Additional Comments |\n' +
-        '| --- | --- | --- | --- |\n' +
-        '| Full |  |  | None |\n',
-    '## Question 3\n' +
-        '| Question Name | Points Possible | Question Description | Question Type |\n' +
-        '| --- | --- | --- | --- |\n' +
-        '| Question | 1 | This is a multiple answers question and is being used to test the presence, of correct, incorrent, neutral, and additional comments | multiple_answers_question |\n' +
-        '\n' +
-        '| Student Score | Incorrect Comments | Neutral Comments | Additional Comments |\n' +
-        '| --- | --- | --- | --- |\n' +
-        '| No Points | <p>You guessed incorrectly DRAKE, these are the incorrect comments</p> | <p>These are the Neutral comments Drake celly</p> | None |\n',
+        '| 1 | <p>Wow you are so amazing you guessed this correct, these are the corrents</p> | <p>To Drake or not to drake, these are neutral comment</p> |  |\n' +
+        '| 3 | <p>You guessed incorrectly DRAKE, these are the incorrect comments</p> | <p>These are the Neutral comments Drake celly</p> |  |\n',
 ]
 //TODO: write an "assembleQuizQuestionsAndComments test" with a working vm after new implementation that requires new values/data
 
@@ -44,9 +32,10 @@ describe('Testing formatQuizQuestions', async () => {
                 '<p>To Drake or not to drake, these are neutral comment</p>',
             incorrect_comments:
                 '<p>You are a failure, these are the incorrect comments</p>',
-            correct_answers: [],
+            answers: [],
             correct: true,
             question_type: 'true_false_question',
+            submission_data: { more_comments: '', text: '', points: 0 },
         },
         {
             quiz_id: 2,
@@ -57,9 +46,10 @@ describe('Testing formatQuizQuestions', async () => {
             correct_comments: '',
             neutral_comments: '',
             incorrect_comments: '',
-            correct_answers: [],
+            answers: [],
             correct: true,
             question_type: 'multiple_choice_question',
+            submission_data: { more_comments: '', text: '', points: 0 },
         },
         {
             quiz_id: 2,
@@ -74,9 +64,10 @@ describe('Testing formatQuizQuestions', async () => {
                 '<p>These are the Neutral comments Drake celly</p>',
             incorrect_comments:
                 '<p>You guessed incorrectly DRAKE, these are the incorrect comments</p>',
-            correct_answers: [],
+            answers: [],
             correct: false,
             question_type: 'multiple_answers_question',
+            submission_data: { more_comments: '', text: '', points: 0 },
         },
     ])
     const questionsData: QuestionData[] = JSON.parse(questionsDataString)

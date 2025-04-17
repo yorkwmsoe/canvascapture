@@ -205,15 +205,42 @@ export function HelpPage() {
                                 report
                                 <ul>
                                     <li>
-                                        Select <b>Time to Grade</b> to include a
-                                        graph of the amount of time taken to
-                                        grade each assignment from when it was
-                                        submitted
+                                        Select <b>Average Grade by Group</b> to
+                                        include a graph of the average grade for
+                                        each assignment group
+                                        <ul>
+                                            <li>
+                                                Groups are the same as you may
+                                                have set up within Canvas (ex:
+                                                exams, quizzes, homework, etc.)
+                                            </li>
+                                        </ul>
                                     </li>
                                     <li>
-                                        Select <b>Average Assignment Grades</b>{' '}
-                                        to include a graph of the average grade
-                                        per assignment
+                                        Select{' '}
+                                        <b>Average Grade by Assignment</b> to
+                                        include a graph of the average grade per
+                                        assignment
+                                    </li>
+                                    <li>
+                                        Select{' '}
+                                        <b>Grading Turnaround by Group</b> to
+                                        include a graph of the average time it
+                                        took you to grade all assignments within
+                                        each assignment group
+                                        <ul>
+                                            <li>
+                                                Groups are the same as you may
+                                                have set up within Canvas (ex:
+                                                exams, quizzes, homework, etc.)
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        Select{' '}
+                                        <b>Grading Turnaround by Assignment</b>{' '}
+                                        to include a graph of the average time
+                                        it took you to grade each assignment
                                     </li>
                                 </ul>
                             </li>
