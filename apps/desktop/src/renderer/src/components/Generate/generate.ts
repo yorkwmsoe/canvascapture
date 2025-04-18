@@ -352,16 +352,16 @@ function insertQuizLinks(html: string): string {
     // Find all quizzes
     const quizDivs = [...doc.querySelectorAll('.quiz')] as HTMLDivElement[]
 
-    const quizIds: string[] = []
-
     // Give Quizzes Unique ID based on Course/Assignment ID.
     quizDivs.map((div) => {
         const parentId = div.id.slice(idLimit, div.id.lastIndexOf('-'))
-        quizIds.push(parentId)
         const questions: HTMLHeadingElement[] = [...div.querySelectorAll('h2')]
-        questions.map((question, i) => {
+        questions.map((question) => {
             if (question.innerText.includes('Question #')) {
-                question.id = `quiz-${parentId}-question-${i}`
+                const questionNumber = question.innerText.slice(
+                    question.innerText.lastIndexOf('#') + 1
+                )
+                question.id = `quiz-${parentId}-question-${questionNumber}`
             }
         })
     })
@@ -372,10 +372,27 @@ function insertQuizLinks(html: string): string {
     )
 
     // Add Links to Quiz Submission Summary Tables
-    submissionDivs.map((div) => {
+    submissionDivs.map((div, i) => {
         const parentId = div.id.slice(idLimit, div.id.lastIndexOf('-'))
+
+        const submissionElements = Array.from(div.children)
+
+        submissionElements.map((childElement) => {
+            if (
+                childElement.tagName === 'H3' &&
+                childElement.innerHTML.includes('Question')
+            ) {
+                const childElementText = childElement.innerHTML
+                const questionNumber = childElementText.slice(
+                    childElementText.lastIndexOf(' ') + 1
+                )
+                childElement.innerHTML = `<a href="#quiz-${parentId}-question-${questionNumber}">${childElementText}</a>`
+                childElement.id = `quiz-${parentId}-submission-${i}-question-${questionNumber}`
+            }
+        })
+
         // Get Correct TBody Element
-        const table = [...div.children].filter((childElement) => {
+        const table = submissionElements.filter((childElement) => {
             return (
                 childElement.previousElementSibling?.tagName === 'H2' &&
                 childElement.previousElementSibling?.innerHTML ===
@@ -383,10 +400,13 @@ function insertQuizLinks(html: string): string {
             )
         })[0].lastElementChild
         if (table) {
-            ;[...table.children].map((row, i) => {
-                const questionNumber = [...row.children][0].innerHTML
-                ;[...row.children][0].innerHTML =
-                    `<a href="#quiz-${parentId}-question-${i}">${questionNumber}</a>`
+            Array.from(table.children).map((row) => {
+                const columns = Array.from(row.children)
+                const questionNumber = columns[0].innerHTML
+                columns[0].innerHTML = `<a href="#quiz-${parentId}-question-${questionNumber}">${questionNumber}</a>`
+                if (columns[2].innerHTML === 'See Below') {
+                    columns[2].innerHTML = `<a href="#quiz-${parentId}-submission-${i}-question-${questionNumber}">See Below</a>`
+                }
             })
         }
     })
