@@ -91,6 +91,8 @@ export async function generate(
         // Insert jump links
         htmlContent = insertJumpLinks(htmlContent)
 
+        htmlContent = insertQuizLinks(htmlContent)
+
         htmlData.push({
             filePath: join(
                 generationName,
@@ -156,8 +158,10 @@ async function createCourseHTMLMapping(
                 div.id =
                     'data-node-content-' + childNode.key.replaceAll(':', '-') // identify the div with the nodes key
                 div.className = 'data-node-content' // label the div
+                if (assignmentNode.assignment.is_quiz_assignment){
+                    div.classList.add('quiz')
+                }
                 div.innerHTML = md.render(childNode.content.join('\n')) // insert actual content to div
-
                 // Append child content to assignment's total content.
                 courseHTMLDocument += div.outerHTML
             }
@@ -286,7 +290,7 @@ async function createCourseChartMapping(
  * @param {string} html - The input HTML string to process and add jump links to.
  * @return {string} - The updated HTML string with jump links inserted.
  */
-function insertJumpLinks(html: string) {
+function insertJumpLinks(html: string): string {
     // Prepare HTML for modification.
     const parser = new DOMParser()
     const doc = parser.parseFromString(html, 'text/html')
@@ -336,6 +340,56 @@ function insertJumpLinks(html: string) {
         // Insert after assignment/submission title.
         div.insertBefore(jumpLinks, div.children[1] || null)
     }
+
+    return doc.body.innerHTML
+}
+
+function insertQuizLinks(html: string): string {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(html, 'text/html')
+    const idLimit = 'data-node-content-'.length
+
+    // Find all quizzes
+    const quizDivs = [
+        ...doc.querySelectorAll('.quiz'),
+    ] as HTMLDivElement[]
+
+    const quizIds: string[] = []
+
+    // Give Quizzes Unique ID based on Course/Assignment ID.
+    quizDivs.map((div) => {
+        const parentId = div.id.slice(idLimit, div.id.lastIndexOf('-'))
+        quizIds.push(parentId)
+        const questions: HTMLHeadingElement[] = [
+            ...div.querySelectorAll('h2')
+        ]
+        questions.map((question, i) => {
+            if (question.innerText.includes('Question #')) {
+                question.id = `quiz-${parentId}-question-${i}`
+            }
+        })
+    })
+
+    // Get All Quiz Submissions
+    const submissionDivs = [
+        ...doc.querySelectorAll('.data-node-content')
+    ].filter((div) => div.classList.contains('quiz') && !div.id.includes('description') &&
+                                          quizIds.includes(div.id.slice(idLimit, div.id.lastIndexOf('-'))))
+
+    // Add Links to Quiz Submission Summary Tables
+    submissionDivs.map((div) => {
+        const parentId = div.id.slice(idLimit, div.id.lastIndexOf('-'))
+        // Get Correct TBody Element
+        const table = [...div.children].filter((childElement) => {
+            return childElement.previousElementSibling?.tagName === 'H2' && childElement.previousElementSibling?.innerHTML === 'Summary Table'
+        })[0].lastElementChild;
+        if (table) {
+            [...table.children].map((row, i) => {
+                const questionNumber = [...row.children][0].innerHTML;
+                [...row.children][0].innerHTML = `<a href="#quiz-${parentId}-question-${i}">${questionNumber}</a>`
+            })
+        }
+    })
 
     return doc.body.innerHTML
 }
