@@ -158,7 +158,7 @@ async function createCourseHTMLMapping(
                 div.id =
                     'data-node-content-' + childNode.key.replaceAll(':', '-') // identify the div with the nodes key
                 div.className = 'data-node-content' // label the div
-                if (assignmentNode.assignment.is_quiz_assignment){
+                if (assignmentNode.assignment.is_quiz_assignment) {
                     div.classList.add('quiz')
                 }
                 div.innerHTML = md.render(childNode.content.join('\n')) // insert actual content to div
@@ -350,9 +350,7 @@ function insertQuizLinks(html: string): string {
     const idLimit = 'data-node-content-'.length
 
     // Find all quizzes
-    const quizDivs = [
-        ...doc.querySelectorAll('.quiz'),
-    ] as HTMLDivElement[]
+    const quizDivs = [...doc.querySelectorAll('.quiz')] as HTMLDivElement[]
 
     const quizIds: string[] = []
 
@@ -360,9 +358,7 @@ function insertQuizLinks(html: string): string {
     quizDivs.map((div) => {
         const parentId = div.id.slice(idLimit, div.id.lastIndexOf('-'))
         quizIds.push(parentId)
-        const questions: HTMLHeadingElement[] = [
-            ...div.querySelectorAll('h2')
-        ]
+        const questions: HTMLHeadingElement[] = [...div.querySelectorAll('h2')]
         questions.map((question, i) => {
             if (question.innerText.includes('Question #')) {
                 question.id = `quiz-${parentId}-question-${i}`
@@ -371,22 +367,26 @@ function insertQuizLinks(html: string): string {
     })
 
     // Get All Quiz Submissions
-    const submissionDivs = [
-        ...doc.querySelectorAll('.data-node-content')
-    ].filter((div) => div.classList.contains('quiz') && !div.id.includes('description') &&
-                                          quizIds.includes(div.id.slice(idLimit, div.id.lastIndexOf('-'))))
+    const submissionDivs = quizDivs.filter(
+        (div) => !div.id.includes('description')
+    )
 
     // Add Links to Quiz Submission Summary Tables
     submissionDivs.map((div) => {
         const parentId = div.id.slice(idLimit, div.id.lastIndexOf('-'))
         // Get Correct TBody Element
         const table = [...div.children].filter((childElement) => {
-            return childElement.previousElementSibling?.tagName === 'H2' && childElement.previousElementSibling?.innerHTML === 'Summary Table'
-        })[0].lastElementChild;
+            return (
+                childElement.previousElementSibling?.tagName === 'H2' &&
+                childElement.previousElementSibling?.innerHTML ===
+                    'Summary Table'
+            )
+        })[0].lastElementChild
         if (table) {
-            [...table.children].map((row, i) => {
-                const questionNumber = [...row.children][0].innerHTML;
-                [...row.children][0].innerHTML = `<a href="#quiz-${parentId}-question-${i}">${questionNumber}</a>`
+            ;[...table.children].map((row, i) => {
+                const questionNumber = [...row.children][0].innerHTML
+                ;[...row.children][0].innerHTML =
+                    `<a href="#quiz-${parentId}-question-${i}">${questionNumber}</a>`
             })
         }
     })
