@@ -278,15 +278,82 @@ async function createCourseChartMapping(
 }
 
 /**
- * Modifies the provided HTML string by inserting jump links into content areas with a specific structure
- * and returns the updated HTML string.
  *
- * Specifically, a "Jump to:" section is added to every data node content div.
+ * ### Description
+ * This is a helper function that inserts a *Jump Link* section for each assignment subsection (description, low
+ * submission, median submission, high submission).
+ *
+ * Each *Jump Link* section is wrapped in a `<div>` element of class `data-node-content-jumplinks` and with a custom
+ * data-attribute that advertises which subsections it contains jump links for. For example, the following *Jump Link*
+ * section would contain links to all sections:
+ * ```
+ * <div class="data-node-content-jumplinks" data-sections="description,low,median,high">
+ *   ...
+ * </div>
+ * ```
+ *
+ * Specifically, this method modifies the provided HTML string by inserting a *Jump Link* section inside each `<div>` of
+ * class `data-node-content`. The *Jump Link* section will be placed after the first header element or at the start if
+ * there is section contains no header tags. The *Jump Link* section contains jump links to sections of the same
+ * *Group*. Up to four jump links are generated per *Jump Link* section:
+ *  1) Link to the group's **description** section.
+ *  2) Link to the group's **low** submission section.
+ *  3) Link to the group's **median** submission section.
+ *  4) Link to the group's **high** submission section.
+ *
+ * #### Definition of a Group
+ * `<div>` elements of class `data-node-content` belong to the same group if each of the `<div>` elements share an
+ * identical id prefix followed by a dash and their section identifier. For example, the following `<div>` elements
+ * would be considered to be of the same group:
+ * - `<div class='data-node-content' id='4-15-description'>...</div>`
+ * - `<div class='data-node-content' id='4-15-low'>...</div>`
+ * - `<div class='data-node-content' id='4-15-median'>...</div>`
+ *
+ * And the following would **not** belong to the group above:
+ * - `<div class='data-node-content' id='4-17-median'>...</div>`
+ *
+ * #### Valid Input
+ * An error will be thrown if a `<div>` element of class `data-node-content` is found to have an erroneous id. An id is
+ * erroneous if:
+ * 1) It does not have a post-fix specifying its subsection (i.e. it doesn't use any '-' characters)
+ *     - For example, id="ipsum"
+ * 2) The post-fix specified an undefined subsection (i.e. 'description', 'low', 'median', 'high')
+ *     - For example, id="4-15-newSection" or id="4-15".
+ *     - In the first example, "newSection" is the undefined subsection, and in
+ *         the second, "15" is the undefined subsection.
+ *
+ * This method does not otherwise necessarily validate the HTML described by the input string.
+ *
+ * #### Input/Output Example
+ *
+ * If the input contains the following HTML structure:
+ * ```
+ * ...
+ * <div class="data-node-content" id="3-12-description">...</div>
+ * ...
+ * <div class="data-node-content" id="3-12-low">...</div>
+ * ...
+ * ```
+ * Then output would contain that same structure, but with the *Jump Link* section inserted:
+ * ```
+ * ...
+ * <div class="data-node-content" id="3-12-description">
+ *     ...
+ *     <div class="data-node-content-jumplinks">...</div>
+ *     ...
+ * </div>
+ * <div class="data-node-content" id="3-12-low">
+ *     ...
+ *     <div class="data-node-content-jumplinks">...</div>
+ *     ...
+ * </div>
+ * ...
+ * ```
  *
  * @param {string} html - The input HTML string to process and add jump links to.
  * @return {string} - The updated HTML string with jump links inserted.
  */
-function insertJumpLinks(html: string) {
+function insertJumpLinks(html: string): string {
     // Prepare HTML for modification.
     const parser = new DOMParser()
     const doc = parser.parseFromString(html, 'text/html')
