@@ -23,7 +23,7 @@ include:
     - local: canvas-capture/.gitlab-ci.yml
 
 install-packages:
-    image: $BASE_IMAGE
+    image: $DESKTOP_IMAGE
     stage: 🛞 install
     script:
         # Install packages for all apps
@@ -40,27 +40,26 @@ install-packages:
             - apps/*/node_modules/
 
 check-format:
-    image: $BASE_IMAGE
+    image: $DESKTOP_IMAGE
     needs: ['install-packages']
     stage: ✅ check
     script:
         - pnpm format:check
 
 check-lint:
-    image: $BASE_IMAGE
+    image: $DESKTOP_IMAGE
     needs: ['install-packages']
     stage: ✅ check
     script:
         - pnpm lint
 
 cache:
-    key: electron-32.2.6
     paths:
     - .cache/
     - $DOCUMENTATION_BASE_PATH/public
 
 pages:
-    image: $BASE_IMAGE
+    image: $DESKTOP_IMAGE
     stage: 🚀 release
     needs: ['install-packages']
     script:

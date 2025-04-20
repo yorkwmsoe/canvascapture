@@ -1,5 +1,5 @@
 test-@canvas-capture:
-    image: $BASE_IMAGE
+    image: $DESKTOP_IMAGE
     stage: 🤞 test
     needs: ['install-packages']
     script:
@@ -12,7 +12,7 @@ test-@canvas-capture:
     coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
 
 mutate-canvas-capture:
-    image: $BASE_IMAGE
+    image: $DESKTOP_IMAGE
     stage: 🧬 mutant-test
     needs: ['install-packages', 'test-@canvas-capture']
     script:
