@@ -353,7 +353,7 @@ async function createCourseChartMapping(
  * @param {string} html - The input HTML string to process and add jump links to.
  * @return {string} - The updated HTML string with jump links inserted.
  */
-function insertJumpLinks(html: string): string {
+export function insertJumpLinks(html: string): string {
     // Prepare HTML for modification.
     const parser = new DOMParser()
     const doc = parser.parseFromString(html, 'text/html')
