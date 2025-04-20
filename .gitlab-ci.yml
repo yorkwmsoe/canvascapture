@@ -28,6 +28,7 @@ install-packages:
     script:
         # Install packages for all apps
         - pnpm install
+        - pnpm install
         # Build packages for all apps
         - pnpm package
         # Symlink packages for all apps
