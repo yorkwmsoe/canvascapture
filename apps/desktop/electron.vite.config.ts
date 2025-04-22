@@ -10,7 +10,8 @@ import * as process from 'node:process'
 
 export default defineConfig(() => {
     if (process.env.NODE_ENV !== 'test') {
-        process.env.ELECTRON_EXEC_PATH = '/usr/local/lib/node_modules/electron/dist'
+        process.env.ELECTRON_EXEC_PATH =
+            '/usr/local/lib/node_modules/electron/dist'
     }
 
     return {
@@ -22,7 +23,9 @@ export default defineConfig(() => {
         },
         renderer: {
             define: {
-                __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+                __APP_VERSION__: JSON.stringify(
+                    process.env.npm_package_version
+                ),
             },
             resolve: {
                 alias: {
