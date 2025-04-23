@@ -263,6 +263,66 @@ export const getQuizQuestionsNoParams = async (
     return quizQuestions
 }
 
+export const getSubmissionData = async (
+    courseId: number,
+    assignmentId: number,
+    canvasDomain: string,
+    canvasAccessToken: string
+) => {
+    const query = await fetch(
+        `${canvasDomain}/api/v1/courses/${courseId}/assignments/${assignmentId}
+        /submissions?include=submission_history`,
+        { headers: getApiHeaders({ accessToken: canvasAccessToken }) }
+    ).then(toJSON<QuizSubmissionHistory[]>)
+
+    const commentsAndID = []
+    if (query != undefined) {
+        for (let i = 0; i < query.length; i++) {
+            const history = query[i].submission_history
+            if (history) {
+                for (let j = 0; j < history.length; j++) {
+                    const submission = history[j]
+
+                    if (
+                        submission?.submission_data &&
+                        submission.id !== undefined
+                    ) {
+                        const lowComments = []
+
+                        for (
+                            let x = 0;
+                            x < submission.submission_data.length;
+                            x++
+                        ) {
+                            lowComments.push(submission.submission_data[x])
+                        }
+
+                        commentsAndID.push({
+                            id: query[i].id,
+                            submissionData: lowComments,
+                        })
+                    }
+                }
+            }
+        }
+    }
+
+    return commentsAndID
+}
+
+interface QuizSubmissionHistory {
+    id: number
+    submission_history?: {
+        id: number
+        submission_data: {
+            more_comments: string
+            text: string
+            points: number
+            [key: string]: string | number
+        }[]
+    }[]
+}
+
 export type GetQuizQuestionsParamsRequest = {
     courseId: number
     quizId: number

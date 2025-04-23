@@ -63,6 +63,9 @@ export type QuizSubmissionAnswer = {
     weight: number
     // Identifier for the blank associated with the answer
     blank_id: string
+    // Identifiers used for matching questions
+    match_id: number
+    right: string
 }
 
 export type QuestionData = {
@@ -74,9 +77,15 @@ export type QuestionData = {
     correct_comments: string
     neutral_comments: string
     incorrect_comments: string
-    correct_answers: QuizSubmissionAnswer[]
+    answers: QuizSubmissionAnswer[]
     correct: boolean | 'partial'
     question_type: string //should eventually make this explicit
+    submission_data: {
+        more_comments: string
+        text: string
+        points: number
+        [key: string]: string | number
+    }
 }
 
 export type Variable = {

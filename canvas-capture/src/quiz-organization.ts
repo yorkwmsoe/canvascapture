@@ -7,11 +7,12 @@ import { Course } from './types/canvas_api/course'
 import { Assignment } from './types/canvas_api/assignment'
 import { Submission } from './types/canvas_api/submission'
 import {
+    Auth,
     getQuizQuestionsNoParams,
     getQuizQuestionsParams,
     getQuizSubmission,
     getQuizSubmissionQuestions,
-    Auth,
+    getSubmissionData,
 } from './canvas.api'
 import { QuestionData } from './types/canvas_api/quiz-question'
 import { convertToHeader, createTableHeader, createTableRows } from './markdown'
@@ -62,10 +63,21 @@ export async function assembleQuizQuestionsAndComments(
         canvasDomain: auth.canvasDomain,
         canvasAccessToken: auth.canvasAccessToken,
     })
+    let quizSubmissionData = await getSubmissionData(
+        course.id,
+        assignment.id,
+        auth.canvasDomain,
+        auth.canvasAccessToken
+    )
+
     quizSubmissionQuestions.sort((a, b) => a.position - b.position)
     quizQuestionsParams.sort((a, b) => a.position - b.position)
     quizQuestionsNoParams.sort(
         (a, b) => a.assessment_question_id - b.assessment_question_id
+    )
+
+    quizSubmissionData = quizSubmissionData.filter(
+        (a) => a.id === submission_id
     )
 
     //The quizSubmissionQuestions has 2 more items, depending on the quiz than quizQuestionsParams/NoParams
@@ -83,9 +95,10 @@ export async function assembleQuizQuestionsAndComments(
             correct_comments: quizQuestionsParams[i].correct_comments_html,
             neutral_comments: quizQuestionsParams[i].neutral_comments_html,
             incorrect_comments: quizQuestionsParams[i].incorrect_comments_html,
-            correct_answers: [], //need further implementation
+            answers: quizQuestionsNoParams[i].answers,
             correct: quizSubmissionQuestions[i].correct,
             question_type: quizSubmissionQuestions[i].question_type,
+            submission_data: quizSubmissionData[0].submissionData[i],
         } as QuestionData
         questionsData.push(questionData)
     }
@@ -108,30 +121,36 @@ export async function assembleQuizQuestionsAndAnswers(
     })
 
     // format quiz questions
-    const formattedQuestionsAndAnswers = quizQuestions.map(
-        (question, index) => {
-            const position = (index + 1).toString()
-            const question_name = question.question_name
-            const points_possible = question.points_possible.toString()
-            const qDescription = question.question_text
-                .toString()
-                .replace(/(<([^>]+)>|\n|&nbsp;)/gi, '')
-            const qType = question.question_type
+    return quizQuestions.map((question, index) => {
+        const position = (index + 1).toString()
+        const question_name = question.question_name
+        const points_possible = question.points_possible.toString()
+        const qDescription = question.question_text
+            .toString()
+            .replace(/(<([^>]+)>|\n|&nbsp;)/gi, '')
+        const qType = question.question_type
 
-            // generate question table
-            const questionHeader =
-                convertToHeader('Question #' + position, 2) + '\n'
-            const questionTableHeader = createTableHeader([
-                'Question Name',
-                'Points Possible',
-                'Question Description',
-                'Question Type',
-            ])
-            const questionTableBody =
-                createTableRows([
-                    [question_name, points_possible, qDescription, qType],
-                ]) + '\n'
+        // generate question table
+        const questionHeader =
+            convertToHeader('Question #' + position, 2) + '\n'
+        const questionTableHeader = createTableHeader([
+            'Question Name',
+            'Points Possible',
+            'Question Description',
+            'Question Type',
+        ])
+        const questionTableBody =
+            createTableRows([
+                [question_name, points_possible, qDescription, qType],
+            ]) + '\n'
 
+        if (
+            qType != 'numerical_question' &&
+            qType != 'essay_question' &&
+            qType != 'file_upload_question' &&
+            qType != 'text_only_question' &&
+            qType != 'matching_question'
+        ) {
             // generate answers table
             const answerTableHeader = createTableHeader(['Answer', 'Weight'])
             const answerTableBody = createTableRows([
@@ -141,76 +160,300 @@ export async function assembleQuizQuestionsAndAnswers(
             ])
 
             // put it all together
-            const formattedString =
+            return (
                 questionHeader +
                 questionTableHeader +
                 questionTableBody +
                 answerTableHeader +
                 answerTableBody
-
-            return formattedString
+            )
         }
-    )
 
-    return formattedQuestionsAndAnswers
+        // put it all together
+        return questionHeader + questionTableHeader + questionTableBody
+    })
 }
 
+/**
+ * Format student quiz submissions
+ * @param quizQuestions An array of quiz questions
+ */
 export function formatQuizQuestions(quizQuestions: QuestionData[]): string[] {
-    const formattedQuestions: string[] = []
-    //const numQuestions = quizQuestions.length
-    quizQuestions.map((question) => {
-        const position = question.position.toString()
-        const question_name = question.question_name
-        const points_possible = question.points_possible.toString()
+    // Initialize output array
+    const formattedOutput: string[] = []
+    // Initialize section arrays
+    const quizSummarySection: string[] = []
+    const quizCommentsSection: string[] = []
+    const longQuizResponsesSection: string[] = []
+    // Initialize total score variables
+    let pointsEarned = 0
+    let totalPoints = 0
 
-        const qDescription = question.question_description
-            .toString()
-            .replace(/(<([^>]+)>|\n|&nbsp;)/gi, '')
-        const qType = question.question_type
-        const neutral_comments = question.neutral_comments
-
-        const questionHeader = convertToHeader('Question ' + position, 2) + '\n'
-        const questionTableHeader1 = createTableHeader([
-            'Question Name',
-            'Points Possible',
-            'Question Description',
+    if (quizQuestions.length > 0) {
+        // Create summary section header and table header
+        const summarySectionHeader = convertToHeader('Summary Table', 2) + '\n'
+        const summaryTableHeader = createTableHeader([
+            'Question Number',
             'Question Type',
+            'Answer(s)',
+            'Score',
         ])
-        const questionTableBody1 =
-            createTableRows([
-                [question_name, points_possible, qDescription, qType],
-            ]) + '\n'
+        quizSummarySection.push(summarySectionHeader + summaryTableHeader)
 
-        let commentType = ''
-        let conditionalComments = ''
-        let score = ''
-        if (question.correct === true) {
-            commentType = 'Correct'
-            score = 'Full'
-            conditionalComments = question.correct_comments
-        } else {
-            commentType = 'Incorrect'
-            conditionalComments = question.incorrect_comments
-            score = question.correct === 'partial' ? 'partial' : 'No Points'
-        }
-
-        const questionTableHeader2 = createTableHeader([
-            'Student Score',
-            commentType + ' Comments',
+        // Create comments section header and table header
+        const commentsSectionHeader = convertToHeader('Comments', 2) + '\n'
+        const commentsTableHeader = createTableHeader([
+            'Question Number',
+            'Response Comments',
             'Neutral Comments',
             'Additional Comments',
         ])
-        const questionTableBody2 = createTableRows([
-            [score, conditionalComments, neutral_comments, 'ADD FROM SCRAPING'],
+        quizCommentsSection.push(commentsSectionHeader + commentsTableHeader)
+
+        // Create long responses section header
+        const longQuizResponsesSectionHeader =
+            convertToHeader('Additional Responses', 2) + '\n'
+        longQuizResponsesSection.push(longQuizResponsesSectionHeader)
+    }
+
+    // For each quiz question
+    quizQuestions.map((question) => {
+        // Get relevant fields
+        const position = question.position.toString()
+        const points_possible = question.points_possible.toString()
+        const qType = question.question_type
+        const neutral_comments = question.neutral_comments
+
+        // Get student's answer(s), with variation based on question type
+        let answer = ''
+        if (
+            qType == 'multiple_choice_question' ||
+            qType == 'true_false_question'
+        ) {
+            // Get text field from submission_data
+            const text = question.submission_data.text
+            // Match the value to an answer id and set answer to the selected answer
+            const answers = question.answers
+            for (let i = 0; i < answers.length; i++) {
+                const currentAnswer = answers[i]
+                if (currentAnswer.id == text) {
+                    answer = currentAnswer.text
+                    break
+                }
+            }
+        } else if (
+            qType == 'short_answer_question' ||
+            qType == 'numerical_question' ||
+            qType == 'essay_question'
+        ) {
+            answer = question.submission_data.text
+        } else if (qType == 'fill_in_multiple_blanks_question') {
+            // Get all fields from submission_data that begin with 'answer_for_'
+            const answerValues: string[] = []
+            const answerKeys = Object.keys(question.submission_data).filter(
+                function (k) {
+                    return k.indexOf('answer_for_') == 0
+                }
+            )
+            for (let i = 0; i < answerKeys.length; i++) {
+                answerValues.push(
+                    <string>question.submission_data[answerKeys[i]]
+                )
+            }
+            // Concatenate (and format) their values and store in 'answer'
+            answer = answerValues.join(' &#124; ')
+        } else if (qType == 'multiple_answers_question') {
+            // Get all fields from submission_data that begin with 'answer_'
+            const answer_ids: string[] = []
+            const answerKeys = Object.keys(question.submission_data).filter(
+                function (k) {
+                    return k.indexOf('answer_') == 0
+                }
+            )
+            // For each remaining field, if its value is '1' then the remaining
+            // part of the field (not 'answer_') is the id
+            for (let i = 0; i < answerKeys.length; i++) {
+                if (<string>question.submission_data[answerKeys[i]] == '1') {
+                    answer_ids.push(answerKeys[i].substring(7))
+                }
+            }
+            // Match each id to an entry in question.answers and get the .text value
+            const answerValues: string[] = []
+            const answers = question.answers
+            for (let i = 0; i < answers.length; i++) {
+                const currentAnswer = answers[i]
+                for (let j = 0; j < answer_ids.length; j++) {
+                    const currentId = answer_ids[j]
+                    if (currentAnswer.id == currentId) {
+                        answerValues.push(currentAnswer.text)
+                        break
+                    }
+                }
+            }
+            // Concatenate (and format) those values and store in 'answer'
+            answer = answerValues.join(' &#124; ')
+        } else if (qType == 'multiple_dropdowns_question') {
+            // Get all fields from submission_data that begin with 'answer_for_'
+            const answerValues: string[] = []
+            const answerKeys = Object.keys(question.submission_data).filter(
+                function (k) {
+                    return k.indexOf('answer_for_') == 0
+                }
+            )
+            for (let i = 0; i < answerKeys.length; i++) {
+                answerValues.push(
+                    <string>question.submission_data[answerKeys[i]]
+                )
+            }
+            // Match their values to entries in question.answers and get the .text value
+            const answerValues2: string[] = []
+            const answers = question.answers
+            for (let i = 0; i < answers.length; i++) {
+                const currentAnswer = answers[i]
+                for (let j = 0; j < answerValues.length; j++) {
+                    const currentId = answerValues[j]
+                    if (currentAnswer.id == currentId) {
+                        answerValues2.push(currentAnswer.text)
+                        break
+                    }
+                }
+            }
+            // Concatenate (and format) those values and store in 'answer'
+            answer = answerValues2.join(' &#124; ')
+        } else if (qType == 'file_upload_question') {
+            answer = 'Uploaded a file'
+        } else if (qType == 'text_only_question') {
+            answer = 'n/a'
+        } else if (qType == 'matching_question') {
+            // Get all fields from submission_data that begin with 'answer_'
+            const answer_ids: string[] = []
+            const answerKeys = Object.keys(question.submission_data).filter(
+                function (k) {
+                    return k.indexOf('answer_') == 0
+                }
+            )
+            // For each remaining field the remaining part of the field (not 'answer_') is the id
+            for (let i = 0; i < answerKeys.length; i++) {
+                answer_ids.push(answerKeys[i].substring(7))
+            }
+            // Get the selected answers
+            const answerValues: string[] = []
+            for (let i = 0; i < answerKeys.length; i++) {
+                answerValues.push(
+                    <string>question.submission_data[answerKeys[i]]
+                )
+            }
+            // Get the left matches
+            const answerValues2: string[] = []
+            const answers = question.answers
+            for (let i = 0; i < answer_ids.length; i++) {
+                const currentId = answer_ids[i]
+                for (let j = 0; j < answers.length; j++) {
+                    const currentAnswer = answers[j]
+                    if ('' + currentAnswer.id == currentId) {
+                        answerValues2.push(currentAnswer.text)
+                        break
+                    }
+                }
+            }
+            // Get the selected right matches
+            const answerValues3: string[] = []
+            for (let i = 0; i < answerValues.length; i++) {
+                const currentId = answerValues[i]
+                for (let j = 0; j < answers.length; j++) {
+                    const currentAnswer = answers[j]
+                    if ('' + currentAnswer.match_id == currentId) {
+                        answerValues3.push(currentAnswer.right)
+                        break
+                    }
+                }
+            }
+            // Concatenate (and format) those values and store in 'answer'
+            const output: string[] = []
+            for (let i = 0; i < answerValues2.length; i++) {
+                output.push(answerValues2[i] + ' &#8594; ' + answerValues3[i])
+            }
+            answer = output.join(' &#124; ')
+        }
+
+        // If the answer is too long move it to a subsection below the table
+        if (answer.length > 20) {
+            longQuizResponsesSection.push(
+                convertToHeader('Question ' + position, 3) + '\n'
+            )
+            longQuizResponsesSection.push(answer + '\n\n')
+            answer = 'See Below'
+        }
+
+        // Get score field
+        const score = question.submission_data.points
+
+        // Update total score variables
+        pointsEarned += score
+        totalPoints += parseFloat(points_possible)
+
+        // Create summary table entry
+        const summaryTableEntry = createTableRows([
+            [
+                position,
+                qType.replace(/_/g, ' '),
+                answer,
+                score + '/' + points_possible,
+            ],
         ])
-        const questionString =
-            questionHeader +
-            questionTableHeader1 +
-            questionTableBody1 +
-            questionTableHeader2 +
-            questionTableBody2
-        formattedQuestions.push(questionString)
+
+        // Push the entry to the respective arrays
+        quizSummarySection.push(summaryTableEntry)
+
+        let additional_comment = ''
+        if (question.submission_data.more_comments != undefined) {
+            additional_comment = question.submission_data.more_comments
+        }
+        // Create comments table entry if it has data
+        if (
+            (question.correct === true
+                ? question.correct_comments.length > 0
+                : question.incorrect_comments.length > 0) ||
+            neutral_comments.length > 0 ||
+            additional_comment.length > 0
+        ) {
+            const commentsTableEntry = createTableRows([
+                [
+                    position,
+                    question.correct === true
+                        ? question.correct_comments
+                        : question.incorrect_comments,
+                    neutral_comments,
+                    additional_comment,
+                ],
+            ])
+            // Push the entry to the respective arrays
+            quizCommentsSection.push(commentsTableEntry)
+        }
     })
 
-    return formattedQuestions
+    // Add total score row to summary table
+    // Create summary table entry
+    quizSummarySection.push(
+        createTableRows([
+            [
+                '',
+                '',
+                '**TOTAL SCORE:**',
+                '**' + pointsEarned + '/' + totalPoints + '**',
+            ],
+        ])
+    )
+
+    // Fill the output array with the contents of the section arrays
+    formattedOutput.push(quizSummarySection.join(''))
+    if (longQuizResponsesSection.length > 1) {
+        formattedOutput.push(longQuizResponsesSection.join(''))
+    }
+    if (quizCommentsSection.length > 1) {
+        formattedOutput.push(quizCommentsSection.join(''))
+    }
+
+    // Return the output array
+    return formattedOutput
 }

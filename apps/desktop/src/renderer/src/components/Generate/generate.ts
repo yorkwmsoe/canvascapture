@@ -34,6 +34,9 @@ import {
     generateGradingTurnaroundChart,
 } from '@renderer/components/Generate/charts'
 
+// Utilized to convert markdown into HTML
+const md = markdownit({ linkify: true, html: true })
+
 /**
  * Generates course reports and exports them as Markdown and HTML files
  * with optional statistical graphs.
@@ -41,6 +44,8 @@ import {
  * The function first processes all provided course data nodes, extracting
  * assignment and submission details. Then, it generates per-course Markdown
  * content, converts it to HTML, and optionally includes statistical graphs.
+ *
+ * Any non-CourseDataNodes are simply ignored.
  *
  * @param data - The hierarchical course data nodes containing assignments and files.
  * @param generationName - The name of the generation project (used for directory naming).
@@ -57,6 +62,8 @@ export async function generate(
     documentsPath: string,
     requestedCharts: Record<string, boolean> = {}
 ) {
+    const courses = data.filter((n) => isCourseDataNode(n))
+
     // Remove existing directory to start fresh
     rmSync(join(documentsPath, sanitizePath(generationName)), {
         recursive: true,
@@ -69,22 +76,22 @@ export async function generate(
     })
 
     // Mappings from a course's data node to its markdown and chart content.
-    const { courseMarkdownMap, courseChartMap } =
-        await createCourseContentMappings(data, requestedCharts)
+    const htmlByCourse = await createCourseHTMLMapping(courses, requestedCharts)
 
     const htmlData: FilePathContentPair[] = []
-    const md = markdownit({ linkify: true, html: true })
-    for (const courseNode of courseMarkdownMap.keys()) {
+    for (const courseNode of htmlByCourse.keys()) {
         const courseName = getCourseName(courseNode.course)
-        const markdownContent = courseMarkdownMap.get(courseNode)!
 
         // Combine HTML content.
-        let htmlContent =
-            md.render(markdownContent) + // Convert markdown to HTML
-                courseChartMap.get(courseNode) || ''
+        let htmlContent: string = htmlByCourse.get(courseNode)!
 
         // Attach TOC
         htmlContent = prependTOC(htmlContent)
+
+        // Insert jump links
+        htmlContent = insertJumpLinks(htmlContent)
+
+        htmlContent = insertQuizLinks(htmlContent)
 
         htmlData.push({
             filePath: join(
@@ -100,34 +107,97 @@ export async function generate(
 }
 
 /**
- * Creates mappings for course content, associating each course's data node with its generated
- * Markdown and chart HTML content. This function is a helper for the `generate` function and
- * simplifies the construction of course-specific report content.
+ * Creates mappings for course HTML, associating each course's data node with its generated HTML content.
+ * This function is a helper for the `generate` function and simplifies the construction of course-specific report content.
  *
  * @param data - An array of `DataNode` objects representing the hierarchical course structure,
  *               which includes assignments, submissions, and associated metadata.
  * @param requestedCharts - A record specifying which charts to generate, with keys as chart names
  *                          (e.g., "averageGradeChart", "gradeTurnaroundChart") and boolean values
  *                          indicating whether the chart should be generated.
- * @returns An object containing:
- *          - `courseMarkdownMap`: A mapping of each course node to its generated Markdown content.
- *          - `courseChartMap`: A mapping of each course node to its generated chart HTML content.
+ * @returns A promise that resolves to a mapping from CourseDataNode to its corresponding HTML.
+ *      The returned map will have a key-value pair for every unique CourseDataNode given.
  */
-async function createCourseContentMappings(
-    data: DataNode[],
+async function createCourseHTMLMapping(
+    data: CourseDataNode[],
     requestedCharts: Record<string, boolean>
 ) {
-    // A mapping from a course's data node to its corresponding markdown content.
-    // The use of a Map instead of an Object ensured iteration are done in
-    //  insertion order.
-    const courseMarkdownMap = new Map<CourseDataNode, string>()
+    const htmlByCourse = new Map<CourseDataNode, string>()
+    const chartsByCourse = await createCourseChartMapping(data, requestedCharts)
 
+    // Generate separate HTML content for each course.
+    for (const courseNode of data) {
+        // If a course has no assignments, skip generation.
+        if (
+            courseNode.children === undefined ||
+            courseNode.children.length === 0
+        ) {
+            htmlByCourse.set(courseNode, '')
+            continue
+        }
+
+        // Start document with course title.
+        let courseHTMLDocument: string = `<h1 id="${courseNode.key}">${getCourseName(courseNode.course)}</h1>`
+
+        // Convert and append each assignment's content to the document.
+        for (const assignmentNode of courseNode.children) {
+            // Ensure this assignment has "children" (a description or a submission) associated with it.
+            if (
+                assignmentNode.children === undefined ||
+                assignmentNode.children.length === 0
+            ) {
+                continue
+            }
+
+            // For each "child" (description/assignment) node, convert its contents to HTML and append it
+            //  to the document.
+            for (const childNode of assignmentNode.children) {
+                // Surround child node's content with a labeled div.
+                // This steps "embeds" the structure onto the resulting document.
+                const div: HTMLDivElement = document.createElement('div')
+                div.id =
+                    'data-node-content-' + childNode.key.replaceAll(':', '-') // identify the div with the nodes key
+                div.className = 'data-node-content' // label the div
+                if (assignmentNode.assignment.is_quiz_assignment) {
+                    div.classList.add('quiz')
+                }
+                div.innerHTML = md.render(childNode.content.join('\n')) // insert actual content to div
+                // Append child content to assignment's total content.
+                courseHTMLDocument += div.outerHTML
+            }
+        }
+
+        // Append charts to the document
+        courseHTMLDocument += chartsByCourse.get(courseNode)
+
+        // Add resulting document to the map.
+        htmlByCourse.set(courseNode, courseHTMLDocument)
+    }
+
+    return htmlByCourse
+}
+
+/**
+ * Creates mappings for course charts, associating each course's data node chart HTML content. This function is a
+ * for the `generate` function and simplifies the construction of course-specific report content.
+ *
+ * @param data - An array of `DataNode` objects representing the hierarchical course structure,
+ *               which includes assignments, submissions, and associated metadata.
+ * @param requestedCharts - A record specifying which charts to generate, with keys as chart names
+ *                          (e.g., "averageGradeChart", "gradeTurnaroundChart") and boolean values
+ *                          indicating whether the chart should be generated.
+ * @returns `courseChartMap`: A promise that resolves to a mapping of each course node to its generated chart HTML content.
+ */
+async function createCourseChartMapping(
+    data: CourseDataNode[],
+    requestedCharts: Record<string, boolean>
+) {
     // A mapping from a course's data node to its corresponding chart HTML content.
     // The use of a Map instead of an Object ensured iteration are done in
     //  insertion order.
     const courseChartMap = new Map<CourseDataNode, string>()
 
-    // Create each course's content.
+    // Create each course's charts.
     for (const courseNode of data) {
         if (!isCourseDataNode(courseNode)) continue
 
@@ -148,20 +218,13 @@ async function createCourseContentMappings(
         const assignmentSubmissionsMap = new Map<number, Submission[]>()
 
         // This loop does the following:
-        // 1) Create the course's markdown content by combining the markdown content of its assignments and submissions.
-        // 2) Collect all assignments into the corresponding AssignmentGroup object (utilized for chart generation).
-        // 3) Creates the mapping from assignments to submissions (utilized for chart generation).
-        let markdownContent = `# ${getCourseName(courseNode.course)}\n\n` // Start course-level markdown content with a title
+        // 1) Collect all assignments into the corresponding AssignmentGroup object (utilized for chart generation).
+        // 2) Creates the mapping from assignments to submissions (utilized for chart generation).
         for (const assignmentNode of courseNode.children) {
             // Add assignment to its corresponding AssignmentGroup object.
             idAssignmentGroupMap
                 .get(assignmentNode.assignment.assignment_group_id)
                 ?.assignments.push(assignmentNode.assignment)
-
-            // Append description and submission content
-            for (const fileContent of assignmentNode.children) {
-                markdownContent += `${fileContent.content.join('\n')}\n\n`
-            }
 
             // Stop here if there are no submissions.
             if (
@@ -176,7 +239,6 @@ async function createCourseContentMappings(
                 assignmentNode.allSubmissions
             )
         }
-        courseMarkdownMap.set(courseNode, markdownContent) // Add content to the map for later use.
 
         // Generate requested charts.
         const averageGradeByGroupChart = requestedCharts.averageGradeByGroup
@@ -216,7 +278,140 @@ async function createCourseContentMappings(
 
         courseChartMap.set(courseNode, charts)
     }
-    return { courseMarkdownMap, courseChartMap }
+    return courseChartMap
+}
+
+/**
+ * Modifies the provided HTML string by inserting jump links into content areas with a specific structure
+ * and returns the updated HTML string.
+ *
+ * Specifically, a "Jump to:" section is added to every data node content div.
+ *
+ * @param {string} html - The input HTML string to process and add jump links to.
+ * @return {string} - The updated HTML string with jump links inserted.
+ */
+function insertJumpLinks(html: string): string {
+    // Prepare HTML for modification.
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(html, 'text/html')
+
+    // Find all data node content divs (where we will insert jump links)
+    const dataNodeContentDivs = [
+        ...doc.querySelectorAll('.data-node-content'),
+    ] as HTMLDivElement[]
+
+    // Insert jump links.
+    for (const div of dataNodeContentDivs) {
+        const parentKey = div.id.slice(0, div.id.lastIndexOf('-'))
+
+        const descriptionID = parentKey + '-description'
+        const lowID = parentKey + '-low'
+        const medianID = parentKey + '-median'
+        const highID = parentKey + '-high'
+
+        const jumpLinks = doc.createElement('h3')
+        jumpLinks.innerText = 'Jump to: '
+
+        if (doc.querySelector(`#${descriptionID}`) !== null) {
+            const descriptionLink = doc.createElement('a')
+            descriptionLink.href = `#${descriptionID}`
+            descriptionLink.innerText = 'Description'
+            jumpLinks.innerHTML += descriptionLink.outerHTML + ' | '
+        }
+        if (doc.querySelector(`#${lowID}`) !== null) {
+            const lowLink = doc.createElement('a')
+            lowLink.href = `#${lowID}`
+            lowLink.innerText = 'Low'
+            jumpLinks.innerHTML += lowLink.outerHTML + ' | '
+        }
+        if (doc.querySelector(`#${medianID}`) !== null) {
+            const medianLink = doc.createElement('a')
+            medianLink.href = `#${medianID}`
+            medianLink.innerText = 'Median'
+            jumpLinks.innerHTML += medianLink.outerHTML + ' | '
+        }
+        if (doc.querySelector(`#${highID}`) !== null) {
+            const highLink = doc.createElement('a')
+            highLink.href = `#${highID}`
+            highLink.innerText = 'High'
+            jumpLinks.innerHTML += highLink.outerHTML + ' | '
+        }
+
+        // Insert after assignment/submission title.
+        div.insertBefore(jumpLinks, div.children[1] || null)
+    }
+
+    return doc.body.innerHTML
+}
+
+function insertQuizLinks(html: string): string {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(html, 'text/html')
+    const idLimit = 'data-node-content-'.length
+
+    // Find all quizzes
+    const quizDivs = [...doc.querySelectorAll('.quiz')] as HTMLDivElement[]
+
+    // Give Quizzes Unique ID based on Course/Assignment ID.
+    quizDivs.map((div) => {
+        const parentId = div.id.slice(idLimit, div.id.lastIndexOf('-'))
+        const questions: HTMLHeadingElement[] = [...div.querySelectorAll('h2')]
+        questions.map((question) => {
+            if (question.innerText.includes('Question #')) {
+                const questionNumber = question.innerText.slice(
+                    question.innerText.lastIndexOf('#') + 1
+                )
+                question.id = `quiz-${parentId}-question-${questionNumber}`
+            }
+        })
+    })
+
+    // Get All Quiz Submissions
+    const submissionDivs = quizDivs.filter(
+        (div) => !div.id.includes('description')
+    )
+
+    // Add Links to Quiz Submission Summary Tables
+    submissionDivs.map((div, i) => {
+        const parentId = div.id.slice(idLimit, div.id.lastIndexOf('-'))
+
+        const submissionElements = Array.from(div.children)
+
+        submissionElements.map((childElement) => {
+            if (
+                childElement.tagName === 'H3' &&
+                childElement.innerHTML.includes('Question')
+            ) {
+                const childElementText = childElement.innerHTML
+                const questionNumber = childElementText.slice(
+                    childElementText.lastIndexOf(' ') + 1
+                )
+                childElement.innerHTML = `<a href="#quiz-${parentId}-question-${questionNumber}">${childElementText}</a>`
+                childElement.id = `quiz-${parentId}-submission-${i}-question-${questionNumber}`
+            }
+        })
+
+        // Get Correct TBody Element
+        const table = submissionElements.filter((childElement) => {
+            return (
+                childElement.previousElementSibling?.tagName === 'H2' &&
+                childElement.previousElementSibling?.innerHTML ===
+                    'Summary Table'
+            )
+        })[0].lastElementChild
+        if (table) {
+            Array.from(table.children).map((row) => {
+                const columns = Array.from(row.children)
+                const questionNumber = columns[0].innerHTML
+                columns[0].innerHTML = `<a href="#quiz-${parentId}-question-${questionNumber}">${questionNumber}</a>`
+                if (columns[2].innerHTML === 'See Below') {
+                    columns[2].innerHTML = `<a href="#quiz-${parentId}-submission-${i}-question-${questionNumber}">See Below</a>`
+                }
+            })
+        }
+    })
+
+    return doc.body.innerHTML
 }
 
 /**
