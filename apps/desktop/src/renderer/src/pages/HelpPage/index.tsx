@@ -410,8 +410,43 @@ export function HelpPage() {
                             </li>
                         </ol>
                     </Collapse.Panel>
-                    <Collapse.Panel key={'GAT'} header={'Github Access Token'}>
-                        <h1>TBD</h1>
+                    <Collapse.Panel key={'GAT'} header={'Github Access Token/Chase Links'}>
+                        <h1>Github Access Token/Chase Links</h1>
+                        <hr />
+                        <h2>What is it?</h2>
+                        <ul>
+                            If your assignment description contains a link to a github classroom repository accessible by the key provided, the report will include that repository's readme in the assignment description.
+                            <br></br>
+                            Note: The owner of the github key must also be the owner of the repository
+                        </ul>
+                        <hr />
+                        <h2>Setting Up a Github Access Token</h2>
+                        <ol>
+                            <li>Open Github in your browser</li>
+                            <li>Sign in</li>
+                            <li>Click on your user icon</li>
+                            <li>Click the "settings" option</li>
+                            <li>Scroll to the bottom and click the "Developer Settings" option</li>
+                            <li>Click the "Personal Access Tokens" dropdown</li>
+                            <li>Select the "Fine-Grained Tokens" option</li>
+                            <li>Select the "Generate Token" option</li>
+                            <li>Give the token a name and description</li>
+                            <li>You can choose to let the token access all repositories, or selected respositories. (ensure all repositories to be accessed by canvas capture are accessable by this token)</li>
+                            <li>Under "Repository Permissions" Select "contents" and set it to "Read-only"</li>
+                            <li>Now generate the token with the button at the bottom of the page.</li>
+                            <li>Save this token somewhere, you will not be able to see it again</li>
+                        </ol>
+                        <hr />
+                        <h2>Using your access token</h2>
+                        <ol>
+                            <li>Open the canvas capture settings at the top right of the application</li>
+                            <li>Paste the token you saved earlier, into the "Github Classroom Token" text input</li>
+                            <li>Check "Chase links" to display your report readmes in the final report</li>
+                            
+                        </ol>
+                        <ul>
+                            <li>Optional: Uncheck "Chase links" to not display your report readmes in the final report</li>
+                        </ul>
                     </Collapse.Panel>
                 </Collapse>
             </Layout>

@@ -174,12 +174,12 @@ export function SettingsPage() {
                             <Input.Password />
                         </Form.Item>
                         <Form.Item<Config>
-                            label="Github Classroom Token"
+                            label="Github Access Token"
                             rules={[
                                 {
                                     required: false,
                                     message:
-                                        'GitHub Classroom Token is missing',
+                                        'GitHub Token is missing',
                                 },
                             ]}
                         >
@@ -199,7 +199,7 @@ export function SettingsPage() {
                             label={
                                 <span
                                     title={
-                                        'Show Github Clasrrom Descriptions In Readme'
+                                        'Show Github readmes in report descriptions'
                                     }
                                     style={{ fontSize: 20, color: 'blue' }}
                                 >
@@ -213,7 +213,7 @@ export function SettingsPage() {
                                 onChange={(e) => updateChaseLinks(e)}
                                 defaultChecked={settings.chaseLinks}
                             >
-                                Chase Links (Requires Github Classroom Token)
+                                Chase Links (Requires Github Access Token)
                             </Checkbox>
                         </Form.Item>
                         {!isSetup && (

@@ -165,6 +165,7 @@ async function createCourseHTMLMapping(
                 // Append child content to assignment's total content.
                 courseHTMLDocument += div.outerHTML
             }
+            courseHTMLDocument += `<div class="page-break"></div>`
         }
 
         // Append charts to the document
